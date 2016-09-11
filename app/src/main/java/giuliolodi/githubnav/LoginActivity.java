@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Authorization auth = new Authorization();
                 auth.setScopes(Arrays.asList("repo", "gist", "user"));
-                auth.setNote("Token di prova");
+                auth.setNote("Token");
 
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                 StrictMode.setThreadPolicy(policy);
