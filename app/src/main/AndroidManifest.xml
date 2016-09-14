@@ -30,20 +30,18 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/AppTheme.NoActionBarLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
 
-                <data
-                    android:host="oauth"
-                    android:scheme="giuliolodi.githubnav" />
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBarLogin">
+
         </activity>
 
     </application>

@@ -17,10 +17,10 @@
 package giuliolodi.githubnav;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -58,6 +58,16 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        String ss = Constants.authdKey(getApplicationContext());
+        Boolean s = Constants.authdValue(getApplicationContext());
+        s.toString();
+
+        // If user is not logged in, Intent to LoginActivity
+        if (!Constants.authdValue(getApplicationContext())) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
 
     }
 
