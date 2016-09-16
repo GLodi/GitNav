@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package giuliolodi.githubnav;
+package giuliolodi.navforgithub;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class Constants {

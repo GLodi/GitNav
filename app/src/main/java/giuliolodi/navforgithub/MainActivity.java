@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.githubnav;
+package giuliolodi.navforgithub;
 
 import android.content.Intent;
 import android.os.Bundle;

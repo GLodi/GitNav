@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.githubnav;
+package giuliolodi.navforgithub;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;

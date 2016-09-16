@@ -1,7 +1,6 @@
-package giuliolodi.githubnav;
+package giuliolodi.navforgithub;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -86,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Authorization auth = new Authorization();
             auth.setScopes(Arrays.asList("repo", "gist", "user"));
-            auth.setNote("GitHubNav - " + Build.MANUFACTURER + " " + Build.MODEL);
+            auth.setNote("Nav for GitHub - " + Build.MANUFACTURER + " " + Build.MODEL);
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);

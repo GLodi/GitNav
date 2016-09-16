@@ -16,7 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="giuliolodi.githubnav">
+    package="giuliolodi.navforgithub">
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 

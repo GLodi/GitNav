@@ -1,3 +1,3 @@
-# GitHubNav
+# Nav for Github
 
-GitHub Android App
+GitHub Android Client

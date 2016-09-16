@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GitHubNav.iml" filepath="$PROJECT_DIR$/GitHubNav.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Nav for GitHub.iml" filepath="$PROJECT_DIR$/Nav for GitHub.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
