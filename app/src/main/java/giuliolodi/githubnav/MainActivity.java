@@ -58,12 +58,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // TODO: check if old credentials work or Intent to LoginActivity
+
         // If user is not logged in, Intent to LoginActivity
         if (!Constants.authdValue(getApplicationContext())) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
 
+        // Set main fragment
         RepoFragment repoFragment = new RepoFragment();
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, repoFragment);

@@ -2,8 +2,10 @@ package giuliolodi.githubnav;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -46,28 +48,19 @@ public class LoginActivity extends AppCompatActivity {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     inputUser = input_user.getText().toString();
                     inputPass = input_password.getText().toString();
-
                     new newAccess().execute();
-
-                    // TODO: Intent to Main Activity
-
                     return true;
                 }
                 return false;
             }
         });
 
-        // TODO: check if old credentials work and Intent to Main Activity
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 inputUser = input_user.getText().toString();
                 inputPass = input_password.getText().toString();
-
                 new newAccess().execute();
-
-                // TODO: Intent to Main Activity
             }
         });
 
@@ -93,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Authorization auth = new Authorization();
             auth.setScopes(Arrays.asList("repo", "gist", "user"));
-            auth.setNote("GitHubNav");
+            auth.setNote("GitHubNav - " + Build.MANUFACTURER + " " + Build.MODEL);
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -125,6 +118,10 @@ public class LoginActivity extends AppCompatActivity {
             progDailog.dismiss();
             Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG);
             toast.show();
+            if (result == "Logged in") {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
         }
 
     }
