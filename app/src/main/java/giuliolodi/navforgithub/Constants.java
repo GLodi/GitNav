@@ -21,36 +21,36 @@ import android.preference.PreferenceManager;
 
 public class Constants {
 
-    public static String prefKey (Context context) {
+    public static String getPrefKey (Context context) {
         return context.getString(R.string.pref_key);
     }
 
-    public static String userKey (Context context) {
+    public static String getUserKey (Context context) {
         return context.getString(R.string.user_key);
     }
 
-    public static String tokenKey (Context context) {
+    public static String getTokenKey (Context context) {
         return context.getString(R.string.token_key);
     }
 
-    public static String authdKey (Context context) {
+    public static String getAuthdKey (Context context) {
         return context.getString(R.string.authd_key);
     }
 
-    public static String prefValue (Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(prefKey(context), "");
+    public static String getPrefValue (Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(getPrefKey(context), "");
     }
 
-    public static String userValue (Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(userKey(context), "");
+    public static String getUsername (Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(getUserKey(context), "");
     }
 
-    public static String tokenValue (Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(tokenKey(context), "");
+    public static String getToken (Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(getTokenKey(context), "");
     }
 
-    public static Boolean authdValue (Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(authdKey(context), false);
+    public static Boolean getAuthdValue (Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(getAuthdKey(context), false);
     }
 
 }

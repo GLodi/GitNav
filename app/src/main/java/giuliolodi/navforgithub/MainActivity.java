@@ -17,7 +17,6 @@
 package giuliolodi.navforgithub;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -59,11 +58,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TODO: check if old credentials work or Intent to LoginActivity
-
-
         // If user is not logged in, Intent to LoginActivity
-        if (!Constants.authdValue(getApplicationContext())) {
+        if (!Constants.getAuthdValue(getApplicationContext())) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -73,15 +69,6 @@ public class MainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, repoFragment);
         fragmentTransaction.commit();
-    }
-
-    class checkCredentials extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            
-            return null;
-        }
     }
 
     @Override

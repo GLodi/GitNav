@@ -16,11 +16,17 @@
 
 package giuliolodi.navforgithub;
 
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.eclipse.egit.github.core.event.Event;
+import org.eclipse.egit.github.core.service.EventService;
+
+import java.util.Collection;
 
 public class RepoFragment extends Fragment {
 
@@ -28,7 +34,22 @@ public class RepoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.repo_fragment, container, false);
 
+        new network().execute();
+
         return v;
+    }
+
+    class network extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            EventService eventService = new EventService();
+            Collection<Event> events = eventService.pageUserEvents(Constants.getUsername(getContext())).next();
+            for (Event event : events) {
+                event.getType();
+            }
+            return null;
+        }
     }
 
 }

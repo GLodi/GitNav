@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             // Check if token already exists and deletes it.
             try {
                 for (Authorization authorization : oAuthService.getAuthorizations()) {
-                    if (authorization.getNote().equals(description)) {
+                    if (authorization.getNote() != null && authorization.getNote().equals(description)) {
                         oAuthService.deleteAuthorization(authorization.getId());
                     }
                 }
@@ -106,14 +106,14 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 auth = oAuthService.createAuthorization(auth);
                 if (auth.getToken() != "") {
-                    editor.putString(Constants.tokenKey(getApplicationContext()), auth.getToken());
+                    editor.putString(Constants.getTokenKey(getApplicationContext()), auth.getToken());
                     editor.commit();
                 }
             } catch (IOException e) { error = e.getMessage(); }
 
             if (error == "") {
-                editor.putString(Constants.userKey(getApplicationContext()), inputUser);
-                editor.putBoolean(Constants.authdKey(getApplicationContext()), true);
+                editor.putString(Constants.getUserKey(getApplicationContext()), inputUser);
+                editor.putBoolean(Constants.getAuthdKey(getApplicationContext()), true);
                 editor.commit();
                 return "Logged in";
             }
