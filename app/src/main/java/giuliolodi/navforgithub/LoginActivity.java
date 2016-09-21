@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
     public String inputUser;
     public String inputPass;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +84,8 @@ public class LoginActivity extends AppCompatActivity {
 
             Authorization auth = new Authorization();
             auth.setScopes(Arrays.asList("repo", "gist", "user"));
-            auth.setNote("Nav for GitHub - " + Build.MANUFACTURER + " " + Build.MODEL);
+            String description = "Nav for GitHub - " + Build.MANUFACTURER + " " + Build.MODEL;
+            auth.setNote(description);
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -93,6 +93,16 @@ public class LoginActivity extends AppCompatActivity {
             String error = "";
             editor = sp.edit();
 
+            // Check if token already exists and deletes it.
+            try {
+                for (Authorization authorization : oAuthService.getAuthorizations()) {
+                    if (authorization.getNote().equals(description)) {
+                        oAuthService.deleteAuthorization(authorization.getId());
+                    }
+                }
+            } catch (IOException e) { e.printStackTrace(); }
+
+            // Creates new token. Saves login and token.
             try {
                 auth = oAuthService.createAuthorization(auth);
                 if (auth.getToken() != "") {
