@@ -10,9 +10,12 @@
 
 package giuliolodi.navforgithub;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,7 +25,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        // Create NavigationView and set username, email
+        // Create NavigationView and set username, email and profile picture
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View hView = navigationView.getHeaderView(0);
@@ -57,6 +65,13 @@ public class MainActivity extends AppCompatActivity
         nav_user.setText(Constants.getUsername(getApplicationContext()));
         TextView nav_email = (TextView) hView.findViewById(R.id.nav_email);
         nav_email.setText(Constants.getEmail(getApplicationContext()));
+        ImageView image_view = (ImageView) hView.findViewById(R.id.imageView);
+        Bitmap thumbnail = new ImageSaver(getApplicationContext())
+                .setFileName("thumbnail.png")
+                .setDirectoryName("images")
+                .load();
+        image_view.setImageBitmap(thumbnail);
+        image_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         // Set main (event) fragment
         EventFragment eventFragment = new EventFragment();

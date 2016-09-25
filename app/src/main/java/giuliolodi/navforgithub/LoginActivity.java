@@ -11,25 +11,33 @@
 package giuliolodi.navforgithub;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.eclipse.egit.github.core.Authorization;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.OAuthService;
 import org.eclipse.egit.github.core.service.UserService;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -130,12 +138,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } catch (IOException e) { error = e.getMessage(); }
 
-            // Get email and login of user and save in Preferences
+            // Get email, login and profile picture
             UserService userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(getBaseContext()));
             try {
                 User user = userService.getUser();
                 editor.putString(Constants.getEmailKey(getApplicationContext()), user.getEmail());
+                Bitmap profile_picture = Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).get();
+                new ImageSaver(getApplicationContext())
+                        .setFileName("thumbnail.png")
+                        .setDirectoryName("images")
+                        .save(profile_picture);
             } catch (IOException e) {e.printStackTrace();}
 
             if (error == "") {
