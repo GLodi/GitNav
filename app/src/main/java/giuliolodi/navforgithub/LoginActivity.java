@@ -26,7 +26,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Authorization;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.OAuthService;
+import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -127,6 +129,14 @@ public class LoginActivity extends AppCompatActivity {
                     editor.commit();
                 }
             } catch (IOException e) { error = e.getMessage(); }
+
+            // Get email and login of user and save in Preferences
+            UserService userService = new UserService();
+            userService.getClient().setOAuth2Token(Constants.getToken(getBaseContext()));
+            try {
+                User user = userService.getUser();
+                editor.putString(Constants.getEmailKey(getApplicationContext()), user.getEmail());
+            } catch (IOException e) {e.printStackTrace();}
 
             if (error == "") {
                 editor.putString(Constants.getUserKey(getApplicationContext()), inputUser);

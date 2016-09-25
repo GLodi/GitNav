@@ -49,11 +49,14 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        // Create NavigationView and set username, email
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View hView = navigationView.getHeaderView(0);
         TextView nav_user = (TextView) hView.findViewById(R.id.nav_user);
         nav_user.setText(Constants.getUsername(getApplicationContext()));
+        TextView nav_email = (TextView) hView.findViewById(R.id.nav_email);
+        nav_email.setText(Constants.getEmail(getApplicationContext()));
 
         // Set main (event) fragment
         EventFragment eventFragment = new EventFragment();

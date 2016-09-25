@@ -31,6 +31,10 @@ public class Constants {
         return context.getString(R.string.authd_key);
     }
 
+    public static String getEmailKey (Context context) {
+        return context.getString(R.string.email_key);
+    }
+
     public static String getPrefValue (Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(getPrefKey(context), "");
     }
@@ -45,6 +49,10 @@ public class Constants {
 
     public static Boolean getAuthdValue (Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(getAuthdKey(context), false);
+    }
+
+    public static String getEmail (Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(getEmailKey(context), "");
     }
 
 }

@@ -8,32 +8,26 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
+package giuliolodi.navforgithub;
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
 
-    defaultConfig {
-        applicationId "giuliolodi.navforgithub"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+import android.content.Context;
+
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.service.UserService;
+
+import java.io.IOException;
+
+public class AuthdUserInfo {
+
+    public static String getUserEmail(Context context) {
+        UserService userService = new UserService();
+        userService.getClient().setOAuth2Token(Constants.getToken(context));
+        try {
+            User user = userService.getUser();
+            return user.getEmail();
+        } catch (IOException e) {e.printStackTrace();}
+        return null;
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile "com.squareup.picasso:picasso:2.4.0"
-    compile group: 'org.eclipse.mylyn.github', name: 'org.eclipse.egit.github.core', version: '2.1.5'
 }
