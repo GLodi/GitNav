@@ -22,11 +22,11 @@ import org.eclipse.egit.github.core.service.EventService;
 
 import java.util.Collection;
 
-public class RepoFragment extends Fragment {
+public class EventFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.repo_fragment, container, false);
+        View v = inflater.inflate(R.layout.event_fragment, container, false);
 
         new network().execute();
 

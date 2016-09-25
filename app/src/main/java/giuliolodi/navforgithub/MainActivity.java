@@ -10,7 +10,6 @@
 
 package giuliolodi.navforgithub;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,18 +51,16 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View hView = navigationView.getHeaderView(0);
+        TextView nav_user = (TextView) hView.findViewById(R.id.nav_user);
+        nav_user.setText(Constants.getUsername(getApplicationContext()));
 
-        // If user is not logged in, Intent to LoginActivity
-        if (!Constants.getAuthdValue(getApplicationContext())) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
-
-        // Set main fragment
-        RepoFragment repoFragment = new RepoFragment();
+        // Set main (event) fragment
+        EventFragment eventFragment = new EventFragment();
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, repoFragment);
+        fragmentTransaction.replace(R.id.frame, eventFragment);
         fragmentTransaction.commit();
+
     }
 
     @Override

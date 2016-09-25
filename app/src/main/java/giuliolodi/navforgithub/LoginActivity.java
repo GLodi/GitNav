@@ -51,6 +51,13 @@ public class LoginActivity extends AppCompatActivity {
         final EditText input_password = (EditText) findViewById(R.id.input_password);
         final Button button = (Button) findViewById(R.id.btn_login);
 
+        // If user is already logged in, Intent to MainActivity
+        if (Constants.getAuthdValue(getApplicationContext())) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         input_password.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -140,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
             if (result == "Logged in") {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         }
 
