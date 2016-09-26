@@ -11,11 +11,14 @@
 package giuliolodi.navforgithub;
 
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
 
@@ -26,11 +29,23 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
     private List<Repository> repositoryList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView repo_name;
+        // Get reference of repo_row elements
+        TextView repo_name, repo_description;
 
         public MyViewHolder(View view) {
             super(view);
             repo_name = (TextView) view.findViewById(R.id.repo_name);
+            repo_description = (TextView) view.findViewById(R.id.repo_description);
+
+            // Use easy fonts to set Typeface
+            repo_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+
+            // Set colors and opacity of text
+            repo_name.setTextColor(Color.parseColor("#000000"));
+            repo_name.setAlpha(0.87f);
+            repo_description.setTextColor(Color.parseColor("#000000"));
+            repo_description.setAlpha(0.54f);
         }
     }
 
@@ -47,8 +62,13 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        // Set elements on each row
         Repository repo = repositoryList.get(position);
         holder.repo_name.setText(repo.getName());
+        if (!repo.getDescription().equals(""))
+            holder.repo_description.setText(repo.getDescription());
+        else
+            holder.repo_description.setText("No description");
     }
 
     @Override

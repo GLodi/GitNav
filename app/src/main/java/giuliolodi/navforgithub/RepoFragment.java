@@ -25,7 +25,9 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RepoFragment extends Fragment {
 
@@ -36,27 +38,40 @@ public class RepoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.repo_fragment, container, false);
+
+
+
+        // Get reference to the RecyclerView and get the data
         recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
         new getRepositories().execute();
+
         return v;
     }
 
     class getRepositories extends AsyncTask<String , String , String> {
         @Override
         protected String doInBackground(String... strings) {
+            // Authenticate
             RepositoryService repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(getContext()));
             try {
-                repositoryList = repositoryService.getRepositories();
-
+                // Get the RepositoryList and sort it based on creation date
+                Map sort = new HashMap();
+                sort.put("sort", "created");
+                repositoryList = repositoryService.getRepositories(sort);
             } catch (IOException e) {e.printStackTrace();}
             return null;
         }
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
+            // Bind list to adapter
             repoAdapter = new RepoAdapter(repositoryList);
+
+            // Set adapter on RecyclerView and notify it
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(repoAdapter);

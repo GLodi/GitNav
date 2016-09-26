@@ -30,11 +30,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -52,9 +54,11 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        // Create NavigationView and set username, email and profile picture
+        // Create NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Set username, email and profile picture
         View hView = navigationView.getHeaderView(0);
         TextView nav_user = (TextView) hView.findViewById(R.id.nav_user);
         nav_user.setText(Constants.getUsername(getApplicationContext()));
@@ -72,7 +76,6 @@ public class MainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, eventFragment);
         fragmentTransaction.commit();
-
     }
 
     @Override
@@ -112,12 +115,15 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         switch (item.getItemId()) {
             case R.id.nav_camera:
                 RepoFragment repoFragment = new RepoFragment();
                 android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.frame, repoFragment);
                 fragmentTransaction.commit();
+                toolbar.setTitle("Repositories");
                 break;
             case R.id.nav_gallery:
                 break;
