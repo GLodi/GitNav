@@ -116,16 +116,20 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {
             case R.id.nav_camera:
                 RepoFragment repoFragment = new RepoFragment();
-                android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.frame, repoFragment);
                 fragmentTransaction.commit();
                 toolbar.setTitle("Repositories");
                 break;
             case R.id.nav_gallery:
+                StarredFragment starredFragment = new StarredFragment();
+                fragmentTransaction.replace(R.id.frame, starredFragment);
+                fragmentTransaction.commit();
+                toolbar.setTitle("Starred");
                 break;
             case R.id.nav_manage:
                 break;
