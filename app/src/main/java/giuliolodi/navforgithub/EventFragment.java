@@ -37,12 +37,14 @@ public class EventFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
+            /*
             EventService eventService = new EventService();
             eventService.getClient().setOAuth2Token(Constants.getToken(getContext()));
             Collection<Event> events = eventService.pageUserReceivedEvents(Constants.getUsername(getContext())).next();
             for (Event event : events) {
                 event.getType();
             }
+            */
             return null;
         }
     }

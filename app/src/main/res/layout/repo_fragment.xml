@@ -13,6 +13,14 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
+    <ProgressBar
+        android:id="@+id/repo_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/repo_recycler_view"
         android:layout_width="match_parent"

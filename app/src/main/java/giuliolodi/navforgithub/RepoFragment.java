@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -34,6 +35,7 @@ public class RepoFragment extends Fragment {
     List<Repository> repositoryList;
     RepoAdapter repoAdapter;
     RecyclerView recyclerView;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,12 +43,20 @@ public class RepoFragment extends Fragment {
 
         // Get reference to the RecyclerView and get the data
         recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
+        progressBar = (ProgressBar) v.findViewById(R.id.repo_progress_bar);
         new getRepositories().execute();
 
         return v;
     }
 
     class getRepositories extends AsyncTask<String , String , String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Set ProgressBar visible
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             // Authenticate
@@ -66,6 +76,9 @@ public class RepoFragment extends Fragment {
 
             // Bind list to adapter
             repoAdapter = new RepoAdapter(repositoryList);
+
+            // Set ProgressBar invisible
+            progressBar.setVisibility(View.GONE);
 
             // Set adapter on RecyclerView and notify it
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
