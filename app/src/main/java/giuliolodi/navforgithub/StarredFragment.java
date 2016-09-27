@@ -17,9 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.service.UserService;
-
 
 public class StarredFragment extends Fragment {
 

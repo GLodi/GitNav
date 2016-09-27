@@ -37,5 +37,7 @@ dependencies {
     compile "com.squareup.picasso:picasso:2.4.0"
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
-    compile group: 'org.eclipse.mylyn.github', name: 'org.eclipse.egit.github.core', version: '2.1.5'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
+    compile 'com.squareup.okhttp:okhttp:1.6.0'
 }
