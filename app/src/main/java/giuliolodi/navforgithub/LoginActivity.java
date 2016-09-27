@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString(Constants.getUserKey(getApplicationContext()), inputUser);
                 editor.putBoolean(Constants.getAuthdKey(getApplicationContext()), true);
 
-                // Get email, login and profile picture
+                // Save email, login and profile picture
                 UserService userService = new UserService();
                 userService.getClient().setOAuth2Token(Constants.getToken(getBaseContext()));
                 try {

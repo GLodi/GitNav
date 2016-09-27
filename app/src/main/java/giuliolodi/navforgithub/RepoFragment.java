@@ -39,8 +39,6 @@ public class RepoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.repo_fragment, container, false);
 
-
-
         // Get reference to the RecyclerView and get the data
         recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
         new getRepositories().execute();
