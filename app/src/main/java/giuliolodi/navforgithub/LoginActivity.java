@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progDailog.setMessage("Logging in");
+            progDailog.setMessage("Signing in");
             progDailog.setIndeterminate(false);
             progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progDailog.setCancelable(true);
@@ -138,23 +138,28 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } catch (IOException e) { error = e.getMessage(); }
 
-            // Get email, login and profile picture
-            UserService userService = new UserService();
-            userService.getClient().setOAuth2Token(Constants.getToken(getBaseContext()));
-            try {
-                User user = userService.getUser();
-                editor.putString(Constants.getEmailKey(getApplicationContext()), user.getEmail());
-                Bitmap profile_picture = Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).get();
-                new ImageSaver(getApplicationContext())
-                        .setFileName("thumbnail.png")
-                        .setDirectoryName("images")
-                        .save(profile_picture);
-            } catch (IOException e) {e.printStackTrace();}
-
             if (error == "") {
+                // Save username from EditText
                 editor.putString(Constants.getUserKey(getApplicationContext()), inputUser);
                 editor.putBoolean(Constants.getAuthdKey(getApplicationContext()), true);
-                editor.commit();
+
+                // Get email, login and profile picture
+                UserService userService = new UserService();
+                userService.getClient().setOAuth2Token(Constants.getToken(getBaseContext()));
+                try {
+                    User user = userService.getUser();
+                    if (user.getEmail() != null && !user.getEmail().isEmpty())
+                        editor.putString(Constants.getEmailKey(getApplicationContext()), user.getEmail());
+                    else
+                        editor.putString(Constants.getEmailKey(getApplicationContext()), "No public email address");
+                    editor.commit();
+                    Bitmap profile_picture = Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).get();
+                    new ImageSaver(getApplicationContext())
+                            .setFileName("thumbnail.png")
+                            .setDirectoryName("images")
+                            .save(profile_picture);
+                } catch (IOException e) {e.printStackTrace();}
+
                 return "Logged in";
             }
             else {
