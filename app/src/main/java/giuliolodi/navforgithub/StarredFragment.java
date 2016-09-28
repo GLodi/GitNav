@@ -17,8 +17,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.service.StarService;
+
+import java.io.IOException;
+import java.util.List;
+
 
 public class StarredFragment extends Fragment {
+
+    List<Repository> starredRepoList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,7 +42,11 @@ public class StarredFragment extends Fragment {
         }
         @Override
         protected String doInBackground(String... strings) {
-
+            StarService starService = new StarService();
+            starService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+            try {
+                starredRepoList = starService.getStarred();
+            } catch (IOException e) {e.printStackTrace();}
             return null;
         }
 

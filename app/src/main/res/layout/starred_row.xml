@@ -9,13 +9,20 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/starred_repo_author_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
     <LinearLayout
+        android:layout_toRightOf="@id/starred_repo_author_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="16dp">
 
         <TextView
-            android:text="prova"
+            android:text="Title"
             android:textSize="16sp"
             android:id="@+id/starred_repo_name"
             android:layout_width="wrap_content"
@@ -24,7 +31,7 @@
         <TextView
             android:id="@+id/starred_repo_description"
             android:textSize="14sp"
-            android:text="sottotitolo"
+            android:text="Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
