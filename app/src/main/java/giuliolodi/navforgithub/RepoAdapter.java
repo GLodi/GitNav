@@ -65,7 +65,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         // Set elements on each row
         Repository repo = repositoryList.get(position);
         holder.repo_name.setText(repo.getName());
-        if (!repo.getDescription().equals(""))
+        if (repo.getDescription() != null)
             holder.repo_description.setText(repo.getLanguage() + " - " + repo.getDescription());
         else
             holder.repo_description.setText(repo.getLanguage() + " - No description");
