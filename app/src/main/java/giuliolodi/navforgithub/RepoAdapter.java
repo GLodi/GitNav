@@ -66,9 +66,9 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         Repository repo = repositoryList.get(position);
         holder.repo_name.setText(repo.getName());
         if (!repo.getDescription().equals(""))
-            holder.repo_description.setText(repo.getDescription());
+            holder.repo_description.setText(repo.getLanguage() + " - " + repo.getDescription());
         else
-            holder.repo_description.setText("No description");
+            holder.repo_description.setText(repo.getLanguage() + " - No description");
     }
 
     @Override

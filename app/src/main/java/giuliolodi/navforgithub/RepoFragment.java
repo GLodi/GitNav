@@ -49,10 +49,11 @@ public class RepoFragment extends Fragment {
         return v;
     }
 
-    class getRepositories extends AsyncTask<String , String , String> {
+    class getRepositories extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             // Set ProgressBar visible
             progressBar.setVisibility(View.VISIBLE);
         }

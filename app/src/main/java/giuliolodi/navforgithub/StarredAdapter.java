@@ -10,6 +10,7 @@
 
 package giuliolodi.navforgithub;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
@@ -29,7 +29,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHolder>{
 
-    private List<Repository> repositoryList;
+    private List<Repository> starredRepositoryList;
+    private List<Bitmap> starredRepoAuthorIcon;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
@@ -40,6 +41,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             super(view);
             starred_name = (TextView) view.findViewById(R.id.starred_repo_name);
             starred_description = (TextView) view.findViewById(R.id.starred_repo_description);
+            starred_repo_author_icon = (CircleImageView) view.findViewById(R.id.starred_repo_author_icon);
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -53,8 +55,9 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         }
     }
 
-    public StarredAdapter(List<Repository> repositoryList) {
-        this.repositoryList = repositoryList;
+    public StarredAdapter(List<Repository> starredRepositoryList, List<Bitmap> starredRepoAuthorIcon) {
+        this.starredRepositoryList = starredRepositoryList;
+        this.starredRepoAuthorIcon = starredRepoAuthorIcon;
     }
 
     @Override
@@ -67,7 +70,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
     @Override
     public void onBindViewHolder(StarredAdapter.MyViewHolder holder, int position) {
         // Set elements on each row
-        Repository repo = repositoryList.get(position);
+        Repository repo = starredRepositoryList.get(position);
+        holder.starred_repo_author_icon.setImageBitmap(starredRepoAuthorIcon.get(position));
         holder.starred_name.setText(repo.getName());
         if (!repo.getDescription().equals(""))
             holder.starred_description.setText(repo.getDescription());
@@ -77,7 +81,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return repositoryList.size();
+        return starredRepositoryList.size();
     }
 
 }
