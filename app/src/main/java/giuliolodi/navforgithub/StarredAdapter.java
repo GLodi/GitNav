@@ -73,7 +73,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         Repository repo = starredRepositoryList.get(position);
         holder.starred_repo_author_icon.setImageBitmap(starredRepoAuthorIcon.get(position));
         holder.starred_name.setText(repo.getName());
-        if (repo.getDescription() != null)
+        if (repo.getDescription() != null && !repo.getDescription().equals(""))
             holder.starred_description.setText(repo.getDescription());
         else
             holder.starred_description.setText("No description");
