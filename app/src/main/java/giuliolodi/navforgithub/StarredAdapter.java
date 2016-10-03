@@ -10,14 +10,16 @@
 
 package giuliolodi.navforgithub;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.Color;
+import android.os.StrictMode;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
@@ -30,7 +32,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHolder>{
 
     private List<Repository> starredRepositoryList;
-    private List<Bitmap> starredRepoAuthorIcon;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
@@ -39,6 +40,10 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
         public MyViewHolder(View view) {
             super(view);
+
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
             starred_name = (TextView) view.findViewById(R.id.starred_repo_name);
             starred_description = (TextView) view.findViewById(R.id.starred_repo_description);
             starred_repo_author_icon = (CircleImageView) view.findViewById(R.id.starred_repo_author_icon);
@@ -55,9 +60,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         }
     }
 
-    public StarredAdapter(List<Repository> starredRepositoryList, List<Bitmap> starredRepoAuthorIcon) {
+    public StarredAdapter(List<Repository> starredRepositoryList) {
         this.starredRepositoryList = starredRepositoryList;
-        this.starredRepoAuthorIcon = starredRepoAuthorIcon;
     }
 
     @Override
@@ -70,8 +74,11 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
     @Override
     public void onBindViewHolder(StarredAdapter.MyViewHolder holder, int position) {
         // Set elements on each row
+        Context context = holder.starred_repo_author_icon.getContext();
         Repository repo = starredRepositoryList.get(position);
-        holder.starred_repo_author_icon.setImageBitmap(starredRepoAuthorIcon.get(position));
+
+        // Set owner profile pic, name and description
+        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(100, 100).into(holder.starred_repo_author_icon);
         holder.starred_name.setText(repo.getName());
         if (repo.getDescription() != null && !repo.getDescription().equals(""))
             holder.starred_description.setText(repo.getDescription());

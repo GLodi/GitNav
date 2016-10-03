@@ -11,7 +11,6 @@
 package giuliolodi.navforgithub;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,9 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.StarService;
@@ -70,12 +66,14 @@ public class StarredFragment extends Fragment {
                 starredRepoList = starService.getStarred();
             } catch (IOException e) {e.printStackTrace();}
 
+            /*
             // For each starred repo, save in separate bitmap list the authors icons
             for (int i = 0; i < starredRepoList.size(); i++) {
                 try {
                     starredRepoAuthorIcons.add(Picasso.with(getContext()).load(starredRepoList.get(i).getOwner().getAvatarUrl()).get());
                 } catch (IOException e) {e.printStackTrace();}
             }
+            */
 
             return null;
         }
@@ -88,7 +86,7 @@ public class StarredFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
 
             // Set adapter
-            starredAdapter = new StarredAdapter(starredRepoList, starredRepoAuthorIcons);
+            starredAdapter = new StarredAdapter(starredRepoList);
 
             // Set adapter on RecyclerView and notify it
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
