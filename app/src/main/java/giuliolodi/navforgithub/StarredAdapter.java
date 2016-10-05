@@ -78,7 +78,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         Repository repo = starredRepositoryList.get(position);
 
         // Set owner profile pic, name and description
-        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(100, 100).into(holder.starred_repo_author_icon);
+        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).into(holder.starred_repo_author_icon);
         holder.starred_name.setText(repo.getName());
         if (repo.getDescription() != null && !repo.getDescription().equals(""))
             holder.starred_description.setText(repo.getDescription());
