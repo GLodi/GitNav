@@ -30,22 +30,25 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
-        TextView repo_name, repo_description;
+        TextView repo_list_name, repo_list_description, repo_list_language;
 
         public MyViewHolder(View view) {
             super(view);
-            repo_name = (TextView) view.findViewById(R.id.repo_name);
-            repo_description = (TextView) view.findViewById(R.id.repo_description);
+            repo_list_name = (TextView) view.findViewById(R.id.repo_list_name);
+            repo_list_description = (TextView) view.findViewById(R.id.repo_list_description);
+            repo_list_language = (TextView) view.findViewById(R.id.repo_list_language);
 
             // Use easy fonts to set Typeface
-            repo_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            repo_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_list_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_list_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
 
             // Set colors and opacity of text
-            repo_name.setTextColor(Color.parseColor("#000000"));
-            repo_name.setAlpha(0.87f);
-            repo_description.setTextColor(Color.parseColor("#000000"));
-            repo_description.setAlpha(0.54f);
+            repo_list_name.setTextColor(Color.parseColor("#000000"));
+            repo_list_name.setAlpha(0.87f);
+            repo_list_description.setTextColor(Color.parseColor("#000000"));
+            repo_list_description.setAlpha(0.54f);
+            repo_list_language.setTextColor(Color.parseColor("#000000"));
+            repo_list_language.setAlpha(0.54f);
         }
     }
 
@@ -64,11 +67,16 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // Set elements on each row
         Repository repo = repositoryList.get(position);
-        holder.repo_name.setText(repo.getName());
+        holder.repo_list_name.setText(repo.getName());
         if (repo.getDescription() != null && !repo.getDescription().equals(""))
-            holder.repo_description.setText(repo.getLanguage() + " - " + repo.getDescription());
+            holder.repo_list_description.setText(repo.getDescription());
         else
-            holder.repo_description.setText(repo.getLanguage() + " - No description");
+            holder.repo_list_description.setText("No description");
+        if (repo.getLanguage() == null)
+            holder.repo_list_language.setVisibility(View.GONE);
+        else
+            holder.repo_list_language.setText(repo.getLanguage());
+
     }
 
     @Override

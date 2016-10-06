@@ -35,7 +35,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
-        TextView starred_name, starred_description;
+        TextView starred_name, starred_description, starred_language;
         CircleImageView starred_repo_author_icon;
 
         public MyViewHolder(View view) {
@@ -47,6 +47,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_name = (TextView) view.findViewById(R.id.starred_repo_name);
             starred_description = (TextView) view.findViewById(R.id.starred_repo_description);
             starred_repo_author_icon = (CircleImageView) view.findViewById(R.id.starred_repo_author_icon);
+            starred_language = (TextView) view.findViewById(R.id.starred_repo_language);
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -57,6 +58,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_name.setAlpha(0.87f);
             starred_description.setTextColor(Color.parseColor("#000000"));
             starred_description.setAlpha(0.54f);
+            starred_language.setTextColor(Color.parseColor("#000000"));
+            starred_language.setAlpha(0.54f);
         }
     }
 
@@ -84,6 +87,10 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             holder.starred_description.setText(repo.getDescription());
         else
             holder.starred_description.setText("No description");
+        if (repo.getLanguage() == null)
+            holder.starred_language.setVisibility(View.GONE);
+        else
+            holder.starred_language.setText(repo.getLanguage());
     }
 
     @Override
