@@ -48,27 +48,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:src="@drawable/ic_star_black_24dp"
+                android:id="@+id/star"
+                android:paddingTop="5dp"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_star_black_24dp"
-                    android:paddingTop="5dp"/>
+            <TextView
+                android:id="@+id/repo_list_star_number"
+                android:text="100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:textSize="14sp"
+                android:paddingLeft="4dp"
+                android:layout_toRightOf="@id/star"/>
 
-                <TextView
-                    android:id="@+id/repo_list_star_number"
-                    android:text="100"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="4dp"
-                    android:textSize="14sp"
-                    android:paddingLeft="4dp"/>
-
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/repo_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_code_black_24dp"
+                android:layout_toRightOf="@id/star"
+                android:paddingLeft="60dp"
+                android:paddingTop="6dp"/>
 
             <TextView
                 android:id="@+id/repo_list_language"
@@ -77,7 +81,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
                 android:textSize="14sp"
-                android:layout_alignParentRight="true"/>
+                android:layout_toRightOf="@id/repo_code"
+                android:paddingLeft="4dp"/>
 
         </RelativeLayout>
 

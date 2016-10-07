@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -37,6 +38,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         // Get reference of repo_row elements
         TextView starred_name, starred_description, starred_language, starred_stars;
         CircleImageView starred_repo_author_icon;
+        ImageView starred_language_icon;
 
         public MyViewHolder(View view) {
             super(view);
@@ -49,6 +51,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_repo_author_icon = (CircleImageView) view.findViewById(R.id.starred_repo_author_icon);
             starred_language = (TextView) view.findViewById(R.id.starred_repo_language);
             starred_stars = (TextView) view.findViewById(R.id.starred_repo_star_number);
+            starred_language_icon = (ImageView) view.findViewById(R.id.starred_code);
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -98,10 +101,13 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             holder.starred_description.setText("No description");
 
         // Set starred repo language
-        if (repo.getLanguage() == null)
+        if (repo.getLanguage() == null) {
             holder.starred_language.setVisibility(View.GONE);
-        else
+            holder.starred_language_icon.setVisibility(View.GONE);
+        }
+        else {
             holder.starred_language.setText(repo.getLanguage());
+        }
 
         // Set starred repo star number
         holder.starred_stars.setText(Integer.toString(repo.getWatchers()));

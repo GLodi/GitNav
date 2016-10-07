@@ -38,36 +38,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/star"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_star_black_24dp"
-                    android:paddingTop="5dp"/>
-
-                <TextView
-                    android:id="@+id/starred_repo_star_number"
-                    android:text="100"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="4dp"
-                    android:textSize="14sp"
-                    android:paddingLeft="4dp"/>
-
-            </LinearLayout>
+                android:src="@drawable/ic_star_black_24dp"
+                android:paddingTop="5dp"/>
 
             <TextView
-                android:layout_alignParentRight="true"
+                android:id="@+id/starred_repo_star_number"
+                android:text="100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:textSize="14sp"
+                android:paddingLeft="4dp"
+                android:layout_toRightOf="@id/star"/>
+
+            <ImageView
+                android:id="@+id/starred_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_code_black_24dp"
+                android:paddingTop="6dp"
+                android:layout_toRightOf="@id/star"
+                android:paddingLeft="60dp"/>
+
+            <TextView
                 android:id="@+id/starred_repo_language"
                 android:text="Language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
-                android:textSize="14sp"/>
+                android:paddingLeft="4dp"
+                android:textSize="14sp"
+                android:layout_toRightOf="@id/starred_code" />
 
         </RelativeLayout>
 

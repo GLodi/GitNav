@@ -13,6 +13,7 @@ package giuliolodi.gitnav;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,9 +39,13 @@ public class StarredFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.starred_fragment, container, false);
+
+        // Get references
         recyclerView = (RecyclerView) v.findViewById(R.id.starred_recycler_view);
         progressBar = (ProgressBar) v.findViewById(R.id.starred_progress_bar);
+
         new getStarred().execute();
+
         return v;
     }
 

@@ -14,6 +14,7 @@ package giuliolodi.gitnav;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,6 +45,7 @@ public class RepoFragment extends Fragment {
         // Get reference to the RecyclerView and get the data
         recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
         progressBar = (ProgressBar) v.findViewById(R.id.repo_progress_bar);
+
         new getRepositories().execute();
 
         return v;

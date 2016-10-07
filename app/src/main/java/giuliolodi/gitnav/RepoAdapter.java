@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.vstechlab.easyfonts.EasyFonts;
@@ -31,6 +32,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
         TextView repo_list_name, repo_list_description, repo_list_language, repo_list_forked, repo_list_star_number;
+        ImageView repo_list_language_icon;
 
         public MyViewHolder(View view) {
             super(view);
@@ -39,6 +41,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             repo_list_language = (TextView) view.findViewById(R.id.repo_list_language);
             repo_list_forked = (TextView) view.findViewById(R.id.repo_list_forked);
             repo_list_star_number = (TextView) view.findViewById(R.id.repo_list_star_number);
+            repo_list_language_icon = (ImageView) view.findViewById(R.id.repo_code);
 
             // TODO: find the way to get fork info from repos
             repo_list_forked.setVisibility(View.GONE);
@@ -90,8 +93,10 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             holder.repo_list_description.setText("No description");
 
         // Set repo language
-        if (repo.getLanguage() == null)
+        if (repo.getLanguage() == null) {
             holder.repo_list_language.setVisibility(View.GONE);
+            holder.repo_list_language_icon.setVisibility(View.GONE);
+        }
         else
             holder.repo_list_language.setText(repo.getLanguage());
 
