@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package giuliolodi.navforgithub;
+package giuliolodi.gitnav;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Authorization auth = new Authorization();
             auth.setScopes(Arrays.asList("repo", "gist", "user"));
-            String description = "Nav for GitHub - " + Build.MANUFACTURER + " " + Build.MODEL;
+            String description = "GitNav - " + Build.MANUFACTURER + " " + Build.MODEL;
             auth.setNote(description);
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
