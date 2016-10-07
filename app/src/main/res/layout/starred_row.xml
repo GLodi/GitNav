@@ -34,18 +34,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/starred_repo_language"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Language"/>
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_star_black_24dp"
+                    android:paddingTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/starred_repo_star_number"
+                    android:text="100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:textSize="14sp"
+                    android:paddingLeft="4dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_alignParentRight="true"
+                android:id="@+id/starred_repo_language"
+                android:text="Language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

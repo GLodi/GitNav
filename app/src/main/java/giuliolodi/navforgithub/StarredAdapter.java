@@ -35,7 +35,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
-        TextView starred_name, starred_description, starred_language;
+        TextView starred_name, starred_description, starred_language, starred_stars;
         CircleImageView starred_repo_author_icon;
 
         public MyViewHolder(View view) {
@@ -48,10 +48,13 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_description = (TextView) view.findViewById(R.id.starred_repo_description);
             starred_repo_author_icon = (CircleImageView) view.findViewById(R.id.starred_repo_author_icon);
             starred_language = (TextView) view.findViewById(R.id.starred_repo_language);
+            starred_stars = (TextView) view.findViewById(R.id.starred_repo_star_number);
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            starred_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            starred_stars.setTypeface(EasyFonts.robotoRegular(view.getContext()));
 
             // Set colors and opacity of text
             starred_name.setTextColor(Color.parseColor("#000000"));
@@ -60,6 +63,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_description.setAlpha(0.54f);
             starred_language.setTextColor(Color.parseColor("#000000"));
             starred_language.setAlpha(0.54f);
+            starred_stars.setTextColor(Color.parseColor("#000000"));
+            starred_stars.setAlpha(0.54f);
         }
     }
 
@@ -80,17 +85,26 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         Context context = holder.starred_repo_author_icon.getContext();
         Repository repo = starredRepositoryList.get(position);
 
-        // Set owner profile pic, name and description
+        // Set starred repo owner profile pic
         Picasso.with(context).load(repo.getOwner().getAvatarUrl()).into(holder.starred_repo_author_icon);
+
+        // Set starred repo name
         holder.starred_name.setText(repo.getName());
+
+        // Set starred repo description
         if (repo.getDescription() != null && !repo.getDescription().equals(""))
             holder.starred_description.setText(repo.getDescription());
         else
             holder.starred_description.setText("No description");
+
+        // Set starred repo language
         if (repo.getLanguage() == null)
             holder.starred_language.setVisibility(View.GONE);
         else
             holder.starred_language.setText(repo.getLanguage());
+
+        // Set starred repo star number
+        holder.starred_stars.setText(Integer.toString(repo.getWatchers()));
     }
 
     @Override

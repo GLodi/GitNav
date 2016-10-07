@@ -24,6 +24,9 @@ import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.egit.github.core.service.StarService;
+import org.eclipse.egit.github.core.service.StargazerService;
+import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,8 +66,9 @@ public class RepoFragment extends Fragment {
             // Authenticate
             RepositoryService repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+
+            // Get the RepositoryList and sort it based on creation date
             try {
-                // Get the RepositoryList and sort it based on creation date
                 Map sort = new HashMap();
                 sort.put("sort", "created");
                 repositoryList = repositoryService.getRepositories(sort);
