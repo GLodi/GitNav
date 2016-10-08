@@ -18,6 +18,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -39,6 +41,7 @@ public class StarredFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.starred_fragment, container, false);
+        setHasOptionsMenu(true);
 
         // Get references
         recyclerView = (RecyclerView) v.findViewById(R.id.starred_recycler_view);
@@ -47,6 +50,12 @@ public class StarredFragment extends Fragment {
         new getStarred().execute();
 
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.sort_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     class getStarred extends AsyncTask<String, String, String> {
