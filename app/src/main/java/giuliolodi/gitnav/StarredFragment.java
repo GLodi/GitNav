@@ -10,9 +10,11 @@
 
 package giuliolodi.gitnav;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,9 +41,11 @@ public class StarredFragment extends Fragment {
     RecyclerView recyclerView;
     ProgressBar progressBar;
     StarredAdapter starredAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public Map FILTER_OPTION;
-    public boolean n = true;
+    public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+    public boolean HIDE_PROGRESS_BAR = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,11 +55,22 @@ public class StarredFragment extends Fragment {
         // Get references
         recyclerView = (RecyclerView) v.findViewById(R.id.starred_recycler_view);
         progressBar = (ProgressBar) v.findViewById(R.id.starred_progress_bar);
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.starred_refresh);
 
         // Create filter
         FILTER_OPTION = new HashMap();
 
         new getStarred().execute();
+
+        // Set swipe color and listener. For some reason access through R.color doesn't work
+        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#3F51B5"));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                HIDE_PROGRESS_BAR = false;
+                new getStarred().execute();
+            }
+        });
 
         return v;
     }
@@ -90,7 +105,8 @@ public class StarredFragment extends Fragment {
             super.onPreExecute();
 
             // Set progress bar visible
-            progressBar.setVisibility(View.VISIBLE);
+            if (HIDE_PROGRESS_BAR)
+                progressBar.setVisibility(View.VISIBLE);
 
             // Set recycler vies invisible
             recyclerView.setVisibility(View.INVISIBLE);
@@ -113,11 +129,16 @@ public class StarredFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            HIDE_PROGRESS_BAR = true;
+
             // Set progress bar invisible
             progressBar.setVisibility(View.GONE);
 
             // Set recycler view visible
             recyclerView.setVisibility(View.VISIBLE);
+
+            // Stop refresh circle
+            swipeRefreshLayout.setRefreshing(false);
 
             // Set adapter
             starredAdapter = new StarredAdapter(starredRepoList);
@@ -126,9 +147,9 @@ public class StarredFragment extends Fragment {
             PreCachingLayoutManager layoutManager = new PreCachingLayoutManager(getActivity());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             layoutManager.setExtraLayoutSpace(getContext().getResources().getDisplayMetrics().heightPixels);
-            if (n) {
+            if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-                n = false;
+                PREVENT_MULTPLE_SEPARATION_LINE = false;
             }
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -11,6 +11,7 @@
 package giuliolodi.gitnav;
 
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,9 +41,11 @@ public class RepoFragment extends Fragment {
     RepoAdapter repoAdapter;
     RecyclerView recyclerView;
     ProgressBar progressBar;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public Map FILTER_OPTION;
-    public boolean n = true;
+    public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+    public boolean HIDE_PROGRESS_BAR = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,12 +55,23 @@ public class RepoFragment extends Fragment {
         // Get reference to the RecyclerView and get the data
         recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
         progressBar = (ProgressBar) v.findViewById(R.id.repo_progress_bar);
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.repo_refresh);
 
         // Created filter and set to "created"
         FILTER_OPTION = new HashMap();
         FILTER_OPTION.put("sort", "created");
 
         new getRepositories().execute();
+
+        // Set swipe color and listener. For some reason access through R.color doesn't work
+        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#3F51B5"));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                HIDE_PROGRESS_BAR = false;
+                new getRepositories().execute();
+            }
+        });
 
         return v;
     }
@@ -102,7 +116,8 @@ public class RepoFragment extends Fragment {
             super.onPreExecute();
 
             // Set ProgressBar visible
-            progressBar.setVisibility(View.VISIBLE);
+            if (HIDE_PROGRESS_BAR)
+                progressBar.setVisibility(View.VISIBLE);
 
             // Set recycler view invisible
             recyclerView.setVisibility(View.INVISIBLE);
@@ -124,20 +139,25 @@ public class RepoFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            HIDE_PROGRESS_BAR = true;
+
             // Set ProgressBar invisible
             progressBar.setVisibility(View.GONE);
 
             // Set recycler view visible
             recyclerView.setVisibility(View.VISIBLE);
 
+            // Stop refresh circle
+            swipeRefreshLayout.setRefreshing(false);
+
             // Bind list to adapter
             repoAdapter = new RepoAdapter(repositoryList);
 
             // Set adapter on RecyclerView and notify it
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-            if (n) {
+            if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-                n = false;
+                PREVENT_MULTPLE_SEPARATION_LINE = false;
             }
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
