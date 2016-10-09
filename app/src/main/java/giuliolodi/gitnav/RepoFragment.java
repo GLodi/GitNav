@@ -19,6 +19,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -38,17 +41,59 @@ public class RepoFragment extends Fragment {
     RecyclerView recyclerView;
     ProgressBar progressBar;
 
+    public Map FILTER_OPTION;
+    public boolean n = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.repo_fragment, container, false);
+        setHasOptionsMenu(true);
 
         // Get reference to the RecyclerView and get the data
         recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
         progressBar = (ProgressBar) v.findViewById(R.id.repo_progress_bar);
 
+        // Created filter and set to "created"
+        FILTER_OPTION = new HashMap();
+        FILTER_OPTION.put("sort", "created");
+
         new getRepositories().execute();
 
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.repo_sort_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.repo_sort_created:
+                item.setChecked(true);
+                FILTER_OPTION.put("sort", "created");
+                new getRepositories().execute();
+                return true;
+            case R.id.repo_sort_updated:
+                item.setChecked(true);
+                FILTER_OPTION.put("sort", "updated");
+                new getRepositories().execute();
+                return true;
+            case R.id.repo_sort_pushed:
+                item.setChecked(true);
+                FILTER_OPTION.put("sort", "pushed");
+                new getRepositories().execute();
+                return true;
+            case R.id.repo_sort_alphabetical:
+                item.setChecked(true);
+                FILTER_OPTION.put("sort", "full_name");
+                new getRepositories().execute();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     class getRepositories extends AsyncTask<String, String, String> {
@@ -58,6 +103,9 @@ public class RepoFragment extends Fragment {
 
             // Set ProgressBar visible
             progressBar.setVisibility(View.VISIBLE);
+
+            // Set recycler view invisible
+            recyclerView.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -68,9 +116,7 @@ public class RepoFragment extends Fragment {
 
             // Get the RepositoryList and sort it based on creation date
             try {
-                Map sort = new HashMap();
-                sort.put("sort", "created");
-                repositoryList = repositoryService.getRepositories(sort);
+                repositoryList = repositoryService.getRepositories(FILTER_OPTION);
             } catch (IOException e) {e.printStackTrace();}
             return null;
         }
@@ -78,15 +124,21 @@ public class RepoFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            // Bind list to adapter
-            repoAdapter = new RepoAdapter(repositoryList);
-
             // Set ProgressBar invisible
             progressBar.setVisibility(View.GONE);
 
+            // Set recycler view visible
+            recyclerView.setVisibility(View.VISIBLE);
+
+            // Bind list to adapter
+            repoAdapter = new RepoAdapter(repositoryList);
+
             // Set adapter on RecyclerView and notify it
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+            if (n) {
+                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+                n = false;
+            }
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(repoAdapter);

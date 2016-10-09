@@ -23,25 +23,13 @@
             <group android:checkableBehavior="single">
 
                 <item
-                    android:id="@+id/sort_star_number"
-                    android:title="Star number" />
-
-                <item
-                    android:id="@+id/sort_newest"
-                    android:title="Newest"
+                    android:id="@+id/starred_sort_starred"
+                    android:title="Starred"
                     android:checked="true"/>
 
                 <item
-                    android:id="@+id/sort_oldest"
-                    android:title="Oldest" />
-
-                <item
-                    android:id="@+id/sort_a_z"
-                    android:title="A - Z" />
-
-                <item
-                    android:id="@+id/sort_z_a"
-                    android:title="Z - A" />
+                    android:id="@+id/starred_sort_updated"
+                    android:title="Updated" />
 
             </group>
 
