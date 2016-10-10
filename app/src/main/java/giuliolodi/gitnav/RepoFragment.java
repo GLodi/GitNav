@@ -49,13 +49,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RepoFragment extends Fragment {
 
     List<Repository> repositoryList;
     RepoAdapter repoAdapter;
-    RecyclerView recyclerView;
-    ProgressBar progressBar;
-    SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView (R.id.repo_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.repo_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.repo_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     public Map FILTER_OPTION;
     public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
@@ -66,10 +70,7 @@ public class RepoFragment extends Fragment {
         View v = inflater.inflate(R.layout.repo_fragment, container, false);
         setHasOptionsMenu(true);
 
-        // Get reference to the RecyclerView and get the data
-        recyclerView = (RecyclerView) v.findViewById(R.id.repo_recycler_view);
-        progressBar = (ProgressBar) v.findViewById(R.id.repo_progress_bar);
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.repo_refresh);
+        ButterKnife.bind(this, v);
 
         // Created filter and set to "created"
         FILTER_OPTION = new HashMap();

@@ -41,24 +41,28 @@ import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> {
 
     private List<Repository> repositoryList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        // Get reference of repo_row elements
-        TextView repo_list_name, repo_list_description, repo_list_language, repo_list_forked, repo_list_star_number, repo_list_date;
-        ImageView repo_list_language_icon;
+
+        @BindView(R.id.repo_list_name) TextView repo_list_name;
+        @BindView(R.id.repo_list_description) TextView repo_list_description;
+        @BindView(R.id.repo_list_language) TextView repo_list_language;
+        @BindView(R.id.repo_list_forked) TextView repo_list_forked;
+        @BindView(R.id.repo_list_star_number) TextView repo_list_star_number;
+        @BindView(R.id.repo_list_date) TextView repo_list_date;
+
+        @BindView(R.id.repo_code) ImageView repo_list_language_icon;
 
         public MyViewHolder(View view) {
             super(view);
-            repo_list_name = (TextView) view.findViewById(R.id.repo_list_name);
-            repo_list_description = (TextView) view.findViewById(R.id.repo_list_description);
-            repo_list_language = (TextView) view.findViewById(R.id.repo_list_language);
-            repo_list_forked = (TextView) view.findViewById(R.id.repo_list_forked);
-            repo_list_star_number = (TextView) view.findViewById(R.id.repo_list_star_number);
-            repo_list_language_icon = (ImageView) view.findViewById(R.id.repo_code);
-            repo_list_date = (TextView) view.findViewById(R.id.repo_list_date);
+
+            ButterKnife.bind(this, view);
 
             // Use easy fonts to set Typeface
             repo_list_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));

@@ -43,6 +43,8 @@ android {
     }
 }
 
+apply plugin: 'android-apt'
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -56,4 +58,5 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:1.6.0'
     compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
     compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }

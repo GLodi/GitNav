@@ -42,6 +42,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -50,24 +52,23 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
     private List<Repository> starredRepositoryList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        // Get reference of repo_row elements
-        TextView starred_name, starred_description, starred_language, starred_stars, starred_repo_date;
-        CircleImageView starred_repo_author_icon;
-        ImageView starred_language_icon;
+
+        @BindView(R.id.starred_repo_name) TextView starred_name;
+        @BindView(R.id.starred_repo_description) TextView starred_description;
+        @BindView(R.id.starred_repo_language) TextView starred_language;
+        @BindView(R.id.starred_repo_star_number) TextView starred_stars;
+        @BindView(R.id.starred_repo_date) TextView starred_repo_date;
+
+        @BindView(R.id.starred_repo_author_icon) CircleImageView starred_repo_author_icon;
+        @BindView(R.id.starred_code) ImageView starred_language_icon;
 
         public MyViewHolder(View view) {
             super(view);
 
+            ButterKnife.bind(this, view);
+
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-
-            starred_name = (TextView) view.findViewById(R.id.starred_repo_name);
-            starred_description = (TextView) view.findViewById(R.id.starred_repo_description);
-            starred_repo_author_icon = (CircleImageView) view.findViewById(R.id.starred_repo_author_icon);
-            starred_language = (TextView) view.findViewById(R.id.starred_repo_language);
-            starred_stars = (TextView) view.findViewById(R.id.starred_repo_star_number);
-            starred_language_icon = (ImageView) view.findViewById(R.id.starred_code);
-            starred_repo_date = (TextView) view.findViewById(R.id.starred_repo_date);
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));

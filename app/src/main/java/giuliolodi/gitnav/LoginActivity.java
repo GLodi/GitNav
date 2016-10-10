@@ -50,6 +50,10 @@ import org.eclipse.egit.github.core.service.UserService;
 import java.io.IOException;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class LoginActivity extends AppCompatActivity {
 
     public OAuthService oAuthService;
@@ -59,16 +63,18 @@ public class LoginActivity extends AppCompatActivity {
     public String inputUser;
     public String inputPass;
 
+    @BindView(R.id.input_user) EditText input_user;
+    @BindView(R.id.input_password) EditText input_password;
+    @BindView(R.id.btn_login) Button button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        ButterKnife.bind(this);
 
-        final EditText input_user = (EditText) findViewById(R.id.input_user);
-        final EditText input_password = (EditText) findViewById(R.id.input_password);
-        final Button button = (Button) findViewById(R.id.btn_login);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // If user is already logged in, Intent to MainActivity
         if (Constants.getAuthdValue(getApplicationContext())) {
