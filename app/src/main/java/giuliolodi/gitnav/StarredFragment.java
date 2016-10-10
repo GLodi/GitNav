@@ -63,7 +63,7 @@ public class StarredFragment extends Fragment {
         new getStarred().execute();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
-        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#3F51B5"));
+        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
