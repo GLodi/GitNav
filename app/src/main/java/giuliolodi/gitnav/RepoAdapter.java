@@ -22,7 +22,9 @@ import android.widget.TextView;
 import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import java.text.DateFormat;
 import java.util.List;
 
 public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> {
@@ -31,7 +33,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
-        TextView repo_list_name, repo_list_description, repo_list_language, repo_list_forked, repo_list_star_number;
+        TextView repo_list_name, repo_list_description, repo_list_language, repo_list_forked, repo_list_star_number, repo_list_date;
         ImageView repo_list_language_icon;
 
         public MyViewHolder(View view) {
@@ -42,6 +44,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             repo_list_forked = (TextView) view.findViewById(R.id.repo_list_forked);
             repo_list_star_number = (TextView) view.findViewById(R.id.repo_list_star_number);
             repo_list_language_icon = (ImageView) view.findViewById(R.id.repo_code);
+            repo_list_date = (TextView) view.findViewById(R.id.repo_list_date);
 
             // TODO: find the way to get fork info from repos
             repo_list_forked.setVisibility(View.GONE);
@@ -52,6 +55,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             repo_list_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             repo_list_forked.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             repo_list_star_number.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_list_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
 
             // Set colors and opacity of text
             repo_list_name.setTextColor(Color.parseColor("#000000"));
@@ -64,6 +68,8 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             repo_list_forked.setAlpha(0.54f);
             repo_list_star_number.setTextColor(Color.parseColor("#000000"));
             repo_list_star_number.setAlpha(0.54f);
+            repo_list_date.setTextColor(Color.parseColor("#000000"));
+            repo_list_date.setAlpha(0.54f);
         }
     }
 
@@ -80,6 +86,9 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        // Create PrettyTime object
+        PrettyTime p = new PrettyTime();
+
         // Set elements on each row
         Repository repo = repositoryList.get(position);
 
@@ -102,6 +111,9 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
 
         // Set star repo number
         holder.repo_list_star_number.setText(Integer.toString(repo.getWatchers()));
+
+        // Set repo date
+        holder.repo_list_date.setText(p.format(repo.getCreatedAt()));
     }
 
     @Override

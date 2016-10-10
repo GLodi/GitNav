@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // Get reference of repo_row elements
-        TextView starred_name, starred_description, starred_language, starred_stars;
+        TextView starred_name, starred_description, starred_language, starred_stars, starred_repo_date;
         CircleImageView starred_repo_author_icon;
         ImageView starred_language_icon;
 
@@ -52,12 +53,15 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_language = (TextView) view.findViewById(R.id.starred_repo_language);
             starred_stars = (TextView) view.findViewById(R.id.starred_repo_star_number);
             starred_language_icon = (ImageView) view.findViewById(R.id.starred_code);
+            starred_repo_date = (TextView) view.findViewById(R.id.starred_repo_date);
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_stars.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            starred_repo_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+
 
             // Set colors and opacity of text
             starred_name.setTextColor(Color.parseColor("#000000"));
@@ -68,6 +72,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_language.setAlpha(0.54f);
             starred_stars.setTextColor(Color.parseColor("#000000"));
             starred_stars.setAlpha(0.54f);
+            starred_repo_date.setTextColor(Color.parseColor("#000000"));
+            starred_repo_date.setAlpha(0.54f);
         }
     }
 
@@ -84,6 +90,9 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(StarredAdapter.MyViewHolder holder, int position) {
+        // Create PrettyTime object
+        PrettyTime p = new PrettyTime();
+
         // Set elements on each row
         Context context = holder.starred_repo_author_icon.getContext();
         Repository repo = starredRepositoryList.get(position);
@@ -111,6 +120,9 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
         // Set starred repo star number
         holder.starred_stars.setText(Integer.toString(repo.getWatchers()));
+
+        // Set starred repo date
+        holder.starred_repo_date.setText(p.format(repo.getCreatedAt()));
     }
 
     @Override

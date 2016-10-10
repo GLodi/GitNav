@@ -40,4 +40,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
     compile 'com.squareup.okhttp:okhttp:1.6.0'
+    compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
 }

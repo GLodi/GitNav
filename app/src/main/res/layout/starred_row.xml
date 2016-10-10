@@ -13,6 +13,14 @@
         android:layout_width="40dp"
         android:layout_height="40dp" />
 
+    <TextView
+        android:id="@+id/starred_repo_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Date"
+        android:textSize="14sp"/>
+
     <LinearLayout
         android:layout_toRightOf="@id/starred_repo_author_icon"
         android:layout_width="wrap_content"
