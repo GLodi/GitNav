@@ -131,6 +131,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         // Set repo date
         holder.repo_list_date.setText(p.format(repo.getCreatedAt()));
 
+        // Check if is forked, then prints parent's info
         if (repo.isFork() && repo.getParent() != null) {
             parent = repo.getParent();
             holder.repo_list_forked.setText(parent.getName());

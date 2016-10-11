@@ -31,7 +31,7 @@ import android.support.v7.widget.RecyclerView;
 
 public class PreCachingLayoutManager extends LinearLayoutManager{
 
-    private static final int DEFAULT_EXTRA_LAYOUT_SPACE = 600;
+    private static final int DEFAULT_EXTRA_LAYOUT_SPACE = 10;
     private int extraLayoutSpace = -1;
     private Context context;
 

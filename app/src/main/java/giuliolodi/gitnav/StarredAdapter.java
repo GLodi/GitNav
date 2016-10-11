@@ -25,6 +25,7 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.StrictMode;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -61,6 +63,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
         @BindView(R.id.starred_repo_author_icon) CircleImageView starred_repo_author_icon;
         @BindView(R.id.starred_code) ImageView starred_language_icon;
+        @BindView(R.id.l) LinearLayout listView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -76,7 +79,6 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_stars.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_repo_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-
 
             // Set colors and opacity of text
             starred_name.setTextColor(Color.parseColor("#000000"));
@@ -113,7 +115,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         Repository repo = starredRepositoryList.get(position);
 
         // Set starred repo owner profile pic
-        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).into(holder.starred_repo_author_icon);
+        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.starred_repo_author_icon);
 
         // Set starred repo name
         holder.starred_name.setText(repo.getName());
