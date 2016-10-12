@@ -35,7 +35,7 @@ public class RepositoryFragment extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.repository_fragment);
 
         ButterKnife.bind(this);
     }

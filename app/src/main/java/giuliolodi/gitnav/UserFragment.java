@@ -24,9 +24,87 @@
 
 package giuliolodi.gitnav;
 
-/**
- * Created by giulio on 11/10/2016.
- */
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class UserFragment {
+import com.gigamole.navigationtabstrip.NavigationTabStrip;
+import com.vstechlab.easyfonts.EasyFonts;
+
+import butterknife.ButterKnife;
+
+public class UserFragment extends Fragment{
+
+    private ViewPager mViewPager;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.user_fragment, container, false);
+
+        ButterKnife.bind(this, v);
+
+        mViewPager = (ViewPager) v.findViewById(R.id.vp);
+
+        mViewPager.setAdapter(new PagerAdapter() {
+            @Override
+            public int getCount() {
+                return 3;
+            }
+
+            @Override
+            public boolean isViewFromObject(final View view, final Object object) {
+                return view.equals(object);
+            }
+
+            @Override
+            public void destroyItem(final View container, final int position, final Object object) {
+                ((ViewPager) container).removeView((View) object);
+            }
+
+            @Override
+            public Object instantiateItem(final ViewGroup container, final int position) {
+                final View view = new View(getContext());
+                container.addView(view);
+                return view;
+            }
+        });
+
+        final NavigationTabStrip navigationTabStrip = (NavigationTabStrip) v.findViewById(R.id.nts_top);
+        navigationTabStrip.setTabIndex(0, true);
+        navigationTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        navigationTabStrip.setOnTabStripSelectedIndexListener(new NavigationTabStrip.OnTabStripSelectedIndexListener() {
+            @Override
+            public void onStartTabSelected(String title, int index) {
+
+            }
+
+            @Override
+            public void onEndTabSelected(String title, int index) {
+
+            }
+        });
+
+        return v;
+    }
+
 }

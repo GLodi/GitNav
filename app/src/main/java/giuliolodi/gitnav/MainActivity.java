@@ -137,6 +137,10 @@ public class MainActivity extends AppCompatActivity
                 toolbar.setTitle("Starred");
                 break;
             case R.id.nav_manage:
+                UserFragment userFragment = new UserFragment();
+                fragmentTransaction.replace(R.id.frame, userFragment);
+                fragmentTransaction.commit();
+                toolbar.setTitle("UserFragment");
                 break;
             case R.id.nav_send:
                 break;
