@@ -26,8 +26,11 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.StrictMode;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,12 +49,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHolder>{
 
     private List<Repository> starredRepositoryList;
+
+    private FragmentManager fm;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -94,8 +100,9 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         }
     }
 
-    public StarredAdapter(List<Repository> starredRepositoryList) {
+    public StarredAdapter(List<Repository> starredRepositoryList, FragmentManager fm) {
         this.starredRepositoryList = starredRepositoryList;
+        this.fm = fm;
     }
 
     @Override
@@ -111,8 +118,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         PrettyTime p = new PrettyTime();
 
         // Set elements on each row
-        Context context = holder.starred_repo_author_icon.getContext();
-        Repository repo = starredRepositoryList.get(position);
+        final Context context = holder.starred_repo_author_icon.getContext();
+        final Repository repo = starredRepositoryList.get(position);
 
         // Set starred repo owner profile pic
         Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.starred_repo_author_icon);
@@ -140,6 +147,18 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
         // Set starred repo date
         holder.starred_repo_date.setText(p.format(repo.getCreatedAt()));
+
+        // Set user icon click listener. Opens UserFragment
+        holder.starred_repo_author_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserFragment userFragment = new UserFragment();
+                userFragment.setUser(repo.getOwner());
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.replace(R.id.frame, userFragment);
+                fragmentTransaction.commit();
+            }
+        });
     }
 
     @Override

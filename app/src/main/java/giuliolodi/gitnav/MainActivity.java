@@ -129,19 +129,16 @@ public class MainActivity extends AppCompatActivity
                 RepoFragment repoFragment = new RepoFragment();
                 fragmentTransaction.replace(R.id.frame, repoFragment);
                 fragmentTransaction.commit();
-                toolbar.setTitle("Repositories");
                 break;
             case R.id.nav_gallery:
                 StarredFragment starredFragment = new StarredFragment();
                 fragmentTransaction.replace(R.id.frame, starredFragment);
                 fragmentTransaction.commit();
-                toolbar.setTitle("Starred");
                 break;
             case R.id.nav_manage:
                 UserFragment userFragment = new UserFragment();
                 fragmentTransaction.replace(R.id.frame, userFragment);
                 fragmentTransaction.commit();
-                toolbar.setTitle("UserFragment");
                 break;
             case R.id.nav_send:
                 break;

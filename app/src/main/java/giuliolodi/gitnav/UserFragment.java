@@ -24,29 +24,50 @@
 
 package giuliolodi.gitnav;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.gigamole.navigationtabstrip.NavigationTabStrip;
+import com.squareup.picasso.Picasso;
 
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.service.UserService;
+
+import java.io.IOException;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserFragment extends Fragment{
+
+    @BindView(R.id.user_fragment_name) TextView username;
+    @BindView(R.id.user_fragment_description) TextView user_bio;
+    @BindView(R.id.user_fragment_image) CircleImageView user_image;
+    @BindView(R.id.nts_top) NavigationTabStrip navigationTabStrip;
+
+    public User user;
 
     private ViewPager mViewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.user_fragment, container, false);
-
         ButterKnife.bind(this, v);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
         mViewPager = (ViewPager) v.findViewById(R.id.vp);
+
+        new getUser().execute();
 
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
@@ -72,7 +93,6 @@ public class UserFragment extends Fragment{
             }
         });
 
-        final NavigationTabStrip navigationTabStrip = (NavigationTabStrip) v.findViewById(R.id.nts_top);
         navigationTabStrip.setTabIndex(0, true);
         navigationTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -103,6 +123,31 @@ public class UserFragment extends Fragment{
         });
 
         return v;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    class getUser extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            UserService userService = new UserService();
+            userService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+            try {
+                user = userService.getUser(user.getLogin());
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Picasso.with(getContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);
+            username.setText(user.getName());
+            user_bio.setText(user.getBio());
+        }
     }
 
 }

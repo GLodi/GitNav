@@ -29,9 +29,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,12 +76,16 @@ public class StarredFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.starred_fragment, container, false);
         setHasOptionsMenu(true);
-
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Starred");
         ButterKnife.bind(this, v);
 
         // Create filter
         FILTER_OPTION = new HashMap();
 
+        /*
+            Check if connection is available and gets the data,
+            otherwise user is notified
+         */
         if (Constants.isNetworkAvailable(getContext()))
             new getStarred().execute();
         else {
@@ -97,7 +104,8 @@ public class StarredFragment extends Fragment {
                 else {
                     Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
                     t.show();
-                }            }
+                }
+            }
         });
 
         return v;
@@ -175,8 +183,11 @@ public class StarredFragment extends Fragment {
             // Stop refresh circle
             swipeRefreshLayout.setRefreshing(false);
 
-            // Set adapter
-            starredAdapter = new StarredAdapter(starredRepoList);
+            /*
+                Set adapter. Pass FragmentManager as parameter because
+                the adapter needs it to open a UserFragment when a profile icon is clicked.
+             */
+            starredAdapter = new StarredAdapter(starredRepoList, getFragmentManager());
 
             // Set adapter on RecyclerView and notify it
             PreCachingLayoutManager layoutManager = new PreCachingLayoutManager(getActivity());
