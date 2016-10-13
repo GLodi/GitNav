@@ -40,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -60,6 +62,8 @@ public class RepoFragment extends Fragment {
     @BindView (R.id.repo_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.repo_progress_bar) ProgressBar progressBar;
     @BindView(R.id.repo_refresh) SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindString(R.string.network_error) String network_error;
 
     public Map FILTER_OPTION;
     public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
@@ -76,7 +80,12 @@ public class RepoFragment extends Fragment {
         FILTER_OPTION = new HashMap();
         FILTER_OPTION.put("sort", "created");
 
-        new getRepositories().execute();
+        if (Constants.isNetworkAvailable(getContext()))
+            new getRepositories().execute();
+        else {
+            Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
+            t.show();
+        }
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
@@ -84,7 +93,12 @@ public class RepoFragment extends Fragment {
             @Override
             public void onRefresh() {
                 HIDE_PROGRESS_BAR = false;
-                new getRepositories().execute();
+                if (Constants.isNetworkAvailable(getContext()))
+                    new getRepositories().execute();
+                else {
+                    Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
+                    t.show();
+                }
             }
         });
 
@@ -99,29 +113,36 @@ public class RepoFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.repo_sort_created:
-                item.setChecked(true);
-                FILTER_OPTION.put("sort", "created");
-                new getRepositories().execute();
-                return true;
-            case R.id.repo_sort_updated:
-                item.setChecked(true);
-                FILTER_OPTION.put("sort", "updated");
-                new getRepositories().execute();
-                return true;
-            case R.id.repo_sort_pushed:
-                item.setChecked(true);
-                FILTER_OPTION.put("sort", "pushed");
-                new getRepositories().execute();
-                return true;
-            case R.id.repo_sort_alphabetical:
-                item.setChecked(true);
-                FILTER_OPTION.put("sort", "full_name");
-                new getRepositories().execute();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (Constants.isNetworkAvailable(getContext())) {
+            switch (item.getItemId()) {
+                case R.id.repo_sort_created:
+                    item.setChecked(true);
+                    FILTER_OPTION.put("sort", "created");
+                    new getRepositories().execute();
+                    return true;
+                case R.id.repo_sort_updated:
+                    item.setChecked(true);
+                    FILTER_OPTION.put("sort", "updated");
+                    new getRepositories().execute();
+                    return true;
+                case R.id.repo_sort_pushed:
+                    item.setChecked(true);
+                    FILTER_OPTION.put("sort", "pushed");
+                    new getRepositories().execute();
+                    return true;
+                case R.id.repo_sort_alphabetical:
+                    item.setChecked(true);
+                    FILTER_OPTION.put("sort", "full_name");
+                    new getRepositories().execute();
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+        else {
+            Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
+            t.show();
+            return super.onOptionsItemSelected(item);
         }
     }
 

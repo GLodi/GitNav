@@ -25,9 +25,11 @@
 package giuliolodi.gitnav;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +52,7 @@ import org.eclipse.egit.github.core.service.UserService;
 import java.io.IOException;
 import java.util.Arrays;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.input_user) EditText input_user;
     @BindView(R.id.input_password) EditText input_password;
     @BindView(R.id.btn_login) Button button;
+    @BindString(R.string.network_error) String network_error;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,12 @@ public class LoginActivity extends AppCompatActivity {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     inputUser = input_user.getText().toString();
                     inputPass = input_password.getText().toString();
-                    new newAccess().execute();
+                    if (Constants.isNetworkAvailable(getApplicationContext()))
+                        new newAccess().execute();
+                    else {
+                        Toast t = Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG);
+                        t.show();
+                    }
                     return true;
                 }
                 return false;
@@ -100,7 +109,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 inputUser = input_user.getText().toString();
                 inputPass = input_password.getText().toString();
-                new newAccess().execute();
+                if (Constants.isNetworkAvailable(getApplicationContext()))
+                    new newAccess().execute();
+                else {
+                    Toast t = Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG);
+                    t.show();
+                }
             }
         });
 

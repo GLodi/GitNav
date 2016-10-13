@@ -39,5 +39,6 @@
     <string name="email_key">giuliolodi.EMAIL_KEY</string>
 
     <string name="forked_from">Forked from: </string>
+    <string name="network_error">Network access unavailable</string>
 
 </resources>

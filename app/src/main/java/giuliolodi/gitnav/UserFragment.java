@@ -24,7 +24,6 @@
 
 package giuliolodi.gitnav;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -34,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gigamole.navigationtabstrip.NavigationTabStrip;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import butterknife.ButterKnife;
 
