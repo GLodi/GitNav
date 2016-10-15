@@ -69,7 +69,7 @@ public class StarredFragment extends Fragment {
     @BindString(R.string.network_error) String network_error;
 
     public Map FILTER_OPTION;
-    public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+    public static boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
     public boolean HIDE_PROGRESS_BAR = true;
 
     @Override
@@ -197,6 +197,7 @@ public class StarredFragment extends Fragment {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
                 PREVENT_MULTPLE_SEPARATION_LINE = false;
             }
+            recyclerView.getItemAnimator().isRunning();
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(starredAdapter);

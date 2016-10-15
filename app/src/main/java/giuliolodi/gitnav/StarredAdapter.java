@@ -155,8 +155,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
                 UserFragment userFragment = new UserFragment();
                 userFragment.setUser(repo.getOwner());
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.replace(R.id.frame, userFragment);
-                fragmentTransaction.commit();
+                fragmentTransaction.replace(R.id.frame, userFragment).addToBackStack("tag").commit();
             }
         });
     }

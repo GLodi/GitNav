@@ -27,10 +27,10 @@ package giuliolodi.gitnav;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +66,9 @@ public class UserFragment extends Fragment{
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
         mViewPager = (ViewPager) v.findViewById(R.id.vp);
+
+        // Make sure line divider in StarredFragment appears
+        StarredFragment.PREVENT_MULTPLE_SEPARATION_LINE = true;
 
         new getUser().execute();
 
@@ -147,6 +150,8 @@ public class UserFragment extends Fragment{
             Picasso.with(getContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);
             username.setText(user.getName());
             user_bio.setText(user.getBio());
+            if (user.getBio() == null || user.getBio().equals(""))
+                user_bio.setVisibility(View.GONE);
         }
     }
 
