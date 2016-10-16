@@ -84,10 +84,8 @@ public class RepoFragment extends Fragment {
 
         if (Constants.isNetworkAvailable(getContext()))
             new getRepositories().execute();
-        else {
-            Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
-            t.show();
-        }
+        else
+            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
@@ -97,10 +95,8 @@ public class RepoFragment extends Fragment {
                 HIDE_PROGRESS_BAR = false;
                 if (Constants.isNetworkAvailable(getContext()))
                     new getRepositories().execute();
-                else {
-                    Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
-                    t.show();
-                }
+                else
+                    Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -142,8 +138,7 @@ public class RepoFragment extends Fragment {
             }
         }
         else {
-            Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
-            t.show();
+            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             return super.onOptionsItemSelected(item);
         }
     }
@@ -160,7 +155,6 @@ public class RepoFragment extends Fragment {
             // Set recycler view invisible
             recyclerView.setVisibility(View.INVISIBLE);
         }
-
         @Override
         protected String doInBackground(String... strings) {
             // Authenticate

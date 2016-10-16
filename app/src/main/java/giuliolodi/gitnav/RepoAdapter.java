@@ -71,20 +71,6 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             repo_list_forked.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             repo_list_star_number.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             repo_list_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-
-            // Set colors and opacity of text
-            repo_list_name.setTextColor(Color.parseColor("#000000"));
-            repo_list_name.setAlpha(0.87f);
-            repo_list_description.setTextColor(Color.parseColor("#000000"));
-            repo_list_description.setAlpha(0.54f);
-            repo_list_language.setTextColor(Color.parseColor("#000000"));
-            repo_list_language.setAlpha(0.54f);
-            repo_list_forked.setTextColor(Color.parseColor("#000000"));
-            repo_list_forked.setAlpha(0.54f);
-            repo_list_star_number.setTextColor(Color.parseColor("#000000"));
-            repo_list_star_number.setAlpha(0.54f);
-            repo_list_date.setTextColor(Color.parseColor("#000000"));
-            repo_list_date.setAlpha(0.54f);
         }
     }
 

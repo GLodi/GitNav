@@ -85,18 +85,6 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
             starred_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_stars.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             starred_repo_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-
-            // Set colors and opacity of text
-            starred_name.setTextColor(Color.parseColor("#000000"));
-            starred_name.setAlpha(0.87f);
-            starred_description.setTextColor(Color.parseColor("#000000"));
-            starred_description.setAlpha(0.54f);
-            starred_language.setTextColor(Color.parseColor("#000000"));
-            starred_language.setAlpha(0.54f);
-            starred_stars.setTextColor(Color.parseColor("#000000"));
-            starred_stars.setAlpha(0.54f);
-            starred_repo_date.setTextColor(Color.parseColor("#000000"));
-            starred_repo_date.setAlpha(0.54f);
         }
     }
 

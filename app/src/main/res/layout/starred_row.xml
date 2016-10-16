@@ -50,14 +50,18 @@
             android:textSize="16sp"
             android:id="@+id/starred_repo_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:alpha="0.87"/>
 
         <TextView
             android:id="@+id/starred_repo_description"
             android:textSize="14sp"
             android:text="Description"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:alpha="0.54"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -78,7 +82,9 @@
                 android:paddingTop="4dp"
                 android:textSize="14sp"
                 android:paddingLeft="4dp"
-                android:layout_toRightOf="@id/star"/>
+                android:layout_toRightOf="@id/star"
+                android:textColor="#000000"
+                android:alpha="0.54"/>
 
             <ImageView
                 android:id="@+id/starred_code"
@@ -97,7 +103,9 @@
                 android:paddingTop="4dp"
                 android:paddingLeft="4dp"
                 android:textSize="14sp"
-                android:layout_toRightOf="@id/starred_code" />
+                android:layout_toRightOf="@id/starred_code"
+                android:textColor="#000000"
+                android:alpha="0.54"/>
 
             <TextView
                 android:id="@+id/starred_repo_date"
@@ -106,7 +114,9 @@
                 android:layout_alignParentRight="true"
                 android:text="Date"
                 android:textSize="14sp"
-                android:paddingTop="4dp"/>
+                android:paddingTop="4dp"
+                android:textColor="#000000"
+                android:alpha="0.54"/>
 
         </RelativeLayout>
 

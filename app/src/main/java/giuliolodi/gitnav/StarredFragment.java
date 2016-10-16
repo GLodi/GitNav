@@ -88,10 +88,8 @@ public class StarredFragment extends Fragment {
          */
         if (Constants.isNetworkAvailable(getContext()))
             new getStarred().execute();
-        else {
-            Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
-            t.show();
-        }
+        else
+            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
@@ -101,10 +99,8 @@ public class StarredFragment extends Fragment {
                 HIDE_PROGRESS_BAR = false;
                 if (Constants.isNetworkAvailable(getContext()))
                     new getStarred().execute();
-                else {
-                    Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
-                    t.show();
-                }
+                else
+                    Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -135,11 +131,9 @@ public class StarredFragment extends Fragment {
                     return super.onOptionsItemSelected(item);
             }
         }
-        else {
-            Toast t = Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG);
-            t.show();
+        else
+            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             return super.onOptionsItemSelected(item);
-        }
     }
 
     class getStarred extends AsyncTask<String, String, String> {
@@ -167,7 +161,6 @@ public class StarredFragment extends Fragment {
 
             return null;
         }
-
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);

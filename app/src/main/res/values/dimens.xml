@@ -32,4 +32,9 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="two_line_item_height">72dp</dimen>
+
+    <dimen name="user_frag_top">24dp</dimen>
+    <dimen name="user_frag_left">24dp</dimen>
+    <dimen name="user_frag_right">16dp</dimen>
+    <dimen name="user_frag_bottom">16dp</dimen>
 </resources>

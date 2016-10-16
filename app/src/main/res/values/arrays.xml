@@ -26,9 +26,9 @@
 <resources>
 
     <string-array name="titles">
-        <item>Nav</item>
-        <item>Tab</item>
-        <item>Strip</item>
+        <item>Repositories</item>
+        <item>Followers</item>
+        <item>Following</item>
     </string-array>
 
 </resources>
