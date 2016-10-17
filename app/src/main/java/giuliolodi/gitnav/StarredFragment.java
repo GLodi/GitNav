@@ -97,8 +97,10 @@ public class StarredFragment extends Fragment {
             @Override
             public void onRefresh() {
                 HIDE_PROGRESS_BAR = false;
-                if (Constants.isNetworkAvailable(getContext()))
+                if (Constants.isNetworkAvailable(getContext())) {
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getStarred().execute();
+                }
                 else
                     Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             }
@@ -120,11 +122,13 @@ public class StarredFragment extends Fragment {
                 case R.id.starred_sort_starred:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "created");
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getStarred().execute();
                     return true;
                 case R.id.starred_sort_updated:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "updated");
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getStarred().execute();
                     return true;
                 default:
@@ -188,8 +192,8 @@ public class StarredFragment extends Fragment {
             layoutManager.setExtraLayoutSpace(getContext().getResources().getDisplayMetrics().heightPixels);
             if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-                PREVENT_MULTPLE_SEPARATION_LINE = false;
             }
+            PREVENT_MULTPLE_SEPARATION_LINE = true;
             recyclerView.getItemAnimator().isRunning();
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());

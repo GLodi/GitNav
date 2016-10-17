@@ -116,21 +116,25 @@ public class RepoFragment extends Fragment {
                 case R.id.repo_sort_created:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "created");
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getRepositories().execute();
                     return true;
                 case R.id.repo_sort_updated:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "updated");
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getRepositories().execute();
                     return true;
                 case R.id.repo_sort_pushed:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "pushed");
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getRepositories().execute();
                     return true;
                 case R.id.repo_sort_alphabetical:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "full_name");
+                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     new getRepositories().execute();
                     return true;
                 default:
@@ -189,8 +193,8 @@ public class RepoFragment extends Fragment {
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
             if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-                PREVENT_MULTPLE_SEPARATION_LINE = false;
             }
+            PREVENT_MULTPLE_SEPARATION_LINE = true;
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(repoAdapter);

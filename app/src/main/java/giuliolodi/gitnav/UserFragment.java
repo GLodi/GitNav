@@ -26,6 +26,7 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -85,6 +86,7 @@ public class UserFragment extends Fragment{
     private Context context;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
+    private List<Integer> views;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,10 +96,12 @@ public class UserFragment extends Fragment{
 
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        mViewPager = (ViewPager) v.findViewById(R.id.vp);
+        views = new ArrayList<>();
+        views.add(R.layout.user_fragment_repos);
+        views.add(R.layout.user_fragment_followers);
+        views.add(R.layout.user_fragment_following);
 
-        // Make sure line divider in StarredFragment appears
-        StarredFragment.PREVENT_MULTPLE_SEPARATION_LINE = true;
+        mViewPager = (ViewPager) v.findViewById(R.id.vp);
 
         username.setTypeface(EasyFonts.robotoRegular(getContext()));
         user_bio.setTypeface(EasyFonts.robotoRegular(getContext()));
@@ -126,9 +130,10 @@ public class UserFragment extends Fragment{
 
             @Override
             public Object instantiateItem(final ViewGroup container, final int position) {
-                final View view = new View(getContext());
-                container.addView(view);
-                return view;
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                ViewGroup layout = (ViewGroup) inflater.inflate(views.get(position), container, false);
+                container.addView(layout);
+                return layout;
             }
         });
 
@@ -151,7 +156,6 @@ public class UserFragment extends Fragment{
                 colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
                 colorTransitionPagerTitleView.setSelectedColor(Color.parseColor("#448AFF"));
                 colorTransitionPagerTitleView.setText(mTitleDataList.get(index));
-                colorTransitionPagerTitleView.setLines(2);
                 colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -166,7 +170,6 @@ public class UserFragment extends Fragment{
                 LinePagerIndicator indicator = new LinePagerIndicator(context);
                 indicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);
                 indicator.setStartInterpolator(new AccelerateInterpolator());
-                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
                 indicator.setColors(Color.parseColor("#448AFF"));
                 return indicator;
             }
