@@ -24,6 +24,7 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -67,6 +68,8 @@ public class UserFragment extends Fragment{
     public User user;
 
     private ViewPager mViewPager;
+
+    private Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -147,6 +150,12 @@ public class UserFragment extends Fragment{
         this.user = user;
     }
 
+    public void setAuthdUser(Context context) {
+        this.context = context;
+        new getAuthdUser().execute();
+    }
+
+    // Get User object after setUser(User user) is called
     class getUser extends AsyncTask<String,String,String> {
         @Override
         protected void onPreExecute() {
@@ -189,6 +198,21 @@ public class UserFragment extends Fragment{
             // Make progress bar invisible and layout visible
             progressBar.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // AsyncTask for authenticated user. Used when user clicks on its own picture in nav drawer
+    class getAuthdUser extends AsyncTask<String,User,User> {
+        @Override
+        protected User doInBackground(String... params) {
+            User authdUser;
+            UserService userService = new UserService();
+            userService.getClient().setOAuth2Token(Constants.getToken(context));
+            try {
+                authdUser = userService.getUser();
+                setUser(authdUser);
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
         }
     }
 

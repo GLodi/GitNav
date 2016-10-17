@@ -35,6 +35,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <RelativeLayout
+        android:id="@+id/nav_click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

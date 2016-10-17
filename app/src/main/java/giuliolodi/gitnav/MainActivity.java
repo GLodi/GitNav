@@ -26,6 +26,7 @@ package giuliolodi.gitnav;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -35,6 +36,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindString;
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
 
+    @BindString(R.string.network_error) String network_error;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,9 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -80,6 +87,20 @@ public class MainActivity extends AppCompatActivity
                 .setDirectoryName("images")
                 .load();
         image_view.setImageBitmap(thumbnail);
+
+        // Set nav drawer profile pic onClickListener
+        RelativeLayout nav_click = (RelativeLayout) hView.findViewById(R.id.nav_click);
+        nav_click.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserFragment userFragment = new UserFragment();
+                userFragment.setAuthdUser(getApplicationContext());
+                android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frame, userFragment);
+                fragmentTransaction.commit();
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
 
         // Set main (event) fragment
         EventFragment eventFragment = new EventFragment();
