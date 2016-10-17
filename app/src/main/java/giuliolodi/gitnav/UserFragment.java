@@ -25,8 +25,11 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -66,16 +69,18 @@ public class UserFragment extends Fragment{
     @BindString(R.string.network_error) String network_error;
 
     public User user;
-
     private ViewPager mViewPager;
-
     private Context context;
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.user_fragment, container, false);
         ButterKnife.bind(this, v);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
+
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         mViewPager = (ViewPager) v.findViewById(R.id.vp);
 
@@ -152,7 +157,10 @@ public class UserFragment extends Fragment{
 
     public void setAuthdUser(Context context) {
         this.context = context;
-        new getAuthdUser().execute();
+        if (Constants.isNetworkAvailable(context))
+            new getAuthdUser().execute();
+        else
+            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
     }
 
     // Get User object after setUser(User user) is called
@@ -201,10 +209,14 @@ public class UserFragment extends Fragment{
         }
     }
 
-    // AsyncTask for authenticated user. Used when user clicks on its own picture in nav drawer
-    class getAuthdUser extends AsyncTask<String,User,User> {
+    /*
+        AsyncTask for authenticated user. Used when user clicks on its own picture in nav drawer.
+        After getting user info, checks if retrieved info equals what is stored in SharedPreferences.
+        If that's not the case it updates the info.
+     */
+    class getAuthdUser extends AsyncTask<String,String,String> {
         @Override
-        protected User doInBackground(String... params) {
+        protected String doInBackground(String... params) {
             User authdUser;
             UserService userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(context));
@@ -212,6 +224,32 @@ public class UserFragment extends Fragment{
                 authdUser = userService.getUser();
                 setUser(authdUser);
             } catch (IOException e) {e.printStackTrace();}
+
+            editor = sp.edit();
+            if (user.getName() != null && !user.getName().equals("") && !Constants.getFullName(context).equals(user.getName())) {
+                editor.putString((Constants.getFullNameKey(context)), user.getName());
+            }
+            else if (user.getLogin() != null && !user.getLogin().equals("") && !Constants.getUsername(context).equals(user.getLogin())) {
+                editor.putString((Constants.getUserKey(context)), user.getName());
+            }
+            else if (user.getEmail() != null && !user.getEmail().equals("") && !Constants.getEmail(context).equals(user.getEmail())) {
+                editor.putString((Constants.getEmailKey(context)), user.getEmail());
+            }
+            editor.commit();
+            Bitmap thumbnail = new ImageSaver(context)
+                    .setFileName("thumbnail.png")
+                    .setDirectoryName("images")
+                    .load();
+            try {
+                Bitmap profile_picture = Picasso.with(context).load(user.getAvatarUrl()).get();
+                if (!thumbnail.sameAs(profile_picture)) {
+                    new ImageSaver(context)
+                            .setFileName("thumbnail.png")
+                            .setDirectoryName("images")
+                            .save(profile_picture);
+                }
+            } catch (IOException e) {e.printStackTrace();}
+
             return null;
         }
     }
