@@ -103,20 +103,21 @@
 
                 </RelativeLayout>
 
-                <com.gigamole.navigationtabstrip.NavigationTabStrip
-                    android:id="@+id/nts_top"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_gravity="center"
-                    app:nts_active_color="@color/colorAccent"
-                    app:nts_color="@color/colorAccent"
-                    app:nts_corners_radius="1dp"
-                    app:nts_inactive_color="#ff1a1e23"
-                    app:nts_size="15sp"
-                    app:nts_titles="@array/titles"
-                    app:nts_weight="3dp"
-                    android:background="@color/cardview_light_background"
-                    android:layout_below="@id/rl"/>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl"
+                    android:orientation="vertical">
+
+                    <net.lucode.hackware.magicindicator.MagicIndicator
+                        android:id="@+id/magic_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="56dp"
+                        android:layout_gravity="center_horizontal"/>
+
+                </LinearLayout>
+
+
 
             </RelativeLayout>
 

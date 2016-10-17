@@ -27,6 +27,7 @@ package giuliolodi.gitnav;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -37,19 +38,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gigamole.navigationtabstrip.NavigationTabStrip;
 import com.squareup.picasso.Picasso;
 import com.vstechlab.easyfonts.EasyFonts;
+
+import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -62,7 +75,6 @@ public class UserFragment extends Fragment{
     @BindView(R.id.user_fragment_name) TextView username;
     @BindView(R.id.user_fragment_description) TextView user_bio;
     @BindView(R.id.user_fragment_image) CircleImageView user_image;
-    @BindView(R.id.nts_top) NavigationTabStrip navigationTabStrip;
     @BindView(R.id.user_fragment_progress_bar) ProgressBar progressBar;
     @BindView(R.id.user_fragment_login) TextView login;
 
@@ -80,7 +92,7 @@ public class UserFragment extends Fragment{
         ButterKnife.bind(this, v);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
-        sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         mViewPager = (ViewPager) v.findViewById(R.id.vp);
 
@@ -120,34 +132,48 @@ public class UserFragment extends Fragment{
             }
         });
 
-        navigationTabStrip.setTabIndex(0, true);
-        navigationTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        final List<String> mTitleDataList = new ArrayList<>();
+        mTitleDataList.add("REPOSITORIES");
+        mTitleDataList.add("FOLLOWERS");
+        mTitleDataList.add("FOLLOWING");
+        MagicIndicator magicIndicator = (MagicIndicator) v.findViewById(R.id.magic_indicator);
+        CommonNavigator commonNavigator = new CommonNavigator(getContext());
+        commonNavigator.setAdjustMode(true);
+        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            public int getCount() {
+                return mTitleDataList == null ? 0 : mTitleDataList.size();
             }
 
             @Override
-            public void onPageSelected(int position) {
-
+            public IPagerTitleView getTitleView(Context context, final int index) {
+                ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
+                colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
+                colorTransitionPagerTitleView.setSelectedColor(Color.parseColor("#448AFF"));
+                colorTransitionPagerTitleView.setText(mTitleDataList.get(index));
+                colorTransitionPagerTitleView.setLines(2);
+                colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mViewPager.setCurrentItem(index);
+                    }
+                });
+                return colorTransitionPagerTitleView;
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public IPagerIndicator getIndicator(Context context) {
+                LinePagerIndicator indicator = new LinePagerIndicator(context);
+                indicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);
+                indicator.setStartInterpolator(new AccelerateInterpolator());
+                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
+                indicator.setColors(Color.parseColor("#448AFF"));
+                return indicator;
             }
         });
-        navigationTabStrip.setOnTabStripSelectedIndexListener(new NavigationTabStrip.OnTabStripSelectedIndexListener() {
-            @Override
-            public void onStartTabSelected(String title, int index) {
+        magicIndicator.setNavigator(commonNavigator);
+        ViewPagerHelper.bind(magicIndicator, mViewPager);
 
-            }
-
-            @Override
-            public void onEndTabSelected(String title, int index) {
-
-            }
-        });
         return v;
     }
 
