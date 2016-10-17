@@ -22,12 +22,9 @@
  * SOFTWARE.
  */
 
-package giuliolodi.gitnav;
+package giuliolodi.gitnav.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -49,8 +46,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.UserFragment;
 
 
 public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHolder>{

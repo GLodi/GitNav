@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package giuliolodi.gitnav;
+package giuliolodi.gitnav.Adapters;
 
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,11 +37,11 @@ import com.vstechlab.easyfonts.EasyFonts;
 import org.eclipse.egit.github.core.Repository;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.text.DateFormat;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.R;
 
 public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> {
 

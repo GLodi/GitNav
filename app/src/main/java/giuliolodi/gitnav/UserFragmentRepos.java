@@ -27,31 +27,42 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindString;
-import butterknife.BindView;
+import giuliolodi.gitnav.Adapters.RepoAdapter;
 
 public class UserFragmentRepos {
 
     private List<Repository> repositoryList;
     private Context context;
     private String user;
+    private RepoAdapter repoAdapter;
+    private View v;
+    private RecyclerView rv;
+    private Map FILTER_OPTION;
 
-    @BindView(R.id.user_fragment_repos_rv) RecyclerView rv;
 
     @BindString(R.string.network_error) String network_error;
 
-    public void populate(String user, Context context) {
+    public void populate(String user, Context context, View v) {
         this.user = user;
         this.context = context;
+        this.v = v;
+        FILTER_OPTION = new HashMap();
+        FILTER_OPTION.put("sort", "created");
         if (Constants.isNetworkAvailable(context))
             new getRepos().execute();
         else
@@ -64,10 +75,23 @@ public class UserFragmentRepos {
             RepositoryService repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(context));
             try {
-                repositoryList = repositoryService.getRepositories(user);
+                repositoryList = repositoryService.getRepositories(user, FILTER_OPTION);
             } catch (IOException e) {e.printStackTrace();}
-
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            repoAdapter = new RepoAdapter(repositoryList);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            rv = (RecyclerView) v.findViewById(R.id.user_fragment_repos_rv);
+            rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+            rv.setLayoutManager(mLayoutManager);
+            rv.setItemAnimator(new DefaultItemAnimator());
+            rv.setAdapter(repoAdapter);
+            repoAdapter.notifyDataSetChanged();
+
         }
     }
 

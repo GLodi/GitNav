@@ -209,6 +209,10 @@ public class UserFragment extends Fragment{
             try {
                 user = userService.getUser(user.getLogin());
             } catch (IOException e) {e.printStackTrace();}
+
+            // Notify 3 fragments
+            UserFragmentRepos userFragmentRepos = new UserFragmentRepos();
+            userFragmentRepos.populate(user.getLogin(), getContext(), getView());
             return null;
         }
 
