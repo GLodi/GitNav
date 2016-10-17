@@ -24,7 +24,6 @@
 
 package giuliolodi.gitnav;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -141,7 +140,6 @@ public class UserFragment extends Fragment{
 
             }
         });
-
         return v;
     }
 
@@ -174,11 +172,19 @@ public class UserFragment extends Fragment{
 
             // Download and show information
             Picasso.with(getContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);
-            username.setText(user.getName());
-            user_bio.setText(user.getBio());
+
+            // If user's name is available show both login and username. Otherwise show only login
+            if (user.getName() != null) {
+                username.setText(user.getName());
+                login.setText("@" + user.getLogin());
+            }
+            else {
+                username.setText(user.getLogin());
+                login.setVisibility(View.GONE);
+            }
             if (user.getBio() == null || user.getBio().equals(""))
                 user_bio.setVisibility(View.GONE);
-            login.setText("@" + user.getLogin());
+            user_bio.setText(user.getBio());
 
             // Make progress bar invisible and layout visible
             progressBar.setVisibility(View.GONE);

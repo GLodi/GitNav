@@ -34,6 +34,7 @@
 
     <string name="pref_key">giuliolodi.PREF_KEY</string>
     <string name="user_key">giuliolodi.USER_KEY</string>
+    <string name="login_key">giuliolodi.LOGIN_KEY</string>
     <string name="token_key">giuliolodi.TOKEN_KEY</string>
     <string name="authd_key">giuliolodi.AUTHD_KEY</string>
     <string name="email_key">giuliolodi.EMAIL_KEY</string>

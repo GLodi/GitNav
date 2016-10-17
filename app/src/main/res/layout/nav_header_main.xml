@@ -34,17 +34,34 @@
     android:paddingTop="24dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <!-- Default dimensions for ImageView were wrap_content -->
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/imageView"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:paddingLeft="16dp"
-        android:src="@android:drawable/sym_def_app_icon"
-        app:civ_border_width="0dp"
-        app:civ_border_color="#FF000000"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Default dimensions for ImageView were wrap_content -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/imageView"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:paddingLeft="16dp"
+            android:src="@android:drawable/sym_def_app_icon"
+            app:civ_border_width="0dp"
+            app:civ_border_color="#FF000000"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"/>
+
+        <TextView
+            android:id="@+id/nav_full_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingTop="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/nav_user"

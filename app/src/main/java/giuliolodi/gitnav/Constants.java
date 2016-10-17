@@ -51,6 +51,10 @@ public class Constants {
         return context.getString(R.string.email_key);
     }
 
+    public static String getFullNameKey (Context context) {
+        return context.getString(R.string.login_key);
+    }
+
     public static String getPrefValue (Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(getPrefKey(context), "");
     }
@@ -69,6 +73,10 @@ public class Constants {
 
     public static String getEmail (Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(getEmailKey(context), "");
+    }
+
+    public static String getFullName (Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(getFullNameKey(context), "");
     }
 
     public static boolean isNetworkAvailable(Context context) {

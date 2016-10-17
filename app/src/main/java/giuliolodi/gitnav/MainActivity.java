@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity
         nav_user.setText(Constants.getUsername(getApplicationContext()));
         TextView nav_email = (TextView) hView.findViewById(R.id.nav_email);
         nav_email.setText(Constants.getEmail(getApplicationContext()));
+        TextView nav_full_name = (TextView) hView.findViewById(R.id.nav_full_name);
+        nav_full_name.setText(Constants.getFullName(getApplicationContext()));
         CircleImageView image_view = (CircleImageView) hView.findViewById(R.id.imageView);
         Bitmap thumbnail = new ImageSaver(getApplicationContext())
                 .setFileName("thumbnail.png")
