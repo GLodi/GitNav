@@ -26,13 +26,14 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +41,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,6 +57,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView;
 
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
@@ -70,7 +71,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserFragment extends Fragment{
+public class UserFragment extends Fragment implements MainActivity.OnBackPressedListener{
 
     @BindView(R.id.user_fragment_layout) RelativeLayout relativeLayout;
     @BindView(R.id.user_fragment_name) TextView username;
@@ -87,12 +88,15 @@ public class UserFragment extends Fragment{
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
+    private FragmentManager fm;
+
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.user_fragment, container, false);
+        v = inflater.inflate(R.layout.user_fragment, container, false);
         ButterKnife.bind(this, v);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
+        ((MainActivity) getActivity()).setOnBackPressedListener(this);
 
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -137,47 +141,19 @@ public class UserFragment extends Fragment{
             }
         });
 
-        final List<String> mTitleDataList = new ArrayList<>();
-        mTitleDataList.add("REPOSITORIES");
-        mTitleDataList.add("FOLLOWERS");
-        mTitleDataList.add("FOLLOWING");
-        MagicIndicator magicIndicator = (MagicIndicator) v.findViewById(R.id.magic_indicator);
-        CommonNavigator commonNavigator = new CommonNavigator(getContext());
-        commonNavigator.setAdjustMode(true);
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
-            @Override
-            public int getCount() {
-                return mTitleDataList == null ? 0 : mTitleDataList.size();
-            }
-
-            @Override
-            public IPagerTitleView getTitleView(Context context, final int index) {
-                ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
-                colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
-                colorTransitionPagerTitleView.setSelectedColor(Color.parseColor("#448AFF"));
-                colorTransitionPagerTitleView.setText(mTitleDataList.get(index));
-                colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mViewPager.setCurrentItem(index);
-                    }
-                });
-                return colorTransitionPagerTitleView;
-            }
-
-            @Override
-            public IPagerIndicator getIndicator(Context context) {
-                LinePagerIndicator indicator = new LinePagerIndicator(context);
-                indicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);
-                indicator.setStartInterpolator(new AccelerateInterpolator());
-                indicator.setColors(Color.parseColor("#448AFF"));
-                return indicator;
-            }
-        });
-        magicIndicator.setNavigator(commonNavigator);
-        ViewPagerHelper.bind(magicIndicator, mViewPager);
-
         return v;
+    }
+
+    @Override
+    public void doBack() {
+        if (StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED) {
+            StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED = false;
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Starred");
+            fm = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            fragmentTransaction.remove(UserFragment.this);
+            fragmentTransaction.commit();
+        }
     }
 
     public void setUser(User user) {
@@ -220,6 +196,8 @@ public class UserFragment extends Fragment{
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
+
             // Download and show information
             Picasso.with(getContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);
 
@@ -235,6 +213,76 @@ public class UserFragment extends Fragment{
             if (user.getBio() == null || user.getBio().equals(""))
                 user_bio.setVisibility(View.GONE);
             user_bio.setText(user.getBio());
+
+            final List<String> mTitleDataList = new ArrayList<>();
+            mTitleDataList.add("REPOSITORIES");
+            mTitleDataList.add("FOLLOWERS");
+            mTitleDataList.add("FOLLOWING");
+
+            final List<String> mNumberDataList = new ArrayList<>();
+            mNumberDataList.add(String.valueOf(user.getPublicRepos()));
+            mNumberDataList.add(String.valueOf(user.getFollowers()));
+            mNumberDataList.add(String.valueOf(user.getFollowing()));
+
+            MagicIndicator magicIndicator = (MagicIndicator) v.findViewById(R.id.magic_indicator);
+            CommonNavigator commonNavigator = new CommonNavigator(getContext());
+            commonNavigator.setAdjustMode(true);
+            commonNavigator.setAdapter(new CommonNavigatorAdapter() {
+                @Override
+                public int getCount() {
+                    return mTitleDataList == null ? 0 : mTitleDataList.size();
+                }
+
+                @Override
+                public IPagerTitleView getTitleView(Context context, final int index) {
+                    CommonPagerTitleView commonPagerTitleView = new CommonPagerTitleView(context);
+                    View customLayout = LayoutInflater.from(context).inflate(R.layout.user_fragment_tab, null);
+                    commonPagerTitleView.setContentView(customLayout);
+                    final TextView user_fragment_tab_n = (TextView) customLayout.findViewById(R.id.user_fragment_tab_n);
+                    final TextView user_fragment_tab_title = (TextView) customLayout.findViewById(R.id.user_fragment_tab_title);
+                    user_fragment_tab_n.setText(mNumberDataList.get(index));
+                    user_fragment_tab_title.setText(mTitleDataList.get(index));
+                    user_fragment_tab_n.setTypeface(EasyFonts.robotoRegular(context));
+                    user_fragment_tab_title.setTypeface(EasyFonts.robotoRegular(context));
+                    commonPagerTitleView.setOnPagerTitleChangeListener(new CommonPagerTitleView.OnPagerTitleChangeListener() {
+                        @Override
+                        public void onSelected(int i, int i1) {
+                        }
+
+                        @Override
+                        public void onDeselected(int i, int i1) {
+                        }
+
+                        @Override
+                        public void onLeave(int i, int i1, float v, boolean b) {
+
+                        }
+
+                        @Override
+                        public void onEnter(int i, int i1, float v, boolean b) {
+
+                        }
+                    });
+                    commonPagerTitleView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mViewPager.setCurrentItem(index);
+                        }
+                    });
+                    return commonPagerTitleView;
+                }
+
+                @Override
+                public IPagerIndicator getIndicator(Context context) {
+                    LinePagerIndicator indicator = new LinePagerIndicator(context);
+                    indicator.setMode(LinePagerIndicator.MODE_MATCH_EDGE);
+                    indicator.setStartInterpolator(new AccelerateInterpolator());
+                    indicator.setColors(Color.parseColor("#448AFF"));
+                    return indicator;
+                }
+            });
+            magicIndicator.setNavigator(commonNavigator);
+            ViewPagerHelper.bind(magicIndicator, mViewPager);
 
             // Make progress bar invisible and layout visible
             progressBar.setVisibility(View.GONE);
@@ -286,5 +334,7 @@ public class UserFragment extends Fragment{
             return null;
         }
     }
+
+
 
 }

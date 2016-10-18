@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import giuliolodi.gitnav.MainActivity;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.StarredFragment;
 import giuliolodi.gitnav.UserFragment;
 
 
@@ -141,7 +144,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
                 UserFragment userFragment = new UserFragment();
                 userFragment.setUser(repo.getOwner());
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.replace(R.id.frame, userFragment).addToBackStack("tag").commit();
+                StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED = true;
+                fragmentTransaction.add(R.id.frame, userFragment).addToBackStack("tag").commit();
             }
         });
     }

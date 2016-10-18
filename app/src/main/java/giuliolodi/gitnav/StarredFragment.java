@@ -70,6 +70,7 @@ public class StarredFragment extends Fragment {
     public Map FILTER_OPTION;
     public static boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
     public boolean HIDE_PROGRESS_BAR = true;
+    public static boolean USER_FRAGMENT_HAS_BEEN_ADEED = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

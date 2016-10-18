@@ -54,7 +54,6 @@ public class UserFragmentRepos {
     private RecyclerView rv;
     private Map FILTER_OPTION;
 
-
     @BindString(R.string.network_error) String network_error;
 
     public void populate(String user, Context context, View v) {
