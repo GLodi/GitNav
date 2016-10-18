@@ -68,8 +68,26 @@ public class StarredFragment extends Fragment {
     @BindString(R.string.network_error) String network_error;
 
     public Map FILTER_OPTION;
+
+    /*
+        In order to prevent a bug that shows multiple line dividers on top of each other, I inserted
+        a variable that allows the creation of only one line.
+    */
     public static boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+
+    /*
+        Having decided to use a SwipeRefreshLayout, using both that and the ProgressBar would be redundant.
+        For this reason, whenever the info is refreshed with a Swipe, the ProgressBar is hidden. This is
+        handled with HIDE_PROGRESS_BAR.
+    */
     public boolean HIDE_PROGRESS_BAR = true;
+
+    /*
+        In order to implement a successful fragment lifecyle, I decided to overwrite
+        onBackPressed() in MainActivity and attach a Callback interface to it.
+        USER_FRAGMENT_HAS_BEEN_ADEED handles the change of TitleBar between UserFragment
+        and StarredFragment when the back botton is pressed.
+    */
     public static boolean USER_FRAGMENT_HAS_BEEN_ADEED = false;
 
     @Override
@@ -115,6 +133,10 @@ public class StarredFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /*
+        Each option is given by GitHub API. They will trigger a new getStarred
+        with different FILTER_OPTION.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (Constants.isNetworkAvailable(getContext())) {
@@ -190,6 +212,7 @@ public class StarredFragment extends Fragment {
             PreCachingLayoutManager layoutManager = new PreCachingLayoutManager(getActivity());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             layoutManager.setExtraLayoutSpace(getContext().getResources().getDisplayMetrics().heightPixels);
+
             if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
             }

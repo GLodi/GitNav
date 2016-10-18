@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         // Create NavigationView
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Set username, email and profile picture
+        // Set username, email and profile picture in nav drawer
         View hView = navigationView.getHeaderView(0);
         TextView nav_user = (TextView) hView.findViewById(R.id.nav_user);
         nav_user.setText(Constants.getUsername(getApplicationContext()));
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
                 .load();
         image_view.setImageBitmap(thumbnail);
 
-        // Set nav drawer profile pic onClickListener
+        // Set nav drawer profile's onClickListener
         RelativeLayout nav_click = (RelativeLayout) hView.findViewById(R.id.nav_click);
         nav_click.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +109,11 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    /*
+        The following listener overwrites onBackPressed() and allows any fragment showed in MainActivity
+        to handle the press of the back botton by implementing MainActivity.setOnBackPressedListener
+        indipendently and calling doBack().
+     */
     protected OnBackPressedListener onBackPressedListener;
 
     public interface OnBackPressedListener {
@@ -158,8 +163,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {

@@ -144,6 +144,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
                 UserFragment userFragment = new UserFragment();
                 userFragment.setUser(repo.getOwner());
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
+
+                // This will allow UserFragment to correctly change TitleBar
                 StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED = true;
                 fragmentTransaction.add(R.id.frame, userFragment).addToBackStack("tag").commit();
             }

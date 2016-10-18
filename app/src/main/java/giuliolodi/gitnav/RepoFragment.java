@@ -68,14 +68,25 @@ public class RepoFragment extends Fragment {
     @BindString(R.string.network_error) String network_error;
 
     public Map FILTER_OPTION;
+
+    /*
+        In order to prevent a bug that shows multiple line dividers on top of each other, I inserted
+        a variable that allows the creation of only one line.
+    */
     public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+
+    /*
+        Having decided to use a SwipeRefreshLayout, using both that and the ProgressBar would be redundant.
+        For this reason, whenever the info is refreshed with a Swipe, the ProgressBar is hidden. This is
+        handled with HIDE_PROGRESS_BAR.
+    */
     public boolean HIDE_PROGRESS_BAR = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.repo_fragment, container, false);
         setHasOptionsMenu(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Repositories");
+
         ButterKnife.bind(this, v);
 
         // Created filter and set to "created"
@@ -176,6 +187,9 @@ public class RepoFragment extends Fragment {
             super.onPostExecute(s);
 
             HIDE_PROGRESS_BAR = true;
+
+            // Change TitleBar
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Repositories");
 
             // Set ProgressBar invisible
             progressBar.setVisibility(View.GONE);

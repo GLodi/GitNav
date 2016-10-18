@@ -100,11 +100,6 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
 
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        views = new ArrayList<>();
-        views.add(R.layout.user_fragment_repos);
-        views.add(R.layout.user_fragment_followers);
-        views.add(R.layout.user_fragment_following);
-
         mViewPager = (ViewPager) v.findViewById(R.id.vp);
 
         username.setTypeface(EasyFonts.robotoRegular(getContext()));
@@ -116,6 +111,11 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
         else
             Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
 
+        // Setup adapter for ViewPager. It will handle the three fragments below.
+        views = new ArrayList<>();
+        views.add(R.layout.user_fragment_repos);
+        views.add(R.layout.user_fragment_followers);
+        views.add(R.layout.user_fragment_following);
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
@@ -144,6 +144,13 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
         return v;
     }
 
+    /*
+        In order to implement a successful fragment lifecyle, I decided to overwrite
+        onBackPressed() in MainActivity and attach a Callback interface to it.
+        This will allow any fragment inside the MainActivity to do whatever they want
+        when the back bottom is pressed. In this case, if UserFragment was opened from
+        the StarredFragment, it will go back to it.
+     */
     @Override
     public void doBack() {
         if (StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED) {
@@ -186,9 +193,15 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
                 user = userService.getUser(user.getLogin());
             } catch (IOException e) {e.printStackTrace();}
 
-            // Notify 3 fragments
+            /*
+                Notify 3 fragments.
+                This will pass to each fragment the User object that
+                they will use to get info about Repos, Followers and Following.
+
+             */
             UserFragmentRepos userFragmentRepos = new UserFragmentRepos();
             userFragmentRepos.populate(user.getLogin(), getContext(), getView());
+
             return null;
         }
 
@@ -196,6 +209,7 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            // Set title
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
             // Download and show information
@@ -214,6 +228,7 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
                 user_bio.setVisibility(View.GONE);
             user_bio.setText(user.getBio());
 
+            // Setup lists for tabs
             final List<String> mTitleDataList = new ArrayList<>();
             mTitleDataList.add("REPOSITORIES");
             mTitleDataList.add("FOLLOWERS");
@@ -224,6 +239,7 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             mNumberDataList.add(String.valueOf(user.getFollowers()));
             mNumberDataList.add(String.valueOf(user.getFollowing()));
 
+            // Setup navigator for tabs. It will set a view to the corresponding tab (Repos, Followers and Following).
             MagicIndicator magicIndicator = (MagicIndicator) v.findViewById(R.id.magic_indicator);
             CommonNavigator commonNavigator = new CommonNavigator(getContext());
             commonNavigator.setAdjustMode(true);
@@ -236,6 +252,12 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
                 @Override
                 public IPagerTitleView getTitleView(Context context, final int index) {
                     CommonPagerTitleView commonPagerTitleView = new CommonPagerTitleView(context);
+
+                    /*
+                        Get reference of custom layout for three tabs.
+                        This is due to the fact that default Pager doesn't allow multi-line
+                        tabs. user_fragment_tab includes 2 TextViews one on top of the other.
+                     */
                     View customLayout = LayoutInflater.from(context).inflate(R.layout.user_fragment_tab, null);
                     commonPagerTitleView.setContentView(customLayout);
                     final TextView user_fragment_tab_n = (TextView) customLayout.findViewById(R.id.user_fragment_tab_n);
@@ -244,25 +266,6 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
                     user_fragment_tab_title.setText(mTitleDataList.get(index));
                     user_fragment_tab_n.setTypeface(EasyFonts.robotoRegular(context));
                     user_fragment_tab_title.setTypeface(EasyFonts.robotoRegular(context));
-                    commonPagerTitleView.setOnPagerTitleChangeListener(new CommonPagerTitleView.OnPagerTitleChangeListener() {
-                        @Override
-                        public void onSelected(int i, int i1) {
-                        }
-
-                        @Override
-                        public void onDeselected(int i, int i1) {
-                        }
-
-                        @Override
-                        public void onLeave(int i, int i1, float v, boolean b) {
-
-                        }
-
-                        @Override
-                        public void onEnter(int i, int i1, float v, boolean b) {
-
-                        }
-                    });
                     commonPagerTitleView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -281,6 +284,8 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
                     return indicator;
                 }
             });
+
+            // These two lines are required (see GitHub MagicIndicator
             magicIndicator.setNavigator(commonNavigator);
             ViewPagerHelper.bind(magicIndicator, mViewPager);
 

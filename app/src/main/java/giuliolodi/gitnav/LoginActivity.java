@@ -138,11 +138,13 @@ public class LoginActivity extends AppCompatActivity {
             oAuthService = new OAuthService();
             oAuthService.getClient().setCredentials(inputUser, inputPass);
 
+            // This will set the token parameters and its permissions
             Authorization auth = new Authorization();
             auth.setScopes(Arrays.asList("repo", "gist", "user"));
             String description = "GitNav - " + Build.MANUFACTURER + " " + Build.MODEL;
             auth.setNote(description);
 
+            // Required for some reason
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
