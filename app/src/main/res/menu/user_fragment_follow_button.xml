@@ -23,13 +23,15 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/user_fragment_followers_rv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <item
+        android:id="@+id/follow_icon"
+        android:title=""
+        android:icon="@drawable/ic_person_add_black_24dp"
+        app:showAsAction="always">
 
-</LinearLayout>
+    </item>
+
+</menu>

@@ -41,5 +41,6 @@
 
     <string name="forked_from">Forked from: </string>
     <string name="network_error">Network access unavailable</string>
+    <string name="user_followed">User successfully followed!</string>
 
 </resources>

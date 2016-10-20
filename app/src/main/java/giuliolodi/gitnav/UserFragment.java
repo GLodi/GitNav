@@ -38,6 +38,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -56,7 +59,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView;
 
 import org.eclipse.egit.github.core.User;
@@ -81,6 +83,7 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
     @BindView(R.id.user_fragment_login) TextView login;
 
     @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.user_followed) String user_followed;
 
     public User user;
     private ViewPager mViewPager;
@@ -88,10 +91,14 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
-    private FragmentManager fm;
+    private boolean IS_FOLLOWED = false;
+    private boolean IS_AUTHD_USER_CALLED = false;
 
     private View v;
 
+    /*
+        Most of UI items are created onPostExecute() in getUser()
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.user_fragment, container, false);
@@ -106,16 +113,12 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
         user_bio.setTypeface(EasyFonts.robotoRegular(getContext()));
         login.setTypeface(EasyFonts.robotoRegular(getContext()));
 
-        if (Constants.isNetworkAvailable(getContext()))
-            new getUser().execute();
-        else
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
-
         // Setup adapter for ViewPager. It will handle the three fragments below.
         views = new ArrayList<>();
         views.add(R.layout.user_fragment_repos);
         views.add(R.layout.user_fragment_followers);
         views.add(R.layout.user_fragment_following);
+        mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
@@ -128,7 +131,7 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             }
 
             @Override
-            public void destroyItem(final View container, final int position, final Object object) {
+            public void destroyItem(View container, int position, Object object) {
                 ((ViewPager) container).removeView((View) object);
             }
 
@@ -141,7 +144,41 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             }
         });
 
+        if (Constants.isNetworkAvailable(getContext()))
+            new getUser().execute();
+        else
+            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        /*
+            If setAuthdUser was called, prevent from getting StarredFragment menu item reference:
+            wouldn't exist, throws NullPointer.
+          */
+        if (!IS_AUTHD_USER_CALLED && menu.findItem(R.id.sort_icon) != null)
+            menu.findItem(R.id.sort_icon).setVisible(false);
+
+        // Show follow button only if user is not followed by authenticated user
+        if (!IS_FOLLOWED && !IS_AUTHD_USER_CALLED
+                && !user.getLogin().equals(Constants.getUsername(getContext()))
+                && menu.findItem(R.id.follow_icon) == null)
+            inflater.inflate(R.menu.user_fragment_follow_button, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (Constants.isNetworkAvailable(getContext())) {
+            new followUser().execute();
+            item.setVisible(false);
+            Toast.makeText(getContext(), user_followed, Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+        }
+        return true;
     }
 
     /*
@@ -153,11 +190,20 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
      */
     @Override
     public void doBack() {
+        /*
+            This implements the logic of adding fragments on top of each other. If
+            UserFragment was called from StarredFragment, when user goes back FragmentTransaction
+            changes title and removes UserFragment, revealing StarredFragment below.
+         */
         if (StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED) {
             StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED = false;
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Starred");
-            fm = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.remove(UserFragment.this);
+            fragmentTransaction.commit();
+        }
+        else {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.remove(UserFragment.this);
             fragmentTransaction.commit();
         }
@@ -191,6 +237,9 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             userService.getClient().setOAuth2Token(Constants.getToken(getContext()));
             try {
                 user = userService.getUser(user.getLogin());
+
+                // Check if authdUser is following user
+                IS_FOLLOWED = userService.isFollowing(user.getLogin());
             } catch (IOException e) {e.printStackTrace();}
 
             /*
@@ -201,6 +250,9 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
              */
             UserFragmentRepos userFragmentRepos = new UserFragmentRepos();
             userFragmentRepos.populate(user.getLogin(), getContext(), getView());
+
+            UserFragmentFollowers userFragmentFollowers = new UserFragmentFollowers();
+            userFragmentFollowers.populate(user.getLogin(), getContext(), getView(), getFragmentManager());
 
             return null;
         }
@@ -289,6 +341,12 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             magicIndicator.setNavigator(commonNavigator);
             ViewPagerHelper.bind(magicIndicator, mViewPager);
 
+            // This allows to edit menu
+            setHasOptionsMenu(true);
+
+            // This will trigger onCreateOptionsMenu to create Follow icon
+            getActivity().invalidateOptionsMenu();
+
             // Make progress bar invisible and layout visible
             progressBar.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
@@ -336,10 +394,23 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
                 }
             } catch (IOException e) {e.printStackTrace();}
 
+            // Set IS_AUTHD_USER_CALLED so that fragment doesn't try to kill StarredFragment menu item
+            IS_AUTHD_USER_CALLED = true;
+
             return null;
         }
     }
 
-
+    class followUser extends AsyncTask<String,String,String> {
+        @Override
+        protected String doInBackground(String... params) {
+            UserService userService = new UserService();
+            userService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+            try {
+                userService.follow(user.getLogin());
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+    }
 
 }

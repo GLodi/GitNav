@@ -147,7 +147,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
                 // This will allow UserFragment to correctly change TitleBar
                 StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED = true;
-                fragmentTransaction.add(R.id.frame, userFragment).addToBackStack("tag").commit();
+                fragmentTransaction.add(R.id.frame, userFragment).addToBackStack(null).commit();
             }
         });
     }
