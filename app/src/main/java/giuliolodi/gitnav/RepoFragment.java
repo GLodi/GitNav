@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -66,6 +67,7 @@ public class RepoFragment extends Fragment {
     @BindView(R.id.repo_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.repositories) String repositories;
 
     public Map FILTER_OPTION;
 
@@ -89,6 +91,8 @@ public class RepoFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(repositories);
+
         // Created filter and set to "created"
         FILTER_OPTION = new HashMap();
         FILTER_OPTION.put("sort", "created");
@@ -110,6 +114,15 @@ public class RepoFragment extends Fragment {
                     Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
+
+        // If user goes back to RepoFragment from another fragment, the tile is changed accordingly
+        getFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    public void onBackStackChanged() {
+                        if (((AppCompatActivity) getActivity()) != null)
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(repositories);
+                    }
+                });
 
         return v;
     }
@@ -187,9 +200,6 @@ public class RepoFragment extends Fragment {
             super.onPostExecute(s);
 
             HIDE_PROGRESS_BAR = true;
-
-            // Change TitleBar
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Repositories");
 
             // Set ProgressBar invisible
             progressBar.setVisibility(View.GONE);

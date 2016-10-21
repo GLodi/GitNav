@@ -24,11 +24,11 @@
 
 package giuliolodi.gitnav;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -67,6 +67,7 @@ public class StarredFragment extends Fragment {
     @BindView(R.id.starred_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.starred) String starred;
 
     public Map FILTER_OPTION;
 
@@ -95,8 +96,9 @@ public class StarredFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.starred_fragment, container, false);
         setHasOptionsMenu(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Starred");
         ButterKnife.bind(this, v);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(starred);
 
         // Create filter
         FILTER_OPTION = new HashMap();
@@ -124,6 +126,15 @@ public class StarredFragment extends Fragment {
                     Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
+
+        // If user goes back to StarredFragment from another fragment, the tile is changed accordingly
+        getFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    public void onBackStackChanged() {
+                        if (((AppCompatActivity) getActivity()) != null)
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(starred);
+                    }
+                });
 
         return v;
     }

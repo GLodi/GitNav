@@ -33,7 +33,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -73,7 +72,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserFragment extends Fragment implements MainActivity.OnBackPressedListener{
+public class UserFragment extends Fragment {
 
     @BindView(R.id.user_fragment_layout) RelativeLayout relativeLayout;
     @BindView(R.id.user_fragment_name) TextView username;
@@ -84,6 +83,7 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.user_followed) String user_followed;
+    @BindString(R.string.profile) String profile;
 
     public User user;
     private ViewPager mViewPager;
@@ -103,7 +103,8 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.user_fragment, container, false);
         ButterKnife.bind(this, v);
-        ((MainActivity) getActivity()).setOnBackPressedListener(this);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(profile);
 
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -144,6 +145,15 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             }
         });
 
+        // If user goes back to UserFragment from another fragment, the tile is changed accordingly
+        getFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    public void onBackStackChanged() {
+                        if (((AppCompatActivity) getActivity()) != null)
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(profile);
+                    }
+                });
+
         if (Constants.isNetworkAvailable(getContext()))
             new getUser().execute();
         else
@@ -179,34 +189,6 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
         }
         return true;
-    }
-
-    /*
-        In order to implement a successful fragment lifecyle, I decided to overwrite
-        onBackPressed() in MainActivity and attach a Callback interface to it.
-        This will allow any fragment inside the MainActivity to do whatever they want
-        when the back bottom is pressed. In this case, if UserFragment was opened from
-        the StarredFragment, it will go back to it.
-     */
-    @Override
-    public void doBack() {
-        /*
-            This implements the logic of adding fragments on top of each other. If
-            UserFragment was called from StarredFragment, when user goes back FragmentTransaction
-            changes title and removes UserFragment, revealing StarredFragment below.
-         */
-        if (StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED) {
-            StarredFragment.USER_FRAGMENT_HAS_BEEN_ADEED = false;
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Starred");
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.remove(UserFragment.this);
-            fragmentTransaction.commit();
-        }
-        else {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.remove(UserFragment.this);
-            fragmentTransaction.commit();
-        }
     }
 
     public void setUser(User user) {
@@ -254,15 +236,15 @@ public class UserFragment extends Fragment implements MainActivity.OnBackPressed
             UserFragmentFollowers userFragmentFollowers = new UserFragmentFollowers();
             userFragmentFollowers.populate(user.getLogin(), getContext(), getView(), getFragmentManager());
 
+            UserFragmentFollowing userFragmentFollowing = new UserFragmentFollowing();
+            userFragmentFollowing.populate(user.getLogin(), getContext(), getView(), getFragmentManager());
+
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
-            // Set title
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
 
             // Download and show information
             Picasso.with(getContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);

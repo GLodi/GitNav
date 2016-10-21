@@ -43,4 +43,8 @@
     <string name="network_error">Network access unavailable</string>
     <string name="user_followed">User successfully followed!</string>
 
+    <string name="starred">Starred</string>
+    <string name="profile">Profile</string>
+    <string name="repositories">Repositories</string>
+
 </resources>

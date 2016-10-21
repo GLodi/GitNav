@@ -109,35 +109,6 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    /*
-        The following listener overwrites onBackPressed() and allows any fragment showed in MainActivity
-        to handle the press of the back botton by implementing MainActivity.setOnBackPressedListener
-        indipendently and calling doBack().
-     */
-    protected OnBackPressedListener onBackPressedListener;
-
-    public interface OnBackPressedListener {
-        void doBack();
-    }
-
-    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-        this.onBackPressedListener = onBackPressedListener;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (onBackPressedListener != null)
-            onBackPressedListener.doBack();
-        else
-            super.onBackPressed();
-    }
-
-    @Override
-    protected void onDestroy() {
-        onBackPressedListener = null;
-        super.onDestroy();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

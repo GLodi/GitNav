@@ -27,18 +27,11 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.eclipse.egit.github.core.User;
@@ -50,7 +43,7 @@ import java.util.List;
 import butterknife.BindString;
 import giuliolodi.gitnav.Adapters.UserAdapter;
 
-public class UserFragmentFollowers extends Fragment {
+public class UserFragmentFollowers {
 
     private String user;
     private Context context;
@@ -61,11 +54,6 @@ public class UserFragmentFollowers extends Fragment {
     private FragmentManager fm;
 
     @BindString(R.string.network_error) String network_error;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
 
     public void populate(String user, Context context, View v, FragmentManager fm) {
         this.user = user;

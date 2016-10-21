@@ -24,8 +24,77 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Toast;
+
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.service.UserService;
+
+import java.io.IOException;
+import java.util.List;
+
+import butterknife.BindString;
+import giuliolodi.gitnav.Adapters.UserAdapter;
+
 public class UserFragmentFollowing {
 
+    private String user;
+    private Context context;
+    private View v;
+    private List<User> followers;
+    private UserAdapter userAdapter;
+    private RecyclerView rv;
+    private FragmentManager fm;
 
+    @BindString(R.string.network_error) String network_error;
+
+    public void populate(String user, Context context, View v, FragmentManager fm) {
+        this.user = user;
+        this.context = context;
+        this.v = v;
+        this.fm = fm;
+        if (Constants.isNetworkAvailable(context)) {
+            new getFollowing().execute();
+        }
+        else {
+            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    class getFollowing extends AsyncTask<String,String,String> {
+        @Override
+        protected String doInBackground(String... params) {
+            UserService userService = new UserService();
+            userService.getClient().setOAuth2Token(Constants.getToken(context));
+            try {
+                followers = userService.getFollowing(user);
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            /*
+                Set adapter. Pass FragmentManager as parameter because
+                the adapter needs it to open a UserFragment when a profile icon is clicked.
+             */
+            userAdapter = new UserAdapter(followers, fm);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            rv = (RecyclerView) v.findViewById(R.id.user_fragment_following_rv);
+            rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+            rv.setLayoutManager(mLayoutManager);
+            rv.setItemAnimator(new DefaultItemAnimator());
+            rv.setAdapter(userAdapter);
+            userAdapter.notifyDataSetChanged();
+        }
+    }
 
 }
