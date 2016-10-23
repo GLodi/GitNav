@@ -91,6 +91,7 @@ public class UserFragment extends Fragment {
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
+
     private boolean IS_FOLLOWED = false;
     private boolean IS_AUTHD_USER_CALLED = false;
 

@@ -73,9 +73,11 @@ public class UserFragmentFollowers {
         protected String doInBackground(String... params) {
             UserService userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(context));
+
             try {
                 followers = userService.getFollowers(user);
             } catch (IOException e) {e.printStackTrace();}
+
             return null;
         }
 

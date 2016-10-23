@@ -24,6 +24,7 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.StarService;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +61,8 @@ import giuliolodi.gitnav.Adapters.StarredAdapter;
 
 public class StarredFragment extends Fragment {
 
-    List<Repository> starredRepoList;
-    StarredAdapter starredAdapter;
+    private List<Repository> starredRepoList;
+    private StarredAdapter starredAdapter;
 
     @BindView(R.id.starred_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.starred_progress_bar) ProgressBar progressBar;
@@ -91,6 +93,14 @@ public class StarredFragment extends Fragment {
         and StarredFragment when the back botton is pressed.
     */
     public static boolean USER_FRAGMENT_HAS_BEEN_ADEED = false;
+
+    // Number of page that we have currently downloaded. Starts at 1
+    private int DOWNLOAD_PAGE_N = 1;
+
+    // Number of items downloaded per page
+    private int ITEMS_DOWNLOADED_PER_PAGE = 10;
+
+    private Collection<Repository> u;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -192,6 +202,11 @@ public class StarredFragment extends Fragment {
             StarService starService = new StarService();
             starService.getClient().setOAuth2Token(Constants.getToken(getContext()));
 
+            while (starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next().size() != 0) {
+                u = starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next();
+                DOWNLOAD_PAGE_N += 1;
+            }
+
             // Store list of starred repos
             try {
                 starredRepoList = starService.getStarred(Constants.getUsername(getContext()), FILTER_OPTION);
@@ -224,7 +239,6 @@ public class StarredFragment extends Fragment {
             PreCachingLayoutManager layoutManager = new PreCachingLayoutManager(getActivity());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             layoutManager.setExtraLayoutSpace(getContext().getResources().getDisplayMetrics().heightPixels);
-
             if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
             }
