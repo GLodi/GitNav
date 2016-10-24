@@ -36,7 +36,7 @@ import android.widget.Toast;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
@@ -47,10 +47,22 @@ public class UserFragmentFollowing {
     private String user;
     private Context context;
     private View v;
-    private List<User> followers;
+    private List<User> following;
+    private List<User> t;
     private UserAdapter userAdapter;
     private RecyclerView rv;
     private FragmentManager fm;
+    private LinearLayoutManager mLayoutManager;
+    private UserService userService;
+
+    // Number of page that we have currently downloaded. Starts at 1
+    private int DOWNLOAD_PAGE_N = 1;
+
+    // Number of items downloaded per page
+    private int ITEMS_DOWNLOADED_PER_PAGE = 10;
+
+    // Flag that prevents multiple pages from being downloaded at the same time
+    private boolean LOADING = false;
 
     @BindString(R.string.network_error) String network_error;
 
@@ -67,14 +79,14 @@ public class UserFragmentFollowing {
         }
     }
 
-    class getFollowing extends AsyncTask<String,String,String> {
+    private class getFollowing extends AsyncTask<String,String,String> {
         @Override
         protected String doInBackground(String... params) {
-            UserService userService = new UserService();
+            userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(context));
-            try {
-                followers = userService.getFollowing(user);
-            } catch (IOException e) {e.printStackTrace();}
+
+            following = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+
             return null;
         }
 
@@ -86,15 +98,62 @@ public class UserFragmentFollowing {
                 Set adapter. Pass FragmentManager as parameter because
                 the adapter needs it to open a UserFragment when a profile icon is clicked.
              */
-            userAdapter = new UserAdapter(followers, fm);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            userAdapter = new UserAdapter(following, fm);
+            mLayoutManager = new LinearLayoutManager(context);
             rv = (RecyclerView) v.findViewById(R.id.user_fragment_following_rv);
             rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
             rv.setLayoutManager(mLayoutManager);
             rv.setItemAnimator(new DefaultItemAnimator());
+
+            setupOnScrollListener();
+
             rv.setAdapter(userAdapter);
             userAdapter.notifyDataSetChanged();
         }
     }
 
+    /*
+       This will allow the recyclerview to load more content as the user scrolls down
+    */
+    private void setupOnScrollListener() {
+
+        RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (LOADING)
+                    return;
+                int visibleItemCount = mLayoutManager.getChildCount();
+                int totalItemCount = mLayoutManager.getItemCount();
+                int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    DOWNLOAD_PAGE_N += 1;
+                    LOADING = true;
+                    new getMoreUsers().execute();
+                }
+            }
+        };
+
+        rv.setOnScrollListener(mScrollListener);
+
+    }
+
+    private class getMoreUsers extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            for (int i = 0; i < t.size(); i++) {
+                following.add(t.get(i));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            LOADING = false;
+
+            // This is used instead of .notiftDataSetChanged for performance reasons
+            userAdapter.notifyItemChanged(following.size() - 1);
+        }
+    }
 }

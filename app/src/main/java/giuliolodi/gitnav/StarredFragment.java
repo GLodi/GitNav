@@ -47,8 +47,7 @@ import android.widget.Toast;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.StarService;
 
-import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +60,14 @@ import giuliolodi.gitnav.Adapters.StarredAdapter;
 
 public class StarredFragment extends Fragment {
 
+    // List of repos that is passed to the adapter
     private List<Repository> starredRepoList;
+
+    // Temporary list for repos loaded while user is scrolling
+    private List<Repository> t;
     private StarredAdapter starredAdapter;
+    private PreCachingLayoutManager layoutManager;
+    private StarService starService;
 
     @BindView(R.id.starred_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.starred_progress_bar) ProgressBar progressBar;
@@ -100,7 +105,8 @@ public class StarredFragment extends Fragment {
     // Number of items downloaded per page
     private int ITEMS_DOWNLOADED_PER_PAGE = 10;
 
-    private Collection<Repository> u;
+    // Flag that prevents multiple pages from being downloaded at the same time
+    private boolean LOADING = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,6 +136,7 @@ public class StarredFragment extends Fragment {
                 HIDE_PROGRESS_BAR = false;
                 if (Constants.isNetworkAvailable(getContext())) {
                     PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getStarred().execute();
                 }
                 else
@@ -167,12 +174,14 @@ public class StarredFragment extends Fragment {
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "created");
                     PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getStarred().execute();
                     return true;
                 case R.id.starred_sort_updated:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "updated");
                     PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getStarred().execute();
                     return true;
                 default:
@@ -184,7 +193,7 @@ public class StarredFragment extends Fragment {
             return super.onOptionsItemSelected(item);
     }
 
-    class getStarred extends AsyncTask<String, String, String> {
+    private class getStarred extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -199,18 +208,11 @@ public class StarredFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             // Setup StarService
-            StarService starService = new StarService();
+            starService = new StarService();
             starService.getClient().setOAuth2Token(Constants.getToken(getContext()));
 
-            while (starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next().size() != 0) {
-                u = starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next();
-                DOWNLOAD_PAGE_N += 1;
-            }
-
             // Store list of starred repos
-            try {
-                starredRepoList = starService.getStarred(Constants.getUsername(getContext()), FILTER_OPTION);
-            } catch (IOException e) {e.printStackTrace();}
+            starredRepoList = new ArrayList<>(starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
 
             return null;
         }
@@ -236,7 +238,7 @@ public class StarredFragment extends Fragment {
             starredAdapter = new StarredAdapter(starredRepoList, getFragmentManager());
 
             // Set adapter on RecyclerView and notify it
-            PreCachingLayoutManager layoutManager = new PreCachingLayoutManager(getActivity());
+            layoutManager = new PreCachingLayoutManager(getActivity());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             layoutManager.setExtraLayoutSpace(getContext().getResources().getDisplayMetrics().heightPixels);
             if (PREVENT_MULTPLE_SEPARATION_LINE) {
@@ -246,8 +248,56 @@ public class StarredFragment extends Fragment {
             recyclerView.getItemAnimator().isRunning();
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            setupOnScrollListener();
+
             recyclerView.setAdapter(starredAdapter);
             starredAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /*
+        This will allow the recyclerview to load more content as the user scrolls down
+     */
+    private void setupOnScrollListener() {
+
+        RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (LOADING)
+                    return;
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    DOWNLOAD_PAGE_N += 1;
+                    LOADING = true;
+                    new getMoreStarred().execute();
+                }
+            }
+        };
+
+        recyclerView.setOnScrollListener(mScrollListener);
+
+    }
+
+
+    private class getMoreStarred extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            t = new ArrayList<>(starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            for (int i = 0; i < t.size(); i++) {
+                starredRepoList.add(t.get(i));
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            LOADING = false;
+
+            // This is used instead of .notiftDataSetChanged for performance reasons
+            starredAdapter.notifyItemChanged(starredRepoList.size() - 1);
         }
     }
 

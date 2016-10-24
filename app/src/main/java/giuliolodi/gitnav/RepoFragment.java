@@ -48,6 +48,7 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,11 @@ import giuliolodi.gitnav.Adapters.RepoAdapter;
 
 public class RepoFragment extends Fragment {
 
-    List<Repository> repositoryList;
-    RepoAdapter repoAdapter;
+    private List<Repository> repositoryList;
+    private List<Repository> t;
+    private RepoAdapter repoAdapter;
+    private LinearLayoutManager mLayoutManager;
+    private RepositoryService repositoryService;
 
     @BindView (R.id.repo_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.repo_progress_bar) ProgressBar progressBar;
@@ -69,7 +73,7 @@ public class RepoFragment extends Fragment {
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.repositories) String repositories;
 
-    public Map FILTER_OPTION;
+    private Map FILTER_OPTION;
 
     /*
         In order to prevent a bug that shows multiple line dividers on top of each other, I inserted
@@ -83,6 +87,15 @@ public class RepoFragment extends Fragment {
         handled with HIDE_PROGRESS_BAR.
     */
     public boolean HIDE_PROGRESS_BAR = true;
+
+    // Number of page that we have currently downloaded. Starts at 1
+    private int DOWNLOAD_PAGE_N = 1;
+
+    // Number of items downloaded per page
+    private int ITEMS_DOWNLOADED_PER_PAGE = 10;
+
+    // Flag that prevents multiple pages from being downloaded at the same time
+    private boolean LOADING = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -186,13 +199,11 @@ public class RepoFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             // Authenticate
-            RepositoryService repositoryService = new RepositoryService();
+            repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(getContext()));
 
             // Get the RepositoryList and sort it based on creation date
-            try {
-                repositoryList = repositoryService.getRepositories(FILTER_OPTION);
-            } catch (IOException e) {e.printStackTrace();}
+            repositoryList = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             return null;
         }
         @Override
@@ -214,15 +225,63 @@ public class RepoFragment extends Fragment {
             repoAdapter = new RepoAdapter(repositoryList);
 
             // Set adapter on RecyclerView and notify it
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+             mLayoutManager = new LinearLayoutManager(getContext());
             if (PREVENT_MULTPLE_SEPARATION_LINE) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
             }
             PREVENT_MULTPLE_SEPARATION_LINE = true;
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            setupOnScrollListener();
+
             recyclerView.setAdapter(repoAdapter);
             repoAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /*
+      This will allow the recyclerview to load more content as the user scrolls down
+   */
+    private void setupOnScrollListener() {
+
+        RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (LOADING)
+                    return;
+                int visibleItemCount = mLayoutManager.getChildCount();
+                int totalItemCount = mLayoutManager.getItemCount();
+                int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    DOWNLOAD_PAGE_N += 1;
+                    LOADING = true;
+                    new getMoreRepos().execute();
+                }
+            }
+        };
+
+        recyclerView.setOnScrollListener(mScrollListener);
+
+    }
+
+    private class getMoreRepos extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            t = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            for (int i = 0; i < t.size(); i++) {
+                repositoryList.add(t.get(i));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            LOADING = false;
+
+            // This is used instead of .notiftDataSetChanged for performance reasons
+            repoAdapter.notifyItemChanged(repositoryList.size() - 1);
         }
     }
 
