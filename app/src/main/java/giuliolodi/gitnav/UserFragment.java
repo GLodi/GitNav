@@ -83,6 +83,7 @@ public class UserFragment extends Fragment {
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.user_followed) String user_followed;
+    @BindString(R.string.user_unfollowed) String user_unfollowed;
     @BindString(R.string.profile) String profile;
 
     public User user;
@@ -91,6 +92,7 @@ public class UserFragment extends Fragment {
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
+    private UserService userService;
 
     private boolean IS_FOLLOWED = false;
     private boolean IS_AUTHD_USER_CALLED = false;
@@ -155,8 +157,10 @@ public class UserFragment extends Fragment {
                     }
                 });
 
-        if (Constants.isNetworkAvailable(getContext()))
-            new getUser().execute();
+        if (Constants.isNetworkAvailable(getContext())) {
+            if (!IS_AUTHD_USER_CALLED)
+                new getUser().execute();
+        }
         else
             Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
 
@@ -169,27 +173,45 @@ public class UserFragment extends Fragment {
             If setAuthdUser was called, prevent from getting StarredFragment menu item reference:
             wouldn't exist, throws NullPointer.
           */
-        if (!IS_AUTHD_USER_CALLED && menu.findItem(R.id.sort_icon) != null)
-            menu.findItem(R.id.sort_icon).setVisible(false);
+        if (!IS_AUTHD_USER_CALLED && menu.findItem(R.id.sort_icon) != null || user.getLogin().equals(Constants.getUsername(getContext()))) {
+            if (menu.findItem(R.id.sort_icon) != null && menu.findItem(R.id.sort_icon).isVisible())
+                menu.findItem(R.id.sort_icon).setVisible(false);
+            if (menu.findItem(R.id.unfollow) != null && menu.findItem(R.id.unfollow).isVisible())
+                menu.findItem(R.id.unfollow).setVisible(false);
+        }
 
         // Show follow button only if user is not followed by authenticated user
         if (!IS_FOLLOWED && !IS_AUTHD_USER_CALLED
                 && !user.getLogin().equals(Constants.getUsername(getContext()))
-                && menu.findItem(R.id.follow_icon) == null)
+                && menu.findItem(R.id.follow_icon) == null) {
             inflater.inflate(R.menu.user_fragment_follow_button, menu);
+            menu.findItem(R.id.unfollow).setVisible(false);
+        }
+
+        // Show unfollow button
+        if (IS_FOLLOWED && !IS_AUTHD_USER_CALLED
+                && menu.findItem(R.id.follow_icon) == null) {
+            menu.findItem(R.id.unfollow).setVisible(true);
+        }
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (Constants.isNetworkAvailable(getContext())) {
-            new followUser().execute();
-            item.setVisible(false);
-            Toast.makeText(getContext(), user_followed, Toast.LENGTH_LONG).show();
+            switch (item.getItemId()) {
+                case R.id.follow_icon:
+                    new followUser().execute();
+                    return true;
+                case R.id.unfollow:
+                    new unfollowUser().execute();
+                    return true;
+            }
         }
-        else {
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
-        }
-        return true;
+        else
+            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void setUser(User user) {
@@ -216,11 +238,10 @@ public class UserFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-            UserService userService = new UserService();
+            userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(getContext()));
             try {
                 user = userService.getUser(user.getLogin());
-
                 // Check if authdUser is following user
                 IS_FOLLOWED = userService.isFollowing(user.getLogin());
             } catch (IOException e) {e.printStackTrace();}
@@ -341,11 +362,11 @@ public class UserFragment extends Fragment {
         After getting user info, checks if retrieved info equals what is stored in SharedPreferences.
         If that's not the case it updates the info.
      */
-    class getAuthdUser extends AsyncTask<String,String,String> {
+    class getAuthdUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             User authdUser;
-            UserService userService = new UserService();
+            userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(context));
             try {
                 authdUser = userService.getUser();
@@ -384,15 +405,36 @@ public class UserFragment extends Fragment {
         }
     }
 
-    class followUser extends AsyncTask<String,String,String> {
+    class followUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            UserService userService = new UserService();
-            userService.getClient().setOAuth2Token(Constants.getToken(getContext()));
             try {
                 userService.follow(user.getLogin());
             } catch (IOException e) {e.printStackTrace();}
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Toast.makeText(getContext(), user_followed, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    class unfollowUser extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                userService.unfollow(user.getLogin());
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            String g = login.getText().toString();
+            Toast.makeText(getContext(), user_unfollowed, Toast.LENGTH_LONG).show();
         }
     }
 
