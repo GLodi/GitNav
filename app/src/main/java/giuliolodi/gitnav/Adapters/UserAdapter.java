@@ -24,8 +24,9 @@
 
 package giuliolodi.gitnav.Adapters;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +45,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
-import giuliolodi.gitnav.UserFragment;
+import giuliolodi.gitnav.UserActivity;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
 
     List<User> userList;
-    FragmentManager fm;
+    Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -67,9 +68,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     }
 
-    public UserAdapter(List<User> userList, FragmentManager fm) {
+    public UserAdapter(List<User> userList, Context context) {
         this.userList = userList;
-        this.fm = fm;
+        this.context = context;
     }
 
     @Override
@@ -87,14 +88,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         // Set picture
         Picasso.with(holder.username.getContext()).load(userList.get(position).getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
 
-        // Set listener to invoke UserFragment
+        // Set listener to invoke UserActivity
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserFragment userFragment = new UserFragment();
-                userFragment.setUser(userList.get(position));
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.add(R.id.frame, userFragment).addToBackStack(null).commit();
+                context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", userList.get(position).getLogin()));
+                ((Activity) context).overridePendingTransition(0, 0);
             }
         });
     }

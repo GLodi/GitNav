@@ -24,21 +24,20 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserFragment extends Fragment {
+public class UserActivity extends BaseDrawerActivity {
 
     @BindView(R.id.user_fragment_layout) RelativeLayout relativeLayout;
     @BindView(R.id.user_fragment_name) TextView username;
@@ -86,36 +85,38 @@ public class UserFragment extends Fragment {
     @BindString(R.string.user_unfollowed) String user_unfollowed;
     @BindString(R.string.profile) String profile;
 
-    public User user;
+    private User user;
+    private String userS;
     private ViewPager mViewPager;
-    private Context context;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
     private UserService userService;
+    private Intent intent;
+    private Menu menu;
 
     private boolean IS_FOLLOWED = false;
-    private boolean IS_AUTHD_USER_CALLED = false;
-
-    private View v;
 
     /*
         Most of UI items are created onPostExecute() in getUser()
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.user_fragment, container, false);
-        ButterKnife.bind(this, v);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getLayoutInflater().inflate(R.layout.user_activity, frameLayout);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(profile);
+        ButterKnife.bind(this);
 
-        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        mViewPager = (ViewPager) v.findViewById(R.id.vp);
+        intent = getIntent();
+        userS = intent.getStringExtra("userS");
 
-        username.setTypeface(EasyFonts.robotoRegular(getContext()));
-        user_bio.setTypeface(EasyFonts.robotoRegular(getContext()));
-        login.setTypeface(EasyFonts.robotoRegular(getContext()));
+        mViewPager = (ViewPager) findViewById(R.id.vp);
+
+        username.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        user_bio.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        login.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
 
         // Setup adapter for ViewPager. It will handle the three fragments below.
         views = new ArrayList<>();
@@ -141,64 +142,51 @@ public class UserFragment extends Fragment {
 
             @Override
             public Object instantiateItem(final ViewGroup container, final int position) {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
+                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
                 ViewGroup layout = (ViewGroup) inflater.inflate(views.get(position), container, false);
                 container.addView(layout);
                 return layout;
             }
         });
 
-        // If user goes back to UserFragment from another fragment, the tile is changed accordingly
-        getFragmentManager().addOnBackStackChangedListener(
-                new FragmentManager.OnBackStackChangedListener() {
-                    public void onBackStackChanged() {
-                        if (((AppCompatActivity) getActivity()) != null)
-                            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(profile);
-                    }
-                });
-
-        if (Constants.isNetworkAvailable(getContext())) {
-            if (!IS_AUTHD_USER_CALLED)
-                new getUser().execute();
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
+            new getUser().execute();
         }
         else
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
-
-        return v;
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
+    /*
+        This is used only to get the menu object from the Intent call.
+        The menu is created through createOptionMenu(), which is called after
+        getUser() has checked if the user if followed.
+     */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        /*
-            If setAuthdUser was called, prevent from getting StarredFragment menu item reference:
-            wouldn't exist, throws NullPointer.
-          */
-        if (!IS_AUTHD_USER_CALLED && menu.findItem(R.id.sort_icon) != null || user.getLogin().equals(Constants.getUsername(getContext()))) {
-            if (menu.findItem(R.id.sort_icon) != null && menu.findItem(R.id.sort_icon).isVisible())
-                menu.findItem(R.id.sort_icon).setVisible(false);
-            if (menu.findItem(R.id.unfollow) != null && menu.findItem(R.id.unfollow).isVisible())
-                menu.findItem(R.id.unfollow).setVisible(false);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        return true;
+    }
+
+    private void createOptionMenu() {
+        getMenuInflater().inflate(R.menu.user_menu, menu);
+        super.onCreateOptionsMenu(menu);
+
+        if (Constants.getUsername(getApplicationContext()).equals(userS)) {
+
         }
 
-        // Show follow button only if user is not followed by authenticated user
-        if (!IS_FOLLOWED && !IS_AUTHD_USER_CALLED
-                && !user.getLogin().equals(Constants.getUsername(getContext()))
-                && menu.findItem(R.id.follow_icon) == null) {
-            inflater.inflate(R.menu.user_fragment_follow_button, menu);
-            menu.findItem(R.id.unfollow).setVisible(false);
+        else if (!IS_FOLLOWED) {
+            menu.findItem(R.id.follow_icon).setVisible(true);
         }
 
-        // Show unfollow button
-        if (IS_FOLLOWED && !IS_AUTHD_USER_CALLED
-                && menu.findItem(R.id.follow_icon) == null) {
+        else if (IS_FOLLOWED) {
             menu.findItem(R.id.unfollow).setVisible(true);
         }
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (Constants.isNetworkAvailable(getContext())) {
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.follow_icon:
                     new followUser().execute();
@@ -209,21 +197,19 @@ public class UserFragment extends Fragment {
             }
         }
         else
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
     }
 
-    public void setAuthdUser(Context context) {
-        this.context = context;
-        if (Constants.isNetworkAvailable(context))
-            new getAuthdUser().execute();
-        else
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+    public void setUser(String userS) {
+        this.userS = userS;
     }
 
     // Get User object after setUser(User user) is called
@@ -239,9 +225,9 @@ public class UserFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             userService = new UserService();
-            userService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+            userService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
             try {
-                user = userService.getUser(user.getLogin());
+                user = userService.getUser(userS);
                 // Check if authdUser is following user
                 IS_FOLLOWED = userService.isFollowing(user.getLogin());
             } catch (IOException e) {e.printStackTrace();}
@@ -253,13 +239,13 @@ public class UserFragment extends Fragment {
 
              */
             UserFragmentRepos userFragmentRepos = new UserFragmentRepos();
-            userFragmentRepos.populate(user.getLogin(), getContext(), getView());
+            userFragmentRepos.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
             UserFragmentFollowers userFragmentFollowers = new UserFragmentFollowers();
-            userFragmentFollowers.populate(user.getLogin(), getContext(), getView(), getFragmentManager());
+            userFragmentFollowers.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
             UserFragmentFollowing userFragmentFollowing = new UserFragmentFollowing();
-            userFragmentFollowing.populate(user.getLogin(), getContext(), getView(), getFragmentManager());
+            userFragmentFollowing.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
             return null;
         }
@@ -268,8 +254,18 @@ public class UserFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            /*
+                The creation of the option menu is triggered after the getUser() is called to check
+                if the user is followed. This allows to show follow_icon and unfollow.
+             */
+            createOptionMenu();
+
+            // If user is the one currently logged in, update his info
+            if (user.getLogin().equals(Constants.getUsername(getApplicationContext())))
+                new getAuthdUser().execute();
+
             // Download and show information
-            Picasso.with(getContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);
+            Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).resize(150, 150).centerCrop().into(user_image);
 
             // If user's name is available show both login and username. Otherwise show only login
             if (user.getName() != null) {
@@ -296,8 +292,8 @@ public class UserFragment extends Fragment {
             mNumberDataList.add(String.valueOf(user.getFollowing()));
 
             // Setup navigator for tabs. It will set a view to the corresponding tab (Repos, Followers and Following).
-            MagicIndicator magicIndicator = (MagicIndicator) v.findViewById(R.id.magic_indicator);
-            CommonNavigator commonNavigator = new CommonNavigator(getContext());
+            MagicIndicator magicIndicator = (MagicIndicator) findViewById(R.id.magic_indicator);
+            CommonNavigator commonNavigator = new CommonNavigator(getApplicationContext());
             commonNavigator.setAdjustMode(true);
             commonNavigator.setAdapter(new CommonNavigatorAdapter() {
                 @Override
@@ -345,12 +341,6 @@ public class UserFragment extends Fragment {
             magicIndicator.setNavigator(commonNavigator);
             ViewPagerHelper.bind(magicIndicator, mViewPager);
 
-            // This allows to edit menu
-            setHasOptionsMenu(true);
-
-            // This will trigger onCreateOptionsMenu to create Follow icon
-            getActivity().invalidateOptionsMenu();
-
             // Make progress bar invisible and layout visible
             progressBar.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
@@ -365,41 +355,31 @@ public class UserFragment extends Fragment {
     class getAuthdUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            User authdUser;
-            userService = new UserService();
-            userService.getClient().setOAuth2Token(Constants.getToken(context));
-            try {
-                authdUser = userService.getUser();
-                setUser(authdUser);
-            } catch (IOException e) {e.printStackTrace();}
-
+            sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             editor = sp.edit();
-            if (user.getName() != null && !user.getName().equals("") && !Constants.getFullName(context).equals(user.getName())) {
-                editor.putString((Constants.getFullNameKey(context)), user.getName());
+            if (user.getName() != null && !user.getName().equals("") && !Constants.getFullName(getApplicationContext()).equals(user.getName())) {
+                editor.putString((Constants.getFullNameKey(getApplicationContext())), user.getName());
             }
-            else if (user.getLogin() != null && !user.getLogin().equals("") && !Constants.getUsername(context).equals(user.getLogin())) {
-                editor.putString((Constants.getUserKey(context)), user.getName());
+            else if (user.getLogin() != null && !user.getLogin().equals("") && !Constants.getUsername(getApplicationContext()).equals(user.getLogin())) {
+                editor.putString((Constants.getUserKey(getApplicationContext())), user.getName());
             }
-            else if (user.getEmail() != null && !user.getEmail().equals("") && !Constants.getEmail(context).equals(user.getEmail())) {
-                editor.putString((Constants.getEmailKey(context)), user.getEmail());
+            else if (user.getEmail() != null && !user.getEmail().equals("") && !Constants.getEmail(getApplicationContext()).equals(user.getEmail())) {
+                editor.putString((Constants.getEmailKey(getApplicationContext())), user.getEmail());
             }
             editor.commit();
-            Bitmap thumbnail = new ImageSaver(context)
+            Bitmap thumbnail = new ImageSaver(getApplicationContext())
                     .setFileName("thumbnail.png")
                     .setDirectoryName("images")
                     .load();
             try {
-                Bitmap profile_picture = Picasso.with(context).load(user.getAvatarUrl()).get();
+                Bitmap profile_picture = Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).get();
                 if (!thumbnail.sameAs(profile_picture)) {
-                    new ImageSaver(context)
+                    new ImageSaver(getApplicationContext())
                             .setFileName("thumbnail.png")
                             .setDirectoryName("images")
                             .save(profile_picture);
                 }
             } catch (IOException e) {e.printStackTrace();}
-
-            // Set IS_AUTHD_USER_CALLED so that fragment doesn't try to kill StarredFragment menu item
-            IS_AUTHD_USER_CALLED = true;
 
             return null;
         }
@@ -417,7 +397,9 @@ public class UserFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Toast.makeText(getContext(), user_followed, Toast.LENGTH_LONG).show();
+            menu.findItem(R.id.follow_icon).setVisible(false);
+            menu.findItem(R.id.unfollow).setVisible(true);
+            Toast.makeText(getApplicationContext(), user_followed, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -433,8 +415,10 @@ public class UserFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            String g = login.getText().toString();
-            Toast.makeText(getContext(), user_unfollowed, Toast.LENGTH_LONG).show();
+            menu.findItem(R.id.unfollow).setVisible(false);
+            menu.findItem(R.id.follow_icon).setVisible(true);
+            Toast.makeText(getApplicationContext(), user_unfollowed, Toast.LENGTH_LONG).show();
+
         }
     }
 

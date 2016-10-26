@@ -80,9 +80,9 @@ public class LoginActivity extends AppCompatActivity {
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // If user is already logged in, Intent to MainActivity
+        // If user is already logged in, Intent to BaseDrawerActivity
         if (Constants.getAuthdValue(getApplicationContext())) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, BaseDrawerActivity.class);
             startActivity(intent);
             finish();
         }
@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG);
             toast.show();
             if (result == "Logged in") {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BaseDrawerActivity.class);
                 startActivity(intent);
                 finish();
             }

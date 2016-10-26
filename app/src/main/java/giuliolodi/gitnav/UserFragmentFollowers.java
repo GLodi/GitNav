@@ -53,7 +53,6 @@ public class UserFragmentFollowers {
     private List<User> t;
     private UserAdapter userAdapter;
     private RecyclerView rv;
-    private FragmentManager fm;
     private LinearLayoutManager mLayoutManager;
     private UserService userService;
 
@@ -68,11 +67,10 @@ public class UserFragmentFollowers {
 
     @BindString(R.string.network_error) String network_error;
 
-    public void populate(String user, Context context, View v, FragmentManager fm) {
+    public void populate(String user, Context context, View v) {
         this.user = user;
         this.context = context;
         this.v = v;
-        this.fm = fm;
         if (Constants.isNetworkAvailable(context)) {
             new getFollowers().execute();
         }
@@ -98,9 +96,9 @@ public class UserFragmentFollowers {
 
             /*
                 Set adapter. Pass FragmentManager as parameter because
-                the adapter needs it to open a UserFragment when a profile icon is clicked.
+                the adapter needs it to open a UserActivity when a profile icon is clicked.
              */
-            userAdapter = new UserAdapter(followers, fm);
+            userAdapter = new UserAdapter(followers, context);
             mLayoutManager = new LinearLayoutManager(context);
             rv = (RecyclerView) v.findViewById(R.id.user_fragment_followers_rv);
             rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));

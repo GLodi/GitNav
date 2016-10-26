@@ -69,8 +69,8 @@ public class UserFragmentRepos {
     @BindString(R.string.network_error) String network_error;
 
     /*
-        Populate() is called when a UserFragment is created. This is
-        the first of three classes that populate the fragments below UserFragment:
+        Populate() is called when a UserActivity is created. This is
+        the first of three classes that populate the fragments below UserActivity:
         Repos, Followers and Following.
      */
 

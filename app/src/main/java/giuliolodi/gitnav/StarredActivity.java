@@ -24,23 +24,17 @@
 
 package giuliolodi.gitnav;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -58,13 +52,14 @@ import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.StarredAdapter;
 
 
-public class StarredFragment extends Fragment {
+public class StarredActivity extends BaseDrawerActivity {
 
     // List of repos that is passed to the adapter
     private List<Repository> starredRepoList;
 
     // Temporary list for repos loaded while user is scrolling
     private List<Repository> t;
+
     private StarredAdapter starredAdapter;
     private PreCachingLayoutManager layoutManager;
     private StarService starService;
@@ -82,7 +77,7 @@ public class StarredFragment extends Fragment {
         In order to prevent a bug that shows multiple line dividers on top of each other, I inserted
         a variable that allows the creation of only one line.
     */
-    public static boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+    private boolean PREVENT_MULTIPLE_SEPARATOR_LINES = true;
 
     /*
         Having decided to use a SwipeRefreshLayout, using both that and the ProgressBar would be redundant.
@@ -90,14 +85,6 @@ public class StarredFragment extends Fragment {
         handled with HIDE_PROGRESS_BAR.
     */
     public boolean HIDE_PROGRESS_BAR = true;
-
-    /*
-        In order to implement a successful fragment lifecyle, I decided to overwrite
-        onBackPressed() in MainActivity and attach a Callback interface to it.
-        USER_FRAGMENT_HAS_BEEN_ADEED handles the change of TitleBar between UserFragment
-        and StarredFragment when the back botton is pressed.
-    */
-    public static boolean USER_FRAGMENT_HAS_BEEN_ADEED = false;
 
     // Number of page that we have currently downloaded. Starts at 1
     private int DOWNLOAD_PAGE_N = 1;
@@ -109,12 +96,11 @@ public class StarredFragment extends Fragment {
     private boolean LOADING = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.starred_fragment, container, false);
-        setHasOptionsMenu(true);
-        ButterKnife.bind(this, v);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getLayoutInflater().inflate(R.layout.starred_activity, frameLayout);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(starred);
+        ButterKnife.bind(this);
 
         // Create filter
         FILTER_OPTION = new HashMap();
@@ -123,43 +109,46 @@ public class StarredFragment extends Fragment {
             Check if connection is available and gets the data,
             otherwise user is notified
          */
-        if (Constants.isNetworkAvailable(getContext()))
+        if (Constants.isNetworkAvailable(getApplicationContext()))
             new getStarred().execute();
         else
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                HIDE_PROGRESS_BAR = false;
-                if (Constants.isNetworkAvailable(getContext())) {
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    PREVENT_MULTIPLE_SEPARATOR_LINES = false;
+                    HIDE_PROGRESS_BAR = false;
                     DOWNLOAD_PAGE_N = 1;
                     new getStarred().execute();
                 }
                 else
-                    Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
-        // If user goes back to StarredFragment from another fragment, the tile is changed accordingly
-        getFragmentManager().addOnBackStackChangedListener(
-                new FragmentManager.OnBackStackChangedListener() {
-                    public void onBackStackChanged() {
-                        if (((AppCompatActivity) getActivity()) != null)
-                            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(starred);
-                    }
-                });
-
-        return v;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.starred_sort_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onResume() {
+        super.onResume();
+        navigationView.getMenu().getItem(1).setChecked(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.starred_sort_menu, menu);
+        return true;
     }
 
     /*
@@ -168,20 +157,20 @@ public class StarredFragment extends Fragment {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (Constants.isNetworkAvailable(getContext())) {
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.starred_sort_starred:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "created");
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     DOWNLOAD_PAGE_N = 1;
+                    PREVENT_MULTIPLE_SEPARATOR_LINES = false;
                     new getStarred().execute();
                     return true;
                 case R.id.starred_sort_updated:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "updated");
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
                     DOWNLOAD_PAGE_N = 1;
+                    PREVENT_MULTIPLE_SEPARATOR_LINES = false;
                     new getStarred().execute();
                     return true;
                 default:
@@ -189,7 +178,7 @@ public class StarredFragment extends Fragment {
             }
         }
         else
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             return super.onOptionsItemSelected(item);
     }
 
@@ -209,10 +198,10 @@ public class StarredFragment extends Fragment {
         protected String doInBackground(String... strings) {
             // Setup StarService
             starService = new StarService();
-            starService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+            starService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
             // Store list of starred repos
-            starredRepoList = new ArrayList<>(starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            starredRepoList = new ArrayList<>(starService.pageStarred(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
 
             return null;
         }
@@ -233,19 +222,17 @@ public class StarredFragment extends Fragment {
 
             /*
                 Set adapter. Pass FragmentManager as parameter because
-                the adapter needs it to open a UserFragment when a profile icon is clicked.
+                the adapter needs it to open a UserActivity when a profile icon is clicked.
              */
-            starredAdapter = new StarredAdapter(starredRepoList, getFragmentManager());
+            starredAdapter = new StarredAdapter(starredRepoList);
 
             // Set adapter on RecyclerView and notify it
-            layoutManager = new PreCachingLayoutManager(getActivity());
+            layoutManager = new PreCachingLayoutManager(getApplicationContext());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            layoutManager.setExtraLayoutSpace(getContext().getResources().getDisplayMetrics().heightPixels);
-            if (PREVENT_MULTPLE_SEPARATION_LINE) {
-                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+            if (PREVENT_MULTIPLE_SEPARATOR_LINES) {
+                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation()));
             }
-            PREVENT_MULTPLE_SEPARATION_LINE = true;
-            recyclerView.getItemAnimator().isRunning();
+            PREVENT_MULTIPLE_SEPARATOR_LINES = true;
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -285,7 +272,7 @@ public class StarredFragment extends Fragment {
     private class getMoreStarred extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(starService.pageStarred(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(starService.pageStarred(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             for (int i = 0; i < t.size(); i++) {
                 starredRepoList.add(t.get(i));
             }

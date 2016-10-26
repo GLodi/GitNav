@@ -28,26 +28,20 @@ package giuliolodi.gitnav;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +52,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.RepoAdapter;
 
-public class RepoFragment extends Fragment {
+public class RepoListActivity extends BaseDrawerActivity {
 
     private List<Repository> repositoryList;
     private List<Repository> t;
@@ -79,7 +73,7 @@ public class RepoFragment extends Fragment {
         In order to prevent a bug that shows multiple line dividers on top of each other, I inserted
         a variable that allows the creation of only one line.
     */
-    public boolean PREVENT_MULTPLE_SEPARATION_LINE = true;
+    public boolean PREVENT_MULTIPLE_SEPARATION_LINES = true;
 
     /*
         Having decided to use a SwipeRefreshLayout, using both that and the ProgressBar would be redundant.
@@ -98,80 +92,87 @@ public class RepoFragment extends Fragment {
     private boolean LOADING = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.repo_fragment, container, false);
-        setHasOptionsMenu(true);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getLayoutInflater().inflate(R.layout.repo_list_activity, frameLayout);
 
-        ButterKnife.bind(this, v);
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(repositories);
+        ButterKnife.bind(this);
 
         // Created filter and set to "created"
         FILTER_OPTION = new HashMap();
         FILTER_OPTION.put("sort", "created");
 
-        if (Constants.isNetworkAvailable(getContext()))
+        if (Constants.isNetworkAvailable(getApplicationContext()))
             new getRepositories().execute();
         else
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                HIDE_PROGRESS_BAR = false;
-                if (Constants.isNetworkAvailable(getContext()))
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    HIDE_PROGRESS_BAR = false;
+                    PREVENT_MULTIPLE_SEPARATION_LINES = false;
                     new getRepositories().execute();
+                }
                 else
-                    Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
-        // If user goes back to RepoFragment from another fragment, the tile is changed accordingly
-        getFragmentManager().addOnBackStackChangedListener(
-                new FragmentManager.OnBackStackChangedListener() {
-                    public void onBackStackChanged() {
-                        if (((AppCompatActivity) getActivity()) != null)
-                            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(repositories);
-                    }
-                });
-
-        return v;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.repo_sort_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    protected void onResume() {
+        super.onResume();
+        navigationView.getMenu().getItem(0).setChecked(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.repo_list_sort_menu, menu);
+        super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (Constants.isNetworkAvailable(getContext())) {
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.repo_sort_created:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "created");
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    PREVENT_MULTIPLE_SEPARATION_LINES = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getRepositories().execute();
                     return true;
                 case R.id.repo_sort_updated:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "updated");
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    PREVENT_MULTIPLE_SEPARATION_LINES = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getRepositories().execute();
                     return true;
                 case R.id.repo_sort_pushed:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "pushed");
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    PREVENT_MULTIPLE_SEPARATION_LINES = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getRepositories().execute();
                     return true;
                 case R.id.repo_sort_alphabetical:
                     item.setChecked(true);
                     FILTER_OPTION.put("sort", "full_name");
-                    PREVENT_MULTPLE_SEPARATION_LINE = false;
+                    PREVENT_MULTIPLE_SEPARATION_LINES = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getRepositories().execute();
                     return true;
                 default:
@@ -179,7 +180,7 @@ public class RepoFragment extends Fragment {
             }
         }
         else {
-            Toast.makeText(getContext(), network_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             return super.onOptionsItemSelected(item);
         }
     }
@@ -200,10 +201,10 @@ public class RepoFragment extends Fragment {
         protected String doInBackground(String... strings) {
             // Authenticate
             repositoryService = new RepositoryService();
-            repositoryService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+            repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
             // Get the RepositoryList and sort it based on creation date
-            repositoryList = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            repositoryList = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             return null;
         }
         @Override
@@ -225,11 +226,11 @@ public class RepoFragment extends Fragment {
             repoAdapter = new RepoAdapter(repositoryList);
 
             // Set adapter on RecyclerView and notify it
-             mLayoutManager = new LinearLayoutManager(getContext());
-            if (PREVENT_MULTPLE_SEPARATION_LINE) {
-                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+             mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            if (PREVENT_MULTIPLE_SEPARATION_LINES) {
+                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), mLayoutManager.getOrientation()));
             }
-            PREVENT_MULTPLE_SEPARATION_LINE = true;
+            PREVENT_MULTIPLE_SEPARATION_LINES = true;
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -268,7 +269,7 @@ public class RepoFragment extends Fragment {
     private class getMoreRepos extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             for (int i = 0; i < t.size(); i++) {
                 repositoryList.add(t.get(i));
             }

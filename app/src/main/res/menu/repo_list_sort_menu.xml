@@ -59,4 +59,14 @@
 
     </item>
 
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/unfollow"
+        android:title="@string/unfollow"
+        android:visible="false"/>
+
 </menu>

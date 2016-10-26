@@ -36,8 +36,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="giuliolodi.gitnav.MainActivity"
+            android:name="giuliolodi.gitnav.BaseDrawerActivity"
             android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" >
+
+        </activity>
+        <activity
+            android:name="giuliolodi.gitnav.RepoListActivity"
+            android:label="@string/repositories"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" >
+
+        </activity>
+        <activity
+            android:name="giuliolodi.gitnav.StarredActivity"
+            android:label="@string/starred"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" >
+
+        </activity>
+        <activity
+            android:name="giuliolodi.gitnav.UserActivity"
+            android:label="@string/profile"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" >
 
