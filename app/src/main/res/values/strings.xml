@@ -48,5 +48,11 @@
     <string name="starred">Starred</string>
     <string name="profile">Profile</string>
     <string name="repositories">Repositories</string>
+    <string name="search">Search</string>
+
+    <string name="users">Users</string>
+    <string name="code">Code</string>
+
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>

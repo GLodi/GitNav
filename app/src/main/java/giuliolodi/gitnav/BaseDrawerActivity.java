@@ -40,8 +40,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.eclipse.egit.github.core.User;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -119,12 +117,12 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
         if (id == R.id.nav_camera) {
             startActivity(new Intent(getApplicationContext(), RepoListActivity.class));
             overridePendingTransition(0,0);
-            navigationView.getMenu().getItem(0).setChecked(false);
         } else if (id == R.id.nav_gallery) {
             startActivity(new Intent(getApplicationContext(), StarredActivity.class));
             overridePendingTransition(0,0);
-            navigationView.getMenu().getItem(1).setChecked(false);
         } else if (id == R.id.nav_slideshow) {
+            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+            overridePendingTransition(0,0);
         } else if (id == R.id.nav_manage) {
         } else if (id == R.id.nav_share) {
         } else if (id == R.id.nav_send) {

@@ -24,7 +24,6 @@
 
 package giuliolodi.gitnav;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,6 +78,7 @@ public class UserActivity extends BaseDrawerActivity {
     @BindView(R.id.user_fragment_image) CircleImageView user_image;
     @BindView(R.id.user_fragment_progress_bar) ProgressBar progressBar;
     @BindView(R.id.user_fragment_login) TextView login;
+    @BindView(R.id.user_vp) ViewPager mViewPager;
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.user_followed) String user_followed;
@@ -87,7 +87,6 @@ public class UserActivity extends BaseDrawerActivity {
 
     private User user;
     private String userS;
-    private ViewPager mViewPager;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
@@ -109,10 +108,9 @@ public class UserActivity extends BaseDrawerActivity {
 
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        // Get username string from intent.putExtra()
         intent = getIntent();
         userS = intent.getStringExtra("userS");
-
-        mViewPager = (ViewPager) findViewById(R.id.vp);
 
         username.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
         user_bio.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
@@ -292,7 +290,7 @@ public class UserActivity extends BaseDrawerActivity {
             mNumberDataList.add(String.valueOf(user.getFollowing()));
 
             // Setup navigator for tabs. It will set a view to the corresponding tab (Repos, Followers and Following).
-            MagicIndicator magicIndicator = (MagicIndicator) findViewById(R.id.magic_indicator);
+            MagicIndicator magicIndicator = (MagicIndicator) findViewById(R.id.magic_indicator_user);
             CommonNavigator commonNavigator = new CommonNavigator(getApplicationContext());
             commonNavigator.setAdjustMode(true);
             commonNavigator.setAdapter(new CommonNavigatorAdapter() {
