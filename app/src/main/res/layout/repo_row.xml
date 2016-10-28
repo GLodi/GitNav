@@ -37,17 +37,37 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/repo_list_name"
-            android:text="Title"
-            android:textSize="16sp"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:alpha="0.87"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/repo_row_owner"
+                android:text="Owner/"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:alpha="0.87"
+                android:maxLines="1"/>
+
+            <TextView
+                android:id="@+id/repo_row_name"
+                android:text="Title"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:alpha="0.87"
+                android:maxLines="1"/>
+
+        </LinearLayout>
+
+
 
         <TextView
-            android:id="@+id/repo_list_forked"
+            android:id="@+id/repo_row_forked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Forked from"
@@ -56,7 +76,7 @@
             android:alpha="0.54"/>
 
         <TextView
-            android:id="@+id/repo_list_description"
+            android:id="@+id/repo_row_description"
             android:textSize="14sp"
             android:text="Description"
             android:layout_width="wrap_content"
@@ -78,7 +98,7 @@
                 android:paddingTop="5dp"/>
 
             <TextView
-                android:id="@+id/repo_list_star_number"
+                android:id="@+id/repo_row_star_number"
                 android:text="100"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,7 +119,7 @@
                 android:paddingTop="6dp"/>
 
             <TextView
-                android:id="@+id/repo_list_language"
+                android:id="@+id/repo_row_language"
                 android:text="Language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,7 +131,7 @@
                 android:alpha="0.54"/>
 
             <TextView
-                android:id="@+id/repo_list_date"
+                android:id="@+id/repo_row_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

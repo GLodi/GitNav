@@ -49,14 +49,15 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.repo_list_name) TextView repo_list_name;
-        @BindView(R.id.repo_list_description) TextView repo_list_description;
-        @BindView(R.id.repo_list_language) TextView repo_list_language;
-        @BindView(R.id.repo_list_forked) TextView repo_list_forked;
-        @BindView(R.id.repo_list_star_number) TextView repo_list_star_number;
-        @BindView(R.id.repo_list_date) TextView repo_list_date;
+        @BindView(R.id.repo_row_owner) TextView repo_row_owner;
+        @BindView(R.id.repo_row_name) TextView repo_row_name;
+        @BindView(R.id.repo_row_description) TextView repo_row_description;
+        @BindView(R.id.repo_row_language) TextView repo_row_language;
+        @BindView(R.id.repo_row_forked) TextView repo_row_forked;
+        @BindView(R.id.repo_row_star_number) TextView repo_row_star_number;
+        @BindView(R.id.repo_row_date) TextView repo_row_date;
 
-        @BindView(R.id.repo_code) ImageView repo_list_language_icon;
+        @BindView(R.id.repo_code) ImageView repo_row_language_icon;
 
         public MyViewHolder(View view) {
             super(view);
@@ -64,12 +65,13 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             ButterKnife.bind(this, view);
 
             // Use easy fonts to set Typeface
-            repo_list_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            repo_list_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            repo_list_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            repo_list_forked.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            repo_list_star_number.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            repo_list_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_owner.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_language.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_forked.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_star_number.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            repo_row_date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
         }
     }
 
@@ -93,36 +95,39 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         Repository repo = repositoryList.get(position);
         Repository parent;
 
+        // Set owner
+        holder.repo_row_owner.setText(repo.getOwner().getLogin() + "/");
+
         // Set repo name
-        holder.repo_list_name.setText(repo.getName());
+        holder.repo_row_name.setText(repo.getName());
 
         // Set repo description
         if (repo.getDescription() != null && !repo.getDescription().equals(""))
-            holder.repo_list_description.setText(repo.getDescription());
+            holder.repo_row_description.setText(repo.getDescription());
         else
-            holder.repo_list_description.setText("No description");
+            holder.repo_row_description.setText("No description");
 
         // Set repo language
         if (repo.getLanguage() == null) {
-            holder.repo_list_language.setVisibility(View.GONE);
-            holder.repo_list_language_icon.setVisibility(View.GONE);
+            holder.repo_row_language.setVisibility(View.GONE);
+            holder.repo_row_language_icon.setVisibility(View.GONE);
         }
         else
-            holder.repo_list_language.setText(repo.getLanguage());
+            holder.repo_row_language.setText(repo.getLanguage());
 
         // Set star repo number
-        holder.repo_list_star_number.setText(Integer.toString(repo.getWatchers()));
+        holder.repo_row_star_number.setText(Integer.toString(repo.getWatchers()));
 
         // Set repo date
-        holder.repo_list_date.setText(p.format(repo.getCreatedAt()));
+        holder.repo_row_date.setText(p.format(repo.getCreatedAt()));
 
         // Check if is forked, then prints parent's info
         if (repo.isFork() && repo.getParent() != null) {
             parent = repo.getParent();
-            holder.repo_list_forked.setText(parent.getName());
+            holder.repo_row_forked.setText(parent.getName());
         }
         else {
-            holder.repo_list_forked.setVisibility(View.GONE);
+            holder.repo_row_forked.setVisibility(View.GONE);
         }
 
 

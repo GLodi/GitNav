@@ -44,6 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textSize="12sp"
-        android:text="REPOSITORIES"/>
+        android:text="REPOSITORIES"
+        android:textColor="#000000"
+        android:alpha="0.54"/>
 
 </LinearLayout>
