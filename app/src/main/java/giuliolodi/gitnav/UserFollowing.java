@@ -35,6 +35,7 @@ import android.widget.Toast;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class UserFollowing {
     private Context context;
     private View v;
     private List<User> following;
+    private List<User> followingTemp;
     private List<User> t;
     private UserAdapter userAdapter;
     private RecyclerView rv;
@@ -82,7 +84,13 @@ public class UserFollowing {
             userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(context));
 
-            following = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            following = new ArrayList<>();
+            followingTemp = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            try {
+                for (int i = 0; i < followingTemp.size(); i++) {
+                    following.add(userService.getUser(followingTemp.get(i).getLogin()));
+                }
+            } catch (IOException e) {e.printStackTrace();}
 
             return null;
         }
@@ -138,9 +146,12 @@ public class UserFollowing {
         @Override
         protected String doInBackground(String... params) {
             t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
-            for (int i = 0; i < t.size(); i++) {
-                following.add(t.get(i));
-            }
+            try {
+                for (int i = 0; i < t.size(); i++) {
+                    following.add(userService.getUser(t.get(i).getLogin()));
+                }
+            } catch (IOException e) {e.printStackTrace();}
+
             return null;
         }
 

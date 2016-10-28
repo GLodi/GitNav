@@ -236,14 +236,14 @@ public class UserActivity extends BaseDrawerActivity {
                 they will use to get info about Repos, Followers and Following.
 
              */
-            UserRepos userFragmentRepos = new UserRepos();
-            userFragmentRepos.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
+            UserRepos userRepos = new UserRepos();
+            userRepos.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
-            UserFollowers userFragmentFollowers = new UserFollowers();
-            userFragmentFollowers.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
+            UserFollowers userFollowers = new UserFollowers();
+            userFollowers.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
-            UserFollowing userFragmentFollowing = new UserFollowing();
-            userFragmentFollowing.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
+            UserFollowing userFollowing = new UserFollowing();
+            userFollowing.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
             return null;
         }

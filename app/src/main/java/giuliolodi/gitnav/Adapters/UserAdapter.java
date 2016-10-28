@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.user_list_ll) LinearLayout ll;
-        @BindView(R.id.user_list_image) CircleImageView image;
-        @BindView(R.id.user_list_login) TextView username;
+        @BindView(R.id.user_row_ll) LinearLayout ll;
+        @BindView(R.id.user_row_image) CircleImageView image;
+        @BindView(R.id.user_row_login) TextView username;
+        @BindView(R.id.user_row_fullname) TextView fullname;
 
         public MyViewHolder(View view) {
             super(view);
@@ -64,6 +66,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
             ButterKnife.bind(this, view);
 
             username.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            fullname.setTypeface(EasyFonts.robotoRegular(view.getContext()));
         }
 
     }
@@ -82,8 +85,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(UserAdapter.MyViewHolder holder, final int position) {
-        // Set username
-        holder.username.setText(userList.get(position).getLogin());
+        // Set username and fullname
+        if (userList.get(position).getName() != null) {
+            holder.username.setText("@" + userList.get(position).getLogin());
+            holder.fullname.setVisibility(View.VISIBLE);
+            holder.fullname.setText(userList.get(position).getName());
+        }
+        else {
+            holder.username.setText(userList.get(position).getLogin());
+            holder.username.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        }
 
         // Set picture
         Picasso.with(holder.username.getContext()).load(userList.get(position).getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
