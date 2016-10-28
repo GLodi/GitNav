@@ -24,35 +24,38 @@
 
 package giuliolodi.gitnav;
 
+
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.service.UserService;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindString;
-import giuliolodi.gitnav.Adapters.UserAdapter;
+import giuliolodi.gitnav.Adapters.RepoAdapter;
 
-public class UserFragmentFollowing {
+public class UserRepos {
 
-    private String user;
+    private List<Repository> repositoryList;
+    private List<Repository> t;
     private Context context;
+    private String user;
+    private RepoAdapter repoAdapter;
     private View v;
-    private List<User> following;
-    private List<User> t;
-    private UserAdapter userAdapter;
     private RecyclerView rv;
+    private Map FILTER_OPTION;
+    private RepositoryService repositoryService;
     private LinearLayoutManager mLayoutManager;
-    private UserService userService;
 
     // Number of page that we have currently downloaded. Starts at 1
     private int DOWNLOAD_PAGE_N = 1;
@@ -65,25 +68,31 @@ public class UserFragmentFollowing {
 
     @BindString(R.string.network_error) String network_error;
 
+    /*
+        Populate() is called when a UserActivity is created. This is
+        the first of three classes that populate the fragments below UserActivity:
+        Repos, Followers and Following.
+     */
+
     public void populate(String user, Context context, View v) {
         this.user = user;
         this.context = context;
         this.v = v;
-        if (Constants.isNetworkAvailable(context)) {
-            new getFollowing().execute();
-        }
-        else {
+        FILTER_OPTION = new HashMap();
+        FILTER_OPTION.put("sort", "created");
+        if (Constants.isNetworkAvailable(context))
+            new getRepos().execute();
+        else
             Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
-        }
     }
 
-    private class getFollowing extends AsyncTask<String,String,String> {
+    private class getRepos extends AsyncTask<String,String,String> {
         @Override
         protected String doInBackground(String... params) {
-            userService = new UserService();
-            userService.getClient().setOAuth2Token(Constants.getToken(context));
+            repositoryService = new RepositoryService();
+            repositoryService.getClient().setOAuth2Token(Constants.getToken(context));
 
-            following = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            repositoryList = new ArrayList<>(repositoryService.pageRepositories(user, FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
 
             return null;
         }
@@ -91,22 +100,18 @@ public class UserFragmentFollowing {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
-            /*
-                Set adapter. Pass FragmentManager as parameter because
-                the adapter needs it to open a UserActivity when a profile icon is clicked.
-             */
-            userAdapter = new UserAdapter(following, context);
+            repoAdapter = new RepoAdapter(repositoryList);
             mLayoutManager = new LinearLayoutManager(context);
-            rv = (RecyclerView) v.findViewById(R.id.user_fragment_following_rv);
+            rv = (RecyclerView) v.findViewById(R.id.user_repos_rv);
             rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
             rv.setLayoutManager(mLayoutManager);
             rv.setItemAnimator(new DefaultItemAnimator());
 
             setupOnScrollListener();
 
-            rv.setAdapter(userAdapter);
-            userAdapter.notifyDataSetChanged();
+            rv.setAdapter(repoAdapter);
+            repoAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -126,7 +131,7 @@ public class UserFragmentFollowing {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreUsers().execute();
+                    new getMoreRepos().execute();
                 }
             }
         };
@@ -135,12 +140,12 @@ public class UserFragmentFollowing {
 
     }
 
-    private class getMoreUsers extends AsyncTask<String, String, String> {
+    private class getMoreRepos extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(repositoryService.pageRepositories(user, FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             for (int i = 0; i < t.size(); i++) {
-                following.add(t.get(i));
+                repositoryList.add(t.get(i));
             }
             return null;
         }
@@ -151,7 +156,8 @@ public class UserFragmentFollowing {
             LOADING = false;
 
             // This is used instead of .notiftDataSetChanged for performance reasons
-            userAdapter.notifyItemChanged(following.size() - 1);
+            repoAdapter.notifyItemChanged(repositoryList.size() - 1);
         }
     }
+
 }

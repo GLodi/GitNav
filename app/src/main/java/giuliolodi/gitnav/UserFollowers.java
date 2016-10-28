@@ -33,29 +33,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.service.UserService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindString;
-import giuliolodi.gitnav.Adapters.RepoAdapter;
+import giuliolodi.gitnav.Adapters.UserAdapter;
 
-public class UserFragmentRepos {
+public class UserFollowers {
 
-    private List<Repository> repositoryList;
-    private List<Repository> t;
-    private Context context;
     private String user;
-    private RepoAdapter repoAdapter;
+    private Context context;
     private View v;
+    private List<User> followers;
+    private List<User> t;
+    private UserAdapter userAdapter;
     private RecyclerView rv;
-    private Map FILTER_OPTION;
-    private RepositoryService repositoryService;
     private LinearLayoutManager mLayoutManager;
+    private UserService userService;
 
     // Number of page that we have currently downloaded. Starts at 1
     private int DOWNLOAD_PAGE_N = 1;
@@ -68,31 +65,25 @@ public class UserFragmentRepos {
 
     @BindString(R.string.network_error) String network_error;
 
-    /*
-        Populate() is called when a UserActivity is created. This is
-        the first of three classes that populate the fragments below UserActivity:
-        Repos, Followers and Following.
-     */
-
     public void populate(String user, Context context, View v) {
         this.user = user;
         this.context = context;
         this.v = v;
-        FILTER_OPTION = new HashMap();
-        FILTER_OPTION.put("sort", "created");
-        if (Constants.isNetworkAvailable(context))
-            new getRepos().execute();
-        else
+        if (Constants.isNetworkAvailable(context)) {
+            new getFollowers().execute();
+        }
+        else {
             Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+        }
     }
 
-    private class getRepos extends AsyncTask<String,String,String> {
+    private class getFollowers extends AsyncTask<String,String,String> {
         @Override
         protected String doInBackground(String... params) {
-            repositoryService = new RepositoryService();
-            repositoryService.getClient().setOAuth2Token(Constants.getToken(context));
+            userService = new UserService();
+            userService.getClient().setOAuth2Token(Constants.getToken(context));
 
-            repositoryList = new ArrayList<>(repositoryService.pageRepositories(user, FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            followers = new ArrayList<>(userService.pageFollowers(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
 
             return null;
         }
@@ -100,18 +91,22 @@ public class UserFragmentRepos {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            repoAdapter = new RepoAdapter(repositoryList);
+
+            /*
+                Set adapter. Pass FragmentManager as parameter because
+                the adapter needs it to open a UserActivity when a profile icon is clicked.
+             */
+            userAdapter = new UserAdapter(followers, context);
             mLayoutManager = new LinearLayoutManager(context);
-            rv = (RecyclerView) v.findViewById(R.id.user_fragment_repos_rv);
+            rv = (RecyclerView) v.findViewById(R.id.user_followers_rv);
             rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
             rv.setLayoutManager(mLayoutManager);
             rv.setItemAnimator(new DefaultItemAnimator());
 
             setupOnScrollListener();
 
-            rv.setAdapter(repoAdapter);
-            repoAdapter.notifyDataSetChanged();
-
+            rv.setAdapter(userAdapter);
+            userAdapter.notifyDataSetChanged();
         }
     }
 
@@ -131,7 +126,7 @@ public class UserFragmentRepos {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreRepos().execute();
+                    new getMoreUsers().execute();
                 }
             }
         };
@@ -140,12 +135,12 @@ public class UserFragmentRepos {
 
     }
 
-    private class getMoreRepos extends AsyncTask<String, String, String> {
+    private class getMoreUsers extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(repositoryService.pageRepositories(user, FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(userService.pageFollowers(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             for (int i = 0; i < t.size(); i++) {
-                repositoryList.add(t.get(i));
+                followers.add(t.get(i));
             }
             return null;
         }
@@ -156,7 +151,7 @@ public class UserFragmentRepos {
             LOADING = false;
 
             // This is used instead of .notiftDataSetChanged for performance reasons
-            repoAdapter.notifyItemChanged(repositoryList.size() - 1);
+            userAdapter.notifyItemChanged(followers.size() - 1);
         }
     }
 

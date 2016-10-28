@@ -26,14 +26,18 @@ package giuliolodi.gitnav;
 
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +49,18 @@ import butterknife.ButterKnife;
 public class SearchActivity extends BaseDrawerActivity{
 
     @BindView(R.id.tab_layout) TabLayout tabLayout;
+    @BindView(R.id.search_viewpager) ViewPager searchViewPager;
 
+    @BindString(R.string.network_error) String network_error;
     @BindString(R.string.repositories) String repositories;
     @BindString(R.string.users) String users;
     @BindString(R.string.code) String code;
 
+
     private List<Integer> views;
     private SearchView searchView;
+
+    private boolean PREVENT_MULTIPLE_SEPARATOR_LINE = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,28 +69,62 @@ public class SearchActivity extends BaseDrawerActivity{
 
         ButterKnife.bind(this);
 
-        initInstancesDrawer();
-
         views = new ArrayList<>();
-        views.add(R.layout.search_fragment_repos);
-        views.add(R.layout.search_fragment_users);
-        views.add(R.layout.search_fragment_code);
+        views.add(R.layout.search_repos);
+        views.add(R.layout.search_users);
+        views.add(R.layout.search_code);
 
-        // Setup lists for tabs
-        final List<String> mTitleDataList = new ArrayList<>();
-        mTitleDataList.add("REPOSITORIES");
-        mTitleDataList.add("USERS");
-        mTitleDataList.add("CODE");
+        searchViewPager.setOffscreenPageLimit(3);
+        searchViewPager.setAdapter(new MyAdapter(getApplicationContext()));
+
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(searchViewPager);
+
 
     }
 
-    private void initInstancesDrawer() {
+    public class MyAdapter extends PagerAdapter {
 
-        tabLayout.setVisibility(View.VISIBLE);
+        Context context;
 
-        tabLayout.addTab(tabLayout.newTab().setText(repositories));
-        tabLayout.addTab(tabLayout.newTab().setText(users));
-        tabLayout.addTab(tabLayout.newTab().setText(code));
+        public MyAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view.equals(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ViewGroup layout = (ViewGroup) getLayoutInflater().inflate(views.get(position), container, false);
+            container.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return repositories;
+                case 1:
+                    return users;
+                case 2:
+                    return code;
+            }
+            return super.getPageTitle(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
     }
 
     @Override
@@ -103,11 +146,24 @@ public class SearchActivity extends BaseDrawerActivity{
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        final SearchRepos searchRepos = new SearchRepos();
+        final SearchUsers searchUsers = new SearchUsers();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                tabLayout.getTabAt(2).select();
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+
+                    if (!searchRepos.isLOADING())
+                        searchRepos.populate(query, getApplicationContext(), findViewById(R.id.search_repos_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+
+                    if (!searchUsers.isLOADING())
+                        searchUsers.populate(query, getApplicationContext(), findViewById(R.id.search_users_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+                    PREVENT_MULTIPLE_SEPARATOR_LINE = false;
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                }
                 return false;
             }
 

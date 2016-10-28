@@ -50,6 +50,10 @@
     <string name="repositories">Repositories</string>
     <string name="search">Search</string>
 
+    <string name="no_repositories">No repositories to show</string>
+    <string name="no_users">No users to show</string>
+    <string name="no_code">No code to show</string>
+
     <string name="users">Users</string>
     <string name="code">Code</string>
 

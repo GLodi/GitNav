@@ -24,10 +24,8 @@
 
 package giuliolodi.gitnav;
 
-
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,19 +35,18 @@ import android.widget.Toast;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
 import giuliolodi.gitnav.Adapters.UserAdapter;
 
-public class UserFragmentFollowers {
+public class UserFollowing {
 
     private String user;
     private Context context;
     private View v;
-    private List<User> followers;
+    private List<User> following;
     private List<User> t;
     private UserAdapter userAdapter;
     private RecyclerView rv;
@@ -72,20 +69,20 @@ public class UserFragmentFollowers {
         this.context = context;
         this.v = v;
         if (Constants.isNetworkAvailable(context)) {
-            new getFollowers().execute();
+            new getFollowing().execute();
         }
         else {
             Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
         }
     }
 
-    private class getFollowers extends AsyncTask<String,String,String> {
+    private class getFollowing extends AsyncTask<String,String,String> {
         @Override
         protected String doInBackground(String... params) {
             userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(context));
 
-            followers = new ArrayList<>(userService.pageFollowers(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            following = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
 
             return null;
         }
@@ -98,9 +95,9 @@ public class UserFragmentFollowers {
                 Set adapter. Pass FragmentManager as parameter because
                 the adapter needs it to open a UserActivity when a profile icon is clicked.
              */
-            userAdapter = new UserAdapter(followers, context);
+            userAdapter = new UserAdapter(following, context);
             mLayoutManager = new LinearLayoutManager(context);
-            rv = (RecyclerView) v.findViewById(R.id.user_fragment_followers_rv);
+            rv = (RecyclerView) v.findViewById(R.id.user_following_rv);
             rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
             rv.setLayoutManager(mLayoutManager);
             rv.setItemAnimator(new DefaultItemAnimator());
@@ -140,9 +137,9 @@ public class UserFragmentFollowers {
     private class getMoreUsers extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(userService.pageFollowers(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             for (int i = 0; i < t.size(); i++) {
-                followers.add(t.get(i));
+                following.add(t.get(i));
             }
             return null;
         }
@@ -153,8 +150,7 @@ public class UserFragmentFollowers {
             LOADING = false;
 
             // This is used instead of .notiftDataSetChanged for performance reasons
-            userAdapter.notifyItemChanged(followers.size() - 1);
+            userAdapter.notifyItemChanged(following.size() - 1);
         }
     }
-
 }

@@ -118,9 +118,9 @@ public class UserActivity extends BaseDrawerActivity {
 
         // Setup adapter for ViewPager. It will handle the three fragments below.
         views = new ArrayList<>();
-        views.add(R.layout.user_fragment_repos);
-        views.add(R.layout.user_fragment_followers);
-        views.add(R.layout.user_fragment_following);
+        views.add(R.layout.user_repos);
+        views.add(R.layout.user_followers);
+        views.add(R.layout.user_following);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
@@ -236,13 +236,13 @@ public class UserActivity extends BaseDrawerActivity {
                 they will use to get info about Repos, Followers and Following.
 
              */
-            UserFragmentRepos userFragmentRepos = new UserFragmentRepos();
+            UserRepos userFragmentRepos = new UserRepos();
             userFragmentRepos.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
-            UserFragmentFollowers userFragmentFollowers = new UserFragmentFollowers();
+            UserFollowers userFragmentFollowers = new UserFollowers();
             userFragmentFollowers.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
-            UserFragmentFollowing userFragmentFollowing = new UserFragmentFollowing();
+            UserFollowing userFragmentFollowing = new UserFollowing();
             userFragmentFollowing.populate(user.getLogin(), UserActivity.this, findViewById(android.R.id.content));
 
             return null;
@@ -306,9 +306,9 @@ public class UserActivity extends BaseDrawerActivity {
                     /*
                         Get reference of custom layout for three tabs.
                         This is due to the fact that default Pager doesn't allow multi-line
-                        tabs. user_fragment_tab includes 2 TextViews one on top of the other.
+                        tabs. user_tab includes 2 TextViews one on top of the other.
                      */
-                    View customLayout = LayoutInflater.from(context).inflate(R.layout.user_fragment_tab, null);
+                    View customLayout = LayoutInflater.from(context).inflate(R.layout.user_tab, null);
                     commonPagerTitleView.setContentView(customLayout);
                     final TextView user_fragment_tab_n = (TextView) customLayout.findViewById(R.id.user_fragment_tab_n);
                     final TextView user_fragment_tab_title = (TextView) customLayout.findViewById(R.id.user_fragment_tab_title);
