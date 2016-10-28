@@ -155,10 +155,10 @@ public class SearchActivity extends BaseDrawerActivity{
                 if (Constants.isNetworkAvailable(getApplicationContext())) {
 
                     if (!searchRepos.isLOADING())
-                        searchRepos.populate(query, getApplicationContext(), findViewById(R.id.search_repos_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+                        searchRepos.populate(query, SearchActivity.this, findViewById(R.id.search_repos_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
 
                     if (!searchUsers.isLOADING())
-                        searchUsers.populate(query, getApplicationContext(), findViewById(R.id.search_users_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+                        searchUsers.populate(query, SearchActivity.this, findViewById(R.id.search_users_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
                     PREVENT_MULTIPLE_SEPARATOR_LINE = false;
                 }
                 else {

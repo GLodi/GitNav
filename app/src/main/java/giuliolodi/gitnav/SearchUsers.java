@@ -34,10 +34,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.SearchUser;
 import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
@@ -46,7 +44,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import giuliolodi.gitnav.Adapters.RepoAdapter;
 import giuliolodi.gitnav.Adapters.UserAdapter;
 
 public class SearchUsers {
