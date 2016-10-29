@@ -86,15 +86,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(UserAdapter.MyViewHolder holder, final int position) {
         // Set username and fullname
-        if (userList.get(position).getName() != null) {
-            holder.username.setText("@" + userList.get(position).getLogin());
-            holder.fullname.setVisibility(View.VISIBLE);
+        if (userList.get(position).getName() != null)
             holder.fullname.setText(userList.get(position).getName());
-        }
-        else {
-            holder.username.setText(userList.get(position).getLogin());
-            holder.username.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        }
+        else
+            holder.fullname.setText(userList.get(position).getLogin());
+
+        holder.username.setText(userList.get(position).getLogin());
 
         // Set picture
         Picasso.with(holder.username.getContext()).load(userList.get(position).getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);

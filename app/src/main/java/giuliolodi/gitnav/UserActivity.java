@@ -268,7 +268,7 @@ public class UserActivity extends BaseDrawerActivity {
             // If user's name is available show both login and username. Otherwise show only login
             if (user.getName() != null) {
                 username.setText(user.getName());
-                login.setText("@" + user.getLogin());
+                login.setText(user.getLogin());
             }
             else {
                 username.setText(user.getLogin());
