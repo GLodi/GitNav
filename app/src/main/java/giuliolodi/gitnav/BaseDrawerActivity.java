@@ -114,13 +114,13 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
             return false;
         }
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_repos) {
             startActivity(new Intent(getApplicationContext(), RepoListActivity.class));
             overridePendingTransition(0,0);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_starred) {
             startActivity(new Intent(getApplicationContext(), StarredActivity.class));
             overridePendingTransition(0,0);
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_search) {
             startActivity(new Intent(getApplicationContext(), SearchActivity.class));
             overridePendingTransition(0,0);
         } else if (id == R.id.nav_manage) {

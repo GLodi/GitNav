@@ -27,21 +27,21 @@
 
     <group>
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
+            android:id="@+id/nav_repos"
+            android:icon="@drawable/ic_assignment_black_24dp"
             android:title="@string/repositories" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
+            android:id="@+id/nav_starred"
+            android:icon="@drawable/ic_favorite_black_24dp"
             android:title="@string/starred" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search_black_24dp"
             android:title="@string/search" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="@string/options" />
     </group>
 
     <item android:title="Communicate">
