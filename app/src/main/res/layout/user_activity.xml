@@ -29,7 +29,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ProgressBar
-        android:id="@+id/user_fragment_progress_bar"
+        android:id="@+id/user_activity_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -63,41 +63,92 @@
                     android:paddingBottom="@dimen/user_frag_bottom">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/user_fragment_image"
+                        android:id="@+id/user_activity_image"
                         android:layout_width="60dp"
                         android:layout_height="60dp"/>
 
                     <TextView
-                        android:id="@+id/user_fragment_name"
+                        android:id="@+id/user_activity_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Username"
-                        android:layout_toRightOf="@id/user_fragment_image"
+                        android:layout_toRightOf="@id/user_activity_image"
                         android:paddingLeft="16dp"
                         android:textSize="18sp"
                         android:textColor="#000000"
                         android:alpha="0.87"/>
 
                     <TextView
-                        android:id="@+id/user_fragment_login"
+                        android:id="@+id/user_activity_login"
                         android:text="Login"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/user_fragment_name"
-                        android:layout_toRightOf="@id/user_fragment_image"
+                        android:layout_below="@id/user_activity_name"
+                        android:layout_toRightOf="@id/user_activity_image"
                         android:textSize="14sp"
                         android:textColor="#000000"
                         android:alpha="0.54"
                         android:paddingLeft="16dp"/>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@id/user_activity_image"
+                        android:id="@+id/user_activity_info_ll">
+
+                        <ImageView
+                            android:id="@+id/user_activity_location_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_room_black_24dp"
+                            android:paddingTop="12dp"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/user_activity_location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="#000000"
+                            android:alpha="0.54"
+                            android:paddingLeft="4dp"
+                            android:paddingTop="10dp"
+                            android:maxLines="1"
+                            android:visibility="gone"/>
+
+                        <ImageView
+                            android:id="@+id/user_activity_mail_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mail_outline_black_24dp"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="13dp"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/user_activity_mail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="#000000"
+                            android:alpha="0.54"
+                            android:paddingLeft="4dp"
+                            android:paddingTop="10dp"
+                            android:maxLines="1"
+                            android:visibility="gone"/>
+
+                    </LinearLayout>
+
                     <TextView
-                        android:id="@+id/user_fragment_description"
+                        android:id="@+id/user_activity_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Description"
-                        android:layout_below="@id/user_fragment_image"
-                        android:paddingTop="16dp"
-                        android:textSize="14sp"/>
+                        android:layout_below="@id/user_activity_info_ll"
+                        android:paddingTop="12dp"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 

@@ -27,6 +27,7 @@ package giuliolodi.gitnav;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -79,7 +80,7 @@ public class SearchActivity extends BaseDrawerActivity{
 
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setupWithViewPager(searchViewPager);
-
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
     }
 

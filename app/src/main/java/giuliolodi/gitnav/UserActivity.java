@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -73,11 +75,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserActivity extends BaseDrawerActivity {
 
     @BindView(R.id.user_fragment_layout) RelativeLayout relativeLayout;
-    @BindView(R.id.user_fragment_name) TextView username;
-    @BindView(R.id.user_fragment_description) TextView user_bio;
-    @BindView(R.id.user_fragment_image) CircleImageView user_image;
-    @BindView(R.id.user_fragment_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.user_fragment_login) TextView login;
+    @BindView(R.id.user_activity_name) TextView username;
+    @BindView(R.id.user_activity_description) TextView user_bio;
+    @BindView(R.id.user_activity_image) CircleImageView user_image;
+    @BindView(R.id.user_activity_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.user_activity_login) TextView login;
+    @BindView(R.id.user_activity_location) TextView location;
+    @BindView(R.id.user_activity_mail) TextView mail;
+    @BindView(R.id.user_activity_location_icon) ImageView location_icon;
+    @BindView(R.id.user_activity_mail_icon) ImageView mail_icon;
     @BindView(R.id.user_vp) ViewPager mViewPager;
 
     @BindString(R.string.network_error) String network_error;
@@ -87,6 +93,7 @@ public class UserActivity extends BaseDrawerActivity {
 
     private User user;
     private String userS;
+    private String email;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private List<Integer> views;
@@ -95,6 +102,7 @@ public class UserActivity extends BaseDrawerActivity {
     private Menu menu;
 
     private boolean IS_FOLLOWED = false;
+    private boolean HAS_EMAIL = false;
 
     /*
         Most of UI items are created onPostExecute() in getUser()
@@ -169,17 +177,16 @@ public class UserActivity extends BaseDrawerActivity {
         getMenuInflater().inflate(R.menu.user_menu, menu);
         super.onCreateOptionsMenu(menu);
 
-        if (Constants.getUsername(getApplicationContext()).equals(userS)) {
-
-        }
-
-        else if (!IS_FOLLOWED) {
+        if (!Constants.getUsername(getApplicationContext()).equals(userS) && !IS_FOLLOWED) {
             menu.findItem(R.id.follow_icon).setVisible(true);
         }
 
-        else if (IS_FOLLOWED) {
+        else if (!Constants.getUsername(getApplicationContext()).equals(userS) && IS_FOLLOWED) {
             menu.findItem(R.id.unfollow).setVisible(true);
         }
+
+        if (!Constants.getUsername(getApplicationContext()).equals(userS) && HAS_EMAIL)
+            menu.findItem(R.id.send_email).setVisible(true);
     }
 
     @Override
@@ -192,6 +199,9 @@ public class UserActivity extends BaseDrawerActivity {
                 case R.id.unfollow:
                     new unfollowUser().execute();
                     return true;
+                case R.id.send_email:
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
+                    startActivity(Intent.createChooser(emailIntent, "Email"));
             }
         }
         else
@@ -252,12 +262,6 @@ public class UserActivity extends BaseDrawerActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            /*
-                The creation of the option menu is triggered after the getUser() is called to check
-                if the user is followed. This allows to show follow_icon and unfollow.
-             */
-            createOptionMenu();
-
             // If user is the one currently logged in, update his info
             if (user.getLogin().equals(Constants.getUsername(getApplicationContext())))
                 new getAuthdUser().execute();
@@ -274,9 +278,45 @@ public class UserActivity extends BaseDrawerActivity {
                 username.setText(user.getLogin());
                 login.setVisibility(View.GONE);
             }
-            if (user.getBio() == null || user.getBio().equals(""))
-                user_bio.setVisibility(View.GONE);
-            user_bio.setText(user.getBio());
+
+            if (user.getBio() != null) {
+                user_bio.setVisibility(View.VISIBLE);
+                user_bio.setText(user.getBio());
+            }
+
+            // If available set location
+            if (user.getLocation() != null) {
+                location_icon.setVisibility(View.VISIBLE);
+                location.setVisibility(View.VISIBLE);
+                location.setText(user.getLocation());
+            }
+
+            // If available set email
+            if (user.getEmail() != null) {
+                HAS_EMAIL = true;
+                mail_icon.setVisibility(View.VISIBLE);
+                mail.setVisibility(View.VISIBLE);
+                mail.setText(user.getEmail());
+                email = user.getEmail();
+            }
+
+            // Fix padding if user has only email
+            if (user.getEmail() != null && user.getLocation() == null) {
+                int paddingPixel = 13;
+                float density = getApplicationContext().getResources().getDisplayMetrics().density;
+                int paddingDp = (int)(paddingPixel * density);
+                mail_icon.setPadding(0, paddingDp, 0, 0);
+                mail_icon.setVisibility(View.VISIBLE);
+                mail.setVisibility(View.VISIBLE);
+                mail.setText(user.getEmail());
+                email = user.getEmail();
+            }
+
+            /*
+                The creation of the option menu is triggered after the getUser() is called to check
+                if the user is followed. This allows to show follow_icon and unfollow.
+             */
+            createOptionMenu();
 
             // Setup lists for tabs
             final List<String> mTitleDataList = new ArrayList<>();
