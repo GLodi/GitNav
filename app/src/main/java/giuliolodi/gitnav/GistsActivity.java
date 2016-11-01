@@ -71,6 +71,11 @@ public class GistsActivity extends BaseDrawerActivity {
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         tabLayout.setupWithViewPager(gistsViewpager);
 
+        GistsMine gistsMine = new GistsMine();
+        gistsMine.populate();
+        GistsStarred gistsStarred = new GistsStarred();
+        gistsStarred.populate();
+
     }
 
     public class MyAdapter extends PagerAdapter {

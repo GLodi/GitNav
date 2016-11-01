@@ -25,5 +25,34 @@
 package giuliolodi.gitnav;
 
 
+import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import butterknife.BindView;
+
 public class GistsMine {
+
+    @BindView(R.id.gists_mine_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.gists_mine_rv) RecyclerView recyclerView;
+    @BindView(R.id.gists_mine_no) TextView noMineGists;
+
+    public void populate() {
+        new getMineGists().execute();
+    }
+
+    public class getMineGists extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return null;
+        }
+    }
+
 }

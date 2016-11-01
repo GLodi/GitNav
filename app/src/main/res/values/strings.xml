@@ -56,6 +56,8 @@
     <string name="no_repositories">No repositories to show</string>
     <string name="no_users">No users to show</string>
     <string name="no_code">No code to show</string>
+    <string name="gists_mine_no">You don't have any gist</string>
+    <string name="gists_starred_no">You don't have any starred gist</string>
 
     <string name="mine">Mine</string>
     <string name="users">Users</string>

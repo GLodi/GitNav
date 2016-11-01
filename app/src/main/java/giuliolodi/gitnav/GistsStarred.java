@@ -26,4 +26,9 @@ package giuliolodi.gitnav;
 
 
 public class GistsStarred {
+
+    public void populate() {
+
+    }
+
 }
