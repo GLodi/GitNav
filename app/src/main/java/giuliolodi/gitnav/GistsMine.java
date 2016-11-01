@@ -25,11 +25,18 @@
 package giuliolodi.gitnav;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.eclipse.egit.github.core.Gist;
+import org.eclipse.egit.github.core.service.GistService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -39,7 +46,11 @@ public class GistsMine {
     @BindView(R.id.gists_mine_rv) RecyclerView recyclerView;
     @BindView(R.id.gists_mine_no) TextView noMineGists;
 
-    public void populate() {
+    private List<Gist> gistsList;
+    private Context context;
+
+    public void populate(Context context) {
+        this.context = context;
         new getMineGists().execute();
     }
 
@@ -47,10 +58,17 @@ public class GistsMine {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            noMineGists.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected String doInBackground(String... strings) {
+            GistService gistService = new GistService();
+            gistService.getClient().setOAuth2Token(Constants.getToken(context));
+
+            gistsList = new ArrayList<>(gistService.pageGists(Constants.getUsername(context)).next());
+
             return null;
         }
     }
