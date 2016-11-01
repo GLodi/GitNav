@@ -123,6 +123,9 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
         } else if (id == R.id.nav_search) {
             startActivity(new Intent(getApplicationContext(), SearchActivity.class));
             overridePendingTransition(0,0);
+        } else if (id == R.id.nav_gists) {
+            startActivity(new Intent(getApplicationContext(), GistsActivity.class));
+            overridePendingTransition(0,0);
         } else if (id == R.id.nav_manage) {
         } else if (id == R.id.nav_share) {
         } else if (id == R.id.nav_send) {
