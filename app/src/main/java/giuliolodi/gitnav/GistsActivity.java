@@ -72,7 +72,7 @@ public class GistsActivity extends BaseDrawerActivity {
         tabLayout.setupWithViewPager(gistsViewpager);
 
         GistsMine gistsMine = new GistsMine();
-        gistsMine.populate();
+        gistsMine.populate(GistsActivity.this, frameLayout);
         GistsStarred gistsStarred = new GistsStarred();
         gistsStarred.populate();
 
