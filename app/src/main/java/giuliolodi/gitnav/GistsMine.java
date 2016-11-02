@@ -67,10 +67,10 @@ public class GistsMine {
     // Flag that prevents multiple pages from being downloaded at the same time
     private boolean LOADING = false;
 
-    public void populate(Context context, ViewGroup container) {
+    public void populate(Context context, View v) {
         this.context = context;
-        View w = View.inflate(context, R.layout.gists_mine, container);
-        ButterKnife.bind(this, w);
+
+        ButterKnife.bind(this, v);
         new getMineGists().execute();
     }
 

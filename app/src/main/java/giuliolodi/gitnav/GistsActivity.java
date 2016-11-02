@@ -71,8 +71,8 @@ public class GistsActivity extends BaseDrawerActivity {
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         tabLayout.setupWithViewPager(gistsViewpager);
 
-        GistsMine gistsMine = new GistsMine();
-        gistsMine.populate(GistsActivity.this, frameLayout);
+        final GistsMine gistsMine = new GistsMine();
+        gistsMine.populate(GistsActivity.this, findViewById(R.id.gists_mine_rl));
         GistsStarred gistsStarred = new GistsStarred();
         gistsStarred.populate();
 
