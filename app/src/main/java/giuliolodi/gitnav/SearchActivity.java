@@ -47,7 +47,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchActivity extends BaseDrawerActivity{
+public class SearchActivity extends BaseDrawerActivity {
 
     @BindView(R.id.tab_layout) TabLayout tabLayout;
     @BindView(R.id.search_viewpager) ViewPager searchViewPager;

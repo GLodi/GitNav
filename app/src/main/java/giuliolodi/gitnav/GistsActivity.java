@@ -32,6 +32,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,11 +71,6 @@ public class GistsActivity extends BaseDrawerActivity {
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         tabLayout.setupWithViewPager(gistsViewpager);
-
-        final GistsMine gistsMine = new GistsMine();
-        gistsMine.populate(GistsActivity.this, findViewById(R.id.gists_mine_rl));
-        GistsStarred gistsStarred = new GistsStarred();
-        gistsStarred.populate();
 
     }
 
@@ -130,6 +126,10 @@ public class GistsActivity extends BaseDrawerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        GistsMine gistsMine = new GistsMine();
+        gistsMine.populate(GistsActivity.this, findViewById(R.id.gists_mine_rl));
+        GistsStarred gistsStarred = new GistsStarred();
+        gistsStarred.populate();
         return true;
     }
 
