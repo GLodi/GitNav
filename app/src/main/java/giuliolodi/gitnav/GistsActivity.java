@@ -129,7 +129,7 @@ public class GistsActivity extends BaseDrawerActivity {
         GistsMine gistsMine = new GistsMine();
         gistsMine.populate(GistsActivity.this, findViewById(R.id.gists_mine_rl));
         GistsStarred gistsStarred = new GistsStarred();
-        gistsStarred.populate();
+        gistsStarred.populate(GistsActivity.this, findViewById(R.id.gists_starred_rl));
         return true;
     }
 
