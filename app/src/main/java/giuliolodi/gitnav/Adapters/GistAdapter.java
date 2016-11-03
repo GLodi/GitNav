@@ -49,7 +49,7 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.gists_row_description) TextView description;
-        @BindView(R.id.gists_row_comments_n) TextView commentN;
+        @BindView(R.id.gists_row_files_n) TextView filesN;
         @BindView(R.id.gists_row_public) TextView isPublic;
         @BindView(R.id.gists_row_date) TextView date;
         @BindView(R.id.gists_row_id) TextView id;
@@ -60,7 +60,7 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
             ButterKnife.bind(this, view);
 
             description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
-            commentN.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            filesN.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             isPublic.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
         }
@@ -85,9 +85,11 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
 
         Gist gist = gistList.get(position);
 
+        gist.getFiles().size();
+
         holder.description.setText(gist.getDescription());
         holder.isPublic.setText(gist.isPublic() ? "Public" : "Private");
-        holder.commentN.setText(String.valueOf(gist.getComments()));
+        holder.filesN.setText(String.valueOf(gist.getFiles().size()));
         holder.id.setText(gist.getId());
         holder.date.setText(p.format(gist.getCreatedAt()));
     }
