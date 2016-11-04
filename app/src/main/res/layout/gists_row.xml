@@ -61,7 +61,8 @@
             android:textSize="14sp"
             android:textColor="#000000"
             android:alpha="0.54"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:text="Id string"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"

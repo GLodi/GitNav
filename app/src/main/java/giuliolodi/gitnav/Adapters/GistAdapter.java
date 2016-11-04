@@ -85,8 +85,6 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
 
         Gist gist = gistList.get(position);
 
-        gist.getFiles().size();
-
         holder.description.setText(gist.getDescription());
         holder.isPublic.setText(gist.isPublic() ? "Public" : "Private");
         holder.filesN.setText(String.valueOf(gist.getFiles().size()));
