@@ -105,6 +105,9 @@ public class SearchUsers {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            if (userSearchList.isEmpty())
+                noUsers.setVisibility(View.VISIBLE);
+
             userAdapter = new UserAdapter(userList, context);
             linearLayoutManager = new LinearLayoutManager(context);
             recyclerView.setLayoutManager(linearLayoutManager);

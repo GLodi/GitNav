@@ -98,6 +98,9 @@ public class SearchRepos {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            if (repositoryList.isEmpty())
+                noRepositories.setVisibility(View.VISIBLE);
+
             repoAdapter = new RepoAdapter(repositoryList);
             linearLayoutManager = new LinearLayoutManager(context);
             recyclerView.setLayoutManager(linearLayoutManager);
