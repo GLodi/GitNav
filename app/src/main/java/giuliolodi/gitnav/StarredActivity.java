@@ -36,7 +36,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.StarService;
@@ -67,6 +70,7 @@ public class StarredActivity extends BaseDrawerActivity {
     @BindView(R.id.starred_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.starred_progress_bar) ProgressBar progressBar;
     @BindView(R.id.starred_refresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.starred_no_repo) TextView noRepos;
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.starred) String starred;
@@ -208,6 +212,10 @@ public class StarredActivity extends BaseDrawerActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
+            noRepos.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+            if (starredRepoList.isEmpty())
+                noRepos.setVisibility(View.VISIBLE);
 
             HIDE_PROGRESS_BAR = true;
 

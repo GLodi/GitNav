@@ -37,7 +37,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -63,6 +66,7 @@ public class RepoListActivity extends BaseDrawerActivity {
     @BindView (R.id.repo_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.repo_progress_bar) ProgressBar progressBar;
     @BindView(R.id.repo_refresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.repo_no_repo) TextView noRepos;
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.repositories) String repositories;
@@ -212,6 +216,11 @@ public class RepoListActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
 
             HIDE_PROGRESS_BAR = true;
+
+            // Check if there are no repos
+            noRepos.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+            if (repositoryList.isEmpty())
+                noRepos.setVisibility(View.VISIBLE);
 
             // Set ProgressBar invisible
             progressBar.setVisibility(View.GONE);

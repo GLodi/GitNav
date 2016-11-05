@@ -31,7 +31,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -56,6 +59,7 @@ public class UserRepos {
     private Map FILTER_OPTION;
     private RepositoryService repositoryService;
     private LinearLayoutManager mLayoutManager;
+    private TextView noRepos;
 
     // Number of page that we have currently downloaded. Starts at 1
     private int DOWNLOAD_PAGE_N = 1;
@@ -100,6 +104,13 @@ public class UserRepos {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
+            noRepos = (TextView) v.findViewById(R.id.user_repos_tv);
+            noRepos.setTypeface(EasyFonts.robotoRegular(context));
+
+            if (repositoryList.isEmpty())
+                noRepos.setVisibility(View.VISIBLE);
+
             repoAdapter = new RepoAdapter(repositoryList);
             mLayoutManager = new LinearLayoutManager(context);
             rv = (RecyclerView) v.findViewById(R.id.user_repos_rv);

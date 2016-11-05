@@ -31,7 +31,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
@@ -55,6 +58,7 @@ public class UserFollowers {
     private RecyclerView rv;
     private LinearLayoutManager mLayoutManager;
     private UserService userService;
+    private TextView noUsers;
 
     // Number of page that we have currently downloaded. Starts at 1
     private int DOWNLOAD_PAGE_N = 1;
@@ -106,6 +110,13 @@ public class UserFollowers {
                 Set adapter. Pass FragmentManager as parameter because
                 the adapter needs it to open a UserActivity when a profile icon is clicked.
              */
+
+            noUsers = (TextView) v.findViewById(R.id.user_followers_tv);
+            noUsers.setTypeface(EasyFonts.robotoRegular(context));
+
+            if(followers.isEmpty())
+                noUsers.setVisibility(View.VISIBLE);
+
             userAdapter = new UserAdapter(followers, context);
             mLayoutManager = new LinearLayoutManager(context);
             rv = (RecyclerView) v.findViewById(R.id.user_followers_rv);
