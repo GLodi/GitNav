@@ -26,15 +26,21 @@ package giuliolodi.gitnav;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.OptionAdapter;
 
 public class OptionActivity extends BaseDrawerActivity {
 
     @BindView(R.id.option_activity_rv) RecyclerView recyclerView;
+
+    private OptionAdapter optionAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +49,13 @@ public class OptionActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
-
+        optionAdapter = new OptionAdapter(getApplicationContext());
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(optionAdapter);
+        optionAdapter.notifyDataSetChanged();
     }
 
     @Override

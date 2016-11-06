@@ -50,8 +50,8 @@ import giuliolodi.gitnav.UserActivity;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
 
-    List<User> userList;
-    Context context;
+    private List<User> userList;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
