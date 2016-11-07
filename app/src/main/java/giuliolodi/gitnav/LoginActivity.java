@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                     else
                         editor.putString(Constants.getEmailKey(getApplicationContext()), "No public email address");
                     if (user.getName() != null && !user.getName().isEmpty())
-                        editor.putString((Constants.getFullNameKey(getApplicationContext())), user.getName());
+                        editor.putString(Constants.getFullNameKey(getApplicationContext()), user.getName());
                     editor.commit();
                     Bitmap profile_picture = Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).get();
                     new ImageSaver(getApplicationContext())

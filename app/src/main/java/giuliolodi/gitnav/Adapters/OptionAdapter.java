@@ -27,6 +27,9 @@ package giuliolodi.gitnav.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
@@ -43,12 +46,15 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Constants;
+import giuliolodi.gitnav.LoginActivity;
 import giuliolodi.gitnav.R;
 
 public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHolder> {
 
     private Context context;
     private Activity activity;
+    private SharedPreferences sp;
+    public SharedPreferences.Editor editor;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -90,6 +96,8 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
         // Depending on what option the user select, open contextual menu
         switch(position) {
             case 0:
+                sp = PreferenceManager.getDefaultSharedPreferences(context);
+                editor = sp.edit();
                 holder.optionName.setText(holder.logout);
                 holder.optionDescription.setText(holder.currentlyLoggedInAs + " " + Constants.getUsername(context));
                 holder.ll.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +109,16 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
                                 .setPositiveButton(holder.yes, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Toast.makeText(context, "Bella", Toast.LENGTH_LONG).show();
+                                        // Delete all sp info stored
+                                        editor.putString(Constants.getTokenKey(context), "");
+                                        editor.putString(Constants.getUserKey(context), "");
+                                        editor.putBoolean(Constants.getAuthdKey(context), false);
+                                        editor.putString(Constants.getEmailKey(context), "");
+                                        editor.putString(Constants.getFullNameKey(context), "");
+                                        editor.commit();
+
+                                        // Intent to LoginActivity
+                                        context.startActivity(new Intent(context, LoginActivity.class));
                                     }
                                 })
                                 .setNegativeButton(holder.no, null).show();
