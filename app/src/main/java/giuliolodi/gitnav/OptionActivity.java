@@ -49,7 +49,7 @@ public class OptionActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
-        optionAdapter = new OptionAdapter(getApplicationContext());
+        optionAdapter = new OptionAdapter(getApplicationContext(), OptionActivity.this);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
         recyclerView.setLayoutManager(linearLayoutManager);

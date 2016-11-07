@@ -24,9 +24,11 @@
 
 package giuliolodi.gitnav.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,11 +42,13 @@ import com.vstechlab.easyfonts.EasyFonts;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Constants;
 import giuliolodi.gitnav.R;
 
 public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHolder> {
 
     private Context context;
+    private Activity activity;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -54,6 +58,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
 
         @BindString(R.string.logout) String logout;
         @BindString(R.string.confirm_logout) String confirmLogout;
+        @BindString(R.string.currently_logged_in_as) String currentlyLoggedInAs;
         @BindString(R.string.yes) String yes;
         @BindString(R.string.no) String no;
 
@@ -68,8 +73,9 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
 
     }
 
-    public OptionAdapter(Context context) {
+    public OptionAdapter(Context context, Activity activity) {
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -85,11 +91,11 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
         switch(position) {
             case 0:
                 holder.optionName.setText(holder.logout);
-                holder.optionDescription.setVisibility(View.GONE);
+                holder.optionDescription.setText(holder.currentlyLoggedInAs + " " + Constants.getUsername(context));
                 holder.ll.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        new AlertDialog.Builder(context)
+                        new AlertDialog.Builder(activity)
                                 .setTitle(holder.logout)
                                 .setMessage(holder.confirmLogout)
                                 .setPositiveButton(holder.yes, new DialogInterface.OnClickListener() {
