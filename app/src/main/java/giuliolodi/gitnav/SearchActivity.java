@@ -27,6 +27,7 @@ package giuliolodi.gitnav;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -182,7 +183,8 @@ public class SearchActivity extends BaseDrawerActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_options:
-
+                startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+                overridePendingTransition(0,0);
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -26,6 +26,7 @@ package giuliolodi.gitnav;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -136,6 +138,17 @@ public class GistsActivity extends BaseDrawerActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(0,0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_options:
+                startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+                overridePendingTransition(0,0);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

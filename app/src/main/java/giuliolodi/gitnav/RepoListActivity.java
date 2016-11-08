@@ -25,6 +25,7 @@
 package giuliolodi.gitnav;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -149,6 +150,10 @@ public class RepoListActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_options) {
+            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+            overridePendingTransition(0,0);
+        }
         if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.repo_sort_created:

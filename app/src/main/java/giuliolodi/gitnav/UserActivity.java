@@ -191,6 +191,10 @@ public class UserActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_options) {
+            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+            overridePendingTransition(0,0);
+        }
         if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.follow_icon:
