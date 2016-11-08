@@ -25,19 +25,59 @@
 package giuliolodi.gitnav;
 
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
-public class SearchCode extends Fragment {
+import org.eclipse.egit.github.core.CodeSearchResult;
+import org.eclipse.egit.github.core.service.RepositoryService;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.search_code, container, false);
-        return rootView;
+import java.io.IOException;
+import java.util.List;
+
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class SearchCode  {
+
+    @BindView(R.id.search_code_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.search_code_rv) RecyclerView recyclerView;
+    @BindString(R.string.no_code) String noCode;
+
+    private String query;
+    private List<CodeSearchResult> searchResultList;
+    private Context context;
+
+    private boolean PREVENT_MULTIPLE_SEPARATOR_LINE;
+    private boolean LOADING = false;
+
+    public void populate(String query, Context context, View v, boolean PREVENT_MULTIPLE_SEPARATOR_LINE) {
+        this.query = query;
+        this.context = context;
+        this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
+        ButterKnife.bind(this, v);
+        LOADING = true;
     }
+
+    public boolean isLOADING() {
+        return LOADING;
+    }
+
+    public class getCode extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            RepositoryService repositoryService = new RepositoryService();
+            repositoryService.getClient().setOAuth2Token(Constants.getToken(context));
+
+            try {
+                searchResultList = repositoryService.searchCode(query);
+            } catch (IOException e) {e.printStackTrace();}
+
+            return null;
+        }
+    }
+
 }

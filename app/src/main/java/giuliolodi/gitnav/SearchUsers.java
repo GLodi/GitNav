@@ -63,7 +63,7 @@ public class SearchUsers {
     private boolean LOADING = false;
     private boolean PREVENT_MULTIPLE_SEPARATOR_LINE;
 
-    public void populate(String query, Context context, View v, Boolean PREVENT_MULTIPLE_SEPARATOR_LINE) {
+    public void populate(String query, Context context, View v, boolean PREVENT_MULTIPLE_SEPARATOR_LINE) {
         this.query = query;
         this.context = context;
         this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
