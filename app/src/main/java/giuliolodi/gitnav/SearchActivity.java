@@ -151,6 +151,7 @@ public class SearchActivity extends BaseDrawerActivity {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         final SearchRepos searchRepos = new SearchRepos();
         final SearchUsers searchUsers = new SearchUsers();
+        final SearchCode searchCode = new SearchCode();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -162,6 +163,10 @@ public class SearchActivity extends BaseDrawerActivity {
 
                     if (!searchUsers.isLOADING())
                         searchUsers.populate(query, SearchActivity.this, findViewById(R.id.search_users_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+
+                    if (!searchCode.isLOADING())
+                        searchCode.populate(query, SearchActivity.this, findViewById(R.id.search_code_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+
                     PREVENT_MULTIPLE_SEPARATOR_LINE = false;
                 }
                 else {

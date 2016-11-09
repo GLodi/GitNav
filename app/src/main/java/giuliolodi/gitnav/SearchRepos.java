@@ -98,7 +98,7 @@ public class SearchRepos {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            if (repositoryList.isEmpty())
+            if (repositoryList == null || repositoryList.isEmpty())
                 noRepositories.setVisibility(View.VISIBLE);
 
             repoAdapter = new RepoAdapter(repositoryList);

@@ -27,9 +27,12 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.eclipse.egit.github.core.CodeSearchResult;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -37,15 +40,18 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.CodeAdapter;
 
 public class SearchCode  {
 
     @BindView(R.id.search_code_progress_bar) ProgressBar progressBar;
     @BindView(R.id.search_code_rv) RecyclerView recyclerView;
-    @BindString(R.string.no_code) String noCode;
+    @BindView(R.id.no_code) TextView noCode;
+
+    private CodeAdapter codeAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private String query;
     private List<CodeSearchResult> searchResultList;
@@ -60,6 +66,7 @@ public class SearchCode  {
         this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
         ButterKnife.bind(this, v);
         LOADING = true;
+        new getCode().execute();
     }
 
     public boolean isLOADING() {
@@ -67,6 +74,13 @@ public class SearchCode  {
     }
 
     public class getCode extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            noCode.setVisibility(View.INVISIBLE);
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             RepositoryService repositoryService = new RepositoryService();
@@ -77,6 +91,26 @@ public class SearchCode  {
             } catch (IOException e) {e.printStackTrace();}
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            if (searchResultList == null ||searchResultList.isEmpty())
+                noCode.setVisibility(View.VISIBLE);
+
+            codeAdapter = new CodeAdapter(searchResultList, context);
+            linearLayoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            if (PREVENT_MULTIPLE_SEPARATOR_LINE)
+                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(codeAdapter);
+            progressBar.setVisibility(View.GONE);
+            codeAdapter.notifyDataSetChanged();
+
+            LOADING = false;
         }
     }
 

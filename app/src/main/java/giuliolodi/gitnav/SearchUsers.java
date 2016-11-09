@@ -105,7 +105,7 @@ public class SearchUsers {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            if (userSearchList.isEmpty())
+            if (userSearchList == null || userSearchList.isEmpty())
                 noUsers.setVisibility(View.VISIBLE);
 
             userAdapter = new UserAdapter(userList, context);
