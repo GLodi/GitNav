@@ -56,9 +56,9 @@
     <string name="gists">Gists</string>
     <string name="options">Options</string>
 
-    <string name="no_repositories">No repositories to show</string>
-    <string name="no_users">No users to show</string>
-    <string name="no_code">No code to show</string>
+    <string name="no_repositories">No repositories</string>
+    <string name="no_users">No users</string>
+    <string name="no_code">No code</string>
     <string name="gists_mine_no">You do not have any gist</string>
     <string name="gists_starred_no">You do not have any starred gist</string>
 

@@ -35,6 +35,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.eclipse.egit.github.core.CodeSearchResult;
+import org.eclipse.egit.github.core.TextMatch;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.io.IOException;

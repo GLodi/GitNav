@@ -66,6 +66,7 @@ public class CodeAdapter extends RecyclerView.Adapter<CodeAdapter.MyViewHolder>{
 
     public CodeAdapter(List<CodeSearchResult> searchResultList, Context context) {
         this.searchResultList = searchResultList;
+        this.context = context;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class CodeAdapter extends RecyclerView.Adapter<CodeAdapter.MyViewHolder>{
     @Override
     public void onBindViewHolder(CodeAdapter.MyViewHolder holder, final int position) {
         holder.name.setText(searchResultList.get(position).getName());
-        holder.path.setText(searchResultList.get(position).getPath());
+        holder.path.setText(searchResultList.get(position).getRepository().getOwner().getLogin() + "/" + searchResultList.get(position).getRepository().getName());
     }
 
     @Override
