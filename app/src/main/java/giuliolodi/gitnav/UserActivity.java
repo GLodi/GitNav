@@ -36,6 +36,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -103,6 +104,7 @@ public class UserActivity extends BaseDrawerActivity {
 
     private boolean IS_FOLLOWED = false;
     private boolean HAS_EMAIL = false;
+    private boolean HAS_CLICKED_ON_BIO = false;
 
     /*
         Most of UI items are created onPostExecute() in getUser()
@@ -162,11 +164,19 @@ public class UserActivity extends BaseDrawerActivity {
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
+    private void setHasClickedOnBio(boolean set) {
+        this.HAS_CLICKED_ON_BIO = set;
+    }
+
+    private boolean getHasClickedOnBio() {
+        return HAS_CLICKED_ON_BIO;
+    }
+
     /*
-        This is used only to get the menu object from the Intent call.
-        The menu is created through createOptionMenu(), which is called after
-        getUser() has checked if the user if followed.
-     */
+            This is used only to get the menu object from the Intent call.
+            The menu is created through createOptionMenu(), which is called after
+            getUser() has checked if the user if followed.
+         */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
@@ -285,7 +295,19 @@ public class UserActivity extends BaseDrawerActivity {
 
             if (user.getBio() != null) {
                 user_bio.setVisibility(View.VISIBLE);
+                user_bio.setMaxLines(2);
+                user_bio.setEllipsize(TextUtils.TruncateAt.END);
                 user_bio.setText(user.getBio());
+                user_bio.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setHasClickedOnBio(!getHasClickedOnBio());
+                        if (getHasClickedOnBio())
+                            user_bio.setMaxLines(100);
+                        else
+                            user_bio.setMaxLines(2);
+                    }
+                });
             }
 
             // If available set location
