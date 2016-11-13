@@ -54,6 +54,7 @@
     <string name="repositories">Repositories</string>
     <string name="search">Search</string>
     <string name="gists">Gists</string>
+    <string name="gist">Gist</string>
     <string name="options">Options</string>
 
     <string name="no_repositories">No repositories</string>

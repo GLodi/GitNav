@@ -25,10 +25,14 @@
 package giuliolodi.gitnav.Adapters;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vstechlab.easyfonts.EasyFonts;
@@ -40,6 +44,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.GistActivity;
 import giuliolodi.gitnav.R;
 
 public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
@@ -53,6 +58,7 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
         @BindView(R.id.gists_row_public) TextView isPublic;
         @BindView(R.id.gists_row_date) TextView date;
         @BindView(R.id.gists_row_id) TextView id;
+        @BindView(R.id.gists_row_ll) LinearLayout ll;
 
         public MyViewHolder(View view) {
             super(view);
@@ -74,7 +80,7 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.gists_row, parent, false);
+                .inflate(R.layout.gist_row, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -83,13 +89,22 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
         // Get pretty time object
         PrettyTime p = new PrettyTime();
 
-        Gist gist = gistList.get(position);
+        final Context context = holder.description.getContext();
+        final Gist gist = gistList.get(position);
 
         holder.description.setText(gist.getDescription());
         holder.isPublic.setText(gist.isPublic() ? "Public" : "Private");
         holder.filesN.setText(String.valueOf(gist.getFiles().size()));
         holder.id.setText(gist.getId());
         holder.date.setText(p.format(gist.getCreatedAt()));
+
+        holder.ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, GistActivity.class).putExtra("GistId", gist.getId()));
+                ((Activity) context).overridePendingTransition(0, 0);
+            }
+        });
     }
 
     @Override

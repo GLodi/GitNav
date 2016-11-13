@@ -45,7 +45,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GistsActivity extends BaseDrawerActivity {
+public class GistListActivity extends BaseDrawerActivity {
 
     @BindView(R.id.tab_layout) TabLayout tabLayout;
     @BindView(R.id.gists_viewpager) ViewPager gistsViewpager;
@@ -58,13 +58,13 @@ public class GistsActivity extends BaseDrawerActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.gists_activity, frameLayout);
+        getLayoutInflater().inflate(R.layout.gist_list_activity, frameLayout);
 
         ButterKnife.bind(this);
 
         views = new ArrayList<>();
-        views.add(R.layout.gists_mine);
-        views.add(R.layout.gists_starred);
+        views.add(R.layout.gist_list_mine);
+        views.add(R.layout.gist_list_starred);
 
         gistsViewpager.setOffscreenPageLimit(2);
         gistsViewpager.setAdapter(new MyAdapter(getApplicationContext()));
@@ -127,10 +127,10 @@ public class GistsActivity extends BaseDrawerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        GistsMine gistsMine = new GistsMine();
-        gistsMine.populate(GistsActivity.this, findViewById(R.id.gists_mine_rl));
-        GistsStarred gistsStarred = new GistsStarred();
-        gistsStarred.populate(GistsActivity.this, findViewById(R.id.gists_starred_rl));
+        GistListMine gistListMine = new GistListMine();
+        gistListMine.populate(GistListActivity.this, findViewById(R.id.gists_mine_rl));
+        GistListStarred gistListStarred = new GistListStarred();
+        gistListStarred.populate(GistListActivity.this, findViewById(R.id.gists_starred_rl));
         return true;
     }
 

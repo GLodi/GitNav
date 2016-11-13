@@ -69,8 +69,15 @@
 
         </activity>
         <activity
-            android:name=".GistsActivity"
+            android:name=".GistListActivity"
             android:label="@string/gists"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".GistActivity"
+            android:label="@string/gist"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 

@@ -30,10 +30,7 @@ import android.os.AsyncTask;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -47,11 +44,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.GistAdapter;
 
-public class GistsMine {
+public class GistListStarred {
 
-    @BindView(R.id.gists_mine_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.gists_mine_rv) RecyclerView recyclerView;
-    @BindView(R.id.gists_mine_no) TextView noMineGists;
+    @BindView(R.id.gists_starred_rv) RecyclerView recyclerView;
+    @BindView(R.id.gists_starred_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.gists_starred_no) TextView noStarredGists;
 
     private List<Gist> gistsList;
     private List<Gist> t;
@@ -72,15 +69,15 @@ public class GistsMine {
     public void populate(Context context, View v) {
         this.context = context;
         ButterKnife.bind(this, v);
-        new getMineGists().execute();
+        new getStarredGists().execute();
     }
 
-    private class getMineGists extends AsyncTask<String, String, String> {
+    private class getStarredGists extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
-            noMineGists.setVisibility(View.INVISIBLE);
+            noStarredGists.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -88,7 +85,7 @@ public class GistsMine {
             gistService = new GistService();
             gistService.getClient().setOAuth2Token(Constants.getToken(context));
 
-            gistsList = new ArrayList<>(gistService.pageGists(Constants.getUsername(context), DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            gistsList = new ArrayList<>(gistService.pageStarredGists(DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
 
             return null;
         }
@@ -100,7 +97,7 @@ public class GistsMine {
             progressBar.setVisibility(View.GONE);
 
             if (gistsList.isEmpty())
-                noMineGists.setVisibility(View.VISIBLE);
+                noStarredGists.setVisibility(View.VISIBLE);
 
             gistAdapter = new GistAdapter(gistsList);
             linearLayoutManager = new LinearLayoutManager(context);
@@ -113,7 +110,6 @@ public class GistsMine {
             setupOnScrollListener();
 
             gistAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -133,7 +129,7 @@ public class GistsMine {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreMineGists().execute();
+                    new getMoreStarredGists().execute();
                 }
             }
         };
@@ -142,10 +138,10 @@ public class GistsMine {
 
     }
 
-    private class getMoreMineGists extends AsyncTask<String, String, String> {
+    private class getMoreStarredGists extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... strings) {
-            t = new ArrayList<>(gistService.pageGists(Constants.getUsername(context), DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(gistService.pageStarredGists(DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             for (int i = 0; i < t.size(); i++) {
                 gistsList.add(t.get(i));
             }
