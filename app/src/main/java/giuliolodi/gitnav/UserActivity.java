@@ -216,6 +216,10 @@ public class UserActivity extends BaseDrawerActivity {
                 case R.id.send_email:
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     startActivity(Intent.createChooser(emailIntent, "Email"));
+                    return true;
+                case R.id.open_in_broswer:
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(user.getHtmlUrl()));
+                    startActivity(browserIntent);
             }
         }
         else

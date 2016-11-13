@@ -29,15 +29,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.service.GistService;
 
 import java.io.IOException;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GistActivity extends BaseDrawerActivity {
+
+    @BindView(R.id.gist_activity_progress_bar) ProgressBar progressBar;
 
     private Gist gist;
 
@@ -88,6 +93,7 @@ public class GistActivity extends BaseDrawerActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             getSupportActionBar().setTitle(gist.getDescription());
+            progressBar.setVisibility(View.GONE);
         }
     }
 }
