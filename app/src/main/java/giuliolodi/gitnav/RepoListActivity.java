@@ -65,7 +65,7 @@ public class RepoListActivity extends BaseDrawerActivity {
     private RepositoryService repositoryService;
 
     @BindView (R.id.repo_recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.repo_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.repo_list_progress_bar) ProgressBar progressBar;
     @BindView(R.id.repo_refresh) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.repo_no_repo) TextView noRepos;
 

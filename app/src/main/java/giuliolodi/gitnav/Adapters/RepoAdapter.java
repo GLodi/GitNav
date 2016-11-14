@@ -25,11 +25,15 @@
 package giuliolodi.gitnav.Adapters;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vstechlab.easyfonts.EasyFonts;
@@ -41,7 +45,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.GistActivity;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.RepoActivity;
 
 public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> {
 
@@ -56,8 +62,8 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         @BindView(R.id.repo_row_forked) TextView repo_row_forked;
         @BindView(R.id.repo_row_star_number) TextView repo_row_star_number;
         @BindView(R.id.repo_row_date) TextView repo_row_date;
-
         @BindView(R.id.repo_code) ImageView repo_row_language_icon;
+        @BindView(R.id.repo_row_ll) LinearLayout ll;
 
         public MyViewHolder(View view) {
             super(view);
@@ -92,8 +98,10 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         PrettyTime p = new PrettyTime();
 
         // Get repo and parent repo (if available)
-        Repository repo = repositoryList.get(position);
+        final Repository repo = repositoryList.get(position);
         Repository parent;
+
+        final Context context = holder.repo_row_description.getContext();
 
         // Set owner
         holder.repo_row_owner.setText(repo.getOwner().getLogin() + "/");
@@ -130,6 +138,13 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
             holder.repo_row_forked.setVisibility(View.GONE);
         }
 
+        holder.ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, RepoActivity.class).putExtra("owner", repo.getOwner().getLogin()).putExtra("name", repo.getName()));
+                ((Activity) context).overridePendingTransition(0, 0);
+            }
+        });
 
     }
 

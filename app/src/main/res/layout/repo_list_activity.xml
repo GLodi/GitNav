@@ -33,7 +33,7 @@
         android:layout_width="match_parent">
 
         <ProgressBar
-            android:id="@+id/repo_progress_bar"
+            android:id="@+id/repo_list_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"

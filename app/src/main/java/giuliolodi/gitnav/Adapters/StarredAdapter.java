@@ -65,7 +65,6 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
         @BindView(R.id.starred_repo_author_icon) CircleImageView starred_repo_author_icon;
         @BindView(R.id.starred_code) ImageView starred_language_icon;
-        @BindView(R.id.l) LinearLayout listView;
 
         public MyViewHolder(View view) {
             super(view);
