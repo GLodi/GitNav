@@ -93,7 +93,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_black_24dp"
+                android:src="@drawable/ic_star_gold_24dp"
                 android:id="@+id/star"
                 android:paddingTop="5dp"/>
 

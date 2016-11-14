@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ MIT License
   ~
@@ -23,42 +22,12 @@
   ~ SOFTWARE.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/follow_icon"
-        android:title=""
-        android:icon="@drawable/ic_star_full_24dp"
-        app:showAsAction="always"
-        android:visible="false">
-
-    </item>
-
-    <item
-        android:id="@+id/unfollow_icon"
-        android:title=""
-        android:icon="@drawable/ic_star_empty_24dp"
-        app:showAsAction="always"
-        android:visible="false">
-
-    </item>
-
-    <item
-        android:id="@+id/action_options"
-        android:orderInCategory="100"
-        android:title="@string/options"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/unfollow"
-        android:title="@string/unfollow"
-        android:visible="false"/>
-    <item
-        android:id="@+id/send_email"
-        android:title="@string/send_email"
-        android:visible="false" />
-    <item
-        android:id="@+id/open_in_broswer"
-        android:title="@string/open_in_browser" />
-
-</menu>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="24dp"
+        android:height="24dp"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M12,17.27L18.18,21l-1.64,-7.03L22,9.24l-7.19,-0.61L12,2 9.19,8.63 2,9.24l5.46,4.73L5.82,21z"/>
+</vector>

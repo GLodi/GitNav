@@ -188,11 +188,11 @@ public class UserActivity extends BaseDrawerActivity {
         super.onCreateOptionsMenu(menu);
 
         if (!Constants.getUsername(getApplicationContext()).equals(userS) && !IS_FOLLOWED) {
-            menu.findItem(R.id.follow_icon).setVisible(true);
+            menu.findItem(R.id.unfollow_icon).setVisible(true);
         }
 
         else if (!Constants.getUsername(getApplicationContext()).equals(userS) && IS_FOLLOWED) {
-            menu.findItem(R.id.unfollow).setVisible(true);
+            menu.findItem(R.id.follow_icon).setVisible(true);
         }
 
         if (!Constants.getUsername(getApplicationContext()).equals(userS) && HAS_EMAIL)
@@ -207,10 +207,10 @@ public class UserActivity extends BaseDrawerActivity {
         }
         if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
-                case R.id.follow_icon:
+                case R.id.unfollow_icon:
                     new followUser().execute();
                     return true;
-                case R.id.unfollow:
+                case R.id.follow_icon:
                     new unfollowUser().execute();
                     return true;
                 case R.id.send_email:
@@ -465,8 +465,8 @@ public class UserActivity extends BaseDrawerActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            menu.findItem(R.id.follow_icon).setVisible(false);
-            menu.findItem(R.id.unfollow).setVisible(true);
+            menu.findItem(R.id.follow_icon).setVisible(true);
+            menu.findItem(R.id.unfollow_icon).setVisible(false);
             Toast.makeText(getApplicationContext(), user_followed, Toast.LENGTH_LONG).show();
         }
     }
@@ -483,8 +483,8 @@ public class UserActivity extends BaseDrawerActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            menu.findItem(R.id.unfollow).setVisible(false);
-            menu.findItem(R.id.follow_icon).setVisible(true);
+            menu.findItem(R.id.unfollow_icon).setVisible(true);
+            menu.findItem(R.id.follow_icon).setVisible(false);
             Toast.makeText(getApplicationContext(), user_unfollowed, Toast.LENGTH_LONG).show();
 
         }
