@@ -48,12 +48,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.RepoActivity;
 import giuliolodi.gitnav.UserActivity;
 
 
 public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHolder> {
 
     private List<Repository> starredRepositoryList;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -62,7 +64,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         @BindView(R.id.starred_repo_language) TextView starred_language;
         @BindView(R.id.starred_repo_star_number) TextView starred_stars;
         @BindView(R.id.starred_repo_date) TextView starred_repo_date;
-
+        @BindView(R.id.starred_repo_row_ll) LinearLayout linearLayout;
         @BindView(R.id.starred_repo_author_icon) CircleImageView starred_repo_author_icon;
         @BindView(R.id.starred_code) ImageView starred_language_icon;
 
@@ -83,8 +85,9 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         }
     }
 
-    public StarredAdapter(List<Repository> starredRepositoryList) {
+    public StarredAdapter(List<Repository> starredRepositoryList, Context context) {
         this.starredRepositoryList = starredRepositoryList;
+        this.context = context;
     }
 
     @Override
@@ -100,7 +103,6 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         PrettyTime p = new PrettyTime();
 
         // Set elements on each row
-        final Context context = holder.starred_repo_author_icon.getContext();
         final Repository repo = starredRepositoryList.get(position);
 
         // Set starred repo owner profile pic
@@ -129,6 +131,15 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
         // Set starred repo date
         holder.starred_repo_date.setText(p.format(repo.getCreatedAt()));
+
+        // Set repo click listener
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, RepoActivity.class).putExtra("owner", repo.getOwner().getLogin()).putExtra("name", repo.getName()));
+                ((Activity) context).overridePendingTransition(0, 0);
+            }
+        });
 
         // Set user icon click listener. Opens UserActivity
         holder.starred_repo_author_icon.setOnClickListener(new View.OnClickListener() {

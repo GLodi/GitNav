@@ -111,7 +111,7 @@ public class UserRepos {
             if (repositoryList.isEmpty())
                 noRepos.setVisibility(View.VISIBLE);
 
-            repoAdapter = new RepoAdapter(repositoryList);
+            repoAdapter = new RepoAdapter(repositoryList, context);
             mLayoutManager = new LinearLayoutManager(context);
             rv = (RecyclerView) v.findViewById(R.id.user_repos_rv);
             rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));

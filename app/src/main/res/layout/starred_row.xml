@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:id="@id/repo_row_ll">
+        android:id="@+id/starred_repo_row_ll">
 
         <TextView
             android:text="Title"

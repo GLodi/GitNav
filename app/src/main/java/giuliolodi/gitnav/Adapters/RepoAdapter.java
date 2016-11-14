@@ -52,6 +52,7 @@ import giuliolodi.gitnav.RepoActivity;
 public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> {
 
     private List<Repository> repositoryList;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -81,8 +82,9 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         }
     }
 
-    public RepoAdapter(List<Repository> repositoryList) {
+    public RepoAdapter(List<Repository> repositoryList, Context context) {
         this.repositoryList = repositoryList;
+        this.context = context;
     }
 
     @Override
@@ -100,8 +102,6 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         // Get repo and parent repo (if available)
         final Repository repo = repositoryList.get(position);
         Repository parent;
-
-        final Context context = holder.repo_row_description.getContext();
 
         // Set owner
         holder.repo_row_owner.setText(repo.getOwner().getLogin() + "/");

@@ -237,7 +237,7 @@ public class StarredActivity extends BaseDrawerActivity {
                 Set adapter. Pass FragmentManager as parameter because
                 the adapter needs it to open a UserActivity when a profile icon is clicked.
              */
-            starredAdapter = new StarredAdapter(starredRepoList);
+            starredAdapter = new StarredAdapter(starredRepoList, StarredActivity.this);
 
             // Set adapter on RecyclerView and notify it
             layoutManager = new PreCachingLayoutManager(getApplicationContext());

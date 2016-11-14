@@ -237,7 +237,7 @@ public class RepoListActivity extends BaseDrawerActivity {
             swipeRefreshLayout.setRefreshing(false);
 
             // Bind list to adapter
-            repoAdapter = new RepoAdapter(repositoryList);
+            repoAdapter = new RepoAdapter(repositoryList, RepoListActivity.this);
 
             // Set adapter on RecyclerView and notify it
              mLayoutManager = new LinearLayoutManager(getApplicationContext());

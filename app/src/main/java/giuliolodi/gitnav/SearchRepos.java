@@ -101,7 +101,7 @@ public class SearchRepos {
             if (repositoryList == null || repositoryList.isEmpty())
                 noRepositories.setVisibility(View.VISIBLE);
 
-            repoAdapter = new RepoAdapter(repositoryList);
+            repoAdapter = new RepoAdapter(repositoryList, context);
             linearLayoutManager = new LinearLayoutManager(context);
             recyclerView.setLayoutManager(linearLayoutManager);
             if (PREVENT_MULTIPLE_SEPARATOR_LINE)

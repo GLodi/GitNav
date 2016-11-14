@@ -25,19 +25,14 @@
 package giuliolodi.gitnav;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -46,7 +41,6 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RepoActivity extends BaseDrawerActivity {
 
@@ -55,7 +49,6 @@ public class RepoActivity extends BaseDrawerActivity {
     private Repository repo;
     private RepositoryService repositoryService;
     private Intent intent;
-    private Bitmap bm;
     private String owner;
     private String name;
 
@@ -89,6 +82,17 @@ public class RepoActivity extends BaseDrawerActivity {
         overridePendingTransition(0,0);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_options:
+                startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+                overridePendingTransition(0,0);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private class getRepo extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -106,6 +110,7 @@ public class RepoActivity extends BaseDrawerActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             getSupportActionBar().setTitle(repo.getName());
+            getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
 
             progressBar.setVisibility(View.GONE);
         }
