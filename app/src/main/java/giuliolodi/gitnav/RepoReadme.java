@@ -85,6 +85,7 @@ public class RepoReadme {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
             if (markdownBase64 != null && !markdownBase64.isEmpty()) {
                 try {
                     markdown = new String(Base64.decode(markdownBase64, Base64.DEFAULT), "UTF-8");
