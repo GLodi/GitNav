@@ -25,36 +25,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/sort_icon"
-        android:title=""
-        android:icon="@drawable/ic_sort_white_24dp"
-        app:showAsAction="always">
-
-        <menu>
-
-            <group android:checkableBehavior="single">
-
-                <item
-                    android:id="@+id/starred_sort_starred"
-                    android:title="Starred"
-                    android:checked="true"/>
-
-                <item
-                    android:id="@+id/starred_sort_updated"
-                    android:title="Updated" />
-
-            </group>
-
-        </menu>
-
-    </item>
-
     <item
         android:id="@+id/action_options"
         android:orderInCategory="100"
         android:title="@string/options"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/open_in_broswer"
+        android:title="@string/open_in_browser" />
 </menu>

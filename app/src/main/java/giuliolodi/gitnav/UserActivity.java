@@ -220,6 +220,7 @@ public class UserActivity extends BaseDrawerActivity {
                 case R.id.open_in_broswer:
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(user.getHtmlUrl()));
                     startActivity(browserIntent);
+                    return true;
             }
         }
         else
@@ -252,6 +253,7 @@ public class UserActivity extends BaseDrawerActivity {
         protected String doInBackground(String... params) {
             userService = new UserService();
             userService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
             try {
                 user = userService.getUser(userS);
                 // Check if authdUser is following user

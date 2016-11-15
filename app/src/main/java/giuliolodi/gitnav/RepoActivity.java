@@ -24,33 +24,47 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RepoActivity extends BaseDrawerActivity {
 
-    @BindView(R.id.repo_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.repo_activity_progress_bar) ProgressBar progressBar;
 
     private Repository repo;
     private RepositoryService repositoryService;
+    private ContentsService contentsService;
     private Intent intent;
     private String owner;
     private String name;
+    private String markdownBase64;
+    private String markdown;
+
+    private List<Integer> views;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,15 +78,52 @@ public class RepoActivity extends BaseDrawerActivity {
         owner = intent.getStringExtra("owner");
         name = intent.getStringExtra("name");
 
-        Repository rep = new Repository();
-        rep.getId();
         new getRepo().execute();
+    }
+
+    public class MyAdapter extends PagerAdapter {
+
+        Context context;
+
+        public MyAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view.equals(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ViewGroup layout = (ViewGroup) getLayoutInflater().inflate(views.get(position), container, false);
+            container.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+            }
+            return super.getPageTitle(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.repo_activity_menu, menu);
         return true;
     }
 
@@ -88,6 +139,11 @@ public class RepoActivity extends BaseDrawerActivity {
             case R.id.action_options:
                 startActivity(new Intent(getApplicationContext(), OptionActivity.class));
                 overridePendingTransition(0,0);
+                return true;
+            case R.id.open_in_broswer:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(repo.getHtmlUrl()));
+                startActivity(browserIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -98,10 +154,16 @@ public class RepoActivity extends BaseDrawerActivity {
         protected String doInBackground(String... strings) {
             repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+            contentsService = new ContentsService();
+            contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
             try {
                 repo = repositoryService.getRepository(owner, name);
             } catch (IOException e) {e.printStackTrace();}
+
+            try {
+                markdownBase64 = contentsService.getReadme(new RepositoryId(owner, name)).getContent();
+            } catch (Exception e) {e.printStackTrace();}
 
             return null;
         }
@@ -111,6 +173,13 @@ public class RepoActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             getSupportActionBar().setTitle(repo.getName());
             getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
+
+            if (markdownBase64 != null && !markdownBase64.isEmpty()) {
+                try {
+                    markdown = new String(Base64.decode(markdownBase64, Base64.DEFAULT), "UTF-8");
+                } catch (UnsupportedEncodingException e) {e.printStackTrace();}
+
+            }
 
             progressBar.setVisibility(View.GONE);
         }
