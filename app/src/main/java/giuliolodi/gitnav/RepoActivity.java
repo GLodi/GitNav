@@ -26,17 +26,19 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 
 import org.eclipse.egit.github.core.Repository;
@@ -46,14 +48,22 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RepoActivity extends BaseDrawerActivity {
 
-    @BindView(R.id.repo_activity_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.repo_viewpager) ViewPager repoViewPager;
+    @BindView(R.id.tab_layout) TabLayout tabLayout;
+
+    @BindString(R.string.about) String about;
+    @BindString(R.string.readme) String readme;
+    @BindString(R.string.files) String files;
+    @BindString(R.string.commits) String commits;
 
     private Repository repo;
     private RepositoryService repositoryService;
@@ -78,6 +88,19 @@ public class RepoActivity extends BaseDrawerActivity {
         owner = intent.getStringExtra("owner");
         name = intent.getStringExtra("name");
 
+        views = new ArrayList<>();
+        views.add(R.layout.repo_about);
+        views.add(R.layout.repo_readme);
+        views.add(R.layout.repo_files);
+        views.add(R.layout.repo_commits);
+
+        repoViewPager.setOffscreenPageLimit(4);
+        repoViewPager.setAdapter(new MyAdapter(getApplicationContext()));
+
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(repoViewPager);
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
+
         new getRepo().execute();
     }
 
@@ -91,7 +114,7 @@ public class RepoActivity extends BaseDrawerActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -110,6 +133,13 @@ public class RepoActivity extends BaseDrawerActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
+                    return about;
+                case 1:
+                    return readme;
+                case 2:
+                    return files;
+                case 3:
+                    return commits;
             }
             return super.getPageTitle(position);
         }
@@ -161,10 +191,6 @@ public class RepoActivity extends BaseDrawerActivity {
                 repo = repositoryService.getRepository(owner, name);
             } catch (IOException e) {e.printStackTrace();}
 
-            try {
-                markdownBase64 = contentsService.getReadme(new RepositoryId(owner, name)).getContent();
-            } catch (Exception e) {e.printStackTrace();}
-
             return null;
         }
 
@@ -174,14 +200,8 @@ public class RepoActivity extends BaseDrawerActivity {
             getSupportActionBar().setTitle(repo.getName());
             getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
 
-            if (markdownBase64 != null && !markdownBase64.isEmpty()) {
-                try {
-                    markdown = new String(Base64.decode(markdownBase64, Base64.DEFAULT), "UTF-8");
-                } catch (UnsupportedEncodingException e) {e.printStackTrace();}
-
-            }
-
-            progressBar.setVisibility(View.GONE);
+            RepoReadme repoReadme = new RepoReadme();
+            repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
         }
     }
 

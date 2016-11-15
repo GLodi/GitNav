@@ -68,6 +68,11 @@
     <string name="users">Users</string>
     <string name="code">Code</string>
 
+    <string name="about">About</string>
+    <string name="readme">Readme</string>
+    <string name="files">Files</string>
+    <string name="commits">Commits</string>
+
     <string name="logout">Logout</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="currently_logged_in_as">You are currently logged in as</string>
