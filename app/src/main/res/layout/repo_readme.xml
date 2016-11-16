@@ -36,11 +36,11 @@
         android:indeterminate="true"
         android:visibility="gone" />
 
-    <com.mittsu.markedview.MarkedView
+    <com.mukesh.MarkdownView
         android:id="@+id/repo_readme_markedview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-    </com.mittsu.markedview.MarkedView>
+    </com.mukesh.MarkdownView>
 
 </LinearLayout>

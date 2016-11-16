@@ -30,7 +30,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.mittsu.markedview.MarkedView;
+import com.mukesh.MarkdownView;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 public class RepoReadme {
 
     @BindView(R.id.repo_readme_progressbar) ProgressBar progressBar;
-    @BindView(R.id.repo_readme_markedview) MarkedView markedView;
+    @BindView(R.id.repo_readme_markedview) MarkdownView markedView;
 
     private ContentsService contentsService;
 
@@ -90,7 +90,8 @@ public class RepoReadme {
                 try {
                     markdown = new String(Base64.decode(markdownBase64, Base64.DEFAULT), "UTF-8");
                 } catch (UnsupportedEncodingException e) {e.printStackTrace();}
-                markedView.setMDText(markdown);
+                markedView.setMarkDownText(markdown);
+                markedView.setOpenUrlInBrowser(true);
             }
 
             progressBar.setVisibility(View.GONE);
