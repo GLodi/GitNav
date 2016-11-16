@@ -34,20 +34,20 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.egit.github.core.service.StarService;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,17 +64,22 @@ public class RepoActivity extends BaseDrawerActivity {
     @BindString(R.string.readme) String readme;
     @BindString(R.string.files) String files;
     @BindString(R.string.commits) String commits;
+    @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.repo_starred) String repo_starred;
+    @BindString(R.string.repo_unstarred) String repo_unstarred;
 
     private Repository repo;
     private RepositoryService repositoryService;
+    private StarService starService;
     private ContentsService contentsService;
     private Intent intent;
     private String owner;
     private String name;
-    private String markdownBase64;
-    private String markdown;
 
     private List<Integer> views;
+    private Menu menu;
+
+    private boolean IS_REPO_STARRED = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,32 +156,59 @@ public class RepoActivity extends BaseDrawerActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.repo_activity_menu, menu);
-        return true;
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(0,0);
     }
 
+    /*
+            This is used only to get the menu object from the Intent call.
+            The menu is created through createOptionMenu(), which is called after
+            getUser() has checked if the user if followed.
+         */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        return true;
+    }
+
+    private void createOptionMenu() {
+        getMenuInflater().inflate(R.menu.repo_activity_menu, menu);
+        super.onCreateOptionsMenu(menu);
+
+        if (IS_REPO_STARRED)
+            menu.findItem(R.id.follow_icon).setVisible(true);
+        else
+            menu.findItem(R.id.unfollow_icon).setVisible(true);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_options:
-                startActivity(new Intent(getApplicationContext(), OptionActivity.class));
-                overridePendingTransition(0,0);
-                return true;
-            case R.id.open_in_broswer:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(repo.getHtmlUrl()));
-                startActivity(browserIntent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
+            switch (item.getItemId()) {
+                case R.id.follow_icon:
+                    new unstarRepo().execute();
+                    return true;
+                case R.id.unfollow_icon:
+                    new starRepo().execute();
+                    return true;
+                case R.id.action_options:
+                    startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                case R.id.open_in_broswer:
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(repo.getHtmlUrl()));
+                    startActivity(browserIntent);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
         }
+        else
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+
+        return super.onOptionsItemSelected(item);
     }
 
     private class getRepo extends AsyncTask<String, String, String> {
@@ -184,11 +216,19 @@ public class RepoActivity extends BaseDrawerActivity {
         protected String doInBackground(String... strings) {
             repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
             contentsService = new ContentsService();
             contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
+            starService = new StarService();
+            starService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
             try {
                 repo = repositoryService.getRepository(owner, name);
+            } catch (IOException e) {e.printStackTrace();}
+
+            try {
+                IS_REPO_STARRED = starService.isStarring(new RepositoryId(repo.getOwner().getLogin(), repo.getName()));
             } catch (IOException e) {e.printStackTrace();}
 
             return null;
@@ -200,8 +240,48 @@ public class RepoActivity extends BaseDrawerActivity {
             getSupportActionBar().setTitle(repo.getName());
             getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
 
+            createOptionMenu();
+
             RepoReadme repoReadme = new RepoReadme();
             repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
+        }
+    }
+
+    private class starRepo extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                starService.star(new RepositoryId(repo.getOwner().getLogin(), repo.getName()));
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            menu.findItem(R.id.follow_icon).setVisible(true);
+            menu.findItem(R.id.unfollow_icon).setVisible(false);
+            Toast.makeText(getApplicationContext(), repo_starred, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class unstarRepo extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                starService.unstar(new RepositoryId(repo.getOwner().getLogin(), repo.getName()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            menu.findItem(R.id.unfollow_icon).setVisible(true);
+            menu.findItem(R.id.follow_icon).setVisible(false);
+            Toast.makeText(getApplicationContext(), repo_unstarred, Toast.LENGTH_LONG).show();
         }
     }
 

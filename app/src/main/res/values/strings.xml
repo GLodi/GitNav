@@ -46,6 +46,8 @@
     <string name="network_error">Network access unavailable</string>
     <string name="user_followed">User followed</string>
     <string name="user_unfollowed">User unfollowed</string>
+    <string name="repo_starred">Repository starred</string>
+    <string name="repo_unstarred">Repository unstarred</string>
     <string name="unfollow">Unfollow</string>
     <string name="send_email">Send email</string>
     <string name="open_in_browser">Open in browser</string>
