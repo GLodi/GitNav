@@ -93,7 +93,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
     @Override
     public StarredAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.starred_row, parent, false);
+                .inflate(R.layout.row_starred, parent, false);
         return new StarredAdapter.MyViewHolder(itemView);
     }
 

@@ -45,7 +45,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import giuliolodi.gitnav.GistActivity;
 import giuliolodi.gitnav.R;
 import giuliolodi.gitnav.RepoActivity;
 
@@ -90,7 +89,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.repo_row, parent, false);
+                .inflate(R.layout.row_repo, parent, false);
         return new MyViewHolder(itemView);
     }
 

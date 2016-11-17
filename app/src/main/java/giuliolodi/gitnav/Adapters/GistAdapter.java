@@ -80,7 +80,7 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.gist_row, parent, false);
+                .inflate(R.layout.row_gist, parent, false);
         return new MyViewHolder(itemView);
     }
 

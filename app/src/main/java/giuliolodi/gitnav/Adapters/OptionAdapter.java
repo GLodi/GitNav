@@ -31,14 +31,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.vstechlab.easyfonts.EasyFonts;
 
@@ -87,7 +85,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
     @Override
     public OptionAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.option_row, parent, false);
+                .inflate(R.layout.row_option, parent, false);
         return new OptionAdapter.MyViewHolder(itemView);
     }
 

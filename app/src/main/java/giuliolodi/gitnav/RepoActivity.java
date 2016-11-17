@@ -244,6 +244,9 @@ public class RepoActivity extends BaseDrawerActivity {
 
             RepoReadme repoReadme = new RepoReadme();
             repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
+
+            RepoCommits repoCommits = new RepoCommits();
+            repoCommits.populate(RepoActivity.this, findViewById(R.id.repo_commits_ll), repo);
         }
     }
 

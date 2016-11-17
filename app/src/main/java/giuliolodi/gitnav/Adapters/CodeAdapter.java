@@ -72,7 +72,7 @@ public class CodeAdapter extends RecyclerView.Adapter<CodeAdapter.MyViewHolder>{
     @Override
     public CodeAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.code_row, parent, false);
+                .inflate(R.layout.row_code, parent, false);
         return new CodeAdapter.MyViewHolder(itemView);
     }
 
