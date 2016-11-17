@@ -18,6 +18,9 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import org.eclipse.egit.github.core.Repository;
@@ -28,14 +31,20 @@ import org.eclipse.egit.github.core.service.CommitService;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.CommitAdapter;
 
 public class RepoCommits {
+
+    @BindView(R.id.repo_commits_rv) RecyclerView recyclerView;
 
     private Context context;
     private Repository repo;
     private CommitService commitService;
     private List<RepositoryCommit> repositoryCommitList;
+    private CommitAdapter commitAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     public void populate(Context context, View v, Repository repo) {
         this.context = context;
@@ -62,6 +71,15 @@ public class RepoCommits {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
+            commitAdapter = new CommitAdapter(repositoryCommitList);
+            linearLayoutManager = new LinearLayoutManager(context);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(commitAdapter);
+            commitAdapter.notifyDataSetChanged();
         }
     }
 
