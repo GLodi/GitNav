@@ -80,7 +80,7 @@ public class RepoCommits {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            commitAdapter = new CommitAdapter(repositoryCommitList);
+            commitAdapter = new CommitAdapter(repositoryCommitList, context);
             linearLayoutManager = new LinearLayoutManager(context);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(linearLayoutManager);

@@ -51,6 +51,9 @@ public class SearchActivity extends BaseDrawerActivity {
     @BindString(R.string.users) String users;
     @BindString(R.string.code) String code;
 
+    private SearchRepos searchRepos;
+    private SearchUsers searchUsers;
+    private SearchCode searchCode;
 
     private List<Integer> views;
     private SearchView searchView;
@@ -141,9 +144,10 @@ public class SearchActivity extends BaseDrawerActivity {
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        final SearchRepos searchRepos = new SearchRepos();
-        final SearchUsers searchUsers = new SearchUsers();
-        final SearchCode searchCode = new SearchCode();
+
+        searchRepos = new SearchRepos();
+        searchUsers = new SearchUsers();
+        searchCode = new SearchCode();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

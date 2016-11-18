@@ -17,7 +17,9 @@
 package giuliolodi.gitnav.Adapters;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +39,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.UserActivity;
 
 public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHolder>{
 
     private List<RepositoryCommit> repositoryCommitList;
     private PrettyTime p;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -66,8 +70,9 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
 
     }
 
-    public CommitAdapter(List<RepositoryCommit> repositoryCommitList) {
+    public CommitAdapter(List<RepositoryCommit> repositoryCommitList, Context context) {
         this.repositoryCommitList = repositoryCommitList;
+        this.context = context;
     }
 
     @Override
@@ -97,6 +102,15 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
 
         // Set picture
         Picasso.with(holder.author.getContext()).load(repositoryCommitList.get(position).getAuthor().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
+
+        // Set listener to invoke UserActivity
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", repositoryCommitList.get(position).getAuthor().getLogin()));
+                ((Activity) context).overridePendingTransition(0, 0);
+            }
+        });
 
     }
 
