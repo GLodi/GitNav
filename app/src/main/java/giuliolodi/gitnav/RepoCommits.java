@@ -22,6 +22,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryCommit;
@@ -37,6 +38,7 @@ import giuliolodi.gitnav.Adapters.CommitAdapter;
 
 public class RepoCommits {
 
+    @BindView(R.id.repo_commits_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_commits_rv) RecyclerView recyclerView;
 
     private Context context;
@@ -56,6 +58,12 @@ public class RepoCommits {
     }
 
     private class getCommits extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             commitService = new CommitService();
@@ -80,6 +88,8 @@ public class RepoCommits {
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(commitAdapter);
             commitAdapter.notifyDataSetChanged();
+
+            progressBar.setVisibility(View.GONE);
         }
     }
 
