@@ -129,6 +129,18 @@ public class SearchActivity extends BaseDrawerActivity {
     protected void onResume() {
         super.onResume();
         navigationView.getMenu().getItem(2).setChecked(true);
+
+        searchRepos = new SearchRepos();
+        searchUsers = new SearchUsers();
+        searchCode = new SearchCode();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        searchRepos.unsubSearchRepos();
+        searchUsers.unsubSearchUsers();
+        searchCode.unsubSearchCode();
     }
 
     @Override
@@ -144,10 +156,6 @@ public class SearchActivity extends BaseDrawerActivity {
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        searchRepos = new SearchRepos();
-        searchUsers = new SearchUsers();
-        searchCode = new SearchCode();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

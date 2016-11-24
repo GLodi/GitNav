@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,6 +36,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.RepoAdapter;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class SearchRepos {
 
@@ -49,6 +56,10 @@ public class SearchRepos {
     private List<Repository> repositoryList;
     private Context context;
 
+    private Observable observable;
+    private Observer observer;
+    private Subscription s;
+
     private boolean PREVENT_MULTIPLE_SEPARATOR_LINE;
     private boolean LOADING = false;
 
@@ -58,53 +69,78 @@ public class SearchRepos {
         this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
         ButterKnife.bind(this, v);
         LOADING = true;
-        new getRepos().execute();
 
+        progressBar.setVisibility(View.VISIBLE);
+        noRepositories.setVisibility(View.INVISIBLE);
+
+        observable = Observable.create(new Observable.OnSubscribe<List<Repository>>() {
+            @Override
+            public void call(Subscriber<? super List<Repository>> subscriber) {
+                RepositoryService repositoryService = new RepositoryService();
+                repositoryService.getClient().setOAuth2Token(Constants.getToken(getContext()));
+
+                try {
+                    repositoryList = repositoryService.searchRepositories(getQuery());
+                } catch (IOException e) {e.printStackTrace();}
+
+                if (repositoryList != null)
+                    subscriber.onNext(repositoryList);
+                else
+                    subscriber.onNext(null);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<List<Repository>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("RX", e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<Repository> repositories) {
+                if (repositoryList == null || repositoryList.isEmpty())
+                    noRepositories.setVisibility(View.VISIBLE);
+
+                repoAdapter = new RepoAdapter(repositoryList, getContext());
+                linearLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(linearLayoutManager);
+                if (getPrevent())
+                    recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(repoAdapter);
+                progressBar.setVisibility(View.GONE);
+                repoAdapter.notifyDataSetChanged();
+
+                LOADING = false;
+            }
+        };
+
+        s = observable.subscribe(observer);
     }
 
     public boolean isLOADING() {
         return LOADING;
     }
 
-    private class getRepos extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            noRepositories.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            RepositoryService repositoryService = new RepositoryService();
-            repositoryService.getClient().setOAuth2Token(Constants.getToken(context));
-
-            try {
-                repositoryList = repositoryService.searchRepositories(query);
-            } catch (IOException e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            if (repositoryList == null || repositoryList.isEmpty())
-                noRepositories.setVisibility(View.VISIBLE);
-
-            repoAdapter = new RepoAdapter(repositoryList, context);
-            linearLayoutManager = new LinearLayoutManager(context);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            if (PREVENT_MULTIPLE_SEPARATOR_LINE)
-                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(repoAdapter);
-            progressBar.setVisibility(View.GONE);
-            repoAdapter.notifyDataSetChanged();
-
-            LOADING = false;
-
-        }
+    private boolean getPrevent() {
+        return PREVENT_MULTIPLE_SEPARATOR_LINE;
     }
+
+    private Context getContext() {
+        return context;
+    }
+
+    private String getQuery() {
+        return query;
+    }
+
+    public void unsubSearchRepos() {
+        s.unsubscribe();
+    }
+
 }

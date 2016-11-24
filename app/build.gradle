@@ -53,4 +53,5 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.github.hackware1993:MagicIndicator:1.4.0'
     compile 'com.github.mukeshsolanki:MarkdownView-Android:1.0.3'
+    compile 'io.reactivex:rxandroid:1.2.1'
 }
