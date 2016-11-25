@@ -95,13 +95,14 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
         }
 
         // Set texts
-        holder.author.setText(repositoryCommitList.get(position).getAuthor().getLogin());
+        holder.author.setText(repositoryCommitList.get(position).getCommit().getAuthor().getName());
         holder.description.setText(description);
         holder.sha.setText(repositoryCommitList.get(position).getSha().substring(0, 12));
         holder.date.setText(p.format(repositoryCommitList.get(position).getCommit().getAuthor().getDate()));
 
         // Set picture
-        Picasso.with(holder.author.getContext()).load(repositoryCommitList.get(position).getAuthor().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
+        if (repositoryCommitList.get(position).getAuthor() != null)
+            Picasso.with(holder.author.getContext()).load(repositoryCommitList.get(position).getAuthor().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
 
         // Set listener to invoke UserActivity
         holder.image.setOnClickListener(new View.OnClickListener() {
