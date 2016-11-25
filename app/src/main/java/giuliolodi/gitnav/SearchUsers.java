@@ -147,8 +147,10 @@ public class SearchUsers {
     }
 
     public void unsubSearchUsers() {
-        if (s != null && !s.isUnsubscribed())
+        if (s != null && !s.isUnsubscribed()){
             s.unsubscribe();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
 }

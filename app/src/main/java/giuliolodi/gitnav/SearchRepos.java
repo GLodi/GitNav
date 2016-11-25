@@ -140,8 +140,10 @@ public class SearchRepos {
     }
 
     public void unsubSearchRepos() {
-        if (s != null && !s.isUnsubscribed())
+        if (s != null && !s.isUnsubscribed()){
             s.unsubscribe();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
 }
