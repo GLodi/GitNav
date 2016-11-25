@@ -40,6 +40,8 @@
     <string name="user_unfollowed">User unfollowed</string>
     <string name="repo_starred">Repository starred</string>
     <string name="repo_unstarred">Repository unstarred</string>
+    <string name="gist_starred">Gist starred</string>
+    <string name="gist_unstarred">Gist unstarred</string>
     <string name="unfollow">Unfollow</string>
     <string name="send_email">Send email</string>
     <string name="open_in_browser">Open in browser</string>

@@ -147,7 +147,8 @@ public class SearchUsers {
     }
 
     public void unsubSearchUsers() {
-        s.unsubscribe();
+        if (s != null && !s.isUnsubscribed())
+            s.unsubscribe();
     }
 
 }

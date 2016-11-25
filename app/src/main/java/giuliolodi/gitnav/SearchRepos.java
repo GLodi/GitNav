@@ -140,7 +140,8 @@ public class SearchRepos {
     }
 
     public void unsubSearchRepos() {
-        s.unsubscribe();
+        if (s != null && !s.isUnsubscribed())
+            s.unsubscribe();
     }
 
 }

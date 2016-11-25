@@ -140,7 +140,10 @@ public class SearchCode  {
     }
 
     public void unsubSearchCode() {
-        s.unsubscribe();
+        if (s != null && !s.isUnsubscribed()) {
+            s.unsubscribe();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
 }

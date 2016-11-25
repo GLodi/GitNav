@@ -17,30 +17,40 @@
 package giuliolodi.gitnav;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.service.GistService;
 
 import java.io.IOException;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GistActivity extends BaseDrawerActivity {
 
     @BindView(R.id.gist_activity_progress_bar) ProgressBar progressBar;
+    @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.gist_starred) String gist_starred;
+    @BindString(R.string.gist_unstarred) String gist_unstarred;
 
+    private Menu menu;
     private Gist gist;
 
     private Intent intent;
     private String gistId;
     private GistService gistService;
+
+    private boolean IS_GIST_STARRED;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,9 +67,47 @@ public class GistActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
+        this.menu = menu;
         return true;
+    }
+
+    private void createOptionMenu() {
+        getMenuInflater().inflate(R.menu.gist_activity_menu, menu);
+        super.onCreateOptionsMenu(menu);
+
+        if (IS_GIST_STARRED)
+            menu.findItem(R.id.follow_icon).setVisible(true);
+        else
+            menu.findItem(R.id.unfollow_icon).setVisible(true);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
+            switch (item.getItemId()) {
+                case R.id.follow_icon:
+                    new unstarGist().execute();
+                    return true;
+                case R.id.unfollow_icon:
+                    new starGist().execute();
+                    return true;
+                case R.id.action_options:
+                    startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                case R.id.open_in_broswer:
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(gist.getHtmlUrl()));
+                    startActivity(browserIntent);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+        else
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -78,6 +126,10 @@ public class GistActivity extends BaseDrawerActivity {
                 gist = gistService.getGist(gistId);
             } catch (IOException e) {e.printStackTrace();}
 
+            try {
+                IS_GIST_STARRED = gistService.isStarred(gistId);
+            } catch (IOException e) {e.printStackTrace();}
+
             return null;
         }
 
@@ -86,6 +138,44 @@ public class GistActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             getSupportActionBar().setTitle(gist.getDescription());
             progressBar.setVisibility(View.GONE);
+
+            createOptionMenu();
+        }
+    }
+
+    private class starGist extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                gistService.starGist(gistId);
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            menu.findItem(R.id.follow_icon).setVisible(true);
+            menu.findItem(R.id.unfollow_icon).setVisible(false);
+            Toast.makeText(getApplicationContext(), gist_starred, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class unstarGist extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                gistService.unstarGist(gistId);
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            menu.findItem(R.id.unfollow_icon).setVisible(true);
+            menu.findItem(R.id.follow_icon).setVisible(false);
+            Toast.makeText(getApplicationContext(), gist_unstarred, Toast.LENGTH_LONG).show();
         }
     }
 }
