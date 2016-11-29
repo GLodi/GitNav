@@ -16,5 +16,56 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
+import android.support.v7.widget.*;
+import android.support.v7.widget.DividerItemDecoration;
+import android.view.View;
+import android.widget.GridView;
+import android.widget.ProgressBar;
+
+import org.eclipse.egit.github.core.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.RepoAboutAdapter;
+
 public class RepoAbout {
+
+    @BindView(R.id.repo_about_progressbar) ProgressBar progressBar;
+    @BindView(R.id.repo_about_gridview) RecyclerView gridView;
+
+    private Context context;
+    private Repository repo;
+    private List<String> nameList, numberList;
+    private int stargazerNumber;
+
+    public void populate (Context context, View v, Repository repo, int stargazerNumber) {
+        this.context = context;
+        this.repo = repo;
+        this.stargazerNumber = stargazerNumber;
+
+        ButterKnife.bind(this, v);
+
+        nameList = new ArrayList<>();
+        nameList.add("Stargazers");
+        nameList.add("Forks");
+        nameList.add("Issues");
+        nameList.add("Prova");
+
+        numberList = new ArrayList<>();
+        numberList.add(String.valueOf(stargazerNumber));
+        numberList.add(String.valueOf(repo.getForks()));
+        numberList.add(String.valueOf(repo.getOpenIssues()));
+        numberList.add("2000");
+
+        gridView.setLayoutManager(new GridLayoutManager(context, 3));
+        gridView.setHasFixedSize(true);
+        gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList));
+
+
+    }
+
 }

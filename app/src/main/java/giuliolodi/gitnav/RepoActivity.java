@@ -67,6 +67,7 @@ public class RepoActivity extends BaseDrawerActivity {
     private Intent intent;
     private String owner;
     private String name;
+    private int stargazerNumber;
 
     private List<Integer> views;
     private Menu menu;
@@ -233,6 +234,11 @@ public class RepoActivity extends BaseDrawerActivity {
             getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
 
             createOptionMenu();
+
+            stargazerNumber = repo.getWatchers();
+
+            RepoAbout repoAbout = new RepoAbout();
+            repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_ll), repo, stargazerNumber);
 
             RepoReadme repoReadme = new RepoReadme();
             repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
