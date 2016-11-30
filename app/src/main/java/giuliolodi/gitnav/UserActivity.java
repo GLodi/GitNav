@@ -123,6 +123,7 @@ public class UserActivity extends BaseDrawerActivity {
         views.add(R.layout.user_repos);
         views.add(R.layout.user_followers);
         views.add(R.layout.user_following);
+
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(new PagerAdapter() {
             @Override

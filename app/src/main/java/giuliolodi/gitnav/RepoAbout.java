@@ -18,9 +18,7 @@ package giuliolodi.gitnav;
 
 import android.content.Context;
 import android.support.v7.widget.*;
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Repository;

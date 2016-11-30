@@ -94,6 +94,7 @@ public class RepoActivity extends BaseDrawerActivity {
 
         repoViewPager.setOffscreenPageLimit(4);
         repoViewPager.setAdapter(new MyAdapter(getApplicationContext()));
+        repoViewPager.setCurrentItem(1);
 
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setupWithViewPager(repoViewPager);
