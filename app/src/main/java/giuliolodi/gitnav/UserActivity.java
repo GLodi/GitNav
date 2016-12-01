@@ -73,10 +73,6 @@ public class UserActivity extends BaseDrawerActivity {
     @BindView(R.id.user_activity_image) CircleImageView user_image;
     @BindView(R.id.user_activity_progress_bar) ProgressBar progressBar;
     @BindView(R.id.user_activity_login) TextView login;
-    @BindView(R.id.user_activity_location) TextView location;
-    @BindView(R.id.user_activity_mail) TextView mail;
-    @BindView(R.id.user_activity_location_icon) ImageView location_icon;
-    @BindView(R.id.user_activity_mail_icon) ImageView mail_icon;
     @BindView(R.id.user_vp) ViewPager mViewPager;
 
     @BindString(R.string.network_error) String network_error;
@@ -307,34 +303,6 @@ public class UserActivity extends BaseDrawerActivity {
                             user_bio.setMaxLines(2);
                     }
                 });
-            }
-
-            // If available set location
-            if (user.getLocation() != null) {
-                location_icon.setVisibility(View.VISIBLE);
-                location.setVisibility(View.VISIBLE);
-                location.setText(user.getLocation());
-            }
-
-            // If available set email
-            if (user.getEmail() != null) {
-                HAS_EMAIL = true;
-                mail_icon.setVisibility(View.VISIBLE);
-                mail.setVisibility(View.VISIBLE);
-                mail.setText(user.getEmail());
-                email = user.getEmail();
-            }
-
-            // Fix padding if user has only email
-            if (user.getEmail() != null && user.getLocation() == null) {
-                int paddingPixel = 13;
-                float density = getApplicationContext().getResources().getDisplayMetrics().density;
-                int paddingDp = (int)(paddingPixel * density);
-                mail_icon.setPadding(0, paddingDp, 0, 0);
-                mail_icon.setVisibility(View.VISIBLE);
-                mail.setVisibility(View.VISIBLE);
-                mail.setText(user.getEmail());
-                email = user.getEmail();
             }
 
             /*

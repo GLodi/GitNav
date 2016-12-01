@@ -48,5 +48,8 @@
     <item
         android:id="@+id/open_in_broswer"
         android:title="@string/open_in_browser" />
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"/>
 
 </menu>
