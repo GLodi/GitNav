@@ -3,17 +3,18 @@
 GitHub Android Client
 
 #List of libraries implemented:
-    -   [Picasso][picasso]
-    -   [CircleImageView][circle]
-    -   [EasyFonts][easy]
-    -   [OkHttp][okhttp]
-    -   [Gson][gson]
-    -   [PrettyTime][pretty]
-    -   [Butterknife][butter]
-    -   [MagicIndicator][magic]
-    -   [MarkdownView-Android][markdown]
-    -   [RxAndroid][rxandroid]
-    -   [Egit-GitHub][egit]
+
+[Picasso][picasso]
+[CircleImageView][circle]
+[EasyFonts][easy]
+[OkHttp][okhttp]
+[Gson][gson]
+[PrettyTime][pretty]
+[Butterknife][butter]
+[MagicIndicator][magic]
+[MarkdownView-Android][markdown]
+[RxAndroid][rxandroid]
+[Egit-GitHub][egit]
 
 [picasso]: http://square.github.io/picasso/
 [circle]: https://github.com/hdodenhof/CircleImageView
