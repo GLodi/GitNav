@@ -20,7 +20,7 @@
     <group>
         <item
             android:id="@+id/nav_repos"
-            android:icon="@drawable/ic_assignment_black_24dp"
+            android:icon="@drawable/octicons_430_repo_576_0_000000_none"
             android:title="@string/repositories" />
         <item
             android:id="@+id/nav_starred"
@@ -34,22 +34,18 @@
             android:id="@+id/nav_gists"
             android:icon="@drawable/ic_content_paste_black_24dp"
             android:title="@string/gists" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/options" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Options">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/options" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_share"
+                android:icon="@drawable/octicons_430_signout_576_0_000000_none"
+                android:title="@string/logout" />
         </menu>
     </item>
 

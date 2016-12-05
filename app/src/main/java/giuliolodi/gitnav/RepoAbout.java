@@ -63,7 +63,6 @@ public class RepoAbout {
         gridView.setHasFixedSize(true);
         gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList));
 
-
     }
 
 }
