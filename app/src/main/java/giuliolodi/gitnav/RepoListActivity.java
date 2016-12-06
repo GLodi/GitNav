@@ -219,19 +219,12 @@ public class RepoListActivity extends BaseDrawerActivity {
             if (repositoryList.isEmpty())
                 noRepos.setVisibility(View.VISIBLE);
 
-            // Set ProgressBar invisible
             progressBar.setVisibility(View.GONE);
-
-            // Set recycler view visible
             recyclerView.setVisibility(View.VISIBLE);
-
-            // Stop refresh circle
             swipeRefreshLayout.setRefreshing(false);
 
-            // Bind list to adapter
             repoAdapter = new RepoAdapter(repositoryList, RepoListActivity.this);
 
-            // Set adapter on RecyclerView and notify it
              mLayoutManager = new LinearLayoutManager(getApplicationContext());
             if (PREVENT_MULTIPLE_SEPARATION_LINES) {
                 recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), mLayoutManager.getOrientation()));

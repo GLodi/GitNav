@@ -133,6 +133,10 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
             startActivity(new Intent(getApplicationContext(), OptionActivity.class));
             overridePendingTransition(0, 0);
         } else if (id == R.id.nav_logout) {
+
+            /*
+                This will delete every info put inside SharedPreferences and Intent to LoginActivity
+             */
             ButterKnife.bind(this);
             final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             final SharedPreferences.Editor editor = sp.edit();

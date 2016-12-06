@@ -130,6 +130,11 @@ public class SearchActivity extends BaseDrawerActivity {
         super.onResume();
         navigationView.getMenu().getItem(2).setChecked(true);
 
+        /*
+            This will create new objects for the 3 types of Search that can be done. It is needed
+            in order to avoid any problem with data that is set to be displayed on a non-existing
+            view
+         */
         searchRepos = new SearchRepos();
         searchUsers = new SearchUsers();
         searchCode = new SearchCode();
@@ -138,6 +143,11 @@ public class SearchActivity extends BaseDrawerActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        /*
+            By unsubbing from the Observables that handle the requests, we avoid any error caused
+            by binding data to non-existing views
+         */
         searchRepos.unsubSearchRepos();
         searchUsers.unsubSearchUsers();
         searchCode.unsubSearchCode();
@@ -157,6 +167,9 @@ public class SearchActivity extends BaseDrawerActivity {
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        /*
+            When the user presses Enter, the queue is passed to the objects that will handle each request
+         */
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

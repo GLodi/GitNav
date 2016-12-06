@@ -59,6 +59,7 @@ public class GistActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
+        // Get the id of the required Gist
         intent = getIntent();
         gistId = intent.getStringExtra("GistId");
 
@@ -75,6 +76,10 @@ public class GistActivity extends BaseDrawerActivity {
         getMenuInflater().inflate(R.menu.gist_activity_menu, menu);
         super.onCreateOptionsMenu(menu);
 
+        /*
+            Check whether the Gist is starred bye the user and
+            show corresponding icon in Toolbar
+        */
         if (IS_GIST_STARRED)
             menu.findItem(R.id.follow_icon).setVisible(true);
         else

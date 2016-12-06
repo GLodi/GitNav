@@ -55,6 +55,10 @@ public class RepoReadme {
         new getReadme().execute();
     }
 
+    /*
+        Through MarkdownView-Android it displays the README.md by downloading its
+        Base64 and decoding it to a String
+     */
     private class getReadme extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {

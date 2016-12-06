@@ -234,6 +234,10 @@ public class RepoActivity extends BaseDrawerActivity {
             getSupportActionBar().setTitle(repo.getName());
             getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
 
+            /*
+                Create the option menu, now that IS_REPO_STARRED is set, it can check
+                whether the repo is starred or not
+            */
             createOptionMenu();
 
             stargazerNumber = repo.getWatchers();
