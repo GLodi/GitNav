@@ -16,14 +16,18 @@
 
 package giuliolodi.gitnav;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -32,6 +36,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import butterknife.BindString;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -41,10 +47,15 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
     FrameLayout frameLayout;
     NavigationView navigationView;
 
+    @BindString(R.string.logout) String logout;
+    @BindString(R.string.confirm_logout) String confirmLogout;
+    @BindString(R.string.yes) String yes;
+    @BindString(R.string.no) String no;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_base_drawer);;
+        super.setContentView(R.layout.activity_base_drawer);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,6 +132,30 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
         } else if (id == R.id.nav_manage) {
             startActivity(new Intent(getApplicationContext(), OptionActivity.class));
             overridePendingTransition(0, 0);
+        } else if (id == R.id.nav_logout) {
+            ButterKnife.bind(this);
+            final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            final SharedPreferences.Editor editor = sp.edit();
+            new AlertDialog.Builder(this)
+                    .setTitle(logout)
+                    .setMessage(confirmLogout)
+                    .setPositiveButton(yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Delete all sp info stored
+                            editor.putString(Constants.getTokenKey(getApplicationContext()), "");
+                            editor.putString(Constants.getUserKey(getApplicationContext()), "");
+                            editor.putBoolean(Constants.getAuthdKey(getApplicationContext()), false);
+                            editor.putString(Constants.getEmailKey(getApplicationContext()), "");
+                            editor.putString(Constants.getFullNameKey(getApplicationContext()), "");
+                            editor.commit();
+
+                            // Intent to LoginActivity
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        }
+                    })
+                    .setNegativeButton(no, null)
+                    .show();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

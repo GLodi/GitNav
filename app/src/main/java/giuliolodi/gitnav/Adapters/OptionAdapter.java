@@ -111,7 +111,8 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
                                         context.startActivity(new Intent(context, LoginActivity.class));
                                     }
                                 })
-                                .setNegativeButton(holder.no, null).show();
+                                .setNegativeButton(holder.no, null)
+                                .show();
                     }
                 });
         }

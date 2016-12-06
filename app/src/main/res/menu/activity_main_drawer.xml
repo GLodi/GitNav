@@ -43,7 +43,7 @@
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/options" />
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_logout"
                 android:icon="@drawable/octicons_430_signout_576_0_000000_none"
                 android:title="@string/logout" />
         </menu>
