@@ -163,7 +163,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (error == "") {
                 // Save username from EditText
-                editor.putString(Constants.getUserKey(getApplicationContext()), inputUser);
                 editor.putBoolean(Constants.getAuthdKey(getApplicationContext()), true);
 
                 // Save email, login and profile picture
@@ -177,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString(Constants.getEmailKey(getApplicationContext()), "No public email address");
                     if (user.getName() != null && !user.getName().isEmpty())
                         editor.putString(Constants.getFullNameKey(getApplicationContext()), user.getName());
+                    editor.putString(Constants.getUserKey(getApplicationContext()), user.getLogin());
                     editor.commit();
                     Bitmap profile_picture = Picasso.with(getApplicationContext()).load(user.getAvatarUrl()).get();
                     new ImageSaver(getApplicationContext())

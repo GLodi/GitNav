@@ -59,6 +59,14 @@ public class GistActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         // Get the id of the required Gist
         intent = getIntent();
         gistId = intent.getStringExtra("GistId");

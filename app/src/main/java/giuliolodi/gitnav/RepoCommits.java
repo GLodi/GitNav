@@ -123,40 +123,4 @@ public class RepoCommits {
         }
     }
 
-    private class getCommits extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            commitService = new CommitService();
-            commitService.getClient().setOAuth2Token(Constants.getToken(context));
-
-            try {
-                repositoryCommitList = commitService.getCommits(new RepositoryId(repo.getOwner().getLogin(), repo.getName()));
-            } catch (IOException e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            commitAdapter = new CommitAdapter(repositoryCommitList, context);
-            linearLayoutManager = new LinearLayoutManager(context);
-            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(commitAdapter);
-            commitAdapter.notifyDataSetChanged();
-
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
 }

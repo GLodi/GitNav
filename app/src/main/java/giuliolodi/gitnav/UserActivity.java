@@ -104,6 +104,14 @@ public class UserActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         // Get username string from intent.putExtra()

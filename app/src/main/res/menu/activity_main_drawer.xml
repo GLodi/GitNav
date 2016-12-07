@@ -32,21 +32,22 @@
             android:title="@string/search" />
         <item
             android:id="@+id/nav_gists"
-            android:icon="@drawable/ic_content_paste_black_24dp"
+            android:icon="@drawable/octicons_430_gist_576_0_000000_none"
             android:title="@string/gists" />
-    </group>
 
-    <item android:title="Options">
-        <menu>
-            <item
-                android:id="@+id/nav_manage"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="@string/options" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/octicons_430_signout_576_0_000000_none"
-                android:title="@string/logout" />
-        </menu>
-    </item>
+        <item android:title="@string/options">
+            <menu>
+                <item
+                    android:id="@+id/nav_manage"
+                    android:icon="@drawable/octicons_430_settings_576_0_000000_none"
+                    android:title="@string/options" />
+                <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/octicons_430_signout_576_0_000000_none"
+                    android:title="@string/logout" />
+            </menu>
+        </item>
+
+    </group>
 
 </menu>

@@ -98,6 +98,7 @@
                 android:paddingLeft="4dp"
                 android:textSize="14sp"
                 android:layout_toRightOf="@id/starred_code"
+                android:maxEms="6"
                 android:textColor="#000000"
                 android:alpha="0.54"/>
 
