@@ -69,6 +69,10 @@ public class RepoActivity extends BaseDrawerActivity {
     private String name;
     private int stargazerNumber;
 
+    private RepoAbout repoAbout;
+    private RepoReadme repoReadme;
+    private RepoCommits repoCommits;
+
     private List<Integer> views;
     private Menu menu;
 
@@ -155,11 +159,17 @@ public class RepoActivity extends BaseDrawerActivity {
         overridePendingTransition(0,0);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        repoCommits.unsubRepoCommits();
+    }
+
     /*
-            This is used only to get the menu object from the Intent call.
-            The menu is created through createOptionMenu(), which is called after
-            getUser() has checked if the user if followed.
-         */
+                This is used only to get the menu object from the Intent call.
+                The menu is created through createOptionMenu(), which is called after
+                getUser() has checked if the user if followed.
+             */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
@@ -242,13 +252,13 @@ public class RepoActivity extends BaseDrawerActivity {
 
             stargazerNumber = repo.getWatchers();
 
-            RepoAbout repoAbout = new RepoAbout();
+            repoAbout = new RepoAbout();
             repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_ll), repo, stargazerNumber);
 
-            RepoReadme repoReadme = new RepoReadme();
+            repoReadme = new RepoReadme();
             repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
 
-            RepoCommits repoCommits = new RepoCommits();
+            repoCommits = new RepoCommits();
             repoCommits.populate(RepoActivity.this, findViewById(R.id.repo_commits_ll), repo);
         }
     }

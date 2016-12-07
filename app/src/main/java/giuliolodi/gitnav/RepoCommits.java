@@ -35,6 +35,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.CommitAdapter;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class RepoCommits {
 
@@ -48,13 +54,73 @@ public class RepoCommits {
     private CommitAdapter commitAdapter;
     private LinearLayoutManager linearLayoutManager;
 
-    public void populate(Context context, View v, Repository repo) {
+    private Observable observable;
+    private Observer observer;
+    private Subscription s;
+
+    public void populate(final Context context, View v, Repository repo) {
         this.context = context;
         this.repo = repo;
 
         ButterKnife.bind(this, v);
 
-        new getCommits().execute();
+        progressBar.setVisibility(View.VISIBLE);
+
+        observable = Observable.create(new Observable.OnSubscribe<List<RepositoryCommit>>() {
+            @Override
+            public void call(Subscriber<? super List<RepositoryCommit>> subscriber) {
+                commitService = new CommitService();
+                commitService.getClient().setOAuth2Token(Constants.getToken(context));
+
+                try {
+                    repositoryCommitList = commitService.getCommits(new RepositoryId(getRepo().getOwner().getLogin(), getRepo().getName()));
+                } catch (IOException e) {e.printStackTrace();}
+
+                if (repositoryCommitList != null)
+                    subscriber.onNext(repositoryCommitList);
+                else
+                    subscriber.onNext(null);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<List<RepositoryCommit>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<RepositoryCommit> list) {
+                commitAdapter = new CommitAdapter(list, context);
+                linearLayoutManager = new LinearLayoutManager(context);
+                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(commitAdapter);
+                commitAdapter.notifyDataSetChanged();
+
+                progressBar.setVisibility(View.GONE);
+            }
+        };
+
+        s = observable.subscribe(observer);
+    }
+
+    private Repository getRepo() {
+        return repo;
+    }
+
+    public void unsubRepoCommits() {
+        if (s != null && !s.isUnsubscribed()){
+            s.unsubscribe();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private class getCommits extends AsyncTask<String, String, String> {
