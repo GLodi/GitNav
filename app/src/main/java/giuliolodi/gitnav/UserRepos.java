@@ -69,7 +69,6 @@ public class UserRepos {
         the first of three classes that populate the fragments below UserActivity:
         Repos, Followers and Following.
      */
-
     public void populate(String user, Context context, View v) {
         this.user = user;
         this.context = context;
