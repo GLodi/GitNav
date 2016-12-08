@@ -61,7 +61,7 @@ public class RepoAbout {
 
         gridView.setLayoutManager(new GridLayoutManager(context, 3));
         gridView.setHasFixedSize(true);
-        gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList));
+        gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList, repo.getName(), repo.getOwner().getLogin()));
 
     }
 

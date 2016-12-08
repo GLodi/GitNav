@@ -16,12 +16,14 @@
 
 package giuliolodi.gitnav.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.vstechlab.easyfonts.EasyFonts;
@@ -31,16 +33,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.UserListActivity;
 
 public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyViewHolder> {
 
     private Context context;
     private List<String> nameList, numberList;
+    private String repoName;
+    private String ownerName;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.row_repo_about_text) TextView text;
         @BindView(R.id.row_repo_about_n) TextView number;
+        @BindView(R.id.row_repo_about_rl) RelativeLayout rl;
 
         public MyViewHolder(View view) {
             super(view);
@@ -53,10 +59,12 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
 
     }
 
-    public RepoAboutAdapter(Context context, List<String> nameList, List<String> numberList) {
+    public RepoAboutAdapter(Context context, List<String> nameList, List<String> numberList, String repoName, String ownerName) {
         this.context = context;
         this.nameList = nameList;
         this.numberList = numberList;
+        this.repoName = repoName;
+        this.ownerName = ownerName;
     }
 
     @Override
@@ -67,9 +75,24 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.text.setText(nameList.get(position));
         holder.number.setText(numberList.get(position));
+
+        holder.rl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                /*
+                    If position == 0 --> the user is clicking on Stargazers, this will pass the
+                    user list to UserListActivity
+                 */
+                if (position == 0) {
+                    context.startActivity(new Intent(context, UserListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            }
+        });
     }
 
     @Override

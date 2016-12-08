@@ -18,7 +18,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/row_repo_about_ll">
+    android:id="@+id/row_repo_about_rl">
 
     <android.support.v7.widget.CardView
         android:id="@+id/row_repo_about_cardview"

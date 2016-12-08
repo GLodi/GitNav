@@ -49,6 +49,7 @@
     <string name="starred">Starred</string>
     <string name="profile">Profile</string>
     <string name="repositories">Repositories</string>
+    <string name="stargazers">Stargazers</string>
     <string name="search">Search</string>
     <string name="gists">Gists</string>
     <string name="gist">Gist</string>
