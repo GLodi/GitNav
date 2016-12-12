@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -58,6 +59,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
     @BindView(R.id.trending_no_repo) TextView no_repo;
     @BindView(R.id.trending_recycler_view) RecyclerView recyclerView;
     @BindString(R.string.trending) String trending;
+    @BindString(R.string.network_error) String network_error;
 
     private String BASE_URL = "https://github.com/trending";
     private String DAILY_URL = "?since=daily";
@@ -91,9 +93,19 @@ public class TrendingActivity extends  BaseDrawerActivity{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    s.unsubscribe();
+                    repositoryList = new ArrayList<>();
+                    starredAdapter.notifyDataSetChanged();
+                    s = observable.subscribe(observer);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                }
             }
         });
+
+        progressBar.setVisibility(View.VISIBLE);
 
         observable = Observable.create(new Observable.OnSubscribe<Repository>() {
             @Override
@@ -105,7 +117,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
                     if (repoList != null && !repoList.isEmpty()) {
                         Element string;
                         String ss;
-                        list = new ArrayList<String>();
+                        list = new ArrayList<>();
 
                         for (int i = 0; i < repoList.size(); i++) {
                             string = repoList.get(i).getElementsByTag("div").get(0).getElementsByTag("h3").get(0).getElementsByTag("a").get(0);
@@ -120,7 +132,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
                         repositoryService = new RepositoryService();
                         repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
-                        for (int i = 0; i < list.size()/2; i++) {
+                        for (int i = 0; i < list.size(); i++) {
                             subscriber.onNext(repositoryService.getRepository(list.get(i), list.get(i+1)));
                             i++;
                         }
@@ -141,10 +153,13 @@ public class TrendingActivity extends  BaseDrawerActivity{
             @Override
             public void onError(Throwable e) {
                 Log.d("rx", e.getMessage());
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onNext(Repository repository) {
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 if (repository != null) {
                     progressBar.setVisibility(View.GONE);
                     if (repositoryList == null || repositoryList.isEmpty()) {
@@ -169,7 +184,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
         if (Constants.isNetworkAvailable(getApplicationContext()))
             s = observable.subscribe(observer);
         else {
-
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         }
     }
 
