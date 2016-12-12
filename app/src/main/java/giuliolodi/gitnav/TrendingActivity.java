@@ -17,10 +17,14 @@
 package giuliolodi.gitnav;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +43,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.StarredAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -61,12 +66,15 @@ public class TrendingActivity extends  BaseDrawerActivity{
     private String URL;
 
     private RepositoryService repositoryService;
+    private LinearLayoutManager linearLayoutManager;
+    private StarredAdapter starredAdapter;
 
     private Observable<Repository> observable;
     private Observer<Repository> observer;
     private Subscription s;
 
-    private List<String> list = new ArrayList<String>();
+    private List<String> list = new ArrayList<>();
+    private List<Repository> repositoryList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +86,14 @@ public class TrendingActivity extends  BaseDrawerActivity{
         getSupportActionBar().setTitle(trending);
 
         URL = BASE_URL + DAILY_URL;
+
+        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });
 
         observable = Observable.create(new Observable.OnSubscribe<Repository>() {
             @Override
@@ -124,19 +140,37 @@ public class TrendingActivity extends  BaseDrawerActivity{
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d("rx", e.getMessage());
             }
 
             @Override
             public void onNext(Repository repository) {
                 if (repository != null) {
                     progressBar.setVisibility(View.GONE);
-                    Repository repo = repository;
+                    if (repositoryList == null || repositoryList.isEmpty()) {
+                        repositoryList.add(repository);
+                        starredAdapter = new StarredAdapter(repositoryList, TrendingActivity.this);
+                        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+                        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+                        recyclerView.setLayoutManager(linearLayoutManager);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(starredAdapter);
+                        starredAdapter.notifyDataSetChanged();
+                    }
+                    else {
+                        repositoryList.add(repository);
+                        starredAdapter.notifyItemChanged(repositoryList.size() - 1);
+                    }
                 }
             }
         };
 
-        s = observable.subscribe(observer);
+        if (Constants.isNetworkAvailable(getApplicationContext()))
+            s = observable.subscribe(observer);
+        else {
+
+        }
     }
 
     @Override
