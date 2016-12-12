@@ -78,6 +78,8 @@ public class TrendingActivity extends  BaseDrawerActivity{
     private List<String> list = new ArrayList<>();
     private List<Repository> repositoryList = new ArrayList<>();
 
+    private boolean PREVENT_LINES = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,10 +96,14 @@ public class TrendingActivity extends  BaseDrawerActivity{
             @Override
             public void onRefresh() {
                 if (Constants.isNetworkAvailable(getApplicationContext())) {
-                    s.unsubscribe();
-                    repositoryList = new ArrayList<>();
-                    starredAdapter.notifyDataSetChanged();
-                    s = observable.subscribe(observer);
+                    if (!s.isUnsubscribed())
+                        swipeRefreshLayout.setRefreshing(false);
+                    else {
+                        s.unsubscribe();
+                        repositoryList = new ArrayList<>();
+                        starredAdapter.notifyDataSetChanged();
+                        s = observable.subscribe(observer);
+                    }
                 }
                 else {
                     Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
@@ -136,6 +142,8 @@ public class TrendingActivity extends  BaseDrawerActivity{
                             subscriber.onNext(repositoryService.getRepository(list.get(i), list.get(i+1)));
                             i++;
                         }
+
+                        subscriber.onCompleted();
                     }
                     else {
                         subscriber.onError(new IOException("repoList is empty"));
@@ -147,13 +155,15 @@ public class TrendingActivity extends  BaseDrawerActivity{
         observer = new Observer<Repository>() {
             @Override
             public void onCompleted() {
-
+                if (repositoryList == null || repositoryList.isEmpty())
+                    no_repo.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d("rx", e.getMessage());
                 progressBar.setVisibility(View.GONE);
+                no_repo.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -167,11 +177,13 @@ public class TrendingActivity extends  BaseDrawerActivity{
                         starredAdapter = new StarredAdapter(repositoryList, TrendingActivity.this);
                         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
                         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+                        if (getPrevent())
+                            recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(starredAdapter);
                         starredAdapter.notifyDataSetChanged();
+                        PREVENT_LINES = false;
                     }
                     else {
                         repositoryList.add(repository);
@@ -186,6 +198,10 @@ public class TrendingActivity extends  BaseDrawerActivity{
         else {
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private boolean getPrevent() {
+        return PREVENT_LINES;
     }
 
     @Override

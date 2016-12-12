@@ -20,33 +20,33 @@
     <group>
         <item
             android:id="@+id/nav_repos"
-            android:icon="@drawable/octicons_430_repo_576_0_000000_none"
+            android:icon="@drawable/octicons_430_repo_256_0_000000_none"
             android:title="@string/repositories" />
         <item
             android:id="@+id/nav_starred"
-            android:icon="@drawable/ic_favorite_black_24dp"
+            android:icon="@drawable/octicons_430_heart_256_0_000000_none"
             android:title="@string/starred" />
         <item
             android:id="@+id/nav_search"
-            android:icon="@drawable/ic_search_black_24dp"
+            android:icon="@drawable/octicons_430_search_256_0_000000_none"
             android:title="@string/search" />
         <item
             android:id="@+id/nav_trending"
-            android:icon="@drawable/octicons_430_flame_576_0_000000_none"
+            android:icon="@drawable/octicons_430_flame_256_0_000000_none"
             android:title="@string/trending" />
         <item
             android:id="@+id/nav_gists"
-            android:icon="@drawable/octicons_430_gist_576_0_000000_none"
+            android:icon="@drawable/octicons_430_gist_256_0_000000_none"
             android:title="@string/gists" />
         <item android:title="@string/options">
             <menu>
                 <item
                     android:id="@+id/nav_manage"
-                    android:icon="@drawable/octicons_430_settings_576_0_000000_none"
+                    android:icon="@drawable/octicons_430_settings_256_0_000000_none"
                     android:title="@string/options" />
                 <item
                     android:id="@+id/nav_logout"
-                    android:icon="@drawable/octicons_430_signout_576_0_000000_none"
+                    android:icon="@drawable/octicons_430_signout_256_0_000000_none"
                     android:title="@string/logout" />
             </menu>
         </item>
