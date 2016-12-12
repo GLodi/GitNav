@@ -53,7 +53,7 @@ public class OptionActivity extends BaseDrawerActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        navigationView.getMenu().getItem(4).getSubMenu().getItem(0).setChecked(true);
+        navigationView.getMenu().getItem(5).getSubMenu().getItem(0).setChecked(true);
     }
 
     @Override

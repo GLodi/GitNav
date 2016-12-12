@@ -63,7 +63,6 @@ public class SearchUsers {
     private Observer observer;
     private Subscription s;
 
-    private boolean LOADING = false;
     private boolean PREVENT_MULTIPLE_SEPARATOR_LINE;
 
     public void populate(String query, Context context, View v, boolean PREVENT_MULTIPLE_SEPARATOR_LINE) {
@@ -71,7 +70,6 @@ public class SearchUsers {
         this.context = context;
         this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
         ButterKnife.bind(this, v);
-        LOADING = true;
 
         progressBar.setVisibility(View.VISIBLE);
         noUsers.setVisibility(View.INVISIBLE);
@@ -122,8 +120,6 @@ public class SearchUsers {
                 recyclerView.setAdapter(userAdapter);
                 progressBar.setVisibility(View.GONE);
                 userAdapter.notifyDataSetChanged();
-
-                LOADING = false;
             }
         };
 
@@ -140,10 +136,6 @@ public class SearchUsers {
 
     private String getQuery() {
         return query;
-    }
-
-    public boolean isLOADING() {
-        return LOADING;
     }
 
     public void unsubSearchUsers() {

@@ -31,10 +31,13 @@
             android:icon="@drawable/ic_search_black_24dp"
             android:title="@string/search" />
         <item
+            android:id="@+id/nav_trending"
+            android:icon="@drawable/octicons_430_flame_576_0_000000_none"
+            android:title="@string/trending" />
+        <item
             android:id="@+id/nav_gists"
             android:icon="@drawable/octicons_430_gist_576_0_000000_none"
             android:title="@string/gists" />
-
         <item android:title="@string/options">
             <menu>
                 <item

@@ -112,7 +112,7 @@ public class GistListActivity extends BaseDrawerActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        navigationView.getMenu().getItem(3).setChecked(true);
+        navigationView.getMenu().getItem(4).setChecked(true);
     }
 
     @Override

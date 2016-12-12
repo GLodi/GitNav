@@ -143,7 +143,16 @@ public class SearchActivity extends BaseDrawerActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        unsubAll();
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
+    }
+
+    private void unsubAll() {
         /*
             By unsubbing from the Observables that handle the requests, we avoid any error caused
             by binding data to non-existing views
@@ -151,12 +160,6 @@ public class SearchActivity extends BaseDrawerActivity {
         searchRepos.unsubSearchRepos();
         searchUsers.unsubSearchUsers();
         searchCode.unsubSearchCode();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0,0);
     }
 
     @Override
@@ -174,16 +177,10 @@ public class SearchActivity extends BaseDrawerActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (Constants.isNetworkAvailable(getApplicationContext())) {
-
-                    if (!searchRepos.isLOADING())
-                        searchRepos.populate(query, SearchActivity.this, findViewById(R.id.search_repos_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
-
-                    if (!searchUsers.isLOADING())
-                        searchUsers.populate(query, SearchActivity.this, findViewById(R.id.search_users_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
-
-                    if (!searchCode.isLOADING())
-                        searchCode.populate(query, SearchActivity.this, findViewById(R.id.search_code_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
-
+                    unsubAll();
+                    searchRepos.populate(query, SearchActivity.this, findViewById(R.id.search_repos_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+                    searchUsers.populate(query, SearchActivity.this, findViewById(R.id.search_users_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
+                    searchCode.populate(query, SearchActivity.this, findViewById(R.id.search_code_rl), PREVENT_MULTIPLE_SEPARATOR_LINE);
                     PREVENT_MULTIPLE_SEPARATOR_LINE = false;
                 }
                 else {

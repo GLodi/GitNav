@@ -61,14 +61,12 @@ public class SearchRepos {
     private Subscription s;
 
     private boolean PREVENT_MULTIPLE_SEPARATOR_LINE;
-    private boolean LOADING = false;
 
     public void populate(String query, Context context, View v, boolean PREVENT_MULTIPLE_SEPARATOR_LINE) {
         this.query = query;
         this.context = context;
         this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
         ButterKnife.bind(this, v);
-        LOADING = true;
 
         progressBar.setVisibility(View.VISIBLE);
         noRepositories.setVisibility(View.INVISIBLE);
@@ -115,16 +113,10 @@ public class SearchRepos {
                 recyclerView.setAdapter(repoAdapter);
                 progressBar.setVisibility(View.GONE);
                 repoAdapter.notifyDataSetChanged();
-
-                LOADING = false;
             }
         };
 
         s = observable.subscribe(observer);
-    }
-
-    public boolean isLOADING() {
-        return LOADING;
     }
 
     private boolean getPrevent() {

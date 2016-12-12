@@ -53,6 +53,7 @@
     <string name="search">Search</string>
     <string name="gists">Gists</string>
     <string name="gist">Gist</string>
+    <string name="trending">Trending</string>
     <string name="options">Options</string>
 
     <string name="no_repositories">No repositories</string>

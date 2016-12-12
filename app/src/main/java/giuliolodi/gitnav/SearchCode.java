@@ -60,7 +60,6 @@ public class SearchCode  {
     private Observer observer;
     private Subscription s;
 
-    private boolean LOADING = false;
     private boolean PREVENT_MULTIPLE_SEPARATOR_LINE;
 
     public void populate(String query, Context context, View v, boolean PREVENT_MULTIPLE_SEPARATOR_LINE) {
@@ -68,7 +67,6 @@ public class SearchCode  {
         this.context = context;
         this.PREVENT_MULTIPLE_SEPARATOR_LINE = PREVENT_MULTIPLE_SEPARATOR_LINE;
         ButterKnife.bind(this, v);
-        LOADING = true;
 
         progressBar.setVisibility(View.VISIBLE);
         noCode.setVisibility(View.INVISIBLE);
@@ -115,8 +113,6 @@ public class SearchCode  {
                 recyclerView.setAdapter(codeAdapter);
                 progressBar.setVisibility(View.GONE);
                 codeAdapter.notifyDataSetChanged();
-
-                LOADING = false;
             }
         };
 
@@ -133,10 +129,6 @@ public class SearchCode  {
 
     private String getQuery() {
         return query;
-    }
-
-    public boolean isLOADING() {
-        return LOADING;
     }
 
     public void unsubSearchCode() {
