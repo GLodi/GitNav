@@ -313,6 +313,12 @@ public class UserActivity extends BaseDrawerActivity {
                 });
             }
 
+            // If available set email
+            if (user.getEmail() != null) {
+                HAS_EMAIL = true;
+                email = user.getEmail();
+            }
+
             /*
                 The creation of the option menu is triggered after the getUser() is called to check
                 if the user is followed. This allows to show follow_icon and unfollow.
