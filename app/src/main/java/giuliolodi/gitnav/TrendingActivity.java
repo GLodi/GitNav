@@ -113,6 +113,10 @@ public class TrendingActivity extends  BaseDrawerActivity{
 
         progressBar.setVisibility(View.VISIBLE);
 
+        /*
+            The following observable parses the url and filters owners and repo names. It then calls onNext
+            for each Repository object that gets from the Service.
+         */
         observable = Observable.create(new Observable.OnSubscribe<Repository>() {
             @Override
             public void call(Subscriber<? super Repository> subscriber) {
@@ -152,6 +156,9 @@ public class TrendingActivity extends  BaseDrawerActivity{
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
+        /*
+            The observer gets the Repository and updates the recyclerview
+         */
         observer = new Observer<Repository>() {
             @Override
             public void onCompleted() {

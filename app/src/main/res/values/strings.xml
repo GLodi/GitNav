@@ -54,6 +54,9 @@
     <string name="gists">Gists</string>
     <string name="gist">Gist</string>
     <string name="trending">Trending</string>
+    <string name="trending_daily">Trending daily</string>
+    <string name="trending_weekly">Trending weekly</string>
+    <string name="trending_monthly">Trending monthly</string>
     <string name="options">Options</string>
 
     <string name="no_repositories">No repositories</string>
