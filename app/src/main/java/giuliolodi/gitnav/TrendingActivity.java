@@ -26,7 +26,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindArray;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +62,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
     @BindView(R.id.trending_progress_bar) ProgressBar progressBar;
     @BindView(R.id.trending_no_repo) TextView no_repo;
     @BindView(R.id.trending_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.main_spinner) Spinner spinner;
     @BindString(R.string.trending) String trending;
     @BindString(R.string.network_error) String network_error;
 
@@ -87,7 +92,61 @@ public class TrendingActivity extends  BaseDrawerActivity{
 
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle(trending);
+        getSupportActionBar().setTitle("");
+
+        /*
+            Show spinner with array of trending options
+         */
+        spinner.setVisibility(View.VISIBLE);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getSupportActionBar().getThemedContext(),
+                R.layout.spinner_list_style,
+                getResources().getStringArray(R.array.trending_array));
+
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        starredAdapter = new StarredAdapter(repositoryList, TrendingActivity.this);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    if (i == 0) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setRefreshing(false);
+                        s.unsubscribe();
+                        URL = BASE_URL + DAILY_URL;
+                        repositoryList.clear();
+                        starredAdapter.notifyDataSetChanged();
+                        s = observable.subscribe(observer);
+                    } else if (i == 1) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setRefreshing(false);
+                        s.unsubscribe();
+                        URL = BASE_URL + WEEKLY_URL;
+                        repositoryList.clear();
+                        starredAdapter.notifyDataSetChanged();
+                        s = observable.subscribe(observer);
+                    }
+                    else if (i == 2) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setRefreshing(false);
+                        s.unsubscribe();
+                        URL = BASE_URL + MONTHLY_URL;
+                        repositoryList.clear();
+                        starredAdapter.notifyDataSetChanged();
+                        s = observable.subscribe(observer);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         URL = BASE_URL + DAILY_URL;
 
@@ -162,8 +221,11 @@ public class TrendingActivity extends  BaseDrawerActivity{
         observer = new Observer<Repository>() {
             @Override
             public void onCompleted() {
-                if (repositoryList == null || repositoryList.isEmpty())
+                if (repositoryList == null || repositoryList.isEmpty()) {
                     no_repo.setVisibility(View.VISIBLE);
+                    repositoryList.clear();
+                    starredAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -180,6 +242,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
                 if (repository != null) {
                     progressBar.setVisibility(View.GONE);
                     if (repositoryList == null || repositoryList.isEmpty()) {
+                        no_repo.setVisibility(View.GONE);
                         repositoryList.add(repository);
                         starredAdapter = new StarredAdapter(repositoryList, TrendingActivity.this);
                         linearLayoutManager = new LinearLayoutManager(getApplicationContext());

@@ -46,6 +46,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
     private List<RepositoryCommit> repositoryCommitList;
     private PrettyTime p;
     private Context context;
+    private String name;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -87,6 +88,8 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
 
         p = new PrettyTime();
 
+        boolean flag = true;
+
         String description = repositoryCommitList.get(position).getCommit().getMessage();
 
         int pos = description.indexOf('\n');
@@ -94,8 +97,14 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
             description = description.substring(0, pos);
         }
 
+        if (repositoryCommitList.get(position).getAuthor() != null && repositoryCommitList.get(position).getAuthor().getLogin() != null)
+            name = repositoryCommitList.get(position).getAuthor().getLogin();
+        else {
+            name = repositoryCommitList.get(position).getCommit().getAuthor().getName();
+            flag = false;
+        }
         // Set texts
-        holder.author.setText(repositoryCommitList.get(position).getCommit().getAuthor().getName());
+        holder.author.setText(name);
         holder.description.setText(description);
         holder.sha.setText(repositoryCommitList.get(position).getSha().substring(0, 12));
         holder.date.setText(p.format(repositoryCommitList.get(position).getCommit().getAuthor().getDate()));
@@ -105,13 +114,15 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
             Picasso.with(holder.author.getContext()).load(repositoryCommitList.get(position).getAuthor().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
 
         // Set listener to invoke UserActivity
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", repositoryCommitList.get(position).getAuthor().getLogin()));
-                ((Activity) context).overridePendingTransition(0, 0);
-            }
-        });
+        if (flag) {
+            holder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", repositoryCommitList.get(position).getAuthor().getLogin()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+        }
 
     }
 
