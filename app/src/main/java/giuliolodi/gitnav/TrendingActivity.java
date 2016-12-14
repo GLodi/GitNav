@@ -111,27 +111,22 @@ public class TrendingActivity extends  BaseDrawerActivity{
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    swipeRefreshLayout.setRefreshing(false);
+                    no_repo.setVisibility(View.GONE);
+                    s.unsubscribe();
                     if (i == 0) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        swipeRefreshLayout.setRefreshing(false);
-                        s.unsubscribe();
                         URL = BASE_URL + DAILY_URL;
                         repositoryList.clear();
                         starredAdapter.notifyDataSetChanged();
                         s = observable.subscribe(observer);
                     } else if (i == 1) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        swipeRefreshLayout.setRefreshing(false);
-                        s.unsubscribe();
                         URL = BASE_URL + WEEKLY_URL;
                         repositoryList.clear();
                         starredAdapter.notifyDataSetChanged();
                         s = observable.subscribe(observer);
                     }
                     else if (i == 2) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        swipeRefreshLayout.setRefreshing(false);
-                        s.unsubscribe();
                         URL = BASE_URL + MONTHLY_URL;
                         repositoryList.clear();
                         starredAdapter.notifyDataSetChanged();
@@ -159,7 +154,7 @@ public class TrendingActivity extends  BaseDrawerActivity{
                         swipeRefreshLayout.setRefreshing(false);
                     else {
                         s.unsubscribe();
-                        repositoryList = new ArrayList<>();
+                        repositoryList.clear();
                         starredAdapter.notifyDataSetChanged();
                         s = observable.subscribe(observer);
                     }

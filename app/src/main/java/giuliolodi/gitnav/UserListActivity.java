@@ -70,6 +70,7 @@ public class UserListActivity extends BaseDrawerActivity {
 
     private int DOWNLOAD_PAGE_N = 1;
     private int ITEMS_PER_PAGE = 20;
+    private boolean LOADING = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,11 +98,29 @@ public class UserListActivity extends BaseDrawerActivity {
 
         observable = Observable.create(new Observable.OnSubscribe<List<User>>() {
             @Override
-            public void call(Subscriber<? super List<User>> subscriber) {
-                StargazerService stargazerService = new StargazerService();
+            public void call(final Subscriber<? super List<User>> subscriber) {
+                final StargazerService stargazerService = new StargazerService();
                 stargazerService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
                 subscriber.onNext(tempUserList = new ArrayList<>(stargazerService.pageStargazers(new RepositoryId(ownerName, repoName), DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next()));
+
+                RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        if (LOADING)
+                            return;
+                        int visibleItemCount = linearLayoutManager.getChildCount();
+                        int totalItemCount = linearLayoutManager.getItemCount();
+                        int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                        if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                            DOWNLOAD_PAGE_N += 1;
+                            LOADING = true;
+                            subscriber.onNext(tempUserList = new ArrayList<>(stargazerService.pageStargazers(new RepositoryId(ownerName, repoName), DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next()));
+                        }
+                    }
+                };
+
+                recyclerView.setOnScrollListener(mScrollListener);
 
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -134,6 +153,7 @@ public class UserListActivity extends BaseDrawerActivity {
                     else {
                         userList.addAll(users);
                         userAdapter.notifyItemChanged(userList.size() - 1);
+                        LOADING = false;
                     }
                 }
             }
