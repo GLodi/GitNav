@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
 
         @BindView(R.id.row_repo_about_text) TextView text;
         @BindView(R.id.row_repo_about_n) TextView number;
+        @BindView(R.id.row_repo_about_image) ImageView imageView;
         @BindView(R.id.row_repo_about_rl) RelativeLayout rl;
 
         public MyViewHolder(View view) {
@@ -78,11 +80,11 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.text.setText(nameList.get(position));
         holder.number.setText(numberList.get(position));
+        holder.imageView.setImageResource(R.drawable.octicons_430_flame_256_0_000000_none);
 
         holder.rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 /*
                     If position == 0 --> the user is clicking on Stargazers, this will pass the
                     user list to UserListActivity

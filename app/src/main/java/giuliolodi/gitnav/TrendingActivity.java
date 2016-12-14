@@ -240,7 +240,6 @@ public class TrendingActivity extends  BaseDrawerActivity{
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
                 if (repository != null) {
-                    progressBar.setVisibility(View.GONE);
                     if (repositoryList == null || repositoryList.isEmpty()) {
                         no_repo.setVisibility(View.GONE);
                         repositoryList.add(repository);
@@ -263,9 +262,9 @@ public class TrendingActivity extends  BaseDrawerActivity{
             }
         };
 
-        if (Constants.isNetworkAvailable(getApplicationContext()))
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
             s = observable.subscribe(observer);
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         }
     }

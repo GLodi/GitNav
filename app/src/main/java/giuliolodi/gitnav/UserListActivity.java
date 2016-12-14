@@ -22,15 +22,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.StargazerService;
+import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
@@ -50,17 +54,22 @@ public class UserListActivity extends BaseDrawerActivity {
     @BindView(R.id.user_list_activity_rv) RecyclerView recyclerView;
     @BindView(R.id.user_list_no_users) TextView no_user;
     @BindString(R.string.stargazers) String stargazers;
+    @BindString(R.string.network_error) String network_error;
 
     private Intent intent;
     private String repoName;
     private String ownerName;
     private UserAdapter userAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private List<User> userList;
+    private List<User> userList = new ArrayList<>();
+    private List<User> tempUserList = new ArrayList<>();
 
     private Observable observable;
     private Observer observer;
     private Subscription s;
+
+    private int DOWNLOAD_PAGE_N = 1;
+    private int ITEMS_PER_PAGE = 20;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,14 +101,8 @@ public class UserListActivity extends BaseDrawerActivity {
                 StargazerService stargazerService = new StargazerService();
                 stargazerService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
-                try {
-                    userList = stargazerService.getStargazers(new RepositoryId(ownerName, repoName));
-                } catch (IOException e) {e.printStackTrace();}
+                subscriber.onNext(tempUserList = new ArrayList<>(stargazerService.pageStargazers(new RepositoryId(ownerName, repoName), DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next()));
 
-                if (userList != null && !userList.isEmpty())
-                    subscriber.onNext(userList);
-                else
-                    subscriber.onNext(null);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
@@ -111,37 +114,47 @@ public class UserListActivity extends BaseDrawerActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d("rx", e.getMessage());
             }
 
             @Override
-            public void onNext(List<User> list) {
-                if (list != null) {
-                    userAdapter = new UserAdapter(list, UserListActivity.this);
-                    linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-                    recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
-                    recyclerView.setLayoutManager(linearLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(userAdapter);
-                    userAdapter.notifyDataSetChanged();
+            public void onNext(List<User> users) {
+                if (users != null) {
+                    if (userList == null || userList.isEmpty()) {
+                        progressBar.setVisibility(View.GONE);
+                        userList.addAll(users);
+                        userAdapter = new UserAdapter(userList, UserListActivity.this);
+                        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+                        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+                        recyclerView.setLayoutManager(linearLayoutManager);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(userAdapter);
+                        userAdapter.notifyDataSetChanged();
+                    }
+                    else {
+                        userList.addAll(users);
+                        userAdapter.notifyItemChanged(userList.size() - 1);
+                    }
                 }
-                else
-                    no_user.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
             }
         };
 
-        s = observable.subscribe(observer);
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
+            s = observable.subscribe(observer);
+        } else {
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+        }
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (s != null && !s.isUnsubscribed()){
+        if (s != null && !s.isUnsubscribed()) {
             s.unsubscribe();
             progressBar.setVisibility(View.GONE);
-        }    }
+        }
+    }
 
     @Override
     public void onBackPressed() {
