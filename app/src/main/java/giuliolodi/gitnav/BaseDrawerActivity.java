@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -51,6 +52,8 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
     @BindString(R.string.confirm_logout) String confirmLogout;
     @BindString(R.string.yes) String yes;
     @BindString(R.string.no) String no;
+
+    private long DRAWER_DELAY = 200;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,9 +94,14 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
         nav_click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserActivity.class).putExtra("userS", Constants.getUsername(getApplicationContext())));
-                overridePendingTransition(0,0);
                 drawerLayout.closeDrawer(GravityCompat.START);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(getApplicationContext(), UserActivity.class).putExtra("userS", Constants.getUsername(getApplicationContext())));
+                        overridePendingTransition(0,0);
+                    }
+                }, DRAWER_DELAY);
             }
         });
     }
@@ -118,28 +126,55 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
         }
 
         if (id == R.id.nav_repos) {
-            startActivity(new Intent(getApplicationContext(), RepoListActivity.class));
-            overridePendingTransition(0,0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), RepoListActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
         } else if (id == R.id.nav_starred) {
-            startActivity(new Intent(getApplicationContext(), StarredActivity.class));
-            overridePendingTransition(0,0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), StarredActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
         } else if (id == R.id.nav_search) {
-            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-            overridePendingTransition(0,0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
         } else if (id == R.id.nav_gists) {
-            startActivity(new Intent(getApplicationContext(), GistListActivity.class));
-            overridePendingTransition(0,0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), GistListActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
         } else if (id == R.id.nav_trending) {
-            startActivity(new Intent(getApplicationContext(), TrendingActivity.class));
-            overridePendingTransition(0,0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), TrendingActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
         } else if (id == R.id.nav_manage) {
-            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
-            overridePendingTransition(0, 0);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
         } else if (id == R.id.nav_logout) {
-
-            /*
-                This will delete every info put inside SharedPreferences and Intent to LoginActivity
-             */
+            // This will delete every info put inside SharedPreferences and Intent to LoginActivity
             ButterKnife.bind(this);
             final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             final SharedPreferences.Editor editor = sp.edit();
