@@ -53,7 +53,7 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
     @BindString(R.string.yes) String yes;
     @BindString(R.string.no) String no;
 
-    private long DRAWER_DELAY = 200;
+    private long DRAWER_DELAY = 250;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
