@@ -87,7 +87,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         }
 
         // Set picture
-        Picasso.with(holder.username.getContext()).load(userList.get(position).getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
+        Picasso.with(holder.username.getContext()).load(userList.get(position).getAvatarUrl()).resize(100, 100).centerCrop().into(holder.image);
 
         // Set listener to invoke UserActivity
         holder.ll.setOnClickListener(new View.OnClickListener() {

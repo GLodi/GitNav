@@ -149,12 +149,13 @@ public class UserFollowing {
         @Override
         protected String doInBackground(String... params) {
             t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
-            try {
-                for (int i = 0; i < t.size(); i++) {
-                    following.add(userService.getUser(t.get(i).getLogin()));
-                }
-            } catch (IOException e) {e.printStackTrace();}
-
+            if (!t.isEmpty()) {
+                try {
+                    for (int i = 0; i < t.size(); i++) {
+                        following.add(userService.getUser(t.get(i).getLogin()));
+                    }
+                } catch (IOException e) {e.printStackTrace();}
+            }
             return null;
         }
 
@@ -162,9 +163,11 @@ public class UserFollowing {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             LOADING = false;
-
-            // This is used instead of .notiftDataSetChanged for performance reasons
-            userAdapter.notifyItemChanged(following.size() - 1);
+            if (!t.isEmpty()) {
+                // This is used instead of .notiftDataSetChanged for performance reasons
+                userAdapter.notifyItemChanged(following.size() - 1);
+            }
         }
     }
+
 }

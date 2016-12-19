@@ -111,7 +111,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
 
         // Set picture
         if (repositoryCommitList.get(position).getAuthor() != null)
-            Picasso.with(holder.author.getContext()).load(repositoryCommitList.get(position).getAuthor().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.image);
+            Picasso.with(holder.author.getContext()).load(repositoryCommitList.get(position).getAuthor().getAvatarUrl()).resize(100, 100).centerCrop().into(holder.image);
 
         // Set listener to invoke UserActivity
         if (flag) {

@@ -98,7 +98,7 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         final Repository repo = starredRepositoryList.get(position);
 
         // Set starred repo owner profile pic
-        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(150, 150).centerCrop().into(holder.starred_repo_author_icon);
+        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(100, 100).centerCrop().into(holder.starred_repo_author_icon);
 
         // Set starred repo name
         holder.starred_name.setText(repo.getName());
