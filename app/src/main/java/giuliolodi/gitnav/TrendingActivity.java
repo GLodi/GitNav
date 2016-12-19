@@ -56,7 +56,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class TrendingActivity extends  BaseDrawerActivity{
+public class TrendingActivity extends  BaseDrawerActivity {
 
     @BindView(R.id.trending_refresh) SwipeRefreshLayout  swipeRefreshLayout;
     @BindView(R.id.trending_progress_bar) ProgressBar progressBar;
