@@ -159,11 +159,10 @@ public class UserListActivity extends BaseDrawerActivity {
             }
         };
 
-        if (Constants.isNetworkAvailable(getApplicationContext())) {
+        if (Constants.isNetworkAvailable(getApplicationContext()))
             s = observable.subscribe(observer);
-        } else {
+        else
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
-        }
 
     }
 

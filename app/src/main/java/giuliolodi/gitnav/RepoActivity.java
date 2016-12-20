@@ -170,14 +170,10 @@ public class RepoActivity extends BaseDrawerActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        repoReadme.unsubRepoReadme();
         repoCommits.unsubRepoCommits();
     }
 
-    /*
-                This is used only to get the menu object from the Intent call.
-                The menu is created through createOptionMenu(), which is called after
-                getUser() has checked if the user if followed.
-             */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;

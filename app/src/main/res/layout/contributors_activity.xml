@@ -15,14 +15,12 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/gists_mine_rl">
+    android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/gists_mine_progress_bar"
+        android:id="@+id/contributors_activity_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -30,17 +28,15 @@
         android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/contributors_activity_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/gists_mine_rv">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/gists_mine_no"
+        android:id="@+id/contributors_activity_no_contributors"
+        android:text="@string/no_contributors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_gists_mine"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="invisible"/>

@@ -19,6 +19,7 @@ package giuliolodi.gitnav;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -32,6 +33,12 @@ import java.io.UnsupportedEncodingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class RepoReadme {
 
@@ -40,57 +47,65 @@ public class RepoReadme {
 
     private ContentsService contentsService;
 
-    private String markdownBase64;
     private String markdown;
 
     private Context context;
-    private Repository repo;
 
-    public void populate(Context context, View v, Repository repo) {
+    private Observable<String> observable;
+    private Observer<String> observer;
+    private Subscription subscription;
+
+    public void populate(final Context context, View v, final Repository repo) {
         this.context = context;
-        this.repo = repo;
 
         ButterKnife.bind(this, v);
 
-        new getReadme().execute();
-    }
+        progressBar.setVisibility(View.VISIBLE);
 
-    /*
-        Through MarkdownView-Android it displays the README.md by downloading its
-        Base64 and decoding it to a String
-     */
-    private class getReadme extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
+        observable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                contentsService = new ContentsService();
+                contentsService.getClient().setOAuth2Token(Constants.getToken(context));
 
-        @Override
-        protected String doInBackground(String... strings) {
-            contentsService = new ContentsService();
-            contentsService.getClient().setOAuth2Token(Constants.getToken(context));
-
-            try {
-                markdownBase64 = contentsService.getReadme(new RepositoryId(repo.getOwner().getLogin(), repo.getName())).getContent();
-            } catch (Exception e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            if (markdownBase64 != null && !markdownBase64.isEmpty()) {
                 try {
-                    markdown = new String(Base64.decode(markdownBase64, Base64.DEFAULT), "UTF-8");
-                } catch (UnsupportedEncodingException e) {e.printStackTrace();}
-                markedView.setMarkDownText(markdown);
-                markedView.setOpenUrlInBrowser(true);
+                    subscriber.onNext(contentsService.getReadme(new RepositoryId(repo.getOwner().getLogin(), repo.getName())).getContent());
+                } catch (Exception e) {e.printStackTrace();}
+            }
+        }).observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<String>() {
+            @Override
+            public void onCompleted() {
+
             }
 
-            progressBar.setVisibility(View.GONE);
+            @Override
+            public void onError(Throwable e) {
+                Log.d("rx", e.getMessage());
+            }
+
+            @Override
+            public void onNext(String markdown64) {
+                if (markdown64 != null && !markdown64.isEmpty()) {
+                    try {
+                        markdown = new String(Base64.decode(markdown64, Base64.DEFAULT), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {e.printStackTrace();}
+                    markedView.setMarkDownText(markdown);
+                    markedView.setOpenUrlInBrowser(true);
+                }
+
+                progressBar.setVisibility(View.GONE);
+            }
+        };
+
+        subscription = observable.subscribe(observer);
+
+    }
+
+    public void unsubRepoReadme() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
         }
     }
 

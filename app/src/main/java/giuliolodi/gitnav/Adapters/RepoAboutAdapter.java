@@ -34,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.ContributorsActivity;
 import giuliolodi.gitnav.R;
 import giuliolodi.gitnav.UserListActivity;
 
@@ -89,13 +90,13 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
         holder.rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                    If position == 0 --> the user is clicking on Stargazers, this will pass the
-                    user list to UserListActivity
-                 */
-                if (position == 0) {
-                    context.startActivity(new Intent(context, UserListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
-                    ((Activity) context).overridePendingTransition(0, 0);
+                switch (position) {
+                    case 0:
+                        context.startActivity(new Intent(context, UserListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
+                        ((Activity) context).overridePendingTransition(0, 0);
+                    case 3:
+                        context.startActivity(new Intent(context, ContributorsActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
+                        ((Activity) context).overridePendingTransition(0, 0);
                 }
             }
         });
