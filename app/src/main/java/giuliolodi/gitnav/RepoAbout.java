@@ -17,52 +17,113 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.*;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import org.eclipse.egit.github.core.Contributor;
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.service.RepositoryService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.RepoAboutAdapter;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class RepoAbout {
 
     @BindView(R.id.repo_about_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_about_gridview) RecyclerView gridView;
+    @BindString(R.string.stargazers) String stargazers;
+    @BindString(R.string.forks) String forks;
+    @BindString(R.string.issues) String issues;
+    @BindString(R.string.contributors) String contributors;
 
     private Context context;
     private Repository repo;
     private List<String> nameList, numberList;
-    private int stargazerNumber;
+    private List<Drawable> imageList;
 
-    public void populate (Context context, View v, Repository repo, int stargazerNumber) {
+    private Observable<List<Contributor>> observable;
+    private Observer<List<Contributor>> observer;
+    private Subscription subscription;
+
+    public void populate (final Context context, View v, final Repository repo, final int stargazerNumber) {
         this.context = context;
         this.repo = repo;
-        this.stargazerNumber = stargazerNumber;
 
         ButterKnife.bind(this, v);
 
-        nameList = new ArrayList<>();
-        nameList.add("Stargazers");
-        nameList.add("Forks");
-        nameList.add("Issues");
-        nameList.add("Prova");
+        observable = Observable.create(new Observable.OnSubscribe<List<Contributor>>() {
+            @Override
+            public void call(Subscriber<? super List<Contributor>> subscriber) {
+                RepositoryService repositoryService = new RepositoryService();
+                repositoryService.getClient().setOAuth2Token(Constants.getToken(context));
+                try {
+                    subscriber.onNext(repositoryService.getContributors(new RepositoryId(repo.getOwner().getLogin(), repo.getName()), true));
+                } catch (IOException e) {e.printStackTrace();}
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
-        numberList = new ArrayList<>();
-        numberList.add(String.valueOf(stargazerNumber));
-        numberList.add(String.valueOf(repo.getForks()));
-        numberList.add(String.valueOf(repo.getOpenIssues()));
-        numberList.add("2000");
+        observer = new Observer<List<Contributor>>() {
+            @Override
+            public void onCompleted() {
 
-        gridView.setLayoutManager(new GridLayoutManager(context, 3));
-        gridView.setHasFixedSize(true);
-        gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList, repo.getName(), repo.getOwner().getLogin()));
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                Log.d("rx", e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<Contributor> contributorList) {
+                nameList = new ArrayList<>();
+                nameList.add(stargazers);
+                nameList.add(forks);
+                nameList.add(issues);
+                nameList.add(contributors);
+
+                numberList = new ArrayList<>();
+                numberList.add(String.valueOf(stargazerNumber));
+                numberList.add(String.valueOf(repo.getForks()));
+                numberList.add(String.valueOf(repo.getOpenIssues()));
+                numberList.add(String.valueOf(contributorList.size()));
+
+                imageList = new ArrayList<>();
+                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_heart_256_0_000000_none));
+                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_repoforked_256_0_000000_none));
+                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_issueopened_256_0_000000_none));
+                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_flame_256_0_000000_none));
+
+                gridView.setLayoutManager(new GridLayoutManager(context, 4));
+                gridView.setHasFixedSize(true);
+                gridView.setNestedScrollingEnabled(false);
+                gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList, imageList, repo.getName(), repo.getOwner().getLogin()));
+            }
+        };
+
+        subscription = observable.subscribe(observer);
+
+    }
+
+    public void unsubRepoAbout() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
 }

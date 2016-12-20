@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import org.eclipse.egit.github.core.Contributor;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
@@ -63,7 +64,6 @@ public class RepoActivity extends BaseDrawerActivity {
     private Repository repo;
     private RepositoryService repositoryService;
     private StarService starService;
-    private ContentsService contentsService;
     private Intent intent;
     private String owner;
     private String name;
@@ -228,9 +228,6 @@ public class RepoActivity extends BaseDrawerActivity {
         protected String doInBackground(String... strings) {
             repositoryService = new RepositoryService();
             repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-
-            contentsService = new ContentsService();
-            contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
             starService = new StarService();
             starService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));

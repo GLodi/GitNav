@@ -70,7 +70,9 @@
     <string name="mine">Mine</string>
     <string name="users">Users</string>
     <string name="code">Code</string>
-
+    <string name="forks">Forks</string>
+    <string name="issues">Issues</string>
+    <string name="contributors">Contributors</string>
     <string name="about">About</string>
     <string name="readme">Readme</string>
     <string name="files">Files</string>

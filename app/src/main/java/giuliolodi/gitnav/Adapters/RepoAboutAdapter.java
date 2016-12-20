@@ -19,6 +19,7 @@ package giuliolodi.gitnav.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
 
     private Context context;
     private List<String> nameList, numberList;
+    private List<Drawable> imageList;
     private String repoName;
     private String ownerName;
 
@@ -61,10 +63,11 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
 
     }
 
-    public RepoAboutAdapter(Context context, List<String> nameList, List<String> numberList, String repoName, String ownerName) {
+    public RepoAboutAdapter(Context context, List<String> nameList, List<String> numberList, List<Drawable> imageList, String repoName, String ownerName) {
         this.context = context;
         this.nameList = nameList;
         this.numberList = numberList;
+        this.imageList = imageList;
         this.repoName = repoName;
         this.ownerName = ownerName;
     }
@@ -80,7 +83,8 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.text.setText(nameList.get(position));
         holder.number.setText(numberList.get(position));
-        holder.imageView.setImageResource(R.drawable.octicons_430_flame_256_0_000000_none);
+
+        holder.imageView.setImageDrawable(imageList.get(position));
 
         holder.rl.setOnClickListener(new View.OnClickListener() {
             @Override
