@@ -94,9 +94,11 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
                     case 0:
                         context.startActivity(new Intent(context, UserListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
                         ((Activity) context).overridePendingTransition(0, 0);
+                        return;
                     case 3:
                         context.startActivity(new Intent(context, ContributorsActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
                         ((Activity) context).overridePendingTransition(0, 0);
+                        return;
                 }
             }
         });

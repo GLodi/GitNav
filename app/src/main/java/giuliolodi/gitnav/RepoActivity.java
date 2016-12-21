@@ -53,6 +53,7 @@ public class RepoActivity extends BaseDrawerActivity {
     @BindView(R.id.repo_viewpager) ViewPager repoViewPager;
     @BindView(R.id.tab_layout) TabLayout tabLayout;
 
+    @BindString(R.string.repository) String repository;
     @BindString(R.string.about) String about;
     @BindString(R.string.readme) String readme;
     @BindString(R.string.files) String files;
@@ -82,9 +83,10 @@ public class RepoActivity extends BaseDrawerActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.repo_activity, frameLayout);
-        getSupportActionBar().setTitle("");
 
         ButterKnife.bind(this);
+
+        getSupportActionBar().setTitle(repository);
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -172,6 +174,7 @@ public class RepoActivity extends BaseDrawerActivity {
         super.onDestroy();
         repoReadme.unsubRepoReadme();
         repoCommits.unsubRepoCommits();
+        repoAbout.unsubRepoAbout();
     }
 
     @Override

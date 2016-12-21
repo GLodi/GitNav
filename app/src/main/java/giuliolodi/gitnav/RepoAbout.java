@@ -109,7 +109,7 @@ public class RepoAbout {
                 imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_issueopened_256_0_000000_none));
                 imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_flame_256_0_000000_none));
 
-                gridView.setLayoutManager(new GridLayoutManager(context, 4));
+                gridView.setLayoutManager(new GridLayoutManager(context, 3));
                 gridView.setHasFixedSize(true);
                 gridView.setNestedScrollingEnabled(false);
                 gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList, imageList, repo.getName(), repo.getOwner().getLogin()));

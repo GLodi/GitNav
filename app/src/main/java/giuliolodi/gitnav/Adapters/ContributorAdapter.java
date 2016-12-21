@@ -16,12 +16,14 @@
 
 package giuliolodi.gitnav.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -31,10 +33,12 @@ import org.eclipse.egit.github.core.Contributor;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.UserActivity;
 
 public class ContributorAdapter extends RecyclerView.Adapter<ContributorAdapter.MyViewHolder> {
 
@@ -43,16 +47,19 @@ public class ContributorAdapter extends RecyclerView.Adapter<ContributorAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.row_contributor_rl) LinearLayout relativeLayout;
-        @BindView(R.id.row_contributor_login) TextView login;
+        @BindView(R.id.row_contributor_rl) RelativeLayout relativeLayout;
+        @BindView(R.id.row_contributor_login) TextView loginView;
         @BindView(R.id.row_contributor_image) CircleImageView imageView;
+        @BindView(R.id.row_contributor_contributions) TextView contributionsView;
+        @BindString(R.string.contributions) String contributions;
 
         public MyViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
 
-            login.setTypeface(EasyFonts.robotoRegular(context));
+            loginView.setTypeface(EasyFonts.robotoRegular(context));
+            contributionsView.setTypeface(EasyFonts.robotoRegular(context));
         }
 
     }
@@ -70,9 +77,25 @@ public class ContributorAdapter extends RecyclerView.Adapter<ContributorAdapter.
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.login.setText(contributorList.get(position).getLogin());
-        Picasso.with(holder.login.getContext()).load(contributorList.get(position).getAvatarUrl()).resize(100, 100).centerCrop().into(holder.imageView);
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+        if (contributorList.get(position).getLogin() != null && !contributorList.get(position).getLogin().isEmpty())
+            holder.loginView.setText(contributorList.get(position).getLogin());
+        else
+            holder.loginView.setText(contributorList.get(position).getName());
+        holder.contributionsView.setText(holder.contributions + " " + contributorList.get(position).getContributions());
+
+        Picasso.with(holder.loginView.getContext()).load(contributorList.get(position).getAvatarUrl()).resize(100, 100).centerCrop().into(holder.imageView);
+
+        if (contributorList.get(position).getLogin() != null && !contributorList.get(position).getLogin().isEmpty()) {
+            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", contributorList.get(position).getLogin()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+        }
+
     }
 
     @Override

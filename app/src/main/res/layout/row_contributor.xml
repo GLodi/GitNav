@@ -15,8 +15,8 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -38,6 +38,20 @@
         android:paddingLeft="16dp"
         android:textColor="#000000"
         android:alpha="0.84"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:layout_toRightOf="@id/row_contributor_image"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/row_contributor_contributions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:alpha="0.54"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:layout_toRightOf="@id/row_contributor_image"
+        android:layout_below="@id/row_contributor_login"/>
+
+</RelativeLayout>

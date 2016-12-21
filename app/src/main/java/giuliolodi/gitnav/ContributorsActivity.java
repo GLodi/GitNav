@@ -51,6 +51,7 @@ public class ContributorsActivity extends BaseDrawerActivity {
     @BindView(R.id.contributors_activity_rv) RecyclerView recyclerView;
     @BindView(R.id.contributors_activity_no_contributors) TextView noContributors;
     @BindString(R.string.collaborators) String collaborators;
+    @BindString(R.string.contributors) String contributors;
     @BindString(R.string.network_error) String network_error;
 
     private Intent intent;
@@ -73,7 +74,7 @@ public class ContributorsActivity extends BaseDrawerActivity {
         repoName = intent.getStringExtra("repoName");
         ownerName = intent.getStringExtra("ownerName");
 
-        getSupportActionBar().setTitle(collaborators);
+        getSupportActionBar().setTitle(contributors);
         getSupportActionBar().setSubtitle(ownerName + "/" + repoName);
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -121,6 +122,7 @@ public class ContributorsActivity extends BaseDrawerActivity {
                     contributorAdapter.notifyDataSetChanged();
                 }
                 else {
+                    progressBar.setVisibility(View.GONE);
                     noContributors.setVisibility(View.VISIBLE);
                 }
             }
@@ -131,5 +133,18 @@ public class ContributorsActivity extends BaseDrawerActivity {
         else
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
     }
 }
