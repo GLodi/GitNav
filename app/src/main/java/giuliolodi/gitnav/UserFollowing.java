@@ -21,12 +21,14 @@ import android.os.AsyncTask;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vstechlab.easyfonts.EasyFonts;
 
+import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.UserService;
 
@@ -36,20 +38,28 @@ import java.util.List;
 
 import butterknife.BindString;
 import giuliolodi.gitnav.Adapters.UserAdapter;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+import rx.schedulers.Schedulers;
 
 public class UserFollowing {
 
-    private String user;
-    private Context context;
-    private View v;
-    private List<User> following;
+    private List<User> following = new ArrayList<>();
     private List<User> followingTemp;
-    private List<User> t;
     private UserAdapter userAdapter;
     private RecyclerView rv;
     private LinearLayoutManager mLayoutManager;
     private UserService userService;
     private TextView noUsers;
+    private RecyclerView.OnScrollListener mScrollListener;
+
+    private Observable<User> observable;
+    private Observer<User> observer;
+    private Subscription subscription;
 
     // Number of page that we have currently downloaded. Starts at 1
     private int DOWNLOAD_PAGE_N = 1;
@@ -62,111 +72,97 @@ public class UserFollowing {
 
     @BindString(R.string.network_error) String network_error;
 
-    public void populate(String user, Context context, View v) {
-        this.user = user;
-        this.context = context;
-        this.v = v;
-        if (Constants.isNetworkAvailable(context)) {
-            new getFollowing().execute();
-        }
-        else {
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
-        }
-    }
+    public void populate(final String user, final Context context, final View v) {
 
-    private class getFollowing extends AsyncTask<String,String,String> {
-        @Override
-        protected String doInBackground(String... params) {
-            userService = new UserService();
-            userService.getClient().setOAuth2Token(Constants.getToken(context));
-
-            following = new ArrayList<>();
-            followingTemp = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
-            try {
-                for (int i = 0; i < followingTemp.size(); i++) {
-                    following.add(userService.getUser(followingTemp.get(i).getLogin()));
-                }
-            } catch (IOException e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            /*
-                Set adapter. Pass FragmentManager as parameter because
-                the adapter needs it to open a UserActivity when a profile icon is clicked.
-             */
-
-            noUsers = (TextView) v.findViewById(R.id.user_following_tv);
-            noUsers.setTypeface(EasyFonts.robotoRegular(context));
-
-            if (following.isEmpty())
-                noUsers.setVisibility(View.VISIBLE);
-
-            userAdapter = new UserAdapter(following, context);
-            mLayoutManager = new LinearLayoutManager(context);
-            rv = (RecyclerView) v.findViewById(R.id.user_following_rv);
-            rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
-            rv.setLayoutManager(mLayoutManager);
-            rv.setItemAnimator(new DefaultItemAnimator());
-
-            setupOnScrollListener();
-
-            rv.setAdapter(userAdapter);
-            userAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /*
-       This will allow the recyclerview to load more content as the user scrolls down
-    */
-    private void setupOnScrollListener() {
-
-        RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+        observable = Observable.create(new Observable.OnSubscribe<User>() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (LOADING)
-                    return;
-                int visibleItemCount = mLayoutManager.getChildCount();
-                int totalItemCount = mLayoutManager.getItemCount();
-                int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
-                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    DOWNLOAD_PAGE_N += 1;
-                    LOADING = true;
-                    new getMoreUsers().execute();
+            public void call(final Subscriber<? super User> subscriber) {
+                userService = new UserService();
+                userService.getClient().setOAuth2Token(Constants.getToken(context));
+
+                followingTemp = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+
+                try {
+                    for (int i = 0; i < followingTemp.size(); i++) {
+                        User u = userService.getUser(followingTemp.get(i).getLogin());
+                        following.add(u);
+                        subscriber.onNext(u);
+                    }
+                } catch (IOException e) {e.printStackTrace();}
+
+                mScrollListener = new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        if (LOADING)
+                            return;
+                        int visibleItemCount = mLayoutManager.getChildCount();
+                        int totalItemCount = mLayoutManager.getItemCount();
+                        int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+                        if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                            DOWNLOAD_PAGE_N += 1;
+                            LOADING = true;
+
+                            followingTemp = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+
+                            try {
+                                for (int i = 0; i < followingTemp.size(); i++) {
+                                    User u = userService.getUser(followingTemp.get(i).getLogin());
+                                    following.add(u);
+                                    subscriber.onNext(u);
+                                }
+                            } catch (IOException e) {e.printStackTrace();}
+                        }
+                    }
+                };
+
+                rv.setOnScrollListener(mScrollListener);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<User>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("rx", e.getMessage());
+            }
+
+            @Override
+            public void onNext(User user) {
+                if (following.isEmpty()) {
+                    noUsers.setVisibility(View.VISIBLE);
+                }
+                if (user != null && following.size() == 1) {
+                    noUsers = (TextView) v.findViewById(R.id.user_following_tv);
+                    noUsers.setTypeface(EasyFonts.robotoRegular(context));
+                    userAdapter = new UserAdapter(following, context);
+                    mLayoutManager = new LinearLayoutManager(context);
+                    rv = (RecyclerView) v.findViewById(R.id.user_following_rv);
+                    rv.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+                    rv.setLayoutManager(mLayoutManager);
+                    rv.setItemAnimator(new DefaultItemAnimator());
+                    rv.setAdapter(userAdapter);
+                    userAdapter.notifyDataSetChanged();
+                }
+                else if (user != null && !following.isEmpty()){
+                    LOADING = false;
+                    userAdapter.notifyItemChanged(following.size() - 1);
+                }
+                else {
+                    LOADING = false;
+                    subscription.unsubscribe();
                 }
             }
         };
 
-        rv.setOnScrollListener(mScrollListener);
-
-    }
-
-    private class getMoreUsers extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
-            if (!t.isEmpty()) {
-                try {
-                    for (int i = 0; i < t.size(); i++) {
-                        following.add(userService.getUser(t.get(i).getLogin()));
-                    }
-                } catch (IOException e) {e.printStackTrace();}
-            }
-            return null;
+        if (Constants.isNetworkAvailable(context)) {
+            subscription = observable.subscribe(observer);
         }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            LOADING = false;
-            if (!t.isEmpty()) {
-                // This is used instead of .notiftDataSetChanged for performance reasons
-                userAdapter.notifyItemChanged(following.size() - 1);
-            }
+        else {
+            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
         }
     }
 

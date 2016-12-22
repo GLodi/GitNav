@@ -67,12 +67,11 @@ public class RepoReadme {
             public void call(Subscriber<? super String> subscriber) {
                 contentsService = new ContentsService();
                 contentsService.getClient().setOAuth2Token(Constants.getToken(context));
-
                 try {
                     subscriber.onNext(contentsService.getReadme(new RepositoryId(repo.getOwner().getLogin(), repo.getName())).getContent());
                 } catch (Exception e) {e.printStackTrace();}
             }
-        }).observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
         observer = new Observer<String>() {
             @Override

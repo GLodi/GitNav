@@ -63,6 +63,7 @@ public class UserListActivity extends BaseDrawerActivity {
     private LinearLayoutManager linearLayoutManager;
     private List<User> userList = new ArrayList<>();
     private List<User> tempUserList = new ArrayList<>();
+    private RecyclerView.OnScrollListener mScrollListener;
 
     private Observable observable;
     private Observer observer;
@@ -104,7 +105,7 @@ public class UserListActivity extends BaseDrawerActivity {
 
                 subscriber.onNext(tempUserList = new ArrayList<>(stargazerService.pageStargazers(new RepositoryId(ownerName, repoName), DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next()));
 
-                RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+                mScrollListener = new RecyclerView.OnScrollListener() {
                     @Override
                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                         if (LOADING)
@@ -150,9 +151,13 @@ public class UserListActivity extends BaseDrawerActivity {
                         recyclerView.setAdapter(userAdapter);
                         userAdapter.notifyDataSetChanged();
                     }
-                    else {
+                    else if (!users.isEmpty()) {
                         userList.addAll(users);
                         userAdapter.notifyItemChanged(userList.size() - 1);
+                        LOADING = false;
+                    }
+                    else {
+                        s.unsubscribe();
                         LOADING = false;
                     }
                 }
