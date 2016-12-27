@@ -60,6 +60,8 @@ public class UserFollowing {
     // Flag that prevents multiple pages from being downloaded at the same time
     private boolean LOADING = false;
 
+    private boolean NO_MORE = true;
+
     @BindString(R.string.network_error) String network_error;
 
     public void populate(String user, Context context, View v) {
@@ -136,7 +138,8 @@ public class UserFollowing {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreUsers().execute();
+                    if (NO_MORE)
+                        new getMoreUsers().execute();
                 }
             }
         };
@@ -166,6 +169,8 @@ public class UserFollowing {
             if (!t.isEmpty()) {
                 // This is used instead of .notiftDataSetChanged for performance reasons
                 userAdapter.notifyItemChanged(following.size() - 1);
+            } else {
+                NO_MORE = false;
             }
         }
     }
