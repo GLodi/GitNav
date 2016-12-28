@@ -92,6 +92,9 @@ public class StarredActivity extends BaseDrawerActivity {
     // Flag that prevents multiple pages from being downloaded at the same time
     private boolean LOADING = false;
 
+    // Prevent infinite loading
+    private boolean NO_MORE = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -264,7 +267,8 @@ public class StarredActivity extends BaseDrawerActivity {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreStarred().execute();
+                    if (NO_MORE)
+                        new getMoreStarred().execute();
                 }
             }
         };
@@ -276,8 +280,18 @@ public class StarredActivity extends BaseDrawerActivity {
 
     private class getMoreStarred extends AsyncTask<String, String, String> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            starredRepoList.add(null);
+            starredAdapter.notifyItemChanged(starredRepoList.size() - 1);
+        }
+
+        @Override
         protected String doInBackground(String... params) {
             t = new ArrayList<>(starService.pageStarred(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            if (t.isEmpty())
+                NO_MORE = false;
+            starredRepoList.remove(starredRepoList.lastIndexOf(null));
             for (int i = 0; i < t.size(); i++) {
                 starredRepoList.add(t.get(i));
             }
@@ -287,9 +301,11 @@ public class StarredActivity extends BaseDrawerActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             LOADING = false;
-
-            // This is used instead of .notiftDataSetChanged for performance reasons
-            starredAdapter.notifyItemChanged(starredRepoList.size() - 1);
+            // This is used instead of .notifyDataSetChanged for performance reasons
+            if (NO_MORE)
+                starredAdapter.notifyItemChanged(starredRepoList.size() - 1);
+            else
+                starredAdapter.notifyDataSetChanged();
         }
     }
 

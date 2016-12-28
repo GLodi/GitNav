@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -44,7 +45,7 @@ import giuliolodi.gitnav.RepoActivity;
 import giuliolodi.gitnav.UserActivity;
 
 
-public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHolder> {
+public class StarredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Repository> starredRepositoryList;
     private Context context;
@@ -60,6 +61,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         @BindView(R.id.starred_repo_author_icon) CircleImageView starred_repo_author_icon;
         @BindView(R.id.starred_code) ImageView starred_language_icon;
 
+        private PrettyTime p;
+
         public MyViewHolder(View view) {
             super(view);
 
@@ -67,6 +70,8 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
+
+            p = new PrettyTime();
 
             // Use easy fonts to set Typeface
             starred_name.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -77,70 +82,92 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.MyViewHo
         }
     }
 
+    public class LoadingHolder extends RecyclerView.ViewHolder {
+
+        public LoadingHolder(View view) {
+            super(view);
+
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        int a = starredRepositoryList.get(position) != null ? 1 : 0;
+        return a;
+    }
+
     public StarredAdapter(List<Repository> starredRepositoryList, Context context) {
         this.starredRepositoryList = starredRepositoryList;
         this.context = context;
     }
 
     @Override
-    public StarredAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_starred, parent, false);
-        return new StarredAdapter.MyViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == 1) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_starred, parent, false);
+            vh = new MyViewHolder(itemView);
+        } else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loading, parent, false);
+            vh = new LoadingHolder(itemView);
+        }
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(StarredAdapter.MyViewHolder holder, int position) {
-        // Create PrettyTime object
-        PrettyTime p = new PrettyTime();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        // Set elements on each row
-        final Repository repo = starredRepositoryList.get(position);
+        if (holder instanceof MyViewHolder) {
+            // Set elements on each row
+            final Repository repo = starredRepositoryList.get(position);
 
-        // Set starred repo owner profile pic
-        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(100, 100).centerCrop().into(holder.starred_repo_author_icon);
+            // Set starred repo owner profile pic
+            Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(75, 75).centerCrop().into(((MyViewHolder)holder).starred_repo_author_icon);
 
-        // Set starred repo name
-        holder.starred_name.setText(repo.getName());
+            // Set starred repo name
+            ((MyViewHolder)holder).starred_name.setText(repo.getName());
 
-        // Set starred repo description
-        if (repo.getDescription() != null && !repo.getDescription().equals(""))
-            holder.starred_description.setText(repo.getDescription());
-        else
-            holder.starred_description.setText("No description");
+            // Set starred repo description
+            if (repo.getDescription() != null && !repo.getDescription().equals(""))
+                ((MyViewHolder)holder).starred_description.setText(repo.getDescription());
+            else
+                ((MyViewHolder)holder).starred_description.setText("No description");
 
-        // Set starred repo language
-        if (repo.getLanguage() == null) {
-            holder.starred_language.setVisibility(View.GONE);
-            holder.starred_language_icon.setVisibility(View.GONE);
-        }
-        else {
-            holder.starred_language.setText(repo.getLanguage());
-        }
-
-        // Set starred repo star number
-        holder.starred_stars.setText(Integer.toString(repo.getWatchers()));
-
-        // Set starred repo date
-        holder.starred_repo_date.setText(p.format(repo.getCreatedAt()));
-
-        // Set repo click listener
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.startActivity(new Intent(context, RepoActivity.class).putExtra("owner", repo.getOwner().getLogin()).putExtra("name", repo.getName()));
-                ((Activity) context).overridePendingTransition(0, 0);
+            // Set starred repo language
+            if (repo.getLanguage() == null) {
+                ((MyViewHolder)holder).starred_language.setVisibility(View.GONE);
+                ((MyViewHolder)holder).starred_language_icon.setVisibility(View.GONE);
             }
-        });
-
-        // Set user icon click listener. Opens UserActivity
-        holder.starred_repo_author_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", repo.getOwner().getLogin()));
-                ((Activity) context).overridePendingTransition(0, 0);
+            else {
+                ((MyViewHolder)holder).starred_language.setText(repo.getLanguage());
             }
-        });
+
+            // Set starred repo star number
+            ((MyViewHolder)holder).starred_stars.setText(Integer.toString(repo.getWatchers()));
+
+            // Set starred repo date
+            ((MyViewHolder)holder).starred_repo_date.setText(((MyViewHolder)holder).p.format(repo.getCreatedAt()));
+
+            // Set repo click listener
+            ((MyViewHolder)holder).linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(new Intent(context, RepoActivity.class).putExtra("owner", repo.getOwner().getLogin()).putExtra("name", repo.getName()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+
+            // Set user icon click listener. Opens UserActivity
+            ((MyViewHolder)holder).starred_repo_author_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", repo.getOwner().getLogin()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+        }
+
     }
 
     @Override
