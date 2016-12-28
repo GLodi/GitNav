@@ -112,6 +112,7 @@ public class RepoListActivity extends BaseDrawerActivity {
                 if (Constants.isNetworkAvailable(getApplicationContext())) {
                     HIDE_PROGRESS_BAR = false;
                     PREVENT_MULTIPLE_SEPARATION_LINES = false;
+                    DOWNLOAD_PAGE_N = 1;
                     new getRepositories().execute();
                 }
                 else
@@ -186,7 +187,7 @@ public class RepoListActivity extends BaseDrawerActivity {
         }
     }
 
-    class getRepositories extends AsyncTask<String, String, String> {
+    private class getRepositories extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
