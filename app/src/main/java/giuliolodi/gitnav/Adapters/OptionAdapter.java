@@ -35,6 +35,7 @@ import com.vstechlab.easyfonts.EasyFonts;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.AboutActivity;
 import giuliolodi.gitnav.Constants;
 import giuliolodi.gitnav.LoginActivity;
 import giuliolodi.gitnav.R;
@@ -57,6 +58,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
         @BindString(R.string.currently_logged_in_as) String currentlyLoggedInAs;
         @BindString(R.string.yes) String yes;
         @BindString(R.string.no) String no;
+        @BindString(R.string.about) String about;
 
         public MyViewHolder(View view) {
             super(view);
@@ -83,12 +85,12 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final OptionAdapter.MyViewHolder holder, final int position) {
-        // Depending on what option the user select, open contextual menu
         switch(position) {
             case 0:
                 sp = PreferenceManager.getDefaultSharedPreferences(context);
                 editor = sp.edit();
                 holder.optionName.setText(holder.logout);
+                holder.optionDescription.setVisibility(View.VISIBLE);
                 holder.optionDescription.setText(holder.currentlyLoggedInAs + " " + Constants.getUsername(context));
                 holder.ll.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -115,14 +117,21 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
                                 .show();
                     }
                 });
+                return;
+            case 1:
+                holder.optionName.setText(holder.about);
+                holder.ll.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        context.startActivity(new Intent(context, AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                });
         }
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
-
-
 
 }

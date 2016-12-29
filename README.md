@@ -1,6 +1,6 @@
 # GitNav
 
-GitHub Android Client
+Basic GitHub Android Client.
 
 ## List of libraries implemented:
 
@@ -15,6 +15,7 @@ GitHub Android Client
  - [MarkdownView-Android][markdown]
  - [RxAndroid][rxandroid]
  - [Egit-GitHub][egit]
+ - [material-about-library][material]
 
 [picasso]: http://square.github.io/picasso/
 [circle]: https://github.com/hdodenhof/CircleImageView
@@ -27,3 +28,4 @@ GitHub Android Client
 [markdown]: https://github.com/mukeshsolanki/MarkdownView-Android
 [rxandroid]: https://github.com/ReactiveX/RxAndroid
 [egit]: https://github.com/eclipse/egit-github
+[material]: https://github.com/daniel-stoneuk/material-about-library
