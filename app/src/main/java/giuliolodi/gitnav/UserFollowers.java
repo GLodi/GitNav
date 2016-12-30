@@ -153,15 +153,24 @@ public class UserFollowers {
 
     private class getMoreUsers extends AsyncTask<String, String, String> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            followers.add(null);
+            userAdapter.notifyItemChanged(followers.size() - 1);
+        }
+
+        @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(userService.pageFollowers(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
-            if (!t.isEmpty()) {
-                try {
-                    for (int i = 0; i < t.size(); i++) {
-                        followers.add(userService.getUser(t.get(i).getLogin()));
-                    }
-                } catch (IOException e) {e.printStackTrace();}
+            t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            if (t.isEmpty()) {
+                NO_MORE = false;
             }
+            followers.remove(followers.lastIndexOf(null));
+            try {
+                for (int i = 0; i < t.size(); i++) {
+                    followers.add(userService.getUser(t.get(i).getLogin()));
+                }
+            } catch (IOException e) {e.printStackTrace();}
             return null;
         }
 
@@ -169,12 +178,10 @@ public class UserFollowers {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             LOADING = false;
-            if (!t.isEmpty()) {
-                // This is used instead of .notiftDataSetChanged for performance reasons
+            if (NO_MORE)
                 userAdapter.notifyItemChanged(followers.size() - 1);
-            } else {
-                NO_MORE = false;
-            }
+            else
+                userAdapter.notifyDataSetChanged();
         }
     }
 

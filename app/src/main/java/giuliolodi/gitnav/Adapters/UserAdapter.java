@@ -39,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
 import giuliolodi.gitnav.UserActivity;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<User> userList;
     private Context context;
@@ -62,41 +62,64 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     }
 
+    public class LoadingHolder extends RecyclerView.ViewHolder {
+
+        public LoadingHolder(View view) {
+            super(view);
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return userList.get(position) != null ? 1 : 0;
+    }
+
     public UserAdapter(List<User> userList, Context context) {
         this.userList = userList;
         this.context = context;
     }
 
     @Override
-    public UserAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_user, parent, false);
-        return new UserAdapter.MyViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == 1) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_user, parent, false);
+            vh = new MyViewHolder(itemView);
+        } else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loading, parent, false);
+            vh = new LoadingHolder(itemView);
+        }
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(UserAdapter.MyViewHolder holder, final int position) {
-        // Set username and fullname
-        if (userList.get(position).getName() == null) {
-            holder.fullname.setText(userList.get(position).getLogin());
-            holder.username.setVisibility(View.GONE);
-        }
-        else {
-            holder.fullname.setText(userList.get(position).getName());
-            holder.username.setText(userList.get(position).getLogin());
-        }
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-        // Set picture
-        Picasso.with(holder.username.getContext()).load(userList.get(position).getAvatarUrl()).resize(100, 100).centerCrop().into(holder.image);
-
-        // Set listener to invoke UserActivity
-        holder.ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", userList.get(position).getLogin()));
-                ((Activity) context).overridePendingTransition(0, 0);
+        if (holder instanceof MyViewHolder) {
+            // Set username and fullname
+            if (userList.get(position).getName() == null) {
+                ((MyViewHolder)holder).fullname.setText(userList.get(position).getLogin());
+                ((MyViewHolder)holder).username.setVisibility(View.GONE);
             }
-        });
+            else {
+                ((MyViewHolder)holder).fullname.setText(userList.get(position).getName());
+                ((MyViewHolder)holder).username.setText(userList.get(position).getLogin());
+            }
+
+            // Set picture
+            Picasso.with(((MyViewHolder)holder).username.getContext()).load(userList.get(position).getAvatarUrl()).resize(100, 100).centerCrop().into(((MyViewHolder)holder).image);
+
+            // Set listener to invoke UserActivity
+            ((MyViewHolder)holder).ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", userList.get(position).getLogin()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+        }
+
     }
 
     @Override
