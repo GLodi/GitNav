@@ -62,6 +62,8 @@ public class UserRepos {
     // Flag that prevents multiple pages from being downloaded at the same time
     private boolean LOADING = false;
 
+    private boolean NO_MORE = true;
+
     @BindString(R.string.network_error) String network_error;
 
     /*
@@ -133,7 +135,8 @@ public class UserRepos {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreRepos().execute();
+                    if (NO_MORE)
+                        new getMoreRepos().execute();
                 }
             }
         };
@@ -144,8 +147,18 @@ public class UserRepos {
 
     private class getMoreRepos extends AsyncTask<String, String, String> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            repositoryList.add(null);
+            repoAdapter.notifyItemChanged(repositoryList.size() - 1);
+        }
+
+        @Override
         protected String doInBackground(String... params) {
             t = new ArrayList<>(repositoryService.pageRepositories(user, FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            if (t.isEmpty())
+                NO_MORE = false;
+            repositoryList.remove(repositoryList.lastIndexOf(null));
             for (int i = 0; i < t.size(); i++) {
                 repositoryList.add(t.get(i));
             }
@@ -156,9 +169,10 @@ public class UserRepos {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             LOADING = false;
-
-            // This is used instead of .notiftDataSetChanged for performance reasons
-            repoAdapter.notifyItemChanged(repositoryList.size() - 1);
+            if (NO_MORE)
+                repoAdapter.notifyItemChanged(repositoryList.size() - 1);
+            else
+                repoAdapter.notifyDataSetChanged();
         }
     }
 

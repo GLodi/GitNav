@@ -161,7 +161,7 @@ public class UserFollowers {
 
         @Override
         protected String doInBackground(String... params) {
-            t = new ArrayList<>(userService.pageFollowing(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
+            t = new ArrayList<>(userService.pageFollowers(user, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             if (t.isEmpty()) {
                 NO_MORE = false;
             }
