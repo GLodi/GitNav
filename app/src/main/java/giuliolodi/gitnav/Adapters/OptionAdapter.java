@@ -53,7 +53,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
         @BindView(R.id.option_row_name) TextView optionName;
         @BindView(R.id.option_row_description) TextView optionDescription;
 
-        @BindString(R.string.logout) String logout;
+        @BindString(R.string.sign_out) String logout;
         @BindString(R.string.confirm_logout) String confirmLogout;
         @BindString(R.string.currently_logged_in_as) String currentlyLoggedInAs;
         @BindString(R.string.yes) String yes;

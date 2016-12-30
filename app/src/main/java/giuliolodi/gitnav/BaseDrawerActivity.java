@@ -48,7 +48,7 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
     FrameLayout frameLayout;
     NavigationView navigationView;
 
-    @BindString(R.string.logout) String logout;
+    @BindString(R.string.sign_out) String logout;
     @BindString(R.string.confirm_logout) String confirmLogout;
     @BindString(R.string.yes) String yes;
     @BindString(R.string.no) String no;

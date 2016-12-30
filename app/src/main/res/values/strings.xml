@@ -83,7 +83,7 @@
     <string name="files">Files</string>
     <string name="commits">Commits</string>
 
-    <string name="logout">Logout</string>
+    <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="currently_logged_in_as">You are currently logged in as</string>
 </resources>
