@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 import giuliolodi.gitnav.R;
 import giuliolodi.gitnav.RepoActivity;
 
-public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> {
+public class RepoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Repository> repositoryList;
     private Context context;
@@ -57,10 +57,14 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         @BindView(R.id.repo_code) ImageView repo_row_language_icon;
         @BindView(R.id.repo_row_ll) LinearLayout ll;
 
+        private PrettyTime p;
+
         public MyViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+
+            p = new PrettyTime();
 
             // Use easy fonts to set Typeface
             repo_row_owner.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -73,69 +77,90 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.MyViewHolder> 
         }
     }
 
+    public class LoadingHolder extends RecyclerView.ViewHolder {
+
+        public LoadingHolder(View view) {
+            super(view);
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return repositoryList.get(position) != null ? 1 : 0;
+    }
+
     public RepoAdapter(List<Repository> repositoryList, Context context) {
         this.repositoryList = repositoryList;
         this.context = context;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_repo, parent, false);
-        return new MyViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == 1) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_repo, parent, false);
+            vh = new MyViewHolder(itemView);
+        } else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loading, parent, false);
+            vh = new LoadingHolder(itemView);
+        }
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        // Create PrettyTime object
-        PrettyTime p = new PrettyTime();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        // Get repo and parent repo (if available)
-        final Repository repo = repositoryList.get(position);
-        Repository parent;
+        if (holder instanceof MyViewHolder) {
 
-        // Set owner
-        holder.repo_row_owner.setText(repo.getOwner().getLogin() + "/");
+            // Get repo and parent repo (if available)
+            final Repository repo = repositoryList.get(position);
+            Repository parent;
 
-        // Set repo name
-        holder.repo_row_name.setText(repo.getName());
+            // Set owner
+            ((MyViewHolder)holder).repo_row_owner.setText(repo.getOwner().getLogin() + "/");
 
-        // Set repo description
-        if (repo.getDescription() != null && !repo.getDescription().equals(""))
-            holder.repo_row_description.setText(repo.getDescription());
-        else
-            holder.repo_row_description.setText("No description");
+            // Set repo name
+            ((MyViewHolder)holder).repo_row_name.setText(repo.getName());
 
-        // Set repo language
-        if (repo.getLanguage() == null) {
-            holder.repo_row_language.setVisibility(View.GONE);
-            holder.repo_row_language_icon.setVisibility(View.GONE);
-        }
-        else
-            holder.repo_row_language.setText(repo.getLanguage());
+            // Set repo description
+            if (repo.getDescription() != null && !repo.getDescription().equals(""))
+                ((MyViewHolder)holder).repo_row_description.setText(repo.getDescription());
+            else
+                ((MyViewHolder)holder).repo_row_description.setText("No description");
 
-        // Set star repo number
-        holder.repo_row_star_number.setText(Integer.toString(repo.getWatchers()));
-
-        // Set repo date
-        holder.repo_row_date.setText(p.format(repo.getCreatedAt()));
-
-        // Check if is forked, then prints parent's info
-        if (repo.isFork() && repo.getParent() != null) {
-            parent = repo.getParent();
-            holder.repo_row_forked.setText(parent.getName());
-        }
-        else {
-            holder.repo_row_forked.setVisibility(View.GONE);
-        }
-
-        holder.ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.startActivity(new Intent(context, RepoActivity.class).putExtra("owner", repo.getOwner().getLogin()).putExtra("name", repo.getName()));
-                ((Activity) context).overridePendingTransition(0, 0);
+            // Set repo language
+            if (repo.getLanguage() == null) {
+                ((MyViewHolder)holder).repo_row_language.setVisibility(View.GONE);
+                ((MyViewHolder)holder).repo_row_language_icon.setVisibility(View.GONE);
             }
-        });
+            else
+                ((MyViewHolder)holder).repo_row_language.setText(repo.getLanguage());
+
+            // Set star repo number
+            ((MyViewHolder)holder).repo_row_star_number.setText(Integer.toString(repo.getWatchers()));
+
+            // Set repo date
+            ((MyViewHolder)holder).repo_row_date.setText(((MyViewHolder)holder).p.format(repo.getCreatedAt()));
+
+            // Check if is forked, then prints parent's info
+            if (repo.isFork() && repo.getParent() != null) {
+                parent = repo.getParent();
+                ((MyViewHolder)holder).repo_row_forked.setText(parent.getName());
+            }
+            else {
+                ((MyViewHolder)holder).repo_row_forked.setVisibility(View.GONE);
+            }
+
+            ((MyViewHolder)holder).ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(new Intent(context, RepoActivity.class).putExtra("owner", repo.getOwner().getLogin()).putExtra("name", repo.getName()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+
+        }
 
     }
 

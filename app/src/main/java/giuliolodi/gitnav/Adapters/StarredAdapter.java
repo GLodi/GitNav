@@ -86,15 +86,13 @@ public class StarredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public LoadingHolder(View view) {
             super(view);
-
         }
 
     }
 
     @Override
     public int getItemViewType(int position) {
-        int a = starredRepositoryList.get(position) != null ? 1 : 0;
-        return a;
+        return starredRepositoryList.get(position) != null ? 1 : 0;
     }
 
     public StarredAdapter(List<Repository> starredRepositoryList, Context context) {

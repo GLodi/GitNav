@@ -195,7 +195,7 @@ public class StarredActivity extends BaseDrawerActivity {
             if (HIDE_PROGRESS_BAR)
                 progressBar.setVisibility(View.VISIBLE);
 
-            // Set recycler vies invisible
+            // Set recycler view invisible
             recyclerView.setVisibility(View.INVISIBLE);
         }
         @Override
