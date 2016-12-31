@@ -21,6 +21,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.mukesh.MarkdownView;
 
@@ -43,6 +44,7 @@ public class RepoReadme {
 
     @BindView(R.id.repo_readme_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_readme_markedview) MarkdownView markedView;
+    @BindView(R.id.repo_readme_noreadme) TextView noReadme;
 
     private ContentsService contentsService;
 
@@ -68,7 +70,10 @@ public class RepoReadme {
                 contentsService.getClient().setOAuth2Token(Constants.getToken(context));
                 try {
                     subscriber.onNext(contentsService.getReadme(new RepositoryId(repo.getOwner().getLogin(), repo.getName())).getContent());
-                } catch (Exception e) {e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
@@ -80,7 +85,8 @@ public class RepoReadme {
 
             @Override
             public void onError(Throwable e) {
-                Log.d("rx", e.getMessage());
+                progressBar.setVisibility(View.GONE);
+                noReadme.setVisibility(View.VISIBLE);
             }
 
             @Override

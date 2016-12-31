@@ -69,6 +69,7 @@
     <string name="no_code">No code</string>
     <string name="no_gists_mine">You do not have any gist</string>
     <string name="no_gists_starred">You do not have any starred gist</string>
+    <string name="no_readme">README not found</string>
 
     <string name="mine">Mine</string>
     <string name="users">Users</string>
