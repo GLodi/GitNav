@@ -155,8 +155,9 @@ public class UserFollowers {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            followersTemp.clear();
             followers.add(null);
-            userAdapter.notifyItemChanged(followers.size() - 1);
+            userAdapter.notifyItemInserted(followers.size() - 1);
         }
 
         @Override
@@ -165,10 +166,9 @@ public class UserFollowers {
             if (t.isEmpty()) {
                 NO_MORE = false;
             }
-            followers.remove(followers.lastIndexOf(null));
             try {
                 for (int i = 0; i < t.size(); i++) {
-                    followers.add(userService.getUser(t.get(i).getLogin()));
+                    followersTemp.add(userService.getUser(t.get(i).getLogin()));
                 }
             } catch (IOException e) {e.printStackTrace();}
             return null;
@@ -177,11 +177,15 @@ public class UserFollowers {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            LOADING = false;
+            followers.remove(followers.lastIndexOf(null));
+            for (int i = 0; i < followersTemp.size(); i++) {
+                followers.add(followersTemp.get(i));
+            }
             if (NO_MORE)
                 userAdapter.notifyItemChanged(followers.size() - 1);
             else
                 userAdapter.notifyDataSetChanged();
+            LOADING = false;
         }
     }
 

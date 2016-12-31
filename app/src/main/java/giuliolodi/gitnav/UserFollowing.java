@@ -152,6 +152,7 @@ public class UserFollowing {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            followingTemp.clear();
             following.add(null);
             userAdapter.notifyItemChanged(following.size() - 1);
         }
@@ -162,10 +163,9 @@ public class UserFollowing {
             if (t.isEmpty()) {
                 NO_MORE = false;
             }
-            following.remove(following.lastIndexOf(null));
             try {
                 for (int i = 0; i < t.size(); i++) {
-                    following.add(userService.getUser(t.get(i).getLogin()));
+                    followingTemp.add(userService.getUser(t.get(i).getLogin()));
                 }
             } catch (IOException e) {e.printStackTrace();}
             return null;
@@ -174,11 +174,15 @@ public class UserFollowing {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            LOADING = false;
+            following.remove(following.lastIndexOf(null));
+            for (int i = 0; i < followingTemp.size(); i++) {
+                following.add(followingTemp.get(i));
+            }
             if (NO_MORE)
                 userAdapter.notifyItemChanged(following.size() - 1);
             else
                 userAdapter.notifyDataSetChanged();
+            LOADING = false;
         }
     }
 

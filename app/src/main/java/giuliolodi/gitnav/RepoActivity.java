@@ -246,7 +246,7 @@ public class RepoActivity extends BaseDrawerActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             getSupportActionBar().setTitle(repo.getName());
-            getSupportActionBar().setSubtitle(repo.getOwner().getLogin() + "/" + repo.getName());
+            getSupportActionBar().setSubtitle(repo.getOwner().getLogin());
 
             /*
                 Create the option menu, now that IS_REPO_STARRED is set, it can check

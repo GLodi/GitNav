@@ -61,6 +61,8 @@ public class GistListMine {
     // Flag that prevents multiple pages from being downloaded at the same time
     private boolean LOADING = false;
 
+    private boolean NO_MORE = true;
+
     public void populate(Context context, View v) {
         this.context = context;
         ButterKnife.bind(this, v);
@@ -125,7 +127,8 @@ public class GistListMine {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
-                    new getMoreMineGists().execute();
+                    if (NO_MORE)
+                        new getMoreMineGists().execute();
                 }
             }
         };
@@ -136,21 +139,32 @@ public class GistListMine {
 
     private class getMoreMineGists extends AsyncTask<String, String, String> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            gistsList.add(null);
+            gistAdapter.notifyItemInserted(gistsList.size() - 1);
+        }
+
+        @Override
         protected String doInBackground(String... strings) {
             t = new ArrayList<>(gistService.pageGists(Constants.getUsername(context), DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
-            for (int i = 0; i < t.size(); i++) {
-                gistsList.add(t.get(i));
-            }
+            if (t.isEmpty())
+                NO_MORE = false;
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            gistsList.remove(gistsList.lastIndexOf(null));
+            for (int i = 0; i < t.size(); i++) {
+                gistsList.add(t.get(i));
+            }
+            if (NO_MORE)
+                gistAdapter.notifyItemChanged(gistsList.size() - 1);
+            else
+                gistAdapter.notifyDataSetChanged();
             LOADING = false;
-
-            // This is used instead of .notiftDataSetChanged for performance reasons
-            gistAdapter.notifyItemChanged(gistsList.size() - 1);
         }
     }
 

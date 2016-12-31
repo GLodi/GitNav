@@ -291,21 +291,20 @@ public class StarredActivity extends BaseDrawerActivity {
             t = new ArrayList<>(starService.pageStarred(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             if (t.isEmpty())
                 NO_MORE = false;
-            starredRepoList.remove(starredRepoList.lastIndexOf(null));
-            for (int i = 0; i < t.size(); i++) {
-                starredRepoList.add(t.get(i));
-            }
             return null;
         }
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            LOADING = false;
-            // This is used instead of .notifyDataSetChanged for performance reasons
+            starredRepoList.remove(starredRepoList.lastIndexOf(null));
+            for (int i = 0; i < t.size(); i++) {
+                starredRepoList.add(t.get(i));
+            }
             if (NO_MORE)
                 starredAdapter.notifyItemChanged(starredRepoList.size() - 1);
             else
                 starredAdapter.notifyDataSetChanged();
+            LOADING = false;
         }
     }
 

@@ -282,22 +282,21 @@ public class RepoListActivity extends BaseDrawerActivity {
             t = new ArrayList<>(repositoryService.pageRepositories(Constants.getUsername(getApplicationContext()), FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             if (t.isEmpty())
                 NO_MORE = false;
-            repositoryList.remove(repositoryList.lastIndexOf(null));
-            for (int i = 0; i < t.size(); i++) {
-                repositoryList.add(t.get(i));
-            }
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            LOADING = false;
-            // This is used instead of .notiftDataSetChanged for performance reasons
+            repositoryList.remove(repositoryList.lastIndexOf(null));
+            for (int i = 0; i < t.size(); i++) {
+                repositoryList.add(t.get(i));
+            }
             if (NO_MORE)
                 repoAdapter.notifyItemChanged(repositoryList.size() - 1);
             else
                 repoAdapter.notifyDataSetChanged();
+            LOADING = false;
         }
     }
 

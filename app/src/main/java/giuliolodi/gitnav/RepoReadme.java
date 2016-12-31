@@ -17,7 +17,6 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;

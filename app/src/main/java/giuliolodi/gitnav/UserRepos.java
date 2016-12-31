@@ -41,7 +41,7 @@ import giuliolodi.gitnav.Adapters.RepoAdapter;
 
 public class UserRepos {
 
-    private List<Repository> repositoryList;
+    private List<Repository> repositoryList, repositoryListTemp;
     private List<Repository> t;
     private Context context;
     private String user;
@@ -158,21 +158,21 @@ public class UserRepos {
             t = new ArrayList<>(repositoryService.pageRepositories(user, FILTER_OPTION, DOWNLOAD_PAGE_N, ITEMS_DOWNLOADED_PER_PAGE).next());
             if (t.isEmpty())
                 NO_MORE = false;
-            repositoryList.remove(repositoryList.lastIndexOf(null));
-            for (int i = 0; i < t.size(); i++) {
-                repositoryList.add(t.get(i));
-            }
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            LOADING = false;
+            repositoryList.remove(repositoryList.lastIndexOf(null));
+            for (int i = 0; i < t.size(); i++) {
+                repositoryList.add(t.get(i));
+            }
             if (NO_MORE)
                 repoAdapter.notifyItemChanged(repositoryList.size() - 1);
             else
                 repoAdapter.notifyDataSetChanged();
+            LOADING = false;
         }
     }
 

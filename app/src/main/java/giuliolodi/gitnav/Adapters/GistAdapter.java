@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
 import giuliolodi.gitnav.GistActivity;
 import giuliolodi.gitnav.R;
 
-public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
+public class GistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<Gist> gistList;
 
@@ -52,10 +52,14 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
         @BindView(R.id.gists_row_id) TextView id;
         @BindView(R.id.gists_row_ll) LinearLayout ll;
 
+        private PrettyTime p;
+
         public MyViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
+
+            p = new PrettyTime();
 
             description.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             filesN.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -65,38 +69,60 @@ public class GistAdapter extends RecyclerView.Adapter<GistAdapter.MyViewHolder>{
 
     }
 
+    public class LoadingHolder extends RecyclerView.ViewHolder {
+
+        public LoadingHolder(View view) {
+            super(view);
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return gistList.get(position) != null ? 1 : 0;
+    }
+
     public GistAdapter (List<Gist> gistList) {
         this.gistList = gistList;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_gist, parent, false);
-        return new MyViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == 1) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_gist, parent, false);
+            vh = new MyViewHolder(itemView);
+        } else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loading, parent, false);
+            vh = new LoadingHolder(itemView);
+        }
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        // Get pretty time object
-        PrettyTime p = new PrettyTime();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        final Context context = holder.description.getContext();
-        final Gist gist = gistList.get(position);
+        if (holder instanceof MyViewHolder) {
 
-        holder.description.setText(gist.getDescription());
-        holder.isPublic.setText(gist.isPublic() ? "Public" : "Private");
-        holder.filesN.setText(String.valueOf(gist.getFiles().size()));
-        holder.id.setText(gist.getId());
-        holder.date.setText(p.format(gist.getCreatedAt()));
+            final Context context = ((MyViewHolder)holder).description.getContext();
+            final Gist gist = gistList.get(position);
 
-        holder.ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.startActivity(new Intent(context, GistActivity.class).putExtra("GistId", gist.getId()));
-                ((Activity) context).overridePendingTransition(0, 0);
-            }
-        });
+            ((MyViewHolder)holder).description.setText(gist.getDescription());
+            ((MyViewHolder)holder).isPublic.setText(gist.isPublic() ? "Public" : "Private");
+            ((MyViewHolder)holder).filesN.setText(String.valueOf(gist.getFiles().size()));
+            ((MyViewHolder)holder).id.setText(gist.getId());
+            ((MyViewHolder)holder).date.setText(((MyViewHolder)holder).p.format(gist.getCreatedAt()));
+
+            ((MyViewHolder)holder).ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(new Intent(context, GistActivity.class).putExtra("GistId", gist.getId()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
+
+        }
+
     }
 
     @Override

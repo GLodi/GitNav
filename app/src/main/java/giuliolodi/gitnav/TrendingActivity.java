@@ -251,7 +251,7 @@ public class TrendingActivity extends  BaseDrawerActivity {
                     }
                     else {
                         repositoryList.add(repository);
-                        starredAdapter.notifyItemChanged(repositoryList.size() - 1);
+                        starredAdapter.notifyItemInserted(repositoryList.size() - 1);
                     }
                 }
             }
