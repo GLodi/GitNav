@@ -33,10 +33,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
-import org.eclipse.egit.github.core.Contributor;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.StarService;
 
@@ -73,6 +71,8 @@ public class RepoActivity extends BaseDrawerActivity {
     private RepoAbout repoAbout;
     private RepoReadme repoReadme;
     private RepoCommits repoCommits;
+    private RepoContent repoContent;
+
 
     private List<Integer> views;
     private Menu menu;
@@ -256,11 +256,14 @@ public class RepoActivity extends BaseDrawerActivity {
 
             stargazerNumber = repo.getWatchers();
 
+            repoReadme = new RepoReadme();
+            repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
+
             repoAbout = new RepoAbout();
             repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_ll), repo, stargazerNumber);
 
-            repoReadme = new RepoReadme();
-            repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
+            repoContent = new RepoContent();
+            repoContent.populate(RepoActivity.this, repo);
 
             repoCommits = new RepoCommits();
             repoCommits.populate(RepoActivity.this, findViewById(R.id.repo_commits_ll), repo);
