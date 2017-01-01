@@ -174,6 +174,7 @@ public class RepoActivity extends BaseDrawerActivity {
         super.onDestroy();
         repoReadme.unsubRepoReadme();
         repoCommits.unsubRepoCommits();
+        repoContent.unsubRepoContent();
         repoAbout.unsubRepoAbout();
     }
 

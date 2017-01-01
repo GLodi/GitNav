@@ -35,9 +35,6 @@ import rx.schedulers.Schedulers;
 
 public class RepoContent {
 
-    private Context context;
-    private Repository repo;
-
     private Observable<List<RepositoryContents>> observable;
     private Observer<List<RepositoryContents>> observer;
     private Subscription subscription;
@@ -51,7 +48,7 @@ public class RepoContent {
                 contentsService.getClient().setOAuth2Token(Constants.getToken(context));
 
                 try {
-                    subscriber.onNext(contentsService.getContents(new RepositoryId(repo.getOwner().getLogin(), repo.getName())));
+                    subscriber.onNext(contentsService.getContents(new RepositoryId(repo.getOwner().getLogin(), repo.getName()), "app/src"));
                 } catch (IOException e) {e.printStackTrace();}
 
             }
@@ -78,7 +75,7 @@ public class RepoContent {
 
     }
 
-    public void unsubRepoContents() {
+    public void unsubRepoContent() {
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
