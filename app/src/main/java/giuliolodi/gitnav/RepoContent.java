@@ -17,6 +17,9 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -26,6 +29,8 @@ import org.eclipse.egit.github.core.service.ContentsService;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -35,11 +40,18 @@ import rx.schedulers.Schedulers;
 
 public class RepoContent {
 
+    @BindView(R.id.repo_content_progressbar) ProgressBar progressBar;
+    @BindView(R.id.repo_content_rv) RecyclerView recyclerView;
+
     private Observable<List<RepositoryContents>> observable;
     private Observer<List<RepositoryContents>> observer;
     private Subscription subscription;
 
-    public void populate(final Context context, final Repository repo) {
+    private String path;
+
+    public void populate(final Context context, View v, final Repository repo) {
+
+        ButterKnife.bind(this, v);
 
         observable = observable.create(new Observable.OnSubscribe<List<RepositoryContents>>() {
             @Override
@@ -48,7 +60,7 @@ public class RepoContent {
                 contentsService.getClient().setOAuth2Token(Constants.getToken(context));
 
                 try {
-                    subscriber.onNext(contentsService.getContents(new RepositoryId(repo.getOwner().getLogin(), repo.getName()), "app/src"));
+                    subscriber.onNext(contentsService.getContents(new RepositoryId(repo.getOwner().getLogin(), repo.getName()), path));
                 } catch (IOException e) {e.printStackTrace();}
 
             }
@@ -67,7 +79,7 @@ public class RepoContent {
 
             @Override
             public void onNext(List<RepositoryContents> repositoryContents) {
-
+                int a =1;
             }
         };
 
