@@ -103,7 +103,7 @@ public class RepoActivity extends BaseDrawerActivity {
         views = new ArrayList<>();
         views.add(R.layout.repo_about);
         views.add(R.layout.repo_readme);
-        views.add(R.layout.repo_files);
+        views.add(R.layout.repo_content);
         views.add(R.layout.repo_commits);
 
         repoViewPager.setOffscreenPageLimit(4);

@@ -53,6 +53,8 @@ public class RepoContent {
 
         ButterKnife.bind(this, v);
 
+        progressBar.setVisibility(View.VISIBLE);
+
         observable = observable.create(new Observable.OnSubscribe<List<RepositoryContents>>() {
             @Override
             public void call(Subscriber<? super List<RepositoryContents>> subscriber) {
