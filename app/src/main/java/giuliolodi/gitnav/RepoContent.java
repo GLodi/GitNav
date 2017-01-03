@@ -17,6 +17,8 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -31,6 +33,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.FileAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -42,6 +45,9 @@ public class RepoContent {
 
     @BindView(R.id.repo_content_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_content_rv) RecyclerView recyclerView;
+
+    private FileAdapter fileAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private Observable<List<RepositoryContents>> observable;
     private Observer<List<RepositoryContents>> observer;
@@ -81,7 +87,16 @@ public class RepoContent {
 
             @Override
             public void onNext(List<RepositoryContents> repositoryContents) {
-                int a =1;
+                fileAdapter = new FileAdapter(repositoryContents);
+                linearLayoutManager = new LinearLayoutManager(context);
+                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(fileAdapter);
+                fileAdapter.notifyDataSetChanged();
+
+                progressBar.setVisibility(View.GONE);
             }
         };
 
