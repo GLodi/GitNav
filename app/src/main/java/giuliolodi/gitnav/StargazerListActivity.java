@@ -31,9 +31,7 @@ import android.widget.Toast;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.StargazerService;
-import org.eclipse.egit.github.core.service.UserService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +46,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class UserListActivity extends BaseDrawerActivity {
+public class StargazerListActivity extends BaseDrawerActivity {
 
     @BindView(R.id.user_list_activity_progress_bar) ProgressBar progressBar;
     @BindView(R.id.user_list_activity_rv) RecyclerView recyclerView;
@@ -143,7 +141,7 @@ public class UserListActivity extends BaseDrawerActivity {
                     if (userList == null || userList.isEmpty()) {
                         progressBar.setVisibility(View.GONE);
                         userList.addAll(users);
-                        userAdapter = new UserAdapter(userList, UserListActivity.this);
+                        userAdapter = new UserAdapter(userList, StargazerListActivity.this);
                         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
                         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
                         recyclerView.setLayoutManager(linearLayoutManager);

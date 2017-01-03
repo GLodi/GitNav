@@ -36,7 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.ContributorsActivity;
 import giuliolodi.gitnav.R;
-import giuliolodi.gitnav.UserListActivity;
+import giuliolodi.gitnav.StargazerListActivity;
 
 public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyViewHolder> {
 
@@ -92,7 +92,7 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
             public void onClick(View view) {
                 switch (position) {
                     case 0:
-                        context.startActivity(new Intent(context, UserListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
+                        context.startActivity(new Intent(context, StargazerListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
                         ((Activity) context).overridePendingTransition(0, 0);
                         return;
                     case 3:
