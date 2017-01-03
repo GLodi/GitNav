@@ -29,6 +29,8 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,6 +89,12 @@ public class RepoContent {
 
             @Override
             public void onNext(List<RepositoryContents> repositoryContents) {
+                Collections.sort(repositoryContents, new Comparator<RepositoryContents>() {
+                    @Override
+                    public int compare(RepositoryContents repositoryContents, RepositoryContents t1) {
+                        return repositoryContents.getType().compareTo(t1.getType());
+                    }
+                });
                 fileAdapter = new FileAdapter(repositoryContents);
                 linearLayoutManager = new LinearLayoutManager(context);
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
