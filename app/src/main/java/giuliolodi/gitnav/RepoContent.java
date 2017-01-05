@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -29,6 +30,7 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -45,6 +47,7 @@ import rx.schedulers.Schedulers;
 
 public class RepoContent {
 
+    @BindView(R.id.repo_content_rl) RelativeLayout relativeLayout;
     @BindView(R.id.repo_content_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_content_rv) RecyclerView recyclerView;
 
@@ -54,7 +57,8 @@ public class RepoContent {
     private Observable<List<RepositoryContents>> observable;
     private Observer<List<RepositoryContents>> observer;
     private Subscription subscription;
-
+    private final ContentsService contentsService = new ContentsService();
+    private List<RepositoryContents> contentsList = new ArrayList<>();
     private String path;
 
     public void populate(final Context context, View v, final Repository repo) {
@@ -62,23 +66,15 @@ public class RepoContent {
         ButterKnife.bind(this, v);
 
         progressBar.setVisibility(View.VISIBLE);
+        contentsService.getClient().setOAuth2Token(Constants.getToken(context));
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
 
         observable = observable.create(new Observable.OnSubscribe<List<RepositoryContents>>() {
             @Override
-            public void call(Subscriber<? super List<RepositoryContents>> subscriber) {
-                ContentsService contentsService = new ContentsService();
-                contentsService.getClient().setOAuth2Token(Constants.getToken(context));
-
+            public void call(final Subscriber<? super List<RepositoryContents>> subscriber) {
                 try {
                     subscriber.onNext(contentsService.getContents(new RepositoryId(repo.getOwner().getLogin(), repo.getName()), path));
                 } catch (IOException e) {e.printStackTrace();}
-
-                ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-
-                    }
-                });
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
@@ -101,20 +97,29 @@ public class RepoContent {
                         return repositoryContents.getType().compareTo(t1.getType());
                     }
                 });
+                contentsList.addAll(repositoryContents);
                 fileAdapter = new FileAdapter(repositoryContents);
                 linearLayoutManager = new LinearLayoutManager(context);
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.setAdapter(fileAdapter);
                 fileAdapter.notifyDataSetChanged();
 
                 progressBar.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.VISIBLE);
             }
         };
 
         subscription = observable.subscribe(observer);
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                path = contentsList.get(position).getPath();
+                subscription = observable.subscribe(observer);
+            }
+        });
 
     }
 

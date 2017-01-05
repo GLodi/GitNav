@@ -29,9 +29,11 @@
         android:visibility="gone" />
 
     <RelativeLayout
+        android:id="@+id/repo_content_rl"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/back_tint">
+        android:background="@color/back_tint"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/repo_content_tree"
