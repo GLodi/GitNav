@@ -23,6 +23,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -35,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.FileAdapter;
@@ -50,24 +53,37 @@ public class RepoContent {
     @BindView(R.id.repo_content_rl) RelativeLayout relativeLayout;
     @BindView(R.id.repo_content_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_content_rv) RecyclerView recyclerView;
+    @BindView(R.id.repo_content_tree) TextView treeView;
+    @BindString(R.string.network_error) String network_error;
 
+    private Context context;
     private FileAdapter fileAdapter;
     private LinearLayoutManager linearLayoutManager;
-
     private Observable<List<RepositoryContents>> observable;
     private Observer<List<RepositoryContents>> observer;
     private Subscription subscription;
     private final ContentsService contentsService = new ContentsService();
     private List<RepositoryContents> contentsList = new ArrayList<>();
-    private String path;
+    private List<String> pathTree = new ArrayList<>();
+    private String path, treeText = "";
+
+    public int treeDepth = 0;
 
     public void populate(final Context context, View v, final Repository repo) {
+        this.context = context;
 
         ButterKnife.bind(this, v);
 
         progressBar.setVisibility(View.VISIBLE);
         contentsService.getClient().setOAuth2Token(Constants.getToken(context));
+
+        linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        pathTree.add("");
 
         observable = observable.create(new Observable.OnSubscribe<List<RepositoryContents>>() {
             @Override
@@ -99,12 +115,9 @@ public class RepoContent {
                 });
                 contentsList.addAll(repositoryContents);
                 fileAdapter = new FileAdapter(repositoryContents);
-                linearLayoutManager = new LinearLayoutManager(context);
-                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.setAdapter(fileAdapter);
                 fileAdapter.notifyDataSetChanged();
+                setTree();
 
                 progressBar.setVisibility(View.GONE);
                 relativeLayout.setVisibility(View.VISIBLE);
@@ -116,10 +129,38 @@ public class RepoContent {
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                path = contentsList.get(position).getPath();
-                subscription = observable.subscribe(observer);
+                if (Constants.isNetworkAvailable(context)) {
+                    if (contentsList.get(position).getType().equals("dir")) {
+                        path = contentsList.get(position).getPath();
+                        pathTree.add(contentsList.get(position).getPath());
+                        treeDepth += 1;
+                        contentsList.clear();
+                        subscription = observable.subscribe(observer);
+                    }
+                } else
+                    Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
             }
         });
+
+    }
+
+    private void setTree() {
+        treeView.setText("");
+        treeText = "/";
+        treeText += pathTree.get(pathTree.size() - 1);
+        treeView.setText(treeText);
+
+    }
+
+    public void handleOnBackPressed() {
+        if (Constants.isNetworkAvailable(context)) {
+            path = pathTree.get(pathTree.size() - 2);
+            pathTree.remove(pathTree.size() - 1);
+            treeDepth -= 1;
+            contentsList.clear();
+            subscription = observable.subscribe(observer);
+        } else
+            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
 
     }
 

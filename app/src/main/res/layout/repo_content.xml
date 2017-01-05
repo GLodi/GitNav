@@ -44,7 +44,7 @@
             android:alpha="0.54"
             android:maxLines="1"
             android:paddingLeft="16dp"
-            android:text="tree"
+            android:text="/"
             android:layout_centerVertical="true"/>
 
     </RelativeLayout>

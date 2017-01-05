@@ -92,7 +92,7 @@ public class RepoActivity extends BaseDrawerActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                RepoActivity.super.onBackPressed();
             }
         });
 
@@ -165,8 +165,12 @@ public class RepoActivity extends BaseDrawerActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0,0);
+        if (repoViewPager.getCurrentItem() == 2 && repoContent.treeDepth != 0) {
+            repoContent.handleOnBackPressed();
+        } else {
+            super.onBackPressed();
+            overridePendingTransition(0, 0);
+        }
     }
 
     @Override
