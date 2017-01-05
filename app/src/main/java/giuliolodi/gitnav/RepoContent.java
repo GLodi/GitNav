@@ -66,6 +66,7 @@ public class RepoContent {
     private List<RepositoryContents> contentsList = new ArrayList<>();
     private List<String> pathTree = new ArrayList<>();
     private String path, treeText = "";
+    private boolean IS_LOADING = false;
 
     public int treeDepth = 0;
 
@@ -117,7 +118,10 @@ public class RepoContent {
                 fileAdapter = new FileAdapter(repositoryContents);
                 recyclerView.setAdapter(fileAdapter);
                 fileAdapter.notifyDataSetChanged();
+
                 setTree();
+
+                IS_LOADING = false;
 
                 progressBar.setVisibility(View.GONE);
                 relativeLayout.setVisibility(View.VISIBLE);
@@ -130,7 +134,8 @@ public class RepoContent {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 if (Constants.isNetworkAvailable(context)) {
-                    if (contentsList.get(position).getType().equals("dir")) {
+                    if (!IS_LOADING && contentsList.get(position).getType().equals("dir")) {
+                        IS_LOADING = true;
                         path = contentsList.get(position).getPath();
                         pathTree.add(contentsList.get(position).getPath());
                         treeDepth += 1;
@@ -154,11 +159,14 @@ public class RepoContent {
 
     public void handleOnBackPressed() {
         if (Constants.isNetworkAvailable(context)) {
-            path = pathTree.get(pathTree.size() - 2);
-            pathTree.remove(pathTree.size() - 1);
-            treeDepth -= 1;
-            contentsList.clear();
-            subscription = observable.subscribe(observer);
+            if (!IS_LOADING) {
+                IS_LOADING = true;
+                path = pathTree.get(pathTree.size() - 2);
+                pathTree.remove(pathTree.size() - 1);
+                treeDepth -= 1;
+                contentsList.clear();
+                subscription = observable.subscribe(observer);
+            }
         } else
             Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
 
