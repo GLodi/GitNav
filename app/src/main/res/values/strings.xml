@@ -83,6 +83,7 @@
     <string name="readme">Readme</string>
     <string name="files">Files</string>
     <string name="commits">Commits</string>
+    <string name="file">File</string>
 
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>

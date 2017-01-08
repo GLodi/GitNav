@@ -20,11 +20,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -32,6 +33,7 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import butterknife.BindString;
@@ -46,14 +48,15 @@ import rx.schedulers.Schedulers;
 
 public class FileViewerActivity extends BaseDrawerActivity {
 
-    @BindView(R.id.file_viewer_activity_rv) RecyclerView recyclerView;
+    @BindView(R.id.file_viewer_activity_textview) TextView textView;
     @BindView(R.id.file_viewer_activity_progressbar) ProgressBar progressBar;
     @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.file) String file;
 
     private Menu menu;
     private Intent intent;
-    private String owner, repo, path, ref;
-    private ContentsService contentsService;
+    private String owner, repo, path, fileDecoded;
+    private ContentsService contentsService = new ContentsService();
 
     private Observable<List<RepositoryContents>> observable;
     private Observer<List<RepositoryContents>> observer;
@@ -62,9 +65,11 @@ public class FileViewerActivity extends BaseDrawerActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.gist_activity, frameLayout);
+        getLayoutInflater().inflate(R.layout.file_viewer_activity, frameLayout);
 
         ButterKnife.bind(this);
+
+        getSupportActionBar().setTitle(file);
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -78,7 +83,6 @@ public class FileViewerActivity extends BaseDrawerActivity {
         owner = intent.getExtras().getString("owner");
         repo = intent.getExtras().getString("repo");
         path = intent.getExtras().getString("path");
-        ref = intent.getExtras().getString("ref");
 
         progressBar.setVisibility(View.VISIBLE);
         contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
@@ -87,7 +91,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
             @Override
             public void call(Subscriber<? super List<RepositoryContents>> subscriber) {
                 try {
-                    subscriber.onNext(contentsService.getContents(new RepositoryId(owner, repo), path, ref));
+                    subscriber.onNext(contentsService.getContents(new RepositoryId(owner, repo), path));
                 } catch (IOException e) {e.printStackTrace();}
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -106,6 +110,10 @@ public class FileViewerActivity extends BaseDrawerActivity {
             @Override
             public void onNext(List<RepositoryContents> repositoryContentsList) {
                 progressBar.setVisibility(View.INVISIBLE);
+                try {
+                    fileDecoded = new String(Base64.decode(repositoryContentsList.get(0).getContent(), Base64.DEFAULT), "UTF-8");
+                } catch (UnsupportedEncodingException e) {e.printStackTrace();}
+                textView.setText(fileDecoded);
             }
         };
 

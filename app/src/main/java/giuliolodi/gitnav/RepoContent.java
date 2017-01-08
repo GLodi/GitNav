@@ -16,7 +16,9 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -144,6 +146,13 @@ public class RepoContent {
                         treeDepth += 1;
                         contentsList.clear();
                         subscription = observable.subscribe(observer);
+                    }
+                    else if (contentsList.get(position).getType().equals("file")) {
+                        context.startActivity(new Intent(context, FileViewerActivity.class)
+                                .putExtra("owner", repo.getOwner().getLogin())
+                                .putExtra("repo", repo.getName())
+                                .putExtra("path", contentsList.get(position).getPath()));
+                        ((Activity) context).overridePendingTransition(0, 0);
                     }
                 } else
                     Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
