@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vstechlab.easyfonts.EasyFonts;
+
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -78,6 +80,7 @@ public class RepoContent {
         progressBar.setVisibility(View.VISIBLE);
         contentsService.getClient().setOAuth2Token(Constants.getToken(context));
 
+        treeView.setTypeface(EasyFonts.robotoRegular(context));
         linearLayoutManager = new LinearLayoutManager(context);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
