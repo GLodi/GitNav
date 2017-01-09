@@ -55,7 +55,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
     private Menu menu;
     private Intent intent;
-    private String owner, repo, path, fileDecoded;
+    private String owner, repo, path, filename, fileDecoded;
     private ContentsService contentsService = new ContentsService();
 
     private Observable<List<RepositoryContents>> observable;
@@ -69,8 +69,6 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle(file);
-
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +81,10 @@ public class FileViewerActivity extends BaseDrawerActivity {
         owner = intent.getExtras().getString("owner");
         repo = intent.getExtras().getString("repo");
         path = intent.getExtras().getString("path");
+        filename = intent.getExtras().getString("filename");
+
+        getSupportActionBar().setTitle(filename);
+        getSupportActionBar().setSubtitle(owner + "/" + repo);
 
         progressBar.setVisibility(View.VISIBLE);
         contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
