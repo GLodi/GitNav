@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,6 +116,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
                 try {
                     fileDecoded = new String(Base64.decode(repositoryContentsList.get(0).getContent(), Base64.DEFAULT), "UTF-8");
                 } catch (UnsupportedEncodingException e) {e.printStackTrace();}
+                textView.setMovementMethod(new ScrollingMovementMethod());
                 textView.setText(fileDecoded);
             }
         };

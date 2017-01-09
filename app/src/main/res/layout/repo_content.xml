@@ -38,7 +38,8 @@
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:scrollbars="none">
 
             <TextView
                 android:id="@+id/repo_content_tree"

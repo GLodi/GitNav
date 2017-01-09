@@ -93,6 +93,7 @@ public class RepoActivity extends BaseDrawerActivity {
             @Override
             public void onClick(View view) {
                 RepoActivity.super.onBackPressed();
+                overridePendingTransition(0,0);
             }
         });
 
