@@ -2,6 +2,11 @@
 
 Basic GitHub Android Client.
 
+##Screenshots
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot2.png)
+
 ## List of libraries implemented:
 
  - [Picasso][picasso]
