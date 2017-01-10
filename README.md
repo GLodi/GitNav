@@ -16,6 +16,7 @@ Basic GitHub Android Client.
  - [RxAndroid][rxandroid]
  - [Egit-GitHub][egit]
  - [material-about-library][material]
+ - [highlightjs-android][highlight]
 
 [picasso]: http://square.github.io/picasso/
 [circle]: https://github.com/hdodenhof/CircleImageView
@@ -29,3 +30,4 @@ Basic GitHub Android Client.
 [rxandroid]: https://github.com/ReactiveX/RxAndroid
 [egit]: https://github.com/eclipse/egit-github
 [material]: https://github.com/daniel-stoneuk/material-about-library
+[highlight]: https://github.com/PDDStudio/highlightjs-android

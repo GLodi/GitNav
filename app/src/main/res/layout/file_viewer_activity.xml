@@ -27,13 +27,12 @@
         android:indeterminate="true"
         android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/file_viewer_activity_textview"
+    <com.pddstudio.highlightjs.HighlightJsView
+        android:id="@+id/file_viewer_activity_highlightview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:scrollbars="none" />
+        android:scrollbars="none"
+        android:visibility="gone"/>
 
 </LinearLayout>
 

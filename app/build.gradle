@@ -57,5 +57,5 @@ dependencies {
     compile 'io.reactivex:rxjava:1.2.4'
     compile 'org.jsoup:jsoup:1.10.1'
     compile 'com.github.daniel-stoneuk:material-about-library:1.1.1'
-
+    compile 'com.pddstudio:highlightjs-android:1.4.0'
 }

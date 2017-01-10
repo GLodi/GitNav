@@ -109,7 +109,6 @@
             android:theme="@style/AppTheme.MaterialAboutActivity"/>
         <activity
             android:name=".FileViewerActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

@@ -20,14 +20,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.pddstudio.highlightjs.HighlightJsView;
+import com.pddstudio.highlightjs.models.Language;
+import com.pddstudio.highlightjs.models.Theme;
 
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -49,7 +51,7 @@ import rx.schedulers.Schedulers;
 
 public class FileViewerActivity extends BaseDrawerActivity {
 
-    @BindView(R.id.file_viewer_activity_textview) TextView textView;
+    @BindView(R.id.file_viewer_activity_highlightview) HighlightJsView highlightJsView;
     @BindView(R.id.file_viewer_activity_progressbar) ProgressBar progressBar;
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.file) String file;
@@ -112,12 +114,15 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
             @Override
             public void onNext(List<RepositoryContents> repositoryContentsList) {
-                progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
                 try {
                     fileDecoded = new String(Base64.decode(repositoryContentsList.get(0).getContent(), Base64.DEFAULT), "UTF-8");
                 } catch (UnsupportedEncodingException e) {e.printStackTrace();}
-                textView.setMovementMethod(new ScrollingMovementMethod());
-                textView.setText(fileDecoded);
+                highlightJsView.setZoomSupportEnabled(true);
+                highlightJsView.setTheme(Theme.ANDROID_STUDIO);
+                highlightJsView.setHighlightLanguage(Language.AUTO_DETECT);
+                highlightJsView.setSource(fileDecoded);
+                highlightJsView.setVisibility(View.VISIBLE);
             }
         };
 
