@@ -2,11 +2,6 @@
 
 Basic GitHub Android Client.
 
-##Screenshots
-
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot2.png)
-
 ## List of libraries implemented:
 
  - [Picasso][picasso]
@@ -36,3 +31,8 @@ Basic GitHub Android Client.
 [egit]: https://github.com/eclipse/egit-github
 [material]: https://github.com/daniel-stoneuk/material-about-library
 [highlight]: https://github.com/PDDStudio/highlightjs-android
+
+## Screenshots
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot2.png)
