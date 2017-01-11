@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,10 @@ public class GistListActivity extends BaseDrawerActivity {
 
     @BindString(R.string.mine) String mine;
     @BindString(R.string.starred) String starred;
+    @BindString(R.string.network_error) String network_error;
 
+    private GistListMine gistListMine;
+    private GistListStarred gistListStarred;
     private List<Integer> views;
 
     @Override
@@ -119,10 +123,13 @@ public class GistListActivity extends BaseDrawerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        GistListMine gistListMine = new GistListMine();
-        gistListMine.populate(GistListActivity.this, findViewById(R.id.gists_mine_rl));
-        GistListStarred gistListStarred = new GistListStarred();
-        gistListStarred.populate(GistListActivity.this, findViewById(R.id.gists_starred_rl));
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
+            gistListMine = new GistListMine();
+            gistListMine.populate(GistListActivity.this, findViewById(R.id.gists_mine_rl));
+            gistListStarred = new GistListStarred();
+            gistListStarred.populate(GistListActivity.this, findViewById(R.id.gists_starred_rl));
+        } else
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return true;
     }
 

@@ -71,7 +71,10 @@ public class GistActivity extends BaseDrawerActivity {
         intent = getIntent();
         gistId = intent.getStringExtra("GistId");
 
-        new getGist().execute();
+        if (Constants.isNetworkAvailable(getApplicationContext()))
+            new getGist().execute();
+        else
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
     @Override

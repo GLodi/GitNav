@@ -115,7 +115,10 @@ public class RepoActivity extends BaseDrawerActivity {
         tabLayout.setupWithViewPager(repoViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
-        new getRepo().execute();
+        if (Constants.isNetworkAvailable(getApplicationContext()))
+            new getRepo().execute();
+        else
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
     public class MyAdapter extends PagerAdapter {
