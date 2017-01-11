@@ -2,6 +2,34 @@
 
 Basic GitHub Android Client.
 
+Currently implemented:
+
+User:
+ - View basic information
+ - View repositories
+ - View followers and following
+ - Follow/unfollow user
+ 
+Repos:
+ - List own repos (with filters)
+ - List starred repos (with filters)
+ - Star/unstar repo
+ - View basic information
+ - View stargazers, contributors, issues
+ - View files
+ - View commits
+ 
+Search Function:
+ - Search repos, users and code
+
+Gist:
+ - List own gists and starred gists
+ - View gist content
+ 
+Trending:
+ - View daily, weekly and monthly trending repos
+ 
+ 
 ## List of libraries implemented:
 
  - [Picasso][picasso]

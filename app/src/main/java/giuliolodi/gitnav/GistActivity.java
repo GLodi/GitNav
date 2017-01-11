@@ -131,6 +131,12 @@ public class GistActivity extends BaseDrawerActivity {
 
     private class getGist extends AsyncTask<String, String, String> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
         protected String doInBackground(String... strings) {
             gistService = new GistService();
             gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
