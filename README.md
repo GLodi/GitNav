@@ -2,6 +2,13 @@
 
 Basic GitHub Android Client.
 
+## Screenshots
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
+
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot2.png)
+
 Currently implemented:
 
 User:
@@ -60,7 +67,4 @@ Trending:
 [material]: https://github.com/daniel-stoneuk/material-about-library
 [highlight]: https://github.com/PDDStudio/highlightjs-android
 
-## Screenshots
 
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot2.png)

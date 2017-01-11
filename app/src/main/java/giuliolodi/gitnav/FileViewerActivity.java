@@ -114,7 +114,6 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
             @Override
             public void onNext(List<RepositoryContents> repositoryContentsList) {
-                progressBar.setVisibility(View.GONE);
                 try {
                     fileDecoded = new String(Base64.decode(repositoryContentsList.get(0).getContent(), Base64.DEFAULT), "UTF-8");
                 } catch (UnsupportedEncodingException e) {e.printStackTrace();}
@@ -123,6 +122,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
                 highlightJsView.setHighlightLanguage(Language.AUTO_DETECT);
                 highlightJsView.setSource(fileDecoded);
                 highlightJsView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
         };
 
