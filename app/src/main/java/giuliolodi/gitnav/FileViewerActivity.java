@@ -25,11 +25,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pddstudio.highlightjs.HighlightJsView;
 import com.pddstudio.highlightjs.models.Language;
 import com.pddstudio.highlightjs.models.Theme;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -37,6 +39,7 @@ import org.eclipse.egit.github.core.service.ContentsService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLConnection;
 import java.util.List;
 
 import butterknife.BindString;
@@ -53,6 +56,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
     @BindView(R.id.file_viewer_activity_highlightview) HighlightJsView highlightJsView;
     @BindView(R.id.file_viewer_activity_progressbar) ProgressBar progressBar;
+    @BindView(R.id.file_viewer_activity_error) TextView errorView;
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.file) String file;
 
@@ -97,7 +101,10 @@ public class FileViewerActivity extends BaseDrawerActivity {
             public void call(Subscriber<? super List<RepositoryContents>> subscriber) {
                 try {
                     subscriber.onNext(contentsService.getContents(new RepositoryId(owner, repo), path));
-                } catch (IOException e) {e.printStackTrace();}
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                    e.printStackTrace();
+                }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
@@ -109,7 +116,9 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                progressBar.setVisibility(View.GONE);
+                errorView.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+                errorView.setVisibility(View.VISIBLE);
             }
 
             @Override
