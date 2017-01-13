@@ -16,23 +16,43 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class IssueListActivity extends BaseDrawerActivity {
 
+    @BindView(R.id.issuelist_activity_viewpager) ViewPager issueListViewPager;
+    @BindView(R.id.tab_layout) TabLayout tabLayout;
+
     @BindString(R.string.issues) String issuesString;
+    @BindString(R.string.open) String openString;
+    @BindString(R.string.closed) String closedString;
 
     private Intent intent;
     private String owner, repo;
+    private List<Integer> views;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.issuelist_activity, frameLayout);
+
+        ButterKnife.bind(this);
 
         intent = getIntent();
         owner = intent.getExtras().getString("owner");
@@ -40,6 +60,69 @@ public class IssueListActivity extends BaseDrawerActivity {
 
         getSupportActionBar().setTitle(issuesString);
         getSupportActionBar().setSubtitle(owner + "/" + repo);
+
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+                overridePendingTransition(0,0);
+            }
+        });
+
+        views = new ArrayList<>();
+        views.add(R.layout.issuelist_open);
+        views.add(R.layout.issuelist_closed);
+
+        issueListViewPager.setOffscreenPageLimit(2);
+        issueListViewPager.setAdapter(new MyAdapter(getApplicationContext()));
+
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(issueListViewPager);
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
+
+    }
+
+    private class MyAdapter extends PagerAdapter {
+
+        Context context;
+
+        public MyAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view.equals(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ViewGroup layout = (ViewGroup) getLayoutInflater().inflate(views.get(position), container, false);
+            container.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return openString;
+                case 1:
+                    return closedString;
+            }
+            return super.getPageTitle(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
 
     }
 }

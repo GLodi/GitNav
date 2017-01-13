@@ -73,7 +73,6 @@ public class RepoActivity extends BaseDrawerActivity {
     private RepoCommits repoCommits;
     private RepoContent repoContent;
 
-
     private List<Integer> views;
     private Menu menu;
 
@@ -121,7 +120,7 @@ public class RepoActivity extends BaseDrawerActivity {
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
-    public class MyAdapter extends PagerAdapter {
+    private class MyAdapter extends PagerAdapter {
 
         Context context;
 
@@ -165,6 +164,7 @@ public class RepoActivity extends BaseDrawerActivity {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+
     }
 
     @Override
