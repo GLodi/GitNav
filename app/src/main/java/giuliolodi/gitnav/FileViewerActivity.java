@@ -39,7 +39,6 @@ import org.eclipse.egit.github.core.service.ContentsService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLConnection;
 import java.util.List;
 
 import butterknife.BindString;
