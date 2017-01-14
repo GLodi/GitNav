@@ -22,8 +22,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.RepositoryIssue;
 import org.eclipse.egit.github.core.service.IssueService;
 
 import java.util.ArrayList;
@@ -69,8 +67,28 @@ public class IssueListOpen {
                 issueService = new IssueService();
                 issueService.getClient().setOAuth2Token(Constants.getToken(context));
                 repositoryIssues = new ArrayList<>(issueService.pageIssues(owner, repo, null, DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next());
+                subscriber.onNext(repositoryIssues);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<List<Issue>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Issue> issues) {
+                int a = 1;
+            }
+        };
+
+        subscription = observable.subscribe(observer);
     }
 
     public void unsubIssuelistOpen() {

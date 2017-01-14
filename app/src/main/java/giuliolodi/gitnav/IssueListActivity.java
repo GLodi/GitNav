@@ -48,6 +48,7 @@ public class IssueListActivity extends BaseDrawerActivity {
     private Intent intent;
     private String owner, repo;
     private List<Integer> views;
+    private IssueListOpen issueListOpen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,15 +84,15 @@ public class IssueListActivity extends BaseDrawerActivity {
         tabLayout.setupWithViewPager(issueListViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
-
-
+        issueListOpen = new IssueListOpen();
+        issueListOpen.populate(IssueListActivity.this, getLayoutInflater().inflate(R.layout.issuelist_open, null).findViewById(R.id.issuelist_open_ll), owner, repo);
     }
 
     private class MyAdapter extends PagerAdapter {
 
         Context context;
 
-        public MyAdapter(Context context) {
+        private MyAdapter(Context context) {
             this.context = context;
         }
 
