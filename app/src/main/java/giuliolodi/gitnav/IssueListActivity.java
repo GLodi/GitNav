@@ -83,6 +83,8 @@ public class IssueListActivity extends BaseDrawerActivity {
         tabLayout.setupWithViewPager(issueListViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
+
+
     }
 
     private class MyAdapter extends PagerAdapter {
