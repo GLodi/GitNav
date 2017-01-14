@@ -29,12 +29,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.service.IssueService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class IssueListActivity extends BaseDrawerActivity {
 
@@ -48,7 +57,14 @@ public class IssueListActivity extends BaseDrawerActivity {
     private Intent intent;
     private String owner, repo;
     private List<Integer> views;
-    private IssueListOpen issueListOpen;
+    private IssueService issueService;
+    private List<Issue> repositoryIssues;
+    private Observable<List<Issue>> observable;
+    private Observer<List<Issue>> observer;
+    private Subscription subscription;
+
+    private int DOWNLOAD_PAGE_N = 1;
+    private int ITEMS_PER_PAGE = 10;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,8 +100,35 @@ public class IssueListActivity extends BaseDrawerActivity {
         tabLayout.setupWithViewPager(issueListViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
-        issueListOpen = new IssueListOpen();
-        issueListOpen.populate(IssueListActivity.this, getLayoutInflater().inflate(R.layout.issuelist_open, null).findViewById(R.id.issuelist_open_ll), owner, repo);
+        observable = Observable.create(new Observable.OnSubscribe<List<Issue>>() {
+            @Override
+            public void call(Subscriber<? super List<Issue>> subscriber) {
+                issueService = new IssueService();
+                issueService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+                repositoryIssues = new ArrayList<>(issueService.pageIssues(owner, repo, null, DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next());
+                subscriber.onNext(repositoryIssues);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<List<Issue>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Issue> issues) {
+                int a = 1;
+            }
+        };
+
+        subscription = observable.subscribe(observer);
+
     }
 
     private class MyAdapter extends PagerAdapter {
