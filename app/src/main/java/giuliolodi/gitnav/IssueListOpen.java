@@ -21,8 +21,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.service.IssueService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class IssueListOpen {
 
@@ -30,15 +42,57 @@ public class IssueListOpen {
     @BindView(R.id.issuelist_open_rv) RecyclerView rv;
 
     private Context context;
+    private Observable<List<Issue>> observable;
+    private Observer<List<Issue>> observer;
+    private Subscription subscription;
+    private IssueService issueService;
+    private List<Issue> issuesReceived, masterIssueList, openList;
+    private String owner, repo;
 
-    public void populate(final Context context, View view) {
+    private int DOWNLOAD_PAGE_N = 1;
+    private int ITEMS_PER_PAGE = 1;
+
+    public void populate(final Context context, View view, final String owner, final String repo) {
         this.context = context;
 
         ButterKnife.bind(this, view);
 
         progressBar.setVisibility(View.VISIBLE);
 
+        observable = Observable.create(new Observable.OnSubscribe<List<Issue>>() {
+            @Override
+            public void call(Subscriber<? super List<Issue>> subscriber) {
+                issuesReceived = new ArrayList<>(issueService.pageIssues(owner, repo, null, DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next());
+                subscriber.onNext(issuesReceived);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
+        observer = new Observer<List<Issue>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Issue> issues) {
+                if (issues != null && !issues.isEmpty()) {
+                    masterIssueList.addAll(issues);
+                    for (int i = 0; i < masterIssueList.size(); i++) {
+                        if (masterIssueList.get(i).getState().equals("open"))
+                            openList.add(masterIssueList.get(i));
+                    }
+                } else {
+                    // End of issues
+                }
+            }
+        };
+
+        subscription = observable.subscribe(observer);
     }
 
 }
