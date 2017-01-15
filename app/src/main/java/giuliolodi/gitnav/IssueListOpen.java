@@ -17,6 +17,8 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,10 +27,13 @@ import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.IssueAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -46,8 +51,11 @@ public class IssueListOpen {
     private Observer<List<Issue>> observer;
     private Subscription subscription;
     private IssueService issueService;
-    private List<Issue> issuesReceived, masterIssueList, openList;
-    private String owner, repo;
+    private List<Issue> issuesReceived, masterIssueList;
+    private Map filterForOpen;
+    private LinearLayoutManager linearLayoutManager;
+    private RecyclerView recyclerView;
+    private IssueAdapter issueAdapter;
 
     private int DOWNLOAD_PAGE_N = 1;
     private int ITEMS_PER_PAGE = 1;
@@ -59,10 +67,21 @@ public class IssueListOpen {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        filterForOpen = new HashMap();
+        filterForOpen.put("state", "open");
+
+        issueAdapter = new IssueAdapter(masterIssueList, context);
+        linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(issueAdapter);
+
         observable = Observable.create(new Observable.OnSubscribe<List<Issue>>() {
             @Override
             public void call(Subscriber<? super List<Issue>> subscriber) {
-                issuesReceived = new ArrayList<>(issueService.pageIssues(owner, repo, null, DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next());
+                issuesReceived = new ArrayList<>(issueService.pageIssues(owner, repo, filterForOpen, DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next());
                 subscriber.onNext(issuesReceived);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -82,12 +101,9 @@ public class IssueListOpen {
             public void onNext(List<Issue> issues) {
                 if (issues != null && !issues.isEmpty()) {
                     masterIssueList.addAll(issues);
-                    for (int i = 0; i < masterIssueList.size(); i++) {
-                        if (masterIssueList.get(i).getState().equals("open"))
-                            openList.add(masterIssueList.get(i));
-                    }
+                    issueAdapter.notifyDataSetChanged();
                 } else {
-                    // End of issues
+                    subscription.unsubscribe();
                 }
             }
         };
