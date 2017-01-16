@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ import rx.schedulers.Schedulers;
 public class IssueListOpen {
 
     @BindView(R.id.issuelist_open_progressbar) ProgressBar progressBar;
-    @BindView(R.id.issuelist_open_rv) RecyclerView rv;
+    @BindView(R.id.issuelist_open_rv) RecyclerView recyclerView;
 
     private Context context;
     private Observable<List<Issue>> observable;
@@ -54,11 +55,10 @@ public class IssueListOpen {
     private List<Issue> issuesReceived, masterIssueList;
     private Map filterForOpen;
     private LinearLayoutManager linearLayoutManager;
-    private RecyclerView recyclerView;
     private IssueAdapter issueAdapter;
 
     private int DOWNLOAD_PAGE_N = 1;
-    private int ITEMS_PER_PAGE = 1;
+    private int ITEMS_PER_PAGE = 10;
 
     public void populate(final Context context, View view, final String owner, final String repo) {
         this.context = context;
@@ -70,7 +70,11 @@ public class IssueListOpen {
         filterForOpen = new HashMap();
         filterForOpen.put("state", "open");
 
-        issueAdapter = new IssueAdapter(masterIssueList, context);
+        issueService = new IssueService();
+        issueService.getClient().setOAuth2Token(Constants.getToken(context));
+        masterIssueList = new ArrayList<>();
+
+        issueAdapter = new IssueAdapter(masterIssueList);
         linearLayoutManager = new LinearLayoutManager(context);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -100,6 +104,7 @@ public class IssueListOpen {
             @Override
             public void onNext(List<Issue> issues) {
                 if (issues != null && !issues.isEmpty()) {
+                    progressBar.setVisibility(View.GONE);
                     masterIssueList.addAll(issues);
                     issueAdapter.notifyDataSetChanged();
                 } else {

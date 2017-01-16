@@ -84,9 +84,6 @@ public class IssueListActivity extends BaseDrawerActivity {
         tabLayout.setupWithViewPager(issueListViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
-        issueListOpen = new IssueListOpen();
-        issueListOpen.populate(IssueListActivity.this, getLayoutInflater().inflate(R.layout.issuelist_open, null).findViewById(R.id.issuelist_open_ll), owner, repo);
-
     }
 
     private class MyAdapter extends PagerAdapter {
@@ -135,6 +132,8 @@ public class IssueListActivity extends BaseDrawerActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        issueListOpen = new IssueListOpen();
+        issueListOpen.populate(IssueListActivity.this, findViewById(R.id.issuelist_open_rl), owner, repo);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -21,22 +21,46 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Issue;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
 
 public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Issue> issueList;
-    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.row_issue_username) TextView username;
+        @BindView(R.id.row_issue_issuename) TextView issueName;
+        @BindView(R.id.row_issue_comment_n) TextView commentN;
+        @BindView(R.id.row_issue_date) TextView date;
+        @BindView(R.id.row_issue_image) CircleImageView profilePic;
+
+        private PrettyTime p;
+
         public MyViewHolder(View view) {
             super(view);
+
+            ButterKnife.bind(this, view);
+
+            p = new PrettyTime();
+
+            username.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            issueName.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            commentN.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
         }
 
     }
@@ -54,9 +78,8 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return issueList.get(position) != null ? 1 : 0;
     }
 
-    public IssueAdapter(List<Issue> issueList, Context context) {
+    public IssueAdapter(List<Issue> issueList) {
         this.issueList = issueList;
-        this.context = context;
     }
 
     @Override
@@ -75,7 +98,12 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-
+        if (holder instanceof MyViewHolder) {
+            ((MyViewHolder)holder).username.setText(issueList.get(position).getUser().getLogin());
+            ((MyViewHolder)holder).issueName.setText(issueList.get(position).getTitle());
+            ((MyViewHolder)holder).commentN.setText(String.valueOf(issueList.get(position).getComments()));
+            ((MyViewHolder)holder).date.setText(((MyViewHolder)holder).p.format(issueList.get(position).getCreatedAt()));
+        }
 
     }
 
