@@ -104,12 +104,19 @@ public class IssueListOpen {
 
             @Override
             public void onNext(List<Issue> issues) {
-                if (issues != null && !issues.isEmpty()) {
+                if (masterIssueList.isEmpty() && issues != null && !issues.isEmpty()) {
                     progressBar.setVisibility(View.GONE);
                     masterIssueList.addAll(issues);
                     issueAdapter.notifyDataSetChanged();
                     LOADING = false;
+                } else if (issues != null && !issues.isEmpty()) {
+                    progressBar.setVisibility(View.GONE);
+                    masterIssueList.remove(masterIssueList.lastIndexOf(null));
+                    masterIssueList.addAll(issues);
+                    issueAdapter.notifyItemChanged(masterIssueList.size() - 1);
+                    LOADING = false;
                 } else {
+                    issueAdapter.notifyDataSetChanged();
                     subscription.unsubscribe();
                 }
             }
@@ -131,8 +138,10 @@ public class IssueListOpen {
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    DOWNLOAD_PAGE_N += 1;
                     LOADING = true;
+                    DOWNLOAD_PAGE_N += 1;
+                    masterIssueList.add(null);
+                    issueAdapter.notifyItemInserted(masterIssueList.size() - 1);
                     subscription = observable.subscribe(observer);
                 }
             }
