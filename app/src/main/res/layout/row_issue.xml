@@ -37,22 +37,20 @@
         android:id="@+id/starred_repo_row_ll">
 
         <TextView
-            android:text="Title"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:id="@+id/row_issue_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000000"
-            android:alpha="0.87"/>
+            android:alpha="0.54"/>
 
         <TextView
             android:id="@+id/row_issue_issuename"
-            android:textSize="14sp"
-            android:text="Description"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000000"
-            android:alpha="0.54"
+            android:alpha="0.87"
             android:maxLines="2"
             android:ellipsize="end"/>
 
@@ -65,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_forum_gold_24dp"
-                android:paddingTop="5dp"/>
+                android:paddingTop="8dp"/>
 
             <TextView
                 android:id="@+id/row_issue_comment_n"

@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Issue;
@@ -99,10 +100,12 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         if (holder instanceof MyViewHolder) {
+            Context context = ((MyViewHolder)holder).username.getContext();
             ((MyViewHolder)holder).username.setText(issueList.get(position).getUser().getLogin());
             ((MyViewHolder)holder).issueName.setText(issueList.get(position).getTitle());
             ((MyViewHolder)holder).commentN.setText(String.valueOf(issueList.get(position).getComments()));
             ((MyViewHolder)holder).date.setText(((MyViewHolder)holder).p.format(issueList.get(position).getCreatedAt()));
+            Picasso.with(context).load(issueList.get(position).getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(((MyViewHolder)holder).profilePic);
         }
 
     }

@@ -148,4 +148,10 @@ public class IssueListActivity extends BaseDrawerActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        issueListOpen.unsubIssueListOpen();
+    }
 }

@@ -26,7 +26,6 @@ import android.widget.ProgressBar;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +58,8 @@ public class IssueListOpen {
 
     private int DOWNLOAD_PAGE_N = 1;
     private int ITEMS_PER_PAGE = 10;
+
+    private boolean LOADING = false;
 
     public void populate(final Context context, View view, final String owner, final String repo) {
         this.context = context;
@@ -107,13 +108,43 @@ public class IssueListOpen {
                     progressBar.setVisibility(View.GONE);
                     masterIssueList.addAll(issues);
                     issueAdapter.notifyDataSetChanged();
+                    LOADING = false;
                 } else {
                     subscription.unsubscribe();
                 }
             }
         };
 
+        setupOnScrollListener();
+
         subscription = observable.subscribe(observer);
+    }
+
+    private void setupOnScrollListener() {
+
+        RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (LOADING)
+                    return;
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    DOWNLOAD_PAGE_N += 1;
+                    LOADING = true;
+                    subscription = observable.subscribe(observer);
+                }
+            }
+        };
+
+        recyclerView.setOnScrollListener(mScrollListener);
+
+    }
+
+    public void unsubIssueListOpen() {
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
     }
 
 }
