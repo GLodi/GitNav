@@ -42,11 +42,11 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class IssueListOpen {
+public class IssueListClosed {
 
-    @BindView(R.id.issuelist_open_progressbar) ProgressBar progressBar;
-    @BindView(R.id.issuelist_open_rv) RecyclerView recyclerView;
-    @BindView(R.id.issuelist_open_noissues) TextView noIssues;
+    @BindView(R.id.issuelist_closed_progressbar) ProgressBar progressBar;
+    @BindView(R.id.issuelist_closed_rv) RecyclerView recyclerView;
+    @BindView(R.id.issuelist_closed_noissues) TextView noIssues;
 
     private Context context;
     private Observable<List<Issue>> observable;
@@ -71,7 +71,7 @@ public class IssueListOpen {
         progressBar.setVisibility(View.VISIBLE);
 
         filterForOpen = new HashMap();
-        filterForOpen.put("state", "open");
+        filterForOpen.put("state", "closed");
 
         issueService = new IssueService();
         issueService.getClient().setOAuth2Token(Constants.getToken(context));

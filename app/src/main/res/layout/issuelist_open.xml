@@ -33,9 +33,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:backgroundTint="@color/back_tint"
         android:layout_below="@id/issuelist_open_progressbar">
 
     </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/issuelist_open_noissues"
+        android:text="@string/no_open_issues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

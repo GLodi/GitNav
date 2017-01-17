@@ -49,6 +49,7 @@ public class IssueListActivity extends BaseDrawerActivity {
     private String owner, repo;
     private List<Integer> views;
     private IssueListOpen issueListOpen;
+    private IssueListClosed issueListClosed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,8 +133,13 @@ public class IssueListActivity extends BaseDrawerActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
         issueListOpen = new IssueListOpen();
         issueListOpen.populate(IssueListActivity.this, findViewById(R.id.issuelist_open_rl), owner, repo);
+
+        issueListClosed = new IssueListClosed();
+        issueListClosed.populate(IssueListActivity.this, findViewById(R.id.issuelist_closed_rl), owner, repo);
+
         return super.onCreateOptionsMenu(menu);
     }
 
