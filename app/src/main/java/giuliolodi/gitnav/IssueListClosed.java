@@ -157,7 +157,7 @@ public class IssueListClosed {
 
     }
 
-    public void unsubIssueListOpen() {
+    public void unsubIssueListClosed() {
         if (subscription != null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
     }

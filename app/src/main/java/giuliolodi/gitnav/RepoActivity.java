@@ -269,7 +269,7 @@ public class RepoActivity extends BaseDrawerActivity {
             repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
 
             repoAbout = new RepoAbout();
-            repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_ll), repo, stargazerNumber);
+            repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_rl), repo, stargazerNumber);
 
             repoContent = new RepoContent();
             repoContent.populate(RepoActivity.this, findViewById(R.id.repo_content_ll), repo);

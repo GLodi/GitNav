@@ -159,5 +159,6 @@ public class IssueListActivity extends BaseDrawerActivity {
     protected void onDestroy() {
         super.onDestroy();
         issueListOpen.unsubIssueListOpen();
+        issueListClosed.unsubIssueListClosed();
     }
 }

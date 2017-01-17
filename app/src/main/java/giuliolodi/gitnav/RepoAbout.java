@@ -22,6 +22,7 @@ import android.support.v7.widget.*;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import org.eclipse.egit.github.core.Contributor;
 import org.eclipse.egit.github.core.Repository;
@@ -47,6 +48,7 @@ public class RepoAbout {
 
     @BindView(R.id.repo_about_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_about_gridview) RecyclerView gridView;
+    @BindView(R.id.repo_about_rl2) RelativeLayout relativeLayout;
     @BindString(R.string.stargazers) String stargazers;
     @BindString(R.string.forks) String forks;
     @BindString(R.string.issues) String issues;
@@ -66,6 +68,8 @@ public class RepoAbout {
         this.repo = repo;
 
         ButterKnife.bind(this, v);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         observable = Observable.create(new Observable.OnSubscribe<List<Contributor>>() {
             @Override
@@ -91,6 +95,9 @@ public class RepoAbout {
 
             @Override
             public void onNext(List<Contributor> contributorList) {
+                progressBar.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.VISIBLE);
+
                 nameList = new ArrayList<>();
                 nameList.add(stargazers);
                 nameList.add(forks);
