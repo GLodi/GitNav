@@ -111,6 +111,12 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+        <activity
+            android:name=".IssueActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity android:name=".AboutActivity"
             android:theme="@style/AppTheme.MaterialAboutActivity"/>
         <activity

@@ -79,6 +79,7 @@
     <string name="collaborators">Collaborators</string>
     <string name="code">Code</string>
     <string name="forks">Forks</string>
+    <string name="issue">Issue</string>
     <string name="issues">Issues</string>
     <string name="contributors">Contributors</string>
     <string name="contributions">Contributions: </string>

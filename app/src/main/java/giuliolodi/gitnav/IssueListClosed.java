@@ -16,13 +16,16 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -32,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.Adapters.IssueAdapter;
@@ -47,6 +51,7 @@ public class IssueListClosed {
     @BindView(R.id.issuelist_closed_progressbar) ProgressBar progressBar;
     @BindView(R.id.issuelist_closed_rv) RecyclerView recyclerView;
     @BindView(R.id.issuelist_closed_noissues) TextView noIssues;
+    @BindString(R.string.network_error) String network_error;
 
     private Context context;
     private Observable<List<Issue>> observable;
@@ -129,6 +134,20 @@ public class IssueListClosed {
         };
 
         setupOnScrollListener();
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                if (Constants.isNetworkAvailable(context)) {
+                    context.startActivity(new Intent(context, IssueActivity.class)
+                            .putExtra("owner", owner)
+                            .putExtra("repo", repo)
+                            .putExtra("issueNumber", String.valueOf(masterIssueList.get(position).getNumber())));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                } else
+                    Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+            }
+        });
 
         subscription = observable.subscribe(observer);
     }
