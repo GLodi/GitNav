@@ -160,21 +160,16 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (Constants.isNetworkAvailable(getApplicationContext())) {
-            switch (item.getItemId()) {
-                case R.id.action_options:
-                    startActivity(new Intent(getApplicationContext(), OptionActivity.class));
-                    overridePendingTransition(0,0);
-                    return true;
-                case R.id.open_in_browser:
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(file_url));
-                    startActivity(browserIntent);
-                    return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-            }
+        if (Constants.isNetworkAvailable(getApplicationContext()) && item.getItemId() == R.id.open_in_browser) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(file_url));
+            startActivity(browserIntent);
         } else
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+
+        if (item.getItemId() == R.id.action_options) {
+            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+            overridePendingTransition(0,0);
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -42,7 +42,7 @@
         android:title="@string/options"
         app:showAsAction="never" />
     <item
-        android:id="@+id/open_in_broswer"
+        android:id="@+id/open_in_browser"
         android:title="@string/open_in_browser" />
 
 </menu>

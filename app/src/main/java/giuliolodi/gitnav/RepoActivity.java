@@ -205,6 +205,10 @@ public class RepoActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_options) {
+            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+            overridePendingTransition(0,0);
+        }
         if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.follow_icon:
@@ -213,11 +217,7 @@ public class RepoActivity extends BaseDrawerActivity {
                 case R.id.unfollow_icon:
                     new starRepo().execute();
                     return true;
-                case R.id.action_options:
-                    startActivity(new Intent(getApplicationContext(), OptionActivity.class));
-                    overridePendingTransition(0,0);
-                    return true;
-                case R.id.open_in_broswer:
+                case R.id.open_in_browser:
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(repo.getHtmlUrl()));
                     startActivity(browserIntent);
                     return true;
@@ -227,7 +227,6 @@ public class RepoActivity extends BaseDrawerActivity {
         }
         else
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -35,7 +35,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -214,7 +213,7 @@ public class UserActivity extends BaseDrawerActivity {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     startActivity(Intent.createChooser(emailIntent, "Email"));
                     return true;
-                case R.id.open_in_broswer:
+                case R.id.open_in_browser:
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(user.getHtmlUrl()));
                     startActivity(browserIntent);
                     return true;

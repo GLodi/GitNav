@@ -145,14 +145,11 @@ public class IssueListActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_options:
-                startActivity(new Intent(getApplicationContext(), OptionActivity.class));
-                overridePendingTransition(0,0);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_options) {
+            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+            overridePendingTransition(0,0);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
