@@ -152,7 +152,8 @@ public class RepoContent {
                                 .putExtra("owner", repo.getOwner().getLogin())
                                 .putExtra("repo", repo.getName())
                                 .putExtra("path", contentsList.get(position).getPath())
-                                .putExtra("filename", contentsList.get(position).getName()));
+                                .putExtra("filename", contentsList.get(position).getName())
+                                .putExtra("file_url", repo.getHtmlUrl()));
                         ((Activity) context).overridePendingTransition(0, 0);
                     }
                 } else

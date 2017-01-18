@@ -61,7 +61,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
     private Menu menu;
     private Intent intent;
-    private String owner, repo, path, filename, fileDecoded;
+    private String owner, repo, path, filename, fileDecoded, file_url;
     private ContentsService contentsService = new ContentsService();
 
     private Observable<List<RepositoryContents>> observable;
@@ -88,6 +88,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
         repo = intent.getExtras().getString("repo");
         path = intent.getExtras().getString("path");
         filename = intent.getExtras().getString("filename");
+        file_url = intent.getExtras().getString("file_url");
 
         getSupportActionBar().setTitle(filename);
         getSupportActionBar().setSubtitle(owner + "/" + repo);
@@ -131,6 +132,8 @@ public class FileViewerActivity extends BaseDrawerActivity {
                 highlightJsView.setSource(fileDecoded);
                 highlightJsView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
+
+                createOptionsMenu();
             }
         };
 
@@ -163,8 +166,8 @@ public class FileViewerActivity extends BaseDrawerActivity {
                     startActivity(new Intent(getApplicationContext(), OptionActivity.class));
                     overridePendingTransition(0,0);
                     return true;
-                case R.id.open_in_broswer:
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(""));
+                case R.id.open_in_browser:
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(file_url));
                     startActivity(browserIntent);
                     return true;
                 default:

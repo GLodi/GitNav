@@ -77,6 +77,39 @@ public class GistActivity extends BaseDrawerActivity {
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
+    private class getGist extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            gistService = new GistService();
+            gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
+            try {
+                gist = gistService.getGist(gistId);
+            } catch (IOException e) {e.printStackTrace();}
+
+            try {
+                IS_GIST_STARRED = gistService.isStarred(gistId);
+            } catch (IOException e) {e.printStackTrace();}
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            getSupportActionBar().setTitle(gist.getDescription());
+            progressBar.setVisibility(View.GONE);
+
+            createOptionMenu();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
@@ -132,38 +165,6 @@ public class GistActivity extends BaseDrawerActivity {
         overridePendingTransition(0,0);
     }
 
-    private class getGist extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            gistService = new GistService();
-            gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-
-            try {
-                gist = gistService.getGist(gistId);
-            } catch (IOException e) {e.printStackTrace();}
-
-            try {
-                IS_GIST_STARRED = gistService.isStarred(gistId);
-            } catch (IOException e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            getSupportActionBar().setTitle(gist.getDescription());
-            progressBar.setVisibility(View.GONE);
-
-            createOptionMenu();
-        }
-    }
 
     private class starGist extends AsyncTask<String, String, String> {
         @Override

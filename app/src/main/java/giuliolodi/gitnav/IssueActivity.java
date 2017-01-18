@@ -17,8 +17,11 @@
 package giuliolodi.gitnav;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -45,7 +48,7 @@ public class IssueActivity extends BaseDrawerActivity {
     private Intent intent;
     private Issue issue;
     private IssueService issueService;
-    private String owner, repo, issueNumber;
+    private String owner, repo, issueNumber, issueUrl;
 
     private Observable<Issue> observable;
     private Observer<Issue> observer;
@@ -106,6 +109,25 @@ public class IssueActivity extends BaseDrawerActivity {
         };
 
         subscription = observable.subscribe(observer);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.issue_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (Constants.isNetworkAvailable(getApplicationContext()) && item.getItemId() == R.id.open_in_browser) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(issue.getHtmlUrl()));
+            startActivity(browserIntent);
+        }
+        if (item.getItemId() == R.id.action_options) {
+            startActivity(new Intent(getApplicationContext(), OptionActivity.class));
+            overridePendingTransition(0,0);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
