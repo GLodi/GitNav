@@ -19,6 +19,8 @@ package giuliolodi.gitnav;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -26,6 +28,7 @@ import org.eclipse.egit.github.core.service.IssueService;
 import java.io.IOException;
 
 import butterknife.BindString;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
@@ -36,6 +39,7 @@ import rx.schedulers.Schedulers;
 
 public class IssueActivity extends BaseDrawerActivity {
 
+    @BindView(R.id.issue_activity_progressbar) ProgressBar progressBar;
     @BindString(R.string.issue) String issueString;
 
     private Intent intent;
@@ -54,6 +58,14 @@ public class IssueActivity extends BaseDrawerActivity {
 
         ButterKnife.bind(this);
 
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         intent = getIntent();
         owner = intent.getStringExtra("owner");
         repo = intent.getStringExtra("repo");
@@ -62,6 +74,8 @@ public class IssueActivity extends BaseDrawerActivity {
         getSupportActionBar().setTitle(issueString + " #" + issueNumber);
         getSupportActionBar().setSubtitle(owner + "/" + repo);
 
+        progressBar.setVisibility(View.VISIBLE);
+
         observable = Observable.create(new Observable.OnSubscribe<Issue>() {
             @Override
             public void call(Subscriber<? super Issue> subscriber) {
@@ -69,6 +83,7 @@ public class IssueActivity extends BaseDrawerActivity {
                 issueService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
                 try {
                     issue = issueService.getIssue(owner, repo, issueNumber);
+                    subscriber.onNext(issue);
                 } catch (IOException e) {e.printStackTrace();}
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -86,7 +101,7 @@ public class IssueActivity extends BaseDrawerActivity {
 
             @Override
             public void onNext(Issue issue) {
-
+                progressBar.setVisibility(View.GONE);
             }
         };
 
