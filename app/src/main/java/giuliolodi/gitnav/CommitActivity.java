@@ -16,26 +16,38 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.RepositoryCommit;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.CommitService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.CommitFileAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -45,17 +57,19 @@ import rx.schedulers.Schedulers;
 
 public class CommitActivity  extends BaseDrawerActivity {
 
-    @BindView(R.id.commit_activity_progressbar) ProgressBar progressBar;
+    @BindView(R.id.tab_layout) TabLayout tabLayout;
+    @BindView(R.id.commit_activity_viewpager) ViewPager viewPager;
+
     @BindString(R.string.network_error) String network_error;
+    @BindString(R.string.files) String filesString;
+    @BindString(R.string.comments) String commentsString;
 
     private Intent intent;
-    private RepositoryCommit commit;
-    private CommitService commitService;
     private String owner, repo, sha, commit_url, commit_title;
+    private List<Integer> views;
 
-    private Observable<RepositoryCommit> observable;
-    private Observer<RepositoryCommit> observer;
-    private Subscription subscription;
+    private CommitActivityFilelist commitActivityFilelist;
+    private CommitActivityComments commitActivityComments;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,40 +94,61 @@ public class CommitActivity  extends BaseDrawerActivity {
         });
 
         getSupportActionBar().setTitle(commit_title);
-        getSupportActionBar().setSubtitle(owner + "/" + repo);
+        getSupportActionBar().setSubtitle(sha);
 
-        progressBar.setVisibility(View.VISIBLE);
+        views = new ArrayList<>();
+        views.add(R.layout.commit_activity_filelist);
+        views.add(R.layout.commit_activity_comments);
 
-        observable = Observable.create(new Observable.OnSubscribe<RepositoryCommit>() {
-            @Override
-            public void call(Subscriber<? super RepositoryCommit> subscriber) {
-                commitService = new CommitService();
-                commitService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-                try {
-                    subscriber.onNext(commitService.getCommit(new RepositoryId(owner, repo), sha));
-                } catch (IOException e) {e.printStackTrace();}
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(new MyAdapter(getApplicationContext()));
+
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
+
+    }
+
+    private class MyAdapter extends PagerAdapter {
+
+        Context context;
+
+        private MyAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view.equals(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ViewGroup layout = (ViewGroup) getLayoutInflater().inflate(views.get(position), container, false);
+            container.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return filesString;
+                case 1:
+                    return commentsString;
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            return super.getPageTitle(position);
+        }
 
-        observer = new Observer<RepositoryCommit>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(RepositoryCommit repositoryCommit) {
-                commit = repositoryCommit;
-                progressBar.setVisibility(View.GONE);
-            }
-        };
-
-        subscription = observable.subscribe(observer);
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
 
     }
 
@@ -126,13 +161,20 @@ public class CommitActivity  extends BaseDrawerActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (subscription != null && !subscription.isUnsubscribed())
-            subscription.unsubscribe();
+        commitActivityFilelist.unsubCommitActivityFilelist();
+        commitActivityComments.unsubCommitActivityComments();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.commit_menu, menu);
+
+        commitActivityFilelist = new CommitActivityFilelist();
+        commitActivityFilelist.populate(CommitActivity.this, findViewById(R.id.commit_activity_filelist_rl), owner, repo, sha);
+
+        commitActivityComments = new CommitActivityComments();
+        commitActivityComments.populate(CommitActivity.this, findViewById(R.id.commit_activity_comments_rl), owner, repo, sha);
+
         return super.onCreateOptionsMenu(menu);
     }
 
