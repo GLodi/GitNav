@@ -56,6 +56,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
         @BindView(R.id.row_commit_author) TextView author;
         @BindView(R.id.row_commit_date) TextView date;
         @BindView(R.id.row_commit_sha) TextView sha;
+        @BindView(R.id.row_commit_commentN) TextView commentN;
 
 
         public MyViewHolder(View view) {
@@ -67,6 +68,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
             author.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             date.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             sha.setTypeface(EasyFonts.robotoRegular(view.getContext()));
+            commentN.setTypeface(EasyFonts.robotoRegular(view.getContext()));
         }
 
     }
@@ -107,6 +109,7 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
         holder.author.setText(name);
         holder.description.setText(description);
         holder.sha.setText(repositoryCommitList.get(position).getSha().substring(0, 12));
+        holder.commentN.setText(String.valueOf(repositoryCommitList.get(position).getCommit().getCommentCount()));
         holder.date.setText(p.format(repositoryCommitList.get(position).getCommit().getAuthor().getDate()));
 
         // Set picture

@@ -116,11 +116,11 @@ public class RepoCommits {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 context.startActivity(new Intent(context, CommitActivity.class)
-                    .putExtra("owner", getRepo().getOwner().getLogin())
-                    .putExtra("repo", getRepo().getName())
-                    .putExtra("sha", repositoryCommitList.get(position).getSha())
-                    .putExtra("commit_url", getRepo().getHtmlUrl())
-                    .putExtra("commit_title", repositoryCommitList.get(position).getCommit().getMessage()));
+                        .putExtra("owner", getRepo().getOwner().getLogin())
+                        .putExtra("repo", getRepo().getName())
+                        .putExtra("sha", repositoryCommitList.get(position).getSha())
+                        .putExtra("commit_url", getRepo().getHtmlUrl())
+                        .putExtra("commit_title", repositoryCommitList.get(position).getCommit().getMessage()));
                 ((Activity)context).overridePendingTransition(0,0);
             }
         });

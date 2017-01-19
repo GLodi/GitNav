@@ -74,50 +74,51 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
     @Override
     public void onBindViewHolder(final FileAdapter holder, int position) {
         holder.filename.setText(commitFiles.get(position).getFilename().substring(commitFiles.get(position).getFilename().lastIndexOf("/") + 1, commitFiles.get(position).getFilename().length()));
-        String raw = commitFiles.get(position).getPatch();
-        String cleaned = raw.substring(raw.lastIndexOf("@@") + 3, raw.length());
-        final Spannable spannable = new SpannableString(cleaned);
-        char[] c = cleaned.toCharArray();
-        List<String> backslash = new ArrayList<>();
-        List<String> piu = new ArrayList<>();
-        List<String> meno = new ArrayList<>();
-        for (int i = 0; i < c.length - 1; i++) {
-            if (c[i] == '\n') {
-                backslash.add(String.valueOf(i));
-            }
-            if (c[i] == '\n' && c[i+1] == '+') {
-                piu.add(String.valueOf(i));
-            }
-            if (c[i] == '\n' && c[i+1] == '-') {
-                meno.add(String.valueOf(i));
-            }
-        }
-        for (int i = 0; i < piu.size(); i++) {
-            for (int j = 0; j < backslash.size(); j++) {
-                if (Integer.valueOf(piu.get(i)) < Integer.valueOf(backslash.get(j))) {
-                    spannable.setSpan(new BackgroundColorSpan(Color.parseColor("#cff7cf")), Integer.valueOf(piu.get(i)), Integer.valueOf(backslash.get(j)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    break;
+        if (commitFiles.get(position).getPatch() != null && !commitFiles.get(position).getPatch().isEmpty()) {
+            String raw = commitFiles.get(position).getPatch();
+            String cleaned = raw.substring(raw.lastIndexOf("@@") + 3, raw.length());
+            final Spannable spannable = new SpannableString(cleaned);
+            char[] c = cleaned.toCharArray();
+            List<String> backslash = new ArrayList<>();
+            List<String> piu = new ArrayList<>();
+            List<String> meno = new ArrayList<>();
+            for (int i = 0; i < c.length - 1; i++) {
+                if (c[i] == '\n') {
+                    backslash.add(String.valueOf(i));
+                }
+                if (c[i] == '\n' && c[i+1] == '+') {
+                    piu.add(String.valueOf(i));
+                }
+                if (c[i] == '\n' && c[i+1] == '-') {
+                    meno.add(String.valueOf(i));
                 }
             }
-        }
-        for (int i = 0; i < meno.size(); i++) {
-            for (int j = 0; j < backslash.size(); j++) {
-                if (Integer.valueOf(meno.get(i)) < Integer.valueOf(backslash.get(j))) {
-                    spannable.setSpan(new BackgroundColorSpan(Color.parseColor("#f7cdcd")), Integer.valueOf(meno.get(i)), Integer.valueOf(backslash.get(j)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    break;
+            for (int i = 0; i < piu.size(); i++) {
+                for (int j = 0; j < backslash.size(); j++) {
+                    if (Integer.valueOf(piu.get(i)) < Integer.valueOf(backslash.get(j))) {
+                        spannable.setSpan(new BackgroundColorSpan(Color.parseColor("#cff7cf")), Integer.valueOf(piu.get(i)), Integer.valueOf(backslash.get(j)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        break;
+                    }
                 }
             }
-        }
-        holder.content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (holder.content.getText().equals("..."))
-                    holder.content.setText(spannable);
-                else
-                    holder.content.setText("...");
+            for (int i = 0; i < meno.size(); i++) {
+                for (int j = 0; j < backslash.size(); j++) {
+                    if (Integer.valueOf(meno.get(i)) < Integer.valueOf(backslash.get(j))) {
+                        spannable.setSpan(new BackgroundColorSpan(Color.parseColor("#f7cdcd")), Integer.valueOf(meno.get(i)), Integer.valueOf(backslash.get(j)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        break;
+                    }
+                }
             }
-        });
-        holder.content.setText(spannable);
+            holder.content.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (holder.content.getText().equals("..."))
+                        holder.content.setText(spannable);
+                    else
+                        holder.content.setText("...");
+                }
+            });
+        }
     }
 
     @Override

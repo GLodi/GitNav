@@ -111,16 +111,14 @@ public class IssueListOpen {
 
             @Override
             public void onNext(List<Issue> issues) {
+                progressBar.setVisibility(View.GONE);
                 if (masterIssueList.isEmpty() && issues.isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
                     noIssues.setVisibility(View.VISIBLE);
                 } else if (masterIssueList.isEmpty() && issues != null && !issues.isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
                     masterIssueList.addAll(issues);
                     issueAdapter.notifyDataSetChanged();
                     LOADING = false;
                 } else if (issues != null && !issues.isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
                     masterIssueList.remove(masterIssueList.lastIndexOf(null));
                     masterIssueList.addAll(issues);
                     issueAdapter.notifyItemChanged(masterIssueList.size() - 1);
