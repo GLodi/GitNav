@@ -41,6 +41,7 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
     public class FileAdapter extends RecyclerView.ViewHolder {
 
         @BindView(R.id.row_commit_file_filename) TextView filename;
+        @BindView(R.id.row_commit_file_content) TextView content;
 
         public FileAdapter(View view) {
             super(view);
@@ -48,6 +49,7 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
             ButterKnife.bind(this, view);
 
             filename.setTypeface(EasyFonts.robotoRegular(context));
+            content.setTypeface(EasyFonts.robotoRegular(context));
         }
 
     }
@@ -67,6 +69,7 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
     @Override
     public void onBindViewHolder(FileAdapter holder, int position) {
         holder.filename.setText(commitFiles.get(position).getFilename().substring(commitFiles.get(position).getFilename().lastIndexOf("/") + 1, commitFiles.get(position).getFilename().length()));
+        holder.content.setText(commitFiles.get(position).getPatch());
     }
 
     @Override
