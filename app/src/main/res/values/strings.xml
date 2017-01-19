@@ -73,6 +73,7 @@
     <string name="download_file_error">Error downloading file</string>
     <string name="no_open_issues">No open issues</string>
     <string name="no_closed_issues">No closed issues</string>
+    <string name="no_comments">No comments</string>
 
     <string name="mine">Mine</string>
     <string name="users">Users</string>

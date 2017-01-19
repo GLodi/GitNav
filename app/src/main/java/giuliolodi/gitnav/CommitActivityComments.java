@@ -20,6 +20,9 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.CommitComment;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -40,6 +43,7 @@ import rx.schedulers.Schedulers;
 public class CommitActivityComments {
 
     @BindView(R.id.commit_activity_comments_progressbar) ProgressBar progressBar;
+    @BindView(R.id.commit_activity_comments_nocomments) TextView noComments;
 
     private Context context;
     private CommitService commitService;
@@ -80,6 +84,10 @@ public class CommitActivityComments {
             @Override
             public void onNext(List<CommitComment> commitComment) {
                 progressBar.setVisibility(View.GONE);
+                if (commitComment.isEmpty()) {
+                    noComments.setTypeface(EasyFonts.robotoRegular(context));
+                    noComments.setVisibility(View.VISIBLE);
+                }
             }
         };
 
