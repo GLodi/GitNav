@@ -17,7 +17,11 @@
 package giuliolodi.gitnav.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,7 @@ import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.CommitFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,9 +72,52 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
     }
 
     @Override
-    public void onBindViewHolder(FileAdapter holder, int position) {
+    public void onBindViewHolder(final FileAdapter holder, int position) {
         holder.filename.setText(commitFiles.get(position).getFilename().substring(commitFiles.get(position).getFilename().lastIndexOf("/") + 1, commitFiles.get(position).getFilename().length()));
-        holder.content.setText(commitFiles.get(position).getPatch());
+        String raw = commitFiles.get(position).getPatch();
+        String cleaned = raw.substring(raw.lastIndexOf("@@") + 3, raw.length());
+        final Spannable spannable = new SpannableString(cleaned);
+        char[] c = cleaned.toCharArray();
+        List<String> backslash = new ArrayList<>();
+        List<String> piu = new ArrayList<>();
+        List<String> meno = new ArrayList<>();
+        for (int i = 0; i < c.length - 1; i++) {
+            if (c[i] == '\n') {
+                backslash.add(String.valueOf(i));
+            }
+            if (c[i] == '\n' && c[i+1] == '+') {
+                piu.add(String.valueOf(i));
+            }
+            if (c[i] == '\n' && c[i+1] == '-') {
+                meno.add(String.valueOf(i));
+            }
+        }
+        for (int i = 0; i < piu.size(); i++) {
+            for (int j = 0; j < backslash.size(); j++) {
+                if (Integer.valueOf(piu.get(i)) < Integer.valueOf(backslash.get(j))) {
+                    spannable.setSpan(new BackgroundColorSpan(Color.parseColor("#cff7cf")), Integer.valueOf(piu.get(i)), Integer.valueOf(backslash.get(j)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < meno.size(); i++) {
+            for (int j = 0; j < backslash.size(); j++) {
+                if (Integer.valueOf(meno.get(i)) < Integer.valueOf(backslash.get(j))) {
+                    spannable.setSpan(new BackgroundColorSpan(Color.parseColor("#f7cdcd")), Integer.valueOf(meno.get(i)), Integer.valueOf(backslash.get(j)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+                }
+            }
+        }
+        holder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.content.getText().equals("..."))
+                    holder.content.setText(spannable);
+                else
+                    holder.content.setText("...");
+            }
+        });
+        holder.content.setText(spannable);
     }
 
     @Override
