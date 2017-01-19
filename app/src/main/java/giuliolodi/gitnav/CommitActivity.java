@@ -20,26 +20,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pddstudio.highlightjs.HighlightJsView;
-import com.pddstudio.highlightjs.models.Language;
-import com.pddstudio.highlightjs.models.Theme;
-import com.vstechlab.easyfonts.EasyFonts;
-
-import org.eclipse.egit.github.core.RepositoryContents;
+import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.RepositoryCommit;
 import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.service.ContentsService;
+import org.eclipse.egit.github.core.service.CommitService;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -51,29 +43,33 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class FileViewerActivity extends BaseDrawerActivity {
+public class CommitActivity  extends BaseDrawerActivity {
 
-    @BindView(R.id.file_viewer_activity_highlightview) HighlightJsView highlightJsView;
-    @BindView(R.id.file_viewer_activity_progressbar) ProgressBar progressBar;
-    @BindView(R.id.file_viewer_activity_error) TextView errorView;
+    @BindView(R.id.commit_activity_progressbar) ProgressBar progressBar;
     @BindString(R.string.network_error) String network_error;
-    @BindString(R.string.file) String file;
 
-    private Menu menu;
     private Intent intent;
-    private String owner, repo, path, filename, fileDecoded, file_url;
-    private ContentsService contentsService = new ContentsService();
+    private RepositoryCommit commit;
+    private CommitService commitService;
+    private String owner, repo, sha, commit_url, commit_title;
 
-    private Observable<List<RepositoryContents>> observable;
-    private Observer<List<RepositoryContents>> observer;
+    private Observable<RepositoryCommit> observable;
+    private Observer<RepositoryCommit> observer;
     private Subscription subscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.file_viewer_activity, frameLayout);
+        getLayoutInflater().inflate(R.layout.commit_activity, frameLayout);
 
         ButterKnife.bind(this);
+
+        intent = getIntent();
+        owner = intent.getStringExtra("owner");
+        repo = intent.getStringExtra("repo");
+        sha = intent.getStringExtra("sha");
+        commit_url = intent.getStringExtra("commit_url");
+        commit_title = intent.getStringExtra("commit_title");
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -83,32 +79,23 @@ public class FileViewerActivity extends BaseDrawerActivity {
             }
         });
 
-        intent = getIntent();
-        owner = intent.getExtras().getString("owner");
-        repo = intent.getExtras().getString("repo");
-        path = intent.getExtras().getString("path");
-        filename = intent.getExtras().getString("filename");
-        file_url = intent.getExtras().getString("file_url");
-
-        getSupportActionBar().setTitle(filename);
+        getSupportActionBar().setTitle(commit_title);
         getSupportActionBar().setSubtitle(owner + "/" + repo);
 
         progressBar.setVisibility(View.VISIBLE);
-        contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
-        observable = observable.create(new Observable.OnSubscribe<List<RepositoryContents>>() {
+        observable = Observable.create(new Observable.OnSubscribe<RepositoryCommit>() {
             @Override
-            public void call(Subscriber<? super List<RepositoryContents>> subscriber) {
+            public void call(Subscriber<? super RepositoryCommit> subscriber) {
+                commitService = new CommitService();
+                commitService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
                 try {
-                    subscriber.onNext(contentsService.getContents(new RepositoryId(owner, repo), path));
-                } catch (IOException e) {
-                    subscriber.onError(e);
-                    e.printStackTrace();
-                }
+                    subscriber.onNext(commitService.getCommit(new RepositoryId(owner, repo), sha));
+                } catch (IOException e) {e.printStackTrace();}
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
-        observer = new Observer<List<RepositoryContents>>() {
+        observer = new Observer<RepositoryCommit>() {
             @Override
             public void onCompleted() {
 
@@ -116,28 +103,24 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
             @Override
             public void onError(Throwable e) {
-                progressBar.setVisibility(View.GONE);
-                errorView.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
-                errorView.setVisibility(View.VISIBLE);
+
             }
 
             @Override
-            public void onNext(List<RepositoryContents> repositoryContentsList) {
-                try {
-                    fileDecoded = new String(Base64.decode(repositoryContentsList.get(0).getContent(), Base64.DEFAULT), "UTF-8");
-                } catch (UnsupportedEncodingException e) {e.printStackTrace();}
-                highlightJsView.setZoomSupportEnabled(true);
-                highlightJsView.setTheme(Theme.ANDROID_STUDIO);
-                highlightJsView.setHighlightLanguage(Language.AUTO_DETECT);
-                highlightJsView.setSource(fileDecoded);
-                highlightJsView.setVisibility(View.VISIBLE);
+            public void onNext(RepositoryCommit repositoryCommit) {
+                commit = repositoryCommit;
                 progressBar.setVisibility(View.GONE);
-
-                createOptionsMenu();
             }
         };
 
         subscription = observable.subscribe(observer);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
     }
 
     @Override
@@ -149,13 +132,8 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        return true;
-    }
-
-    private void createOptionsMenu() {
-        getMenuInflater().inflate(R.menu.file_viewer_activity_menu, menu);
-        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.commit_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -167,7 +145,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext())) {
             switch (item.getItemId()) {
                 case R.id.open_in_browser:
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(file_url));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(commit_url));
                     startActivity(browserIntent);
                     return true;
                 default:
@@ -177,11 +155,5 @@ public class FileViewerActivity extends BaseDrawerActivity {
         else
             Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0,0);
     }
 }

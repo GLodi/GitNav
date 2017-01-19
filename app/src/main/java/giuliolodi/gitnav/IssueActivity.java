@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -43,6 +44,7 @@ import rx.schedulers.Schedulers;
 public class IssueActivity extends BaseDrawerActivity {
 
     @BindView(R.id.issue_activity_progressbar) ProgressBar progressBar;
+    @BindString(R.string.network_error) String network_error;
     @BindString(R.string.issue) String issueString;
 
     private Intent intent;
@@ -119,14 +121,22 @@ public class IssueActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (Constants.isNetworkAvailable(getApplicationContext()) && item.getItemId() == R.id.open_in_browser) {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(issue.getHtmlUrl()));
-            startActivity(browserIntent);
-        }
         if (item.getItemId() == R.id.action_options) {
             startActivity(new Intent(getApplicationContext(), OptionActivity.class));
             overridePendingTransition(0,0);
         }
+        if (Constants.isNetworkAvailable(getApplicationContext())) {
+            switch (item.getItemId()) {
+                case R.id.open_in_browser:
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(issue.getHtmlUrl()));
+                    startActivity(browserIntent);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+        else
+            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
     }
 

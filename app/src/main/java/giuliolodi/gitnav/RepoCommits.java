@@ -16,7 +16,9 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -96,6 +98,7 @@ public class RepoCommits {
 
             @Override
             public void onNext(List<RepositoryCommit> list) {
+                repositoryCommitList.addAll(list);
                 commitAdapter = new CommitAdapter(list, context);
                 linearLayoutManager = new LinearLayoutManager(context);
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -108,6 +111,19 @@ public class RepoCommits {
                 progressBar.setVisibility(View.GONE);
             }
         };
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                context.startActivity(new Intent(context, CommitActivity.class)
+                    .putExtra("owner", getRepo().getOwner().getLogin())
+                    .putExtra("repo", getRepo().getName())
+                    .putExtra("sha", repositoryCommitList.get(position).getSha())
+                    .putExtra("commit_url", getRepo().getHtmlUrl())
+                    .putExtra("commit_title", repositoryCommitList.get(position).getCommit().getMessage()));
+                ((Activity)context).overridePendingTransition(0,0);
+            }
+        });
 
         s = observable.subscribe(observer);
     }
