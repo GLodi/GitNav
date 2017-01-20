@@ -21,7 +21,9 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
 
         @BindView(R.id.row_commit_file_filename) TextView filename;
         @BindView(R.id.row_commit_file_content) TextView content;
+        @BindView(R.id.row_commit_file_changes) TextView changes;
 
         public FileAdapter(View view) {
             super(view);
@@ -55,6 +58,7 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
 
             filename.setTypeface(EasyFonts.robotoRegular(context));
             content.setTypeface(EasyFonts.robotoRegular(context));
+            changes.setTypeface(EasyFonts.robotoRegular(context));
         }
 
     }
@@ -119,6 +123,11 @@ public class CommitFileAdapter extends RecyclerView.Adapter<CommitFileAdapter.Fi
                 }
             });
         }
+        String changed = "+ " + String.valueOf(commitFiles.get(position).getAdditions()) + "   - " + String.valueOf(commitFiles.get(position).getDeletions());
+        Spannable changedString = new SpannableString(changed);
+        changedString.setSpan(new ForegroundColorSpan(Color.parseColor("#099901")), 0, changed.indexOf("-"), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        changedString.setSpan(new ForegroundColorSpan(Color.parseColor("#c4071a")), changed.indexOf("-"), changedString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        holder.changes.setText(changedString);
     }
 
     @Override
