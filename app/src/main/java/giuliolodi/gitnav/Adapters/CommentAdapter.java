@@ -96,7 +96,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof CommentHolder) {
             ((CommentHolder)holder).username.setText(commentList.get(position).getUser().getLogin());
-            ((CommentHolder)holder).comment.setText(commentList.get(position).getBodyText());
+            ((CommentHolder)holder).comment.setText(commentList.get(position).getBody());
             ((CommentHolder)holder).date.setText(p.format(commentList.get(position).getCreatedAt()));
             Picasso.with(context).load(commentList.get(position).getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(((CommentHolder)holder).imageView);
         }

@@ -75,7 +75,7 @@ public class CommitCommentsAdapter extends RecyclerView.Adapter<CommitCommentsAd
     @Override
     public void onBindViewHolder(CommitCommentsHolder holder, int position) {
         holder.username.setText(commitComments.get(position).getUser().getLogin());
-        holder.comment.setText(commitComments.get(position).getBodyText());
+        holder.comment.setText(commitComments.get(position).getBody());
         holder.date.setText(p.format(commitComments.get(position).getCreatedAt()));
         Picasso.with(context).load(commitComments.get(position).getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(holder.imageView);
     }

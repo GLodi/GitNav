@@ -27,11 +27,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +44,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.Adapters.CommentAdapter;
 import rx.Observable;
 import rx.Observer;
@@ -51,6 +57,10 @@ public class IssueActivity extends BaseDrawerActivity {
 
     @BindView(R.id.issue_activity_progressbar) ProgressBar progressBar;
     @BindView(R.id.issue_activity_rv) RecyclerView recyclerView;
+    @BindView(R.id.issue_activity_username) TextView username;
+    @BindView(R.id.issue_activity_title) TextView title;
+    @BindView(R.id.issue_activity_description) TextView description;
+    @BindView(R.id.issue_activity_image) CircleImageView imageView;
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.issue) String issueString;
 
@@ -89,6 +99,10 @@ public class IssueActivity extends BaseDrawerActivity {
         getSupportActionBar().setTitle(issueString + " #" + issueNumber);
         getSupportActionBar().setSubtitle(owner + "/" + repo);
 
+        username.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        title.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        description.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+
         progressBar.setVisibility(View.VISIBLE);
 
         observable = Observable.create(new Observable.OnSubscribe<Issue>() {
@@ -119,9 +133,15 @@ public class IssueActivity extends BaseDrawerActivity {
             public void onNext(Issue issue) {
                 progressBar.setVisibility(View.GONE);
 
+                username.setText(issue.getUser().getLogin());
+                title.setText(issue.getTitle());
+                description.setText(issue.getBody());
+                Picasso.with(getApplicationContext()).load(issue.getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(imageView);
+
                 commentAdapter = new CommentAdapter(issueComments, getApplicationContext());
                 linearLayoutManager = new LinearLayoutManager(getApplicationContext());
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setNestedScrollingEnabled(false);
                 recyclerView.setLayoutManager(linearLayoutManager);
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.setAdapter(commentAdapter);

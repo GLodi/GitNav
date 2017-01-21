@@ -43,6 +43,7 @@ import giuliolodi.gitnav.UserActivity;
 public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Issue> issueList;
+    private PrettyTime p = new PrettyTime();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -52,14 +53,10 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.row_issue_date) TextView date;
         @BindView(R.id.row_issue_image) CircleImageView profilePic;
 
-        private PrettyTime p;
-
         public MyViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
-
-            p = new PrettyTime();
 
             username.setTypeface(EasyFonts.robotoRegular(view.getContext()));
             issueName.setTypeface(EasyFonts.robotoRegular(view.getContext()));
@@ -107,7 +104,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             ((MyViewHolder)holder).username.setText(issueList.get(position).getUser().getLogin());
             ((MyViewHolder)holder).issueName.setText(issueList.get(position).getTitle());
             ((MyViewHolder)holder).commentN.setText(String.valueOf(issueList.get(position).getComments()));
-            ((MyViewHolder)holder).date.setText(((MyViewHolder)holder).p.format(issueList.get(position).getCreatedAt()));
+            ((MyViewHolder)holder).date.setText(p.format(issueList.get(position).getCreatedAt()));
             Picasso.with(context).load(issueList.get(position).getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(((MyViewHolder)holder).profilePic);
 
             ((MyViewHolder)holder).profilePic.setOnClickListener(new View.OnClickListener() {
