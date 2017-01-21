@@ -41,21 +41,20 @@ public class CommitCommentsAdapter extends RecyclerView.Adapter<CommitCommentsAd
 
     private List<CommitComment> commitComments;
     private Context context;
-    private PrettyTime p;
+    private PrettyTime p = new PrettyTime();
 
     public class CommitCommentsHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.row_commit_comment_image) CircleImageView imageView;
-        @BindView(R.id.row_commit_comment_comment) TextView comment;
-        @BindView(R.id.row_commit_comment_username) TextView username;
-        @BindView(R.id.row_commit_comment_date) TextView date;
+        @BindView(R.id.row_comment_image) CircleImageView imageView;
+        @BindView(R.id.row_comment_comment) TextView comment;
+        @BindView(R.id.row_comment_username) TextView username;
+        @BindView(R.id.row_comment_date) TextView date;
 
         public CommitCommentsHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
 
-            p = new PrettyTime();
             comment.setTypeface(EasyFonts.robotoRegular(context));
         }
 
@@ -69,7 +68,7 @@ public class CommitCommentsAdapter extends RecyclerView.Adapter<CommitCommentsAd
     @Override
     public CommitCommentsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_commit_comment, parent, false);
+                .inflate(R.layout.row_comment, parent, false);
         return new CommitCommentsAdapter.CommitCommentsHolder(itemView);
     }
 
