@@ -32,7 +32,6 @@
         android:id="@+id/issuelist_closed_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
         android:layout_below="@id/issuelist_closed_progressbar">
 
     </android.support.v7.widget.RecyclerView>

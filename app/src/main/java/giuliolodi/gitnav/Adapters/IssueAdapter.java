@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -52,6 +53,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.row_issue_comment_n) TextView commentN;
         @BindView(R.id.row_issue_date) TextView date;
         @BindView(R.id.row_issue_image) CircleImageView profilePic;
+        @BindView(R.id.row_issue_forum_icon) ImageView icon;
 
         public MyViewHolder(View view) {
             super(view);
@@ -103,7 +105,12 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             final Context context = ((MyViewHolder)holder).username.getContext();
             ((MyViewHolder)holder).username.setText(issueList.get(position).getUser().getLogin());
             ((MyViewHolder)holder).issueName.setText(issueList.get(position).getTitle());
-            ((MyViewHolder)holder).commentN.setText(String.valueOf(issueList.get(position).getComments()));
+            if (issueList.get(position).getComments() != 0)
+                ((MyViewHolder)holder).commentN.setText(String.valueOf(issueList.get(position).getComments()));
+            else {
+                ((MyViewHolder)holder).commentN.setVisibility(View.GONE);
+                ((MyViewHolder)holder).icon.setVisibility(View.GONE);
+            }
             ((MyViewHolder)holder).date.setText(p.format(issueList.get(position).getCreatedAt()));
             Picasso.with(context).load(issueList.get(position).getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(((MyViewHolder)holder).profilePic);
 

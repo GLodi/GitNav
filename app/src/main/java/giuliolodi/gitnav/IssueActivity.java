@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +63,8 @@ public class IssueActivity extends BaseDrawerActivity {
     @BindView(R.id.issue_activity_title) TextView title;
     @BindView(R.id.issue_activity_description) TextView description;
     @BindView(R.id.issue_activity_image) CircleImageView imageView;
+    @BindView(R.id.issue_activity_nested) NestedScrollView nestedScrollView;
+
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.issue) String issueString;
 
@@ -132,6 +136,7 @@ public class IssueActivity extends BaseDrawerActivity {
             @Override
             public void onNext(Issue issue) {
                 progressBar.setVisibility(View.GONE);
+                nestedScrollView.setVisibility(View.VISIBLE);
 
                 username.setText(issue.getUser().getLogin());
                 title.setText(issue.getTitle());
