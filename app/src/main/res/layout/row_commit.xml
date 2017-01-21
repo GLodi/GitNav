@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="#000000"
-                android:alpha="0.87"
+                android:alpha="0.54"
                 android:maxLines="1"/>
 
             <TextView

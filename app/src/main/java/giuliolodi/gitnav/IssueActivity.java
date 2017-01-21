@@ -20,20 +20,26 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.CommentAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -44,13 +50,17 @@ import rx.schedulers.Schedulers;
 public class IssueActivity extends BaseDrawerActivity {
 
     @BindView(R.id.issue_activity_progressbar) ProgressBar progressBar;
+    @BindView(R.id.issue_activity_rv) RecyclerView recyclerView;
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.issue) String issueString;
 
     private Intent intent;
     private Issue issue;
     private IssueService issueService;
-    private String owner, repo, issueNumber, issueUrl;
+    private String owner, repo, issueNumber;
+    private List<Comment> issueComments;
+    private CommentAdapter commentAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private Observable<Issue> observable;
     private Observer<Issue> observer;
@@ -88,6 +98,7 @@ public class IssueActivity extends BaseDrawerActivity {
                 issueService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
                 try {
                     issue = issueService.getIssue(owner, repo, issueNumber);
+                    issueComments = issueService.getComments(owner, repo, issueNumber);
                     subscriber.onNext(issue);
                 } catch (IOException e) {e.printStackTrace();}
             }
@@ -107,6 +118,14 @@ public class IssueActivity extends BaseDrawerActivity {
             @Override
             public void onNext(Issue issue) {
                 progressBar.setVisibility(View.GONE);
+
+                commentAdapter = new CommentAdapter(issueComments, getApplicationContext());
+                linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(commentAdapter);
+                commentAdapter.notifyDataSetChanged();
             }
         };
 
