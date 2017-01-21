@@ -17,6 +17,9 @@
 package giuliolodi.gitnav;
 
 import android.content.Context;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import giuliolodi.gitnav.Adapters.CommitCommentsAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -43,10 +47,13 @@ import rx.schedulers.Schedulers;
 public class CommitActivityComments {
 
     @BindView(R.id.commit_activity_comments_progressbar) ProgressBar progressBar;
+    @BindView(R.id.commit_activity_comments_rv) RecyclerView recyclerView;
     @BindView(R.id.commit_activity_comments_nocomments) TextView noComments;
 
     private Context context;
     private CommitService commitService;
+    private CommitCommentsAdapter commitCommentsAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private Observable<List<CommitComment>> observable;
     private Observer<List<CommitComment>> observer;
@@ -87,6 +94,14 @@ public class CommitActivityComments {
                 if (commitComment.isEmpty()) {
                     noComments.setTypeface(EasyFonts.robotoRegular(context));
                     noComments.setVisibility(View.VISIBLE);
+                } else {
+                    commitCommentsAdapter = new CommitCommentsAdapter(commitComment, context);
+                    linearLayoutManager = new LinearLayoutManager(context);
+                    linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(commitCommentsAdapter);
+                    commitCommentsAdapter.notifyDataSetChanged();
                 }
             }
         };

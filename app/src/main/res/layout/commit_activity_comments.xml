@@ -18,7 +18,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/commit_activity_comments_rl">
+    android:id="@+id/commit_activity_comments_rl"
+    android:background="@color/back_tint">
 
     <ProgressBar
         android:id="@+id/commit_activity_comments_progressbar"

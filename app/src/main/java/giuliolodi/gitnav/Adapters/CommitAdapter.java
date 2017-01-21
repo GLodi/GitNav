@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,8 +57,8 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
         @BindView(R.id.row_commit_author) TextView author;
         @BindView(R.id.row_commit_date) TextView date;
         @BindView(R.id.row_commit_sha) TextView sha;
+        @BindView(R.id.row_commit_commenticon) ImageView commentIcon;
         @BindView(R.id.row_commit_commentN) TextView commentN;
-
 
         public MyViewHolder(View view) {
             super(view);
@@ -105,12 +106,19 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.MyViewHold
             name = repositoryCommitList.get(position).getCommit().getAuthor().getName();
             flag = false;
         }
+
         // Set texts
         holder.author.setText(name);
         holder.description.setText(description);
         holder.sha.setText(repositoryCommitList.get(position).getSha().substring(0, 12));
-        holder.commentN.setText(String.valueOf(repositoryCommitList.get(position).getCommit().getCommentCount()));
         holder.date.setText(p.format(repositoryCommitList.get(position).getCommit().getAuthor().getDate()));
+
+        if (repositoryCommitList.get(position).getCommit().getCommentCount() == 0) {
+            holder.commentIcon.setVisibility(View.GONE);
+            holder.commentN.setVisibility(View.GONE);
+        } else {
+            holder.commentN.setText(String.valueOf(repositoryCommitList.get(position).getCommit().getCommentCount()));
+        }
 
         // Set picture
         if (repositoryCommitList.get(position).getAuthor() != null)
