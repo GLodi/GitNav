@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -134,16 +135,26 @@ public class IssueActivity extends BaseDrawerActivity {
             }
 
             @Override
-            public void onNext(Issue issue) {
+            public void onNext(final Issue issue) {
                 progressBar.setVisibility(View.GONE);
                 nestedScrollView.setVisibility(View.VISIBLE);
 
                 username.setText(issue.getUser().getLogin());
                 title.setText(issue.getTitle());
-                description.setText(issue.getBody());
+                if (!issue.getBody().isEmpty())
+                    description.setText(issue.getBody());
+                else
+                    description.setVisibility(View.GONE);
                 Picasso.with(getApplicationContext()).load(issue.getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(imageView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(getApplicationContext(), UserActivity.class).putExtra("userS", issue.getUser().getLogin()));
+                        overridePendingTransition(0, 0);
+                    }
+                });
 
-                commentAdapter = new CommentAdapter(issueComments, getApplicationContext());
+                commentAdapter = new CommentAdapter(issueComments, IssueActivity.this);
                 linearLayoutManager = new LinearLayoutManager(getApplicationContext());
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 recyclerView.setNestedScrollingEnabled(false);

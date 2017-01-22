@@ -52,6 +52,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.row_issue_issuename) TextView issueName;
         @BindView(R.id.row_issue_comment_n) TextView commentN;
         @BindView(R.id.row_issue_date) TextView date;
+        @BindView(R.id.row_issue_n) TextView number;
         @BindView(R.id.row_issue_image) CircleImageView profilePic;
         @BindView(R.id.row_issue_forum_icon) ImageView icon;
 
@@ -105,6 +106,7 @@ public class IssueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             final Context context = ((MyViewHolder)holder).username.getContext();
             ((MyViewHolder)holder).username.setText(issueList.get(position).getUser().getLogin());
             ((MyViewHolder)holder).issueName.setText(issueList.get(position).getTitle());
+            ((MyViewHolder)holder).number.setText("#" + issueList.get(position).getNumber());
             if (issueList.get(position).getComments() != 0)
                 ((MyViewHolder)holder).commentN.setText(String.valueOf(issueList.get(position).getComments()));
             else {

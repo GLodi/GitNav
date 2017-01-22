@@ -16,7 +16,9 @@
 
 package giuliolodi.gitnav.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.R;
+import giuliolodi.gitnav.UserActivity;
 
 public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -93,12 +96,19 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof CommentHolder) {
             ((CommentHolder)holder).username.setText(commentList.get(position).getUser().getLogin());
             ((CommentHolder)holder).comment.setText(commentList.get(position).getBody());
             ((CommentHolder)holder).date.setText(p.format(commentList.get(position).getCreatedAt()));
             Picasso.with(context).load(commentList.get(position).getUser().getAvatarUrl()).resize(75, 75).centerCrop().into(((CommentHolder)holder).imageView);
+            ((CommentHolder)holder).imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", commentList.get(position).getUser().getLogin()));
+                    ((Activity) context).overridePendingTransition(0, 0);
+                }
+            });
         }
     }
 
