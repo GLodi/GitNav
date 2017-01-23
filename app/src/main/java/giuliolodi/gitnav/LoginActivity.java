@@ -48,6 +48,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -87,8 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (Constants.isNetworkAvailable(getApplicationContext()))
                         new newAccess().execute();
                     else {
-                        Toast t = Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG);
-                        t.show();
+                        Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
                     }
                     return true;
                 }
@@ -104,8 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (Constants.isNetworkAvailable(getApplicationContext()))
                     new newAccess().execute();
                 else {
-                    Toast t = Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG);
-                    t.show();
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -195,13 +194,13 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progDailog.dismiss();
-            Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG);
-            toast.show();
             if (result == "Logged in") {
+                Toasty.success(getApplicationContext(), result, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), BaseDrawerActivity.class);
                 startActivity(intent);
                 finish();
-            }
+            } else
+                Toasty.error(getApplicationContext(), result, Toast.LENGTH_LONG).show();
         }
 
     }

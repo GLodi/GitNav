@@ -63,6 +63,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
 public class UserActivity extends BaseDrawerActivity {
 
@@ -157,7 +158,7 @@ public class UserActivity extends BaseDrawerActivity {
             new getUser().execute();
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
     private void setHasClickedOnBio(boolean set) {
@@ -220,7 +221,7 @@ public class UserActivity extends BaseDrawerActivity {
             }
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
         return super.onOptionsItemSelected(item);
     }
@@ -236,7 +237,7 @@ public class UserActivity extends BaseDrawerActivity {
     }
 
     // Get User object after setUser(User user) is called
-    class getUser extends AsyncTask<String,String,String> {
+    private class getUser extends AsyncTask<String,String,String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -396,18 +397,18 @@ public class UserActivity extends BaseDrawerActivity {
         After getting user info, checks if retrieved info equals what is stored in SharedPreferences.
         If that's not the case it updates the info.
      */
-    class getAuthdUser extends AsyncTask<String, String, String> {
+    private class getAuthdUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             editor = sp.edit();
-            if (user.getName() != null && !user.getName().equals("") && !Constants.getFullName(getApplicationContext()).equals(user.getName())) {
+            if (!Constants.getFullName(getApplicationContext()).equals(user.getName()) && user.getName() != null && !user.getName().equals("")) {
                 editor.putString((Constants.getFullNameKey(getApplicationContext())), user.getName());
             }
-            else if (user.getLogin() != null && !user.getLogin().equals("") && !Constants.getUsername(getApplicationContext()).equals(user.getLogin())) {
+            else if (!Constants.getUsername(getApplicationContext()).equals(user.getLogin()) && user.getLogin() != null && !user.getLogin().equals("")) {
                 editor.putString((Constants.getUserKey(getApplicationContext())), user.getName());
             }
-            else if (user.getEmail() != null && !user.getEmail().equals("") && !Constants.getEmail(getApplicationContext()).equals(user.getEmail())) {
+            else if (!Constants.getEmail(getApplicationContext()).equals(user.getEmail()) && user.getEmail() != null && !user.getEmail().equals("")) {
                 editor.putString((Constants.getEmailKey(getApplicationContext())), user.getEmail());
             }
             editor.commit();
@@ -429,7 +430,7 @@ public class UserActivity extends BaseDrawerActivity {
         }
     }
 
-    class followUser extends AsyncTask<String, String, String> {
+    private class followUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -443,11 +444,11 @@ public class UserActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             menu.findItem(R.id.follow_icon).setVisible(true);
             menu.findItem(R.id.unfollow_icon).setVisible(false);
-            Toast.makeText(getApplicationContext(), user_followed, Toast.LENGTH_LONG).show();
+            Toasty.success(getApplicationContext(), user_followed, Toast.LENGTH_LONG).show();
         }
     }
 
-    class unfollowUser extends AsyncTask<String, String, String> {
+    private class unfollowUser extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -461,7 +462,7 @@ public class UserActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             menu.findItem(R.id.unfollow_icon).setVisible(true);
             menu.findItem(R.id.follow_icon).setVisible(false);
-            Toast.makeText(getApplicationContext(), user_unfollowed, Toast.LENGTH_LONG).show();
+            Toasty.success(getApplicationContext(), user_unfollowed, Toast.LENGTH_LONG).show();
 
         }
     }

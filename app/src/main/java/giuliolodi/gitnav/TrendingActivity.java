@@ -48,6 +48,7 @@ import butterknife.BindArray;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.StarredAdapter;
 import rx.Observable;
 import rx.Observer;
@@ -133,7 +134,7 @@ public class TrendingActivity extends  BaseDrawerActivity {
                         s = observable.subscribe(observer);
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -159,9 +160,8 @@ public class TrendingActivity extends  BaseDrawerActivity {
                         s = observable.subscribe(observer);
                     }
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
-                }
+                else
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -260,7 +260,8 @@ public class TrendingActivity extends  BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext())) {
             s = observable.subscribe(observer);
         } else {
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.GONE);
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         }
     }
 

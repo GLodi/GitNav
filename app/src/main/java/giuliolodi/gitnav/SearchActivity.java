@@ -40,6 +40,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class SearchActivity extends BaseDrawerActivity {
 
@@ -184,7 +185,7 @@ public class SearchActivity extends BaseDrawerActivity {
                     PREVENT_MULTIPLE_SEPARATOR_LINE = false;
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
                 }
                 return false;
             }

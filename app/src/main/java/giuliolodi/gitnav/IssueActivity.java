@@ -48,6 +48,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.CommentAdapter;
 import rx.Observable;
 import rx.Observer;
@@ -191,7 +192,7 @@ public class IssueActivity extends BaseDrawerActivity {
             }
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
     }
 

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.UserAdapter;
 
 public class UserFollowers {
@@ -69,12 +70,10 @@ public class UserFollowers {
         this.user = user;
         this.context = context;
         this.v = v;
-        if (Constants.isNetworkAvailable(context)) {
+        if (Constants.isNetworkAvailable(context))
             new getFollowers().execute();
-        }
-        else {
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
-        }
+        else
+            Toasty.warning(context, network_error, Toast.LENGTH_LONG).show();
     }
 
     private class getFollowers extends AsyncTask<String,String,String> {

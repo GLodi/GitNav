@@ -37,6 +37,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.ContributorAdapter;
 import rx.Observable;
 import rx.Observer;
@@ -131,7 +132,7 @@ public class ContributorsActivity extends BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext()))
             subscription = observable.subscribe(observer);
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
     }
 

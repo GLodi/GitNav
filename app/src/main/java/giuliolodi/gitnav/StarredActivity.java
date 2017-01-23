@@ -45,6 +45,7 @@ import java.util.Map;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.StarredAdapter;
 
 
@@ -112,7 +113,7 @@ public class StarredActivity extends BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext()))
             new getStarred().execute();
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
@@ -126,7 +127,7 @@ public class StarredActivity extends BaseDrawerActivity {
                     new getStarred().execute();
                 }
                 else
-                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -182,7 +183,7 @@ public class StarredActivity extends BaseDrawerActivity {
             }
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             return super.onOptionsItemSelected(item);
     }
 

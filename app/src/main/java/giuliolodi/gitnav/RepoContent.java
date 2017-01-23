@@ -44,6 +44,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.FileAdapter;
 import rx.Observable;
 import rx.Observer;
@@ -157,7 +158,7 @@ public class RepoContent {
                         ((Activity) context).overridePendingTransition(0, 0);
                     }
                 } else
-                    Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+                    Toasty.warning(context, network_error, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -182,7 +183,7 @@ public class RepoContent {
                 subscription = observable.subscribe(observer);
             }
         } else
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(context, network_error, Toast.LENGTH_LONG).show();
 
     }
 

@@ -44,6 +44,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -175,7 +176,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
             }
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
     }
 

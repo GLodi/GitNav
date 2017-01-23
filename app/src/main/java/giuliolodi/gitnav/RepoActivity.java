@@ -46,6 +46,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class RepoActivity extends BaseDrawerActivity {
 
@@ -121,7 +122,7 @@ public class RepoActivity extends BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext()))
             new getRepo().execute();
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
     private class MyAdapter extends PagerAdapter {
@@ -230,7 +231,7 @@ public class RepoActivity extends BaseDrawerActivity {
             }
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
     }
 
@@ -298,7 +299,7 @@ public class RepoActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             menu.findItem(R.id.follow_icon).setVisible(true);
             menu.findItem(R.id.unfollow_icon).setVisible(false);
-            Toast.makeText(getApplicationContext(), repo_starred, Toast.LENGTH_LONG).show();
+            Toasty.success(getApplicationContext(), repo_starred, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -318,7 +319,7 @@ public class RepoActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             menu.findItem(R.id.unfollow_icon).setVisible(true);
             menu.findItem(R.id.follow_icon).setVisible(false);
-            Toast.makeText(getApplicationContext(), repo_unstarred, Toast.LENGTH_LONG).show();
+            Toasty.success(getApplicationContext(), repo_unstarred, Toast.LENGTH_LONG).show();
         }
     }
 

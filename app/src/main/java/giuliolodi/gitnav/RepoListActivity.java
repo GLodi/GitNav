@@ -46,6 +46,7 @@ import java.util.Map;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.RepoAdapter;
 
 public class RepoListActivity extends BaseDrawerActivity {
@@ -104,7 +105,7 @@ public class RepoListActivity extends BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext()))
             new getRepositories().execute();
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
 
         // Set swipe color and listener. For some reason access through R.color doesn't work
         swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
@@ -118,7 +119,7 @@ public class RepoListActivity extends BaseDrawerActivity {
                     new getRepositories().execute();
                 }
                 else
-                    Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -184,7 +185,7 @@ public class RepoListActivity extends BaseDrawerActivity {
             }
         }
         else {
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
             return super.onOptionsItemSelected(item);
         }
     }

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindString;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.RepoAdapter;
 
 public class UserRepos {
@@ -80,7 +81,7 @@ public class UserRepos {
         if (Constants.isNetworkAvailable(context))
             new getRepos().execute();
         else
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(context, network_error, Toast.LENGTH_LONG).show();
     }
 
     private class getRepos extends AsyncTask<String,String,String> {

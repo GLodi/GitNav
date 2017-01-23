@@ -35,6 +35,7 @@ import java.io.IOException;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class GistActivity extends BaseDrawerActivity {
 
@@ -74,7 +75,7 @@ public class GistActivity extends BaseDrawerActivity {
         if (Constants.isNetworkAvailable(getApplicationContext()))
             new getGist().execute();
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
     private class getGist extends AsyncTask<String, String, String> {
@@ -154,7 +155,7 @@ public class GistActivity extends BaseDrawerActivity {
             }
         }
         else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
     }
 
@@ -179,7 +180,7 @@ public class GistActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             menu.findItem(R.id.follow_icon).setVisible(true);
             menu.findItem(R.id.unfollow_icon).setVisible(false);
-            Toast.makeText(getApplicationContext(), gist_starred, Toast.LENGTH_LONG).show();
+            Toasty.success(getApplicationContext(), gist_starred, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -197,7 +198,7 @@ public class GistActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             menu.findItem(R.id.unfollow_icon).setVisible(true);
             menu.findItem(R.id.follow_icon).setVisible(false);
-            Toast.makeText(getApplicationContext(), gist_unstarred, Toast.LENGTH_LONG).show();
+            Toasty.success(getApplicationContext(), gist_unstarred, Toast.LENGTH_LONG).show();
         }
     }
 }

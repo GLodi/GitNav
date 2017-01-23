@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
+import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.UserAdapter;
 
 public class UserFollowing {
@@ -72,7 +73,7 @@ public class UserFollowing {
             new getFollowing().execute();
         }
         else {
-            Toast.makeText(context, network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(context, network_error, Toast.LENGTH_LONG).show();
         }
     }
 

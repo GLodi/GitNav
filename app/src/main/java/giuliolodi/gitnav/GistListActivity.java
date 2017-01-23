@@ -37,6 +37,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class GistListActivity extends BaseDrawerActivity {
 
@@ -128,7 +129,7 @@ public class GistListActivity extends BaseDrawerActivity {
             gistListStarred = new GistListStarred();
             gistListStarred.populate(GistListActivity.this, findViewById(R.id.gists_starred_rl));
         } else
-            Toast.makeText(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return true;
     }
 
