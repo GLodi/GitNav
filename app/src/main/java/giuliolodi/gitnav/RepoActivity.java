@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -50,6 +51,7 @@ public class RepoActivity extends BaseDrawerActivity {
 
     @BindView(R.id.repo_viewpager) ViewPager repoViewPager;
     @BindView(R.id.tab_layout) TabLayout tabLayout;
+    @BindView(R.id.repo_progressbar) ProgressBar progressBar;
 
     @BindString(R.string.repository) String repository;
     @BindString(R.string.about) String about;
@@ -113,6 +115,8 @@ public class RepoActivity extends BaseDrawerActivity {
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.setupWithViewPager(repoViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         if (Constants.isNetworkAvailable(getApplicationContext()))
             new getRepo().execute();
@@ -255,6 +259,8 @@ public class RepoActivity extends BaseDrawerActivity {
             super.onPostExecute(s);
             getSupportActionBar().setTitle(repo.getName());
             getSupportActionBar().setSubtitle(repo.getOwner().getLogin());
+
+            progressBar.setVisibility(View.GONE);
 
             /*
                 Create the option menu, now that IS_REPO_STARRED is set, it can check

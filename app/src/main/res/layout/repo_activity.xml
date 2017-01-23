@@ -15,8 +15,7 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,4 +26,12 @@
 
     </android.support.v4.view.ViewPager>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/repo_progressbar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
