@@ -54,7 +54,8 @@
             android:id="@+id/gist_activity_filelist_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/back_tint">
+            android:backgroundTint="@color/back_tint"
+            android:layout_below="@id/gist_activity_cv">
 
         </android.support.v7.widget.RecyclerView>
 

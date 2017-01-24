@@ -36,6 +36,12 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class GistActivity extends BaseDrawerActivity {
 
@@ -45,13 +51,16 @@ public class GistActivity extends BaseDrawerActivity {
     @BindString(R.string.gist_unstarred) String gist_unstarred;
 
     private Menu menu;
-    private Gist gist;
-
     private Intent intent;
     private String gistId;
+    private Gist gist;
     private GistService gistService;
 
     private boolean IS_GIST_STARRED;
+
+    private Observable<Gist> observable;
+    private Observer<Gist> observer;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,43 +81,50 @@ public class GistActivity extends BaseDrawerActivity {
         intent = getIntent();
         gistId = intent.getStringExtra("GistId");
 
+        progressBar.setVisibility(View.VISIBLE);
+
+        observable = Observable.create(new Observable.OnSubscribe<Gist>() {
+            @Override
+            public void call(Subscriber<? super Gist> subscriber) {
+                gistService = new GistService();
+                gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
+                try {
+                    IS_GIST_STARRED = gistService.isStarred(gistId);
+                } catch (IOException e) {e.printStackTrace();}
+
+                try {
+                    gist = gistService.getGist(gistId);
+                    subscriber.onNext(gist);
+                } catch (IOException e) {e.printStackTrace();}
+
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+        observer = new Observer<Gist>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Gist gist) {
+                getSupportActionBar().setTitle(gist.getDescription());
+                progressBar.setVisibility(View.GONE);
+
+                createOptionMenu();
+            }
+        };
+
         if (Constants.isNetworkAvailable(getApplicationContext()))
-            new getGist().execute();
+            subscription = observable.subscribe(observer);
         else
             Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
-    }
-
-    private class getGist extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            gistService = new GistService();
-            gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-
-            try {
-                gist = gistService.getGist(gistId);
-            } catch (IOException e) {e.printStackTrace();}
-
-            try {
-                IS_GIST_STARRED = gistService.isStarred(gistId);
-            } catch (IOException e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            getSupportActionBar().setTitle(gist.getDescription());
-            progressBar.setVisibility(View.GONE);
-
-            createOptionMenu();
-        }
     }
 
     @Override
