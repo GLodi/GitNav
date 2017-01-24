@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/repo_content_ll">
@@ -33,7 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/back_tint"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:layout_below="@id/repo_content_progressbar">
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
@@ -59,8 +60,18 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/repo_content_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/repo_content_rl">
 
     </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/repo_content_progressbar_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

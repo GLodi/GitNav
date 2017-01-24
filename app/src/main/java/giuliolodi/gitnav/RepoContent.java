@@ -57,6 +57,7 @@ public class RepoContent {
 
     @BindView(R.id.repo_content_rl) RelativeLayout relativeLayout;
     @BindView(R.id.repo_content_progressbar) ProgressBar progressBar;
+    @BindView(R.id.repo_content_progressbar_bottom) ProgressBar progressBarBottom;
     @BindView(R.id.repo_content_rv) RecyclerView recyclerView;
     @BindView(R.id.repo_content_tree) TextView treeView;
     @BindString(R.string.network_error) String network_error;
@@ -130,6 +131,7 @@ public class RepoContent {
                 IS_LOADING = false;
 
                 progressBar.setVisibility(View.GONE);
+                progressBarBottom.setVisibility(View.GONE);
                 relativeLayout.setVisibility(View.VISIBLE);
             }
         };
@@ -146,6 +148,7 @@ public class RepoContent {
                         pathTree.add(contentsList.get(position).getPath());
                         treeDepth += 1;
                         contentsList.clear();
+                        progressBarBottom.setVisibility(View.VISIBLE);
                         subscription = observable.subscribe(observer);
                     }
                     else if (contentsList.get(position).getType().equals("file")) {
@@ -180,6 +183,7 @@ public class RepoContent {
                 pathTree.remove(pathTree.size() - 1);
                 treeDepth -= 1;
                 contentsList.clear();
+                progressBarBottom.setVisibility(View.VISIBLE);
                 subscription = observable.subscribe(observer);
             }
         } else
