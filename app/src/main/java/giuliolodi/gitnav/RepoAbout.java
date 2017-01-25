@@ -23,6 +23,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Contributor;
 import org.eclipse.egit.github.core.Repository;
@@ -36,6 +40,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import giuliolodi.gitnav.Adapters.RepoAboutAdapter;
 import rx.Observable;
 import rx.Observer;
@@ -49,6 +54,10 @@ public class RepoAbout {
     @BindView(R.id.repo_about_progressbar) ProgressBar progressBar;
     @BindView(R.id.repo_about_gridview) RecyclerView gridView;
     @BindView(R.id.repo_about_rl2) RelativeLayout relativeLayout;
+    @BindView(R.id.repo_about_image) CircleImageView imageView;
+    @BindView(R.id.repo_about_reponame) TextView repoName;
+    @BindView(R.id.repo_about_username) TextView username;
+
     @BindString(R.string.stargazers) String stargazers;
     @BindString(R.string.forks) String forks;
     @BindString(R.string.issues) String issues;
@@ -70,6 +79,13 @@ public class RepoAbout {
         ButterKnife.bind(this, v);
 
         progressBar.setVisibility(View.VISIBLE);
+
+        repoName.setTypeface(EasyFonts.robotoRegular(context));
+        username.setTypeface(EasyFonts.robotoRegular(context));
+
+        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(75, 75).centerCrop().into(imageView);
+        repoName.setText(repo.getName());
+        username.setText(repo.getOwner().getLogin());
 
         observable = Observable.create(new Observable.OnSubscribe<List<Contributor>>() {
             @Override
