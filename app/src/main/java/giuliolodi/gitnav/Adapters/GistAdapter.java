@@ -34,6 +34,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.GistActivity;
@@ -51,6 +52,9 @@ public class GistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         @BindView(R.id.gists_row_date) TextView date;
         @BindView(R.id.gists_row_id) TextView id;
         @BindView(R.id.gists_row_ll) LinearLayout ll;
+
+        @BindString(R.string.publics) String publics;
+        @BindString(R.string.privates) String privates;
 
         private PrettyTime p;
 
@@ -108,7 +112,7 @@ public class GistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             final Gist gist = gistList.get(position);
 
             ((MyViewHolder)holder).description.setText(gist.getDescription());
-            ((MyViewHolder)holder).isPublic.setText(gist.isPublic() ? "Public" : "Private");
+            ((MyViewHolder)holder).isPublic.setText(gist.isPublic() ? ((MyViewHolder)holder).publics : ((MyViewHolder)holder).privates);
             ((MyViewHolder)holder).filesN.setText(String.valueOf(gist.getFiles().size()));
             ((MyViewHolder)holder).id.setText(gist.getId());
             ((MyViewHolder)holder).date.setText(((MyViewHolder)holder).p.format(gist.getCreatedAt()));

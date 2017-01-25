@@ -28,11 +28,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+import com.vstechlab.easyfonts.EasyFonts;
 
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.GistFile;
 import org.eclipse.egit.github.core.service.GistService;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +49,7 @@ import java.util.Map;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import giuliolodi.gitnav.Adapters.GistFileAdapter;
 import rx.Observable;
@@ -57,9 +63,18 @@ public class GistActivity extends BaseDrawerActivity {
 
     @BindView(R.id.gist_activity_progress_bar) ProgressBar progressBar;
     @BindView(R.id.gist_activity_filelist_rv) RecyclerView recyclerView;
+    @BindView(R.id.gist_activity_username) TextView username;
+    @BindView(R.id.gist_activity_title) TextView title;
+    @BindView(R.id.gist_activity_sha) TextView sha;
+    @BindView(R.id.gist_activity_status) TextView status;
+    @BindView(R.id.gist_activity_date) TextView date;
+    @BindView(R.id.gist_activity_image) CircleImageView imageView;
+
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.gist_starred) String gist_starred;
     @BindString(R.string.gist_unstarred) String gist_unstarred;
+    @BindString(R.string.publics) String publics;
+    @BindString(R.string.privates) String privates;
 
     private Menu menu;
     private Intent intent;
@@ -69,6 +84,7 @@ public class GistActivity extends BaseDrawerActivity {
     private List<GistFile> gistFiles;
     private GistFileAdapter gistFileAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private PrettyTime p = new PrettyTime();
 
     private boolean IS_GIST_STARRED;
 
@@ -90,6 +106,12 @@ public class GistActivity extends BaseDrawerActivity {
                 onBackPressed();
             }
         });
+
+        username.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        title.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        sha.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        status.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
+        date.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
 
         // Get the id of the required Gist
         intent = getIntent();
@@ -128,7 +150,6 @@ public class GistActivity extends BaseDrawerActivity {
 
             @Override
             public void onNext(Gist gist) {
-                getSupportActionBar().setTitle(gist.getDescription());
                 progressBar.setVisibility(View.GONE);
 
                 createOptionMenu();
@@ -142,6 +163,12 @@ public class GistActivity extends BaseDrawerActivity {
                 recyclerView.setAdapter(gistFileAdapter);
                 gistFileAdapter.notifyDataSetChanged();
 
+                username.setText(gist.getOwner().getLogin());
+                title.setText(gist.getDescription());
+                Picasso.with(getApplicationContext()).load(gist.getOwner().getAvatarUrl()).centerCrop().resize(75, 75).into(imageView);
+                sha.setText(gist.getId());
+                status.setText(gist.isPublic() ? publics : privates);
+                date.setText(p.format(gist.getCreatedAt()));
             }
         };
 

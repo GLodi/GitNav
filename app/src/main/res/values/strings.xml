@@ -92,6 +92,8 @@
     <string name="file">File</string>
     <string name="open">Open</string>
     <string name="closed">Closed</string>
+    <string name="publics">Public</string>
+    <string name="privates">Private</string>
 
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
