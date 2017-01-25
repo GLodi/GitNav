@@ -21,6 +21,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,14 +31,21 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.eclipse.egit.github.core.Gist;
+import org.eclipse.egit.github.core.GistFile;
 import org.eclipse.egit.github.core.service.GistService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+import giuliolodi.gitnav.Adapters.GistFileAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -46,6 +56,7 @@ import rx.schedulers.Schedulers;
 public class GistActivity extends BaseDrawerActivity {
 
     @BindView(R.id.gist_activity_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.gist_activity_filelist_rv) RecyclerView recyclerView;
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.gist_starred) String gist_starred;
     @BindString(R.string.gist_unstarred) String gist_unstarred;
@@ -55,6 +66,9 @@ public class GistActivity extends BaseDrawerActivity {
     private String gistId;
     private Gist gist;
     private GistService gistService;
+    private List<GistFile> gistFiles;
+    private GistFileAdapter gistFileAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private boolean IS_GIST_STARRED;
 
@@ -118,6 +132,16 @@ public class GistActivity extends BaseDrawerActivity {
                 progressBar.setVisibility(View.GONE);
 
                 createOptionMenu();
+
+                gistFiles = new ArrayList<>(gist.getFiles().values());
+                gistFileAdapter = new GistFileAdapter(gistFiles);
+                linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(gistFileAdapter);
+                gistFileAdapter.notifyDataSetChanged();
+
             }
         };
 
