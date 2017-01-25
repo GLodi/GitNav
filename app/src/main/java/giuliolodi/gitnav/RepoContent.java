@@ -153,6 +153,7 @@ public class RepoContent {
                     }
                     else if (contentsList.get(position).getType().equals("file")) {
                         context.startActivity(new Intent(context, FileViewerActivity.class)
+                                .putExtra("mode", "repofile")
                                 .putExtra("owner", repo.getOwner().getLogin())
                                 .putExtra("repo", repo.getName())
                                 .putExtra("path", contentsList.get(position).getPath())

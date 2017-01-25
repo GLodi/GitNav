@@ -62,7 +62,9 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
     private Menu menu;
     private Intent intent;
+    private String mode;
     private String owner, repo, path, filename, fileDecoded, file_url;
+    private String filenameGist, contentGist;
     private ContentsService contentsService = new ContentsService();
 
     private Observable<List<RepositoryContents>> observable;
@@ -85,6 +87,33 @@ public class FileViewerActivity extends BaseDrawerActivity {
         });
 
         intent = getIntent();
+        mode = intent.getExtras().getString("mode");
+
+        progressBar.setVisibility(View.VISIBLE);
+        contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
+        if (mode.equals("repofile"))
+            initRepoFileMode();
+
+        else if (mode.equals("gistfile"))
+            initGistFileMode();
+    }
+
+    private void initGistFileMode() {
+        filenameGist = intent.getExtras().getString("filenameGist");
+        contentGist = intent.getExtras().getString("contentGist");
+        file_url = intent.getExtras().getString("urlGist");
+        getSupportActionBar().setTitle(filenameGist);
+
+        highlightJsView.setZoomSupportEnabled(true);
+        highlightJsView.setTheme(Theme.ANDROID_STUDIO);
+        highlightJsView.setHighlightLanguage(Language.AUTO_DETECT);
+        highlightJsView.setSource(contentGist);
+        highlightJsView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void initRepoFileMode() {
         owner = intent.getExtras().getString("owner");
         repo = intent.getExtras().getString("repo");
         path = intent.getExtras().getString("path");
@@ -93,9 +122,6 @@ public class FileViewerActivity extends BaseDrawerActivity {
 
         getSupportActionBar().setTitle(filename);
         getSupportActionBar().setSubtitle(owner + "/" + repo);
-
-        progressBar.setVisibility(View.VISIBLE);
-        contentsService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
 
         observable = observable.create(new Observable.OnSubscribe<List<RepositoryContents>>() {
             @Override
@@ -133,8 +159,6 @@ public class FileViewerActivity extends BaseDrawerActivity {
                 highlightJsView.setSource(fileDecoded);
                 highlightJsView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
-
-                createOptionsMenu();
             }
         };
 
@@ -151,6 +175,7 @@ public class FileViewerActivity extends BaseDrawerActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
+        createOptionsMenu();
         return true;
     }
 

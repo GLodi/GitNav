@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +71,7 @@ public class GistActivity extends BaseDrawerActivity {
     @BindView(R.id.gist_activity_status) TextView status;
     @BindView(R.id.gist_activity_date) TextView date;
     @BindView(R.id.gist_activity_image) CircleImageView imageView;
+    @BindView(R.id.gist_activity_date_icon) ImageView dateIcon;
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.gist_starred) String gist_starred;
@@ -168,9 +171,25 @@ public class GistActivity extends BaseDrawerActivity {
                 Picasso.with(getApplicationContext()).load(gist.getOwner().getAvatarUrl()).centerCrop().resize(75, 75).into(imageView);
                 sha.setText(gist.getId());
                 status.setText(gist.isPublic() ? publics : privates);
+                dateIcon.setVisibility(View.VISIBLE);
                 date.setText(p.format(gist.getCreatedAt()));
             }
         };
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    getApplicationContext().startActivity(new Intent(getApplicationContext(), FileViewerActivity.class)
+                            .putExtra("mode", "gistfile")
+                            .putExtra("filenameGist", gistFiles.get(position).getFilename())
+                            .putExtra("urlGist", gistFiles.get(position).getRawUrl())
+                            .putExtra("contentGist", gistFiles.get(position).getContent()));
+                    GistActivity.this.overridePendingTransition(0, 0);
+                } else
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            }
+        });
 
         if (Constants.isNetworkAvailable(getApplicationContext()))
             subscription = observable.subscribe(observer);
