@@ -54,6 +54,7 @@ Trending:
  - [Egit-GitHub][egit]
  - [material-about-library][material]
  - [highlightjs-android][highlight]
+ - [Toasty][toasty]
 
 [picasso]: http://square.github.io/picasso/
 [circle]: https://github.com/hdodenhof/CircleImageView
@@ -68,5 +69,5 @@ Trending:
 [egit]: https://github.com/eclipse/egit-github
 [material]: https://github.com/daniel-stoneuk/material-about-library
 [highlight]: https://github.com/PDDStudio/highlightjs-android
-
+[toasty]: https://github.com/GrenderG/Toasty
 
