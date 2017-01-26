@@ -2,6 +2,8 @@
 
 Basic GitHub Android Client.
 
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/web_hi_res_512.png)
+
 ## Screenshots
 
 ![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
