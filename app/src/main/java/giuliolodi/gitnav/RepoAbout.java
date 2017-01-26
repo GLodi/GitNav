@@ -16,11 +16,14 @@
 
 package giuliolodi.gitnav;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.*;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import org.eclipse.egit.github.core.Contributor;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +61,7 @@ public class RepoAbout {
     @BindView(R.id.repo_about_image) CircleImageView imageView;
     @BindView(R.id.repo_about_reponame) TextView repoName;
     @BindView(R.id.repo_about_username) TextView username;
+    @BindView(R.id.repo_about_description) TextView description;
 
     @BindString(R.string.stargazers) String stargazers;
     @BindString(R.string.forks) String forks;
@@ -67,6 +72,7 @@ public class RepoAbout {
     private Repository repo;
     private List<String> nameList, numberList;
     private List<Drawable> imageList;
+    private PrettyTime p = new PrettyTime();
 
     private Observable<List<Contributor>> observable;
     private Observer<List<Contributor>> observer;
@@ -80,12 +86,24 @@ public class RepoAbout {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(75, 75).centerCrop().into(imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, UserActivity.class).putExtra("userS", repo.getOwner().getLogin()));
+                ((Activity)context).overridePendingTransition(0, 0);
+            }
+        });
         repoName.setTypeface(EasyFonts.robotoRegular(context));
         username.setTypeface(EasyFonts.robotoRegular(context));
+        description.setTypeface(EasyFonts.robotoRegular(context));
 
-        Picasso.with(context).load(repo.getOwner().getAvatarUrl()).resize(75, 75).centerCrop().into(imageView);
         repoName.setText(repo.getName());
         username.setText(repo.getOwner().getLogin());
+        if (repo.getDescription() != null && !repo.getDescription().isEmpty())
+            description.setText(repo.getDescription());
+        else
+            description.setVisibility(View.GONE);
 
         observable = Observable.create(new Observable.OnSubscribe<List<Contributor>>() {
             @Override

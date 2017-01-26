@@ -19,10 +19,12 @@ package giuliolodi.gitnav;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -60,6 +62,8 @@ public class RepoContent {
     @BindView(R.id.repo_content_progressbar_bottom) ProgressBar progressBarBottom;
     @BindView(R.id.repo_content_rv) RecyclerView recyclerView;
     @BindView(R.id.repo_content_tree) TextView treeView;
+    @BindView(R.id.repo_content_scrollview) HorizontalScrollView scrollView;
+
     @BindString(R.string.network_error) String network_error;
 
     private Context context;
@@ -85,6 +89,7 @@ public class RepoContent {
         contentsService.getClient().setOAuth2Token(Constants.getToken(context));
 
         treeView.setTypeface(EasyFonts.robotoRegular(context));
+
         linearLayoutManager = new LinearLayoutManager(context);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -173,7 +178,13 @@ public class RepoContent {
         treeText = "/";
         treeText += pathTree.get(pathTree.size() - 1);
         treeView.setText(treeText);
-
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.smoothScrollBy(scrollView.getMaxScrollAmount(), 0);
+            }
+        }, 100);
     }
 
     public void handleOnBackPressed() {

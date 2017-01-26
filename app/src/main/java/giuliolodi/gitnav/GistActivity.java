@@ -16,12 +16,12 @@
 
 package giuliolodi.gitnav;
 
-import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,10 +43,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -65,6 +62,7 @@ public class GistActivity extends BaseDrawerActivity {
 
     @BindView(R.id.gist_activity_progress_bar) ProgressBar progressBar;
     @BindView(R.id.gist_activity_filelist_rv) RecyclerView recyclerView;
+    @BindView(R.id.gist_activity_nested) NestedScrollView nested;
     @BindView(R.id.gist_activity_username) TextView username;
     @BindView(R.id.gist_activity_title) TextView title;
     @BindView(R.id.gist_activity_sha) TextView sha;
@@ -154,6 +152,7 @@ public class GistActivity extends BaseDrawerActivity {
             @Override
             public void onNext(Gist gist) {
                 progressBar.setVisibility(View.GONE);
+                nested.setVisibility(View.VISIBLE);
 
                 createOptionMenu();
 
@@ -181,6 +180,7 @@ public class GistActivity extends BaseDrawerActivity {
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 if (Constants.isNetworkAvailable(getApplicationContext())) {
                     getApplicationContext().startActivity(new Intent(getApplicationContext(), FileViewerActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             .putExtra("mode", "gistfile")
                             .putExtra("filenameGist", gistFiles.get(position).getFilename())
                             .putExtra("urlGist", gistFiles.get(position).getRawUrl())

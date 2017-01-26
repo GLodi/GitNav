@@ -37,6 +37,7 @@
         android:layout_below="@id/repo_content_progressbar">
 
         <HorizontalScrollView
+            android:id="@+id/repo_content_scrollview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -50,6 +51,7 @@
                 android:textColor="#000000"
                 android:alpha="0.54"
                 android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:text="/"
                 android:scrollHorizontally="true"/>
 
