@@ -16,30 +16,24 @@
 
 package giuliolodi.gitnav;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.vstechlab.easyfonts.EasyFonts;
-
 import org.eclipse.egit.github.core.Gist;
-import org.eclipse.egit.github.core.GistFile;
 import org.eclipse.egit.github.core.service.GistService;
-import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,50 +42,29 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
-import giuliolodi.gitnav.Adapters.GistFileAdapter;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class GistActivity extends BaseDrawerActivity {
 
-    @BindView(R.id.gist_activity_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.gist_activity_filelist_rv) RecyclerView recyclerView;
-    @BindView(R.id.gist_activity_nested) NestedScrollView nested;
-    @BindView(R.id.gist_activity_username) TextView username;
-    @BindView(R.id.gist_activity_title) TextView title;
-    @BindView(R.id.gist_activity_sha) TextView sha;
-    @BindView(R.id.gist_activity_status) TextView status;
-    @BindView(R.id.gist_activity_date) TextView date;
-    @BindView(R.id.gist_activity_image) CircleImageView imageView;
-    @BindView(R.id.gist_activity_date_icon) ImageView dateIcon;
+    @BindView(R.id.tab_layout) TabLayout tabLayout;
+    @BindView(R.id.gist_activity_viewpager) ViewPager viewPager;
 
     @BindString(R.string.network_error) String network_error;
     @BindString(R.string.gist_starred) String gist_starred;
     @BindString(R.string.gist_unstarred) String gist_unstarred;
-    @BindString(R.string.publics) String publics;
-    @BindString(R.string.privates) String privates;
+    @BindString(R.string.files) String files;
+    @BindString(R.string.comments) String comments;
 
     private Menu menu;
     private Intent intent;
     private String gistId;
     private Gist gist;
     private GistService gistService;
-    private List<GistFile> gistFiles;
-    private GistFileAdapter gistFileAdapter;
-    private LinearLayoutManager linearLayoutManager;
-    private PrettyTime p = new PrettyTime();
+    private List<Integer> views;
+    private GistFiles gistFiles = new GistFiles();
+    private GistComments gistComments = new GistComments();
 
     private boolean IS_GIST_STARRED;
-
-    private Observable<Gist> observable;
-    private Observer<Gist> observer;
-    private Subscription subscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,93 +81,89 @@ public class GistActivity extends BaseDrawerActivity {
             }
         });
 
-        username.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
-        title.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
-        sha.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
-        status.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
-        date.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
-
-        // Get the id of the required Gist
         intent = getIntent();
         gistId = intent.getStringExtra("GistId");
 
-        progressBar.setVisibility(View.VISIBLE);
+        views = new ArrayList<>();
+        views.add(R.layout.gist_files);
+        views.add(R.layout.gist_comments);
 
-        observable = Observable.create(new Observable.OnSubscribe<Gist>() {
-            @Override
-            public void call(Subscriber<? super Gist> subscriber) {
-                gistService = new GistService();
-                gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(new MyAdapter(getApplicationContext()));
 
-                try {
-                    IS_GIST_STARRED = gistService.isStarred(gistId);
-                } catch (IOException e) {e.printStackTrace();}
-
-                try {
-                    gist = gistService.getGist(gistId);
-                    subscriber.onNext(gist);
-                } catch (IOException e) {e.printStackTrace();}
-
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-
-        observer = new Observer<Gist>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Gist gist) {
-                progressBar.setVisibility(View.GONE);
-                nested.setVisibility(View.VISIBLE);
-
-                createOptionMenu();
-
-                gistFiles = new ArrayList<>(gist.getFiles().values());
-                gistFileAdapter = new GistFileAdapter(gistFiles);
-                linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                recyclerView.setAdapter(gistFileAdapter);
-                gistFileAdapter.notifyDataSetChanged();
-
-                username.setText(gist.getOwner().getLogin());
-                title.setText(gist.getDescription());
-                Picasso.with(getApplicationContext()).load(gist.getOwner().getAvatarUrl()).centerCrop().resize(75, 75).into(imageView);
-                sha.setText(gist.getId());
-                status.setText(gist.isPublic() ? publics : privates);
-                dateIcon.setVisibility(View.VISIBLE);
-                date.setText(p.format(gist.getCreatedAt()));
-            }
-        };
-
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                if (Constants.isNetworkAvailable(getApplicationContext())) {
-                    getApplicationContext().startActivity(new Intent(getApplicationContext(), FileViewerActivity.class)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .putExtra("mode", "gistfile")
-                            .putExtra("filenameGist", gistFiles.get(position).getFilename())
-                            .putExtra("urlGist", gistFiles.get(position).getRawUrl())
-                            .putExtra("contentGist", gistFiles.get(position).getContent()));
-                    GistActivity.this.overridePendingTransition(0, 0);
-                } else
-                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
-            }
-        });
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
+        tabLayout.setupWithViewPager(viewPager);
 
         if (Constants.isNetworkAvailable(getApplicationContext()))
-            subscription = observable.subscribe(observer);
+            new checkStarred().execute();
         else
             Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+    }
+
+    private class MyAdapter extends PagerAdapter {
+
+        Context context;
+
+        private MyAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view.equals(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ViewGroup layout = (ViewGroup) getLayoutInflater().inflate(views.get(position), container, false);
+            container.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return files;
+                case 1:
+                    return comments;
+            }
+            return super.getPageTitle(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+    }
+
+    private class checkStarred extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            gistService = new GistService();
+            gistService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+            try {
+                gist = gistService.getGist(gistId);
+                IS_GIST_STARRED = gistService.isStarred(gistId);
+            } catch (IOException e) {e.printStackTrace();}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            createOptionMenu();
+
+            gistFiles.populate(GistActivity.this, findViewById(R.id.gist_files_rl), gist);
+            gistComments.populate(GistActivity.this, findViewById(R.id.gist_comments_rl), gistId);
+
+        }
     }
 
     @Override

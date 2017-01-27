@@ -72,11 +72,11 @@ public class GistListActivity extends BaseDrawerActivity {
 
     }
 
-    public class MyAdapter extends PagerAdapter {
+    private class MyAdapter extends PagerAdapter {
 
         Context context;
 
-        public MyAdapter(Context context) {
+        private MyAdapter(Context context) {
             this.context = context;
         }
 
