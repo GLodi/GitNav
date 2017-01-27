@@ -125,6 +125,56 @@ public class RepoActivity extends BaseDrawerActivity {
             Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
     }
 
+    private class getRepo extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            repositoryService = new RepositoryService();
+            repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
+            starService = new StarService();
+            starService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
+
+            try {
+                repo = repositoryService.getRepository(owner, name);
+            } catch (IOException e) {e.printStackTrace();}
+
+            try {
+                IS_REPO_STARRED = starService.isStarring(new RepositoryId(repo.getOwner().getLogin(), repo.getName()));
+            } catch (IOException e) {e.printStackTrace();}
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            getSupportActionBar().setTitle(repo.getName());
+            getSupportActionBar().setSubtitle(repo.getOwner().getLogin());
+
+            progressBar.setVisibility(View.GONE);
+
+            /*
+                Create the option menu, now that IS_REPO_STARRED is set, it can check
+                whether the repo is starred or not
+            */
+            createOptionMenu();
+
+            stargazerNumber = repo.getWatchers();
+
+            repoReadme = new RepoReadme();
+            repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
+
+            repoAbout = new RepoAbout();
+            repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_rl), repo, stargazerNumber);
+
+            repoContent = new RepoContent();
+            repoContent.populate(RepoActivity.this, findViewById(R.id.repo_content_ll), repo);
+
+            repoCommits = new RepoCommits();
+            repoCommits.populate(RepoActivity.this, findViewById(R.id.repo_commits_ll), repo);
+        }
+    }
+
     private class MyAdapter extends PagerAdapter {
 
         Context context;
@@ -233,56 +283,6 @@ public class RepoActivity extends BaseDrawerActivity {
         else
             Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
         return super.onOptionsItemSelected(item);
-    }
-
-    private class getRepo extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... strings) {
-            repositoryService = new RepositoryService();
-            repositoryService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-
-            starService = new StarService();
-            starService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-
-            try {
-                repo = repositoryService.getRepository(owner, name);
-            } catch (IOException e) {e.printStackTrace();}
-
-            try {
-                IS_REPO_STARRED = starService.isStarring(new RepositoryId(repo.getOwner().getLogin(), repo.getName()));
-            } catch (IOException e) {e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            getSupportActionBar().setTitle(repo.getName());
-            getSupportActionBar().setSubtitle(repo.getOwner().getLogin());
-
-            progressBar.setVisibility(View.GONE);
-
-            /*
-                Create the option menu, now that IS_REPO_STARRED is set, it can check
-                whether the repo is starred or not
-            */
-            createOptionMenu();
-
-            stargazerNumber = repo.getWatchers();
-
-            repoReadme = new RepoReadme();
-            repoReadme.populate(RepoActivity.this, findViewById(R.id.repo_readme_ll), repo);
-
-            repoAbout = new RepoAbout();
-            repoAbout.populate(RepoActivity.this, findViewById(R.id.repo_about_rl), repo, stargazerNumber);
-
-            repoContent = new RepoContent();
-            repoContent.populate(RepoActivity.this, findViewById(R.id.repo_content_ll), repo);
-
-            repoCommits = new RepoCommits();
-            repoCommits.populate(RepoActivity.this, findViewById(R.id.repo_commits_ll), repo);
-        }
     }
 
     private class starRepo extends AsyncTask<String, String, String> {
