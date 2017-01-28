@@ -61,6 +61,7 @@
         <item>Trending monthly</item>
     </string-array>
     <string name="options">Options</string>
+    <string name="language">Language</string>
 
     <string name="no_repositories">No repositories</string>
     <string name="no_users">No users</string>

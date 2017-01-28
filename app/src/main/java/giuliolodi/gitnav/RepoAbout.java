@@ -67,12 +67,11 @@ public class RepoAbout {
     @BindString(R.string.forks) String forks;
     @BindString(R.string.issues) String issues;
     @BindString(R.string.contributors) String contributors;
+    @BindString(R.string.language) String language;
 
     private Context context;
     private Repository repo;
     private List<String> nameList, numberList;
-    private List<Drawable> imageList;
-    private PrettyTime p = new PrettyTime();
 
     private Observable<List<Contributor>> observable;
     private Observer<List<Contributor>> observer;
@@ -144,16 +143,14 @@ public class RepoAbout {
                 numberList.add(String.valueOf(repo.getOpenIssues()));
                 numberList.add(String.valueOf(contributorList.size()));
 
-                imageList = new ArrayList<>();
-                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_heart_256_0_000000_none));
-                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_repoforked_256_0_000000_none));
-                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_issueopened_256_0_000000_none));
-                imageList.add(context.getResources().getDrawable(R.drawable.octicons_430_flame_256_0_000000_none));
+                if (repo.getLanguage() != null && !repo.getLanguage().isEmpty()) {
+                    nameList.add(language);
+                    numberList.add(repo.getLanguage());
+                }
 
-                gridView.setLayoutManager(new GridLayoutManager(context, 3));
-                gridView.setHasFixedSize(true);
+                gridView.setLayoutManager(new LinearLayoutManager(context));
                 gridView.setNestedScrollingEnabled(false);
-                gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList, imageList, repo.getName(), repo.getOwner().getLogin()));
+                gridView.setAdapter(new RepoAboutAdapter(context, nameList, numberList, repo.getName(), repo.getOwner().getLogin()));
             }
         };
 

@@ -18,57 +18,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/row_repo_about_rl">
+    android:id="@+id/row_repo_about_rl"
+    android:paddingBottom="4dp"
+    android:paddingTop="4dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/row_repo_about_cardview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp">
+    <TextView
+        android:id="@+id/row_repo_about_text"
+        android:text="Stargazers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:alpha="0.54"
+        android:maxLines="1"
+        android:paddingLeft="8dp"
+        android:layout_centerVertical="true"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/row_repo_about_n"
-                android:text="125"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:alpha="0.87"
-                android:maxLines="1"
-                android:layout_centerHorizontal="true"
-                android:paddingTop="5dp"/>
-
-            <ImageView
-                android:id="@+id/row_repo_about_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_below="@id/row_repo_about_n"
-                android:layout_centerHorizontal="true"
-                android:paddingTop="5dp"/>
-
-            <TextView
-                android:id="@+id/row_repo_about_text"
-                android:text="Stargazers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:alpha="0.54"
-                android:maxLines="1"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/row_repo_about_image"
-                android:padding="5dp"/>
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
+    <TextView
+        android:id="@+id/row_repo_about_n"
+        android:text="125"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:alpha="0.87"
+        android:maxLines="1"
+        android:paddingLeft="8dp"
+        android:layout_toRightOf="@id/row_repo_about_text"
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>

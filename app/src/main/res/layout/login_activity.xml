@@ -30,22 +30,25 @@
         android:paddingRight="24dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:src="@mipmap/ic_launcher" />
 
         <!--  Email Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_user"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/input_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Username" />
+                android:hint="Username"
+                android:inputType="textEmailAddress"/>
         </android.support.design.widget.TextInputLayout>
 
         <!--  Password Label -->
@@ -70,7 +73,8 @@
             android:padding="12dp"
             android:text="Login"
             android:background="@color/colorPrimaryDark"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="#ffffff"
+            android:alpha="0.54" />
 
         <TextView android:id="@+id/link_signup"
             android:layout_width="fill_parent"

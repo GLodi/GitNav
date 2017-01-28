@@ -52,7 +52,6 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
 
         @BindView(R.id.row_repo_about_text) TextView text;
         @BindView(R.id.row_repo_about_n) TextView number;
-        @BindView(R.id.row_repo_about_image) ImageView imageView;
         @BindView(R.id.row_repo_about_rl) RelativeLayout rl;
 
         public MyViewHolder(View view) {
@@ -66,11 +65,10 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
 
     }
 
-    public RepoAboutAdapter(Context context, List<String> nameList, List<String> numberList, List<Drawable> imageList, String repoName, String ownerName) {
+    public RepoAboutAdapter(Context context, List<String> nameList, List<String> numberList, String repoName, String ownerName) {
         this.context = context;
         this.nameList = nameList;
         this.numberList = numberList;
-        this.imageList = imageList;
         this.repoName = repoName;
         this.ownerName = ownerName;
     }
@@ -86,8 +84,6 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.text.setText(nameList.get(position));
         holder.number.setText(numberList.get(position));
-
-        holder.imageView.setImageDrawable(imageList.get(position));
 
         holder.rl.setOnClickListener(new View.OnClickListener() {
             @Override
