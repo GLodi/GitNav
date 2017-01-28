@@ -2,7 +2,9 @@
 
 Basic GitHub Android Client.
 
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/web_hi_res_512.png)
+<div align="center">
+	<img src="https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/web_hi_res_512.png" width="128">
+</div>
 
 ## Screenshots
 
