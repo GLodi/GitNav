@@ -35,6 +35,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import giuliolodi.gitnav.ContributorsActivity;
+import giuliolodi.gitnav.ForkListActivity;
 import giuliolodi.gitnav.IssueListActivity;
 import giuliolodi.gitnav.R;
 import giuliolodi.gitnav.StargazerListActivity;
@@ -94,6 +95,10 @@ public class RepoAboutAdapter extends RecyclerView.Adapter<RepoAboutAdapter.MyVi
                 switch (position) {
                     case 0:
                         context.startActivity(new Intent(context, StargazerListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
+                        ((Activity) context).overridePendingTransition(0, 0);
+                        return;
+                    case 1:
+                        context.startActivity(new Intent(context, ForkListActivity.class).putExtra("repoName", repoName).putExtra("ownerName", ownerName));
                         ((Activity) context).overridePendingTransition(0, 0);
                         return;
                     case 2:

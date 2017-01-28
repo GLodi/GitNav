@@ -44,8 +44,6 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
 
     private Context context;
     private Activity activity;
-    private SharedPreferences sp;
-    public SharedPreferences.Editor editor;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -53,11 +51,6 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
         @BindView(R.id.option_row_name) TextView optionName;
         @BindView(R.id.option_row_description) TextView optionDescription;
 
-        @BindString(R.string.sign_out) String logout;
-        @BindString(R.string.confirm_logout) String confirmLogout;
-        @BindString(R.string.currently_logged_in_as) String currentlyLoggedInAs;
-        @BindString(R.string.yes) String yes;
-        @BindString(R.string.no) String no;
         @BindString(R.string.about) String about;
 
         public MyViewHolder(View view) {
@@ -87,38 +80,6 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
     public void onBindViewHolder(final OptionAdapter.MyViewHolder holder, final int position) {
         switch(position) {
             case 0:
-                sp = PreferenceManager.getDefaultSharedPreferences(context);
-                editor = sp.edit();
-                holder.optionName.setText(holder.logout);
-                holder.optionDescription.setVisibility(View.VISIBLE);
-                holder.optionDescription.setText(holder.currentlyLoggedInAs + " " + Constants.getUsername(context));
-                holder.ll.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        new AlertDialog.Builder(activity)
-                                .setTitle(holder.logout)
-                                .setMessage(holder.confirmLogout)
-                                .setPositiveButton(holder.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        // Delete all sp info stored
-                                        editor.putString(Constants.getTokenKey(context), "");
-                                        editor.putString(Constants.getUserKey(context), "");
-                                        editor.putBoolean(Constants.getAuthdKey(context), false);
-                                        editor.putString(Constants.getEmailKey(context), "");
-                                        editor.putString(Constants.getFullNameKey(context), "");
-                                        editor.commit();
-
-                                        // Intent to LoginActivity
-                                        context.startActivity(new Intent(context, LoginActivity.class));
-                                    }
-                                })
-                                .setNegativeButton(holder.no, null)
-                                .show();
-                    }
-                });
-                return;
-            case 1:
                 holder.optionName.setText(holder.about);
                 holder.ll.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -131,7 +92,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 1;
     }
 
 }

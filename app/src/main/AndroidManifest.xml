@@ -130,6 +130,11 @@
 
         </activity>
         <activity
+            android:name=".ForkListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar">
