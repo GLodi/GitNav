@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
             progDailog.dismiss();
             if (result == "Logged in") {
                 Toasty.success(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), BaseDrawerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), EventActivity.class);
                 startActivity(intent);
                 finish();
             } else

@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="#000000"
-            android:alpha="0.54"
+            android:alpha="0.87"
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:layout_toRightOf="@id/row_event_image"
@@ -65,8 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#000000"
-        android:alpha="0.87"
+        android:textColor="#666666"
         android:paddingTop="8dp"/>
 
 </LinearLayout>

@@ -28,6 +28,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vstechlab.easyfonts.EasyFonts;
+
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.StargazerService;
@@ -60,16 +62,16 @@ public class StargazerListActivity extends BaseDrawerActivity {
     private String ownerName;
     private UserAdapter userAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private StargazerService stargazerService;
     private List<User> userList = new ArrayList<>();
     private List<User> tempUserList = new ArrayList<>();
-    private RecyclerView.OnScrollListener mScrollListener;
 
     private Observable observable;
     private Observer observer;
-    private Subscription s;
+    private Subscription subscription;
 
     private int DOWNLOAD_PAGE_N = 1;
-    private int ITEMS_PER_PAGE = 20;
+    private int ITEMS_PER_PAGE = 10;
     private boolean LOADING = false;
 
     @Override
@@ -94,34 +96,22 @@ public class StargazerListActivity extends BaseDrawerActivity {
             }
         });
 
+        userAdapter = new UserAdapter(userList, StargazerListActivity.this);
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(userAdapter);
+        userAdapter.notifyDataSetChanged();
+
         progressBar.setVisibility(View.VISIBLE);
 
         observable = Observable.create(new Observable.OnSubscribe<List<User>>() {
             @Override
             public void call(final Subscriber<? super List<User>> subscriber) {
-                final StargazerService stargazerService = new StargazerService();
+                stargazerService = new StargazerService();
                 stargazerService.getClient().setOAuth2Token(Constants.getToken(getApplicationContext()));
-
                 subscriber.onNext(tempUserList = new ArrayList<>(stargazerService.pageStargazers(new RepositoryId(ownerName, repoName), DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next()));
-
-                mScrollListener = new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        if (LOADING)
-                            return;
-                        int visibleItemCount = linearLayoutManager.getChildCount();
-                        int totalItemCount = linearLayoutManager.getItemCount();
-                        int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-                        if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                            DOWNLOAD_PAGE_N += 1;
-                            LOADING = true;
-                            subscriber.onNext(tempUserList = new ArrayList<>(stargazerService.pageStargazers(new RepositoryId(ownerName, repoName), DOWNLOAD_PAGE_N, ITEMS_PER_PAGE).next()));
-                        }
-                    }
-                };
-
-                recyclerView.setOnScrollListener(mScrollListener);
-
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
@@ -138,43 +128,66 @@ public class StargazerListActivity extends BaseDrawerActivity {
 
             @Override
             public void onNext(List<User> users) {
-                if (users != null) {
-                    if (userList == null || userList.isEmpty()) {
-                        progressBar.setVisibility(View.GONE);
-                        userList.addAll(users);
-                        userAdapter = new UserAdapter(userList, StargazerListActivity.this);
-                        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-                        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation()));
-                        recyclerView.setLayoutManager(linearLayoutManager);
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                        recyclerView.setAdapter(userAdapter);
-                        userAdapter.notifyDataSetChanged();
-                    }
-                    else if (!users.isEmpty()) {
-                        userList.addAll(users);
-                        userAdapter.notifyItemChanged(userList.size() - 1);
-                        LOADING = false;
-                    }
-                    else {
-                        s.unsubscribe();
-                        LOADING = false;
-                    }
+                progressBar.setVisibility(View.GONE);
+                if (userList.isEmpty() && users.isEmpty()) {
+                    no_user.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));;
+                    no_user.setVisibility(View.VISIBLE);
+                    subscription.unsubscribe();
+                } else if (userList.isEmpty() && users != null && !users.isEmpty()) {
+                    userList.addAll(users);
+                    userAdapter.notifyDataSetChanged();
+                    LOADING = false;
+                } else if (users != null && !users.isEmpty()){
+                    userList.remove(userList.lastIndexOf(null));
+                    userList.addAll(users);
+                    userAdapter.notifyItemChanged(userList.size() - 1);
+                    LOADING = false;
+                } else {
+                    userList.remove(userList.lastIndexOf(null));
+                    userAdapter.notifyDataSetChanged();
+                    subscription.unsubscribe();
                 }
             }
         };
 
+        setupOnScrollListener();
+
         if (Constants.isNetworkAvailable(getApplicationContext()))
-            s = observable.subscribe(observer);
+            subscription = observable.subscribe(observer);
         else
             Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+
+    }
+
+    private void setupOnScrollListener() {
+
+        RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (LOADING)
+                    return;
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    LOADING = true;
+                    DOWNLOAD_PAGE_N += 1;
+                    userList.add(null);
+                    userAdapter.notifyItemInserted(userList.size() - 1);
+                    subscription = observable.subscribe(observer);
+                }
+            }
+        };
+
+        recyclerView.setOnScrollListener(mScrollListener);
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (s != null && !s.isUnsubscribed()) {
-            s.unsubscribe();
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
             progressBar.setVisibility(View.GONE);
         }
     }
