@@ -136,7 +136,7 @@ public class StarredActivity extends BaseDrawerActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        navigationView.getMenu().getItem(1).setChecked(true);
+        navigationView.getMenu().getItem(2).setChecked(true);
     }
 
     @Override

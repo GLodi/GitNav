@@ -132,8 +132,7 @@ public class ForkListActivity extends BaseDrawerActivity {
                     noForks.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
                     noForks.setVisibility(View.VISIBLE);
                     subscription.unsubscribe();
-                }
-                if (repositoryList.isEmpty() && repositories != null && !repositories.isEmpty()) {
+                } else if (repositoryList.isEmpty() && repositories != null && !repositories.isEmpty()) {
                     repositoryList.addAll(repositories);
                     repoAdapter.notifyDataSetChanged();
                     LOADING = false;

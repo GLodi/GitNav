@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // If user is already logged in, Intent to BaseDrawerActivity
         if (Constants.getAuthdValue(getApplicationContext())) {
-            Intent intent = new Intent(this, BaseDrawerActivity.class);
+            Intent intent = new Intent(this, EventActivity.class);
             startActivity(intent);
             finish();
         }

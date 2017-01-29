@@ -19,6 +19,10 @@
 
     <group>
         <item
+            android:id="@+id/nav_events"
+            android:icon="@drawable/octicons_430_repo_256_0_000000_none"
+            android:title="@string/events" />
+        <item
             android:id="@+id/nav_repos"
             android:icon="@drawable/octicons_430_repo_256_0_000000_none"
             android:title="@string/repositories" />

@@ -124,8 +124,15 @@ public class BaseDrawerActivity extends AppCompatActivity implements NavigationV
             drawerLayout.closeDrawer(GravityCompat.START);
             return false;
         }
-
-        if (id == R.id.nav_repos) {
+        if (id == R.id.nav_events) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getApplicationContext(), EventActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }, DRAWER_DELAY);
+        } else if (id == R.id.nav_repos) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

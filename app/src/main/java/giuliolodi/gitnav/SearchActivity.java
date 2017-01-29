@@ -129,7 +129,7 @@ public class SearchActivity extends BaseDrawerActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        navigationView.getMenu().getItem(2).setChecked(true);
+        navigationView.getMenu().getItem(3).setChecked(true);
 
         /*
             This will create new objects for the 3 types of Search that can be done. It is needed

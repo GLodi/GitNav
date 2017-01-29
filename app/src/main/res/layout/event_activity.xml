@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/event_activity_no_contributors"
+        android:id="@+id/event_activity_no_events"
         android:text="@string/no_events"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
