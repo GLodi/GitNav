@@ -250,7 +250,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     case "IssueCommentEvent": // #12 NEED TEST
                         IssueCommentPayload issueCommentPayload = (IssueCommentPayload)e.getPayload();
-                        h.description.setText(Html.fromHtml(issueCommentPayload.getAction().substring(0,1).toUpperCase() + issueCommentPayload.getAction().substring(1) + " an issue comment <b>" + issueCommentPayload.getComment().getBody() + "</b> in <font color='#326fba'>" + e.getRepo().getName() + "</font>"));
+                        h.description.setText(Html.fromHtml(issueCommentPayload.getAction().substring(0,1).toUpperCase() + issueCommentPayload.getAction().substring(1) + " issue comment <b>" + issueCommentPayload.getComment().getBody() + "</b> in <font color='#326fba'>" + e.getRepo().getName() + "</font>"));
                         h.linearLayout.setOnClickListener(IssueListener(s[0], s[1], String.valueOf(issueCommentPayload.getIssue().getNumber())));
                         break;
 

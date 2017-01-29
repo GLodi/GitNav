@@ -16,8 +16,10 @@
 
 package giuliolodi.gitnav;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +52,7 @@ import rx.schedulers.Schedulers;
 public class EventActivity extends BaseDrawerActivity {
 
     @BindView(R.id.event_activity_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.event_activity_swipe) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.event_activity_rv) RecyclerView recyclerView;
     @BindView(R.id.event_activity_no_events) TextView noEvents;
 
@@ -92,8 +95,22 @@ public class EventActivity extends BaseDrawerActivity {
             I suspect that when (and if) I implement all types of events, this should disappear.
          */
         recyclerView.getRecycledViewPool().setMaxRecycledViews(1, 0);
-
         recyclerView.setAdapter(eventAdapter);
+
+        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#448AFF"));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Constants.isNetworkAvailable(getApplicationContext())) {
+                    DOWNLOAD_PAGE_N = 1;
+                    eventList.clear();
+                    eventAdapter.notifyDataSetChanged();
+                    subscription = observable.subscribe(observer);
+                }
+                else
+                    Toasty.warning(getApplicationContext(), network_error, Toast.LENGTH_LONG).show();
+            }
+        });
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -121,6 +138,7 @@ public class EventActivity extends BaseDrawerActivity {
             @Override
             public void onNext(List<Event> events) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 if (eventList.isEmpty() && events.isEmpty()) {
                     noEvents.setTypeface(EasyFonts.robotoRegular(getApplicationContext()));
                     noEvents.setVisibility(View.VISIBLE);
