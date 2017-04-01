@@ -1,6 +1,6 @@
 # GitNav
 
-Basic GitHub Android Client.
+Basic GitHub Android Client. [Google play link!][play]
 
 <div align="center">
 	<img src="https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/web_hi_res_512.png" width="128">
@@ -72,4 +72,5 @@ Trending:
 [material]: https://github.com/daniel-stoneuk/material-about-library
 [highlight]: https://github.com/PDDStudio/highlightjs-android
 [toasty]: https://github.com/GrenderG/Toasty
+[play]: https://play.google.com/store/apps/details?id=giuliolodi.gitnav
 
