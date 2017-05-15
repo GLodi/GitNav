@@ -22,6 +22,8 @@ import dagger.Module
 import dagger.Provides
 import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.events.EventContract
+import giuliolodi.gitnav.ui.events.EventPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
 import io.reactivex.disposables.CompositeDisposable
@@ -55,4 +57,9 @@ class ActivityModule(val activity: Activity) {
         return presenter
     }
 
+    @Provides
+    @PerActivity
+    fun provideEventPresenter(presenter: EventPresenter<EventContract.View>) : EventContract.Presenter<EventContract.View> {
+        return presenter
+    }
 }

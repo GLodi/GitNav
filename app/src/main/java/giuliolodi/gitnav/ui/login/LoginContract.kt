@@ -35,10 +35,14 @@ interface LoginContract {
 
         fun showError(error: String)
 
+        fun intentToEventActivity()
+
     }
 
     @PerActivity
     interface Presenter<V: LoginContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe()
 
         fun onLoginClick(user: String, pass: String)
 

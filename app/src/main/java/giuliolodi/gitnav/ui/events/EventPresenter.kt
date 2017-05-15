@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.di.component
+package giuliolodi.gitnav.ui.events
 
-import dagger.Component
-import giuliolodi.gitnav.di.module.ActivityModule
-import giuliolodi.gitnav.di.scope.PerActivity
-import giuliolodi.gitnav.ui.events.EventActivity
-import giuliolodi.gitnav.ui.login.LoginActivity
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 /**
- * Created by giulio on 12/05/2017.
+ * Created by giulio on 15/05/2017.
  */
 
-@PerActivity
-@Component(dependencies = arrayOf(AppComponent::class), modules = arrayOf(ActivityModule::class))
-interface ActivityComponent {
+class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Presenter<V> {
 
-    fun inject(loginActivity: LoginActivity)
+    val TAG = "EventPresenter"
 
-    fun inject(eventActivity: EventActivity)
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe() {
+    }
 
 }

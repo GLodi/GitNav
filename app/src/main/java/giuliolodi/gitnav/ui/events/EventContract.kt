@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.di.component
+package giuliolodi.gitnav.ui.events
 
-import dagger.Component
-import giuliolodi.gitnav.di.module.ActivityModule
-import giuliolodi.gitnav.di.scope.PerActivity
-import giuliolodi.gitnav.ui.events.EventActivity
-import giuliolodi.gitnav.ui.login.LoginActivity
+import giuliolodi.gitnav.ui.base.BaseContract
 
 /**
- * Created by giulio on 12/05/2017.
+ * Created by giulio on 15/05/2017.
  */
 
-@PerActivity
-@Component(dependencies = arrayOf(AppComponent::class), modules = arrayOf(ActivityModule::class))
-interface ActivityComponent {
+interface EventContract {
 
-    fun inject(loginActivity: LoginActivity)
+    interface View : BaseContract.View {
 
-    fun inject(eventActivity: EventActivity)
+        fun showContent()
+
+    }
+
+    interface Presenter<V: EventContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe()
+
+    }
 
 }

@@ -52,16 +52,17 @@ class DataManagerImpl : DataManager {
     }
 
     override fun tryAuthentication(user: String, pass: String): Completable {
-        val token: String
-        try {
-            token = authToGitHub(user, pass)
-        } catch (e: IOException) {
-            return Completable.error(e)
+        return Completable.fromAction {
+            val token: String
+            try {
+                token = authToGitHub(user, pass)
+            } catch (e: IOException) {
+                throw e
+            }
+            if (!token.isEmpty()) {
+                mPrefsHelper.storeAccessToken(token)
+            }
         }
-        if (!token.isEmpty()) {
-            mPrefsHelper.storeAccessToken(token)
-        }
-        return Completable.complete()
     }
 
     override fun storeAccessToken(token: String) {

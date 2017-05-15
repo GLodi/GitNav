@@ -103,5 +103,7 @@
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="currently_logged_in_as">You are currently logged in as</string>
-    <string name="logged_in">Logged in successfully</string>
+    <string name="logged_in">Logged in!</string>
+    <string name="sign_up">Sign up for GitHub!</string>
+    <string name="insert_credentials">Please insert credentials</string>
 </resources>

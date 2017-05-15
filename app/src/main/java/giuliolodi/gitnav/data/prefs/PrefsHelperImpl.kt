@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.PreferenceInfo
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -44,7 +45,13 @@ class PrefsHelperImpl : PrefsHelper {
     }
 
     override fun getToken(): String {
-        return mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null)
+        var token: String
+        try {
+            token = mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null)
+        } catch (e: IOException) {
+            token = ""
+        }
+        return token
     }
 
 }

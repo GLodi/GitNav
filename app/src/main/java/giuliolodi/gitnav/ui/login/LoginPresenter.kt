@@ -27,12 +27,18 @@ import javax.inject.Inject
 /**
  * Created by giulio on 12/05/2017.
  */
+
 class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Presenter<V> {
 
     val TAG = "LoginPresenter"
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe() {
+        if (!getDataManager().getToken().isEmpty())
+            getView().intentToEventActivity()
+    }
 
     override fun onLoginClick(user: String, pass: String) {
         getCompositeDisposable().add(getDataManager().tryAuthentication(user, pass)
@@ -43,6 +49,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                         {
                             getView().hideLoading()
                             getView().showSuccess()
+                            getView().intentToEventActivity()
                         },
                         { throwable ->
                             Log.e(TAG, throwable.message, throwable)

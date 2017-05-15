@@ -69,22 +69,24 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/login_activity_loginbtn"
+            android:text="Login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Login"
             android:background="@color/colorPrimaryDark"
             android:textColor="#ffffff"
             android:alpha="0.54" />
 
         <TextView android:id="@+id/login_activity_signup"
+            android:text="@string/sign_up"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:gravity="center"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="#ffffff"/>
 
     </LinearLayout>
 </ScrollView>

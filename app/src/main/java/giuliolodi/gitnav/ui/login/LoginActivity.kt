@@ -18,10 +18,12 @@ package giuliolodi.gitnav.ui.login
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
+import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.login_activity.*
 import javax.inject.Inject
@@ -45,18 +47,36 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         getActivityComponent().inject(this)
 
         mPresenter.onAttach(this)
+
+        mPresenter.subscribe()
     }
 
     private fun initLayout() {
         login_activity_loginbtn.setOnClickListener {
-            if (NetworkUtils.isNetworkAvailable(applicationContext))
-                mPresenter.onLoginClick(login_activity_user.text.toString(), login_activity_pass.text.toString())
-            else
-                Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            if (login_activity_user.text.isEmpty() || login_activity_pass.text.isEmpty())
+                Toasty.warning(applicationContext, getString(R.string.insert_credentials), Toast.LENGTH_LONG).show()
+            else {
+                if (NetworkUtils.isNetworkAvailable(applicationContext))
+                    mPresenter.onLoginClick(login_activity_user.text.toString(), login_activity_pass.text.toString())
+                else
+                    Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
+        }
+        login_activity_pass.setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (login_activity_user.text.isEmpty() || login_activity_pass.text.isEmpty())
+                    Toasty.warning(applicationContext, getString(R.string.insert_credentials), Toast.LENGTH_LONG).show()
+                else {
+                    if (NetworkUtils.isNetworkAvailable(applicationContext))
+                        mPresenter.onLoginClick(login_activity_user.text.toString(), login_activity_pass.text.toString())
+                    else
+                        Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                }
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
         }
     }
-
-    // Contract
 
     override fun showLoading() {
         progDialog = ProgressDialog(this)
@@ -77,6 +97,10 @@ class LoginActivity : BaseActivity(), LoginContract.View {
 
     override fun showError(error: String) {
         Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToEventActivity() {
+        startActivity(EventActivity.getIntent(applicationContext))
     }
 
 }
