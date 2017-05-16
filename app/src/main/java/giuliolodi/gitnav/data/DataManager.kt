@@ -19,6 +19,8 @@ package giuliolodi.gitnav.data
 import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
+import io.reactivex.Observable
+import org.eclipse.egit.github.core.event.Event
 
 /**
  * Created by giulio on 12/05/2017.
@@ -34,5 +36,11 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @return Completable onNext if successful, onError otherwise
      */
     fun tryAuthentication(user: String, pass: String): Completable
+
+    /**
+     * Downloads events of logged user.
+     * @return List<Event>
+     */
+    fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>>
 
 }

@@ -20,7 +20,10 @@ import android.content.Context
 import android.os.Build
 import android.os.StrictMode
 import giuliolodi.gitnav.di.scope.AppContext
+import io.reactivex.Observable
 import org.eclipse.egit.github.core.Authorization
+import org.eclipse.egit.github.core.event.Event
+import org.eclipse.egit.github.core.service.EventService
 import org.eclipse.egit.github.core.service.OAuthService
 import javax.inject.Inject
 import java.io.IOException
@@ -38,7 +41,7 @@ class ApiHelperImpl : ApiHelper {
         mContext = context
     }
 
-    override fun authToGitHub(user: String, pass: String): String {
+    override fun apiAuthToGitHub(user: String, pass: String): String {
         val oAuthService: OAuthService = OAuthService()
         oAuthService.client.setCredentials(user, pass)
 
@@ -71,6 +74,15 @@ class ApiHelperImpl : ApiHelper {
         } catch (e: IOException) {
             e.printStackTrace()
             throw e
+        }
+    }
+
+    override fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return Observable.defer {
+            val eventService: EventService = EventService()
+            eventService.client.setOAuth2Token(token)
+            eventService.pageUserReceivedEvents("GLodi", false, pageN, itemsPerPage).next()
+            Observable.just(ArrayList(eventService.pageUserReceivedEvents("GLodi", false, pageN, itemsPerPage).next()))
         }
     }
 

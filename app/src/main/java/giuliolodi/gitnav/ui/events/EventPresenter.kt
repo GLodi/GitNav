@@ -18,7 +18,9 @@ package giuliolodi.gitnav.ui.events
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -32,7 +34,14 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe() {
+    override fun subscribe(pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().downloadEvents(pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {},
+                        {}
+                ))
     }
 
 }

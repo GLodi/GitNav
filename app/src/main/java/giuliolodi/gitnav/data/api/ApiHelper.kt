@@ -16,6 +16,9 @@
 
 package giuliolodi.gitnav.data.api
 
+import io.reactivex.Observable
+import org.eclipse.egit.github.core.event.Event
+
 /**
  * Created by giulio on 12/05/2017.
  */
@@ -29,6 +32,12 @@ interface ApiHelper {
      * @param pass
      * @return String access token
      */
-    fun authToGitHub(user: String, pass: String): String
+    fun apiAuthToGitHub(user: String, pass: String): String
 
+    /**
+     * Downloads events of logged user.
+     * @param token
+     * @return List<Event>
+     */
+    fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
 }

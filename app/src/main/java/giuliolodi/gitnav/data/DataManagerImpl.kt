@@ -17,16 +17,12 @@
 package giuliolodi.gitnav.data
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
-import android.os.StrictMode
-import android.util.Log
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
-import org.eclipse.egit.github.core.Authorization
-import org.eclipse.egit.github.core.service.OAuthService
+import io.reactivex.Observable
+import org.eclipse.egit.github.core.event.Event
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -55,7 +51,7 @@ class DataManagerImpl : DataManager {
         return Completable.fromAction {
             val token: String
             try {
-                token = authToGitHub(user, pass)
+                token = apiAuthToGitHub(user, pass)
             } catch (e: IOException) {
                 throw e
             }
@@ -63,6 +59,10 @@ class DataManagerImpl : DataManager {
                 mPrefsHelper.storeAccessToken(token)
             }
         }
+    }
+
+    override fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return apiDownloadEvents(mPrefsHelper.getToken(), pageN, itemsPerPage)
     }
 
     override fun storeAccessToken(token: String) {
@@ -73,8 +73,12 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getToken()
     }
 
-    override fun authToGitHub(user: String, pass: String): String {
-        return mApiHelper.authToGitHub(user, pass)
+    override fun apiAuthToGitHub(user: String, pass: String): String {
+        return mApiHelper.apiAuthToGitHub(user, pass)
+    }
+
+    override fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return mApiHelper.apiDownloadEvents(token, pageN, itemsPerPage)
     }
 
 }

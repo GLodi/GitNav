@@ -19,9 +19,15 @@ package giuliolodi.gitnav.ui.events
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
 import kotlinx.android.synthetic.main.app_bar_home.*
+import kotlinx.android.synthetic.main.event_activity.*
+import org.eclipse.egit.github.core.event.Event
+import javax.inject.Inject
 
 /**
  * Created by giulio on 15/05/2017.
@@ -29,15 +35,41 @@ import kotlinx.android.synthetic.main.app_bar_home.*
 
 class EventActivity : BaseDrawerActivity(), EventContract.View {
 
+    @Inject lateinit var mPresenter: EventContract.Presenter<EventContract.View>
+
+    private val mEventAdapter: EventAdapter? = null
+
+    private val DOWNLOAD_PAGE_N = 1
+    private val ITEMS_PER_PAGE = 10
+    private val LOADING = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         layoutInflater.inflate(R.layout.event_activity, content_frame)
 
-        supportActionBar?.title = getString(R.string.events)
+        initLayout()
 
+        getActivityComponent().inject(this)
+
+        mPresenter.onAttach(this)
+
+        mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
     }
 
-    override fun showContent() {
+    private fun initLayout() {
+        supportActionBar?.title = getString(R.string.events)
+
+        val llm = LinearLayoutManager(applicationContext)
+        llm.orientation = LinearLayoutManager.VERTICAL
+
+        event_activity_rv.layoutManager = llm
+        event_activity_rv.addItemDecoration(DividerItemDecoration(event_activity_rv.context, llm.orientation))
+        event_activity_rv.itemAnimator = DefaultItemAnimator()
+        event_activity_rv.adapter = mEventAdapter
+    }
+
+    override fun addEvents(eventsList: List<Event>) {
+
     }
 
     companion object {

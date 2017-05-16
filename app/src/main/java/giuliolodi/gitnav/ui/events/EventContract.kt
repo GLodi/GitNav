@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.events
 
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.event.Event
 
 /**
  * Created by giulio on 15/05/2017.
@@ -26,13 +27,13 @@ interface EventContract {
 
     interface View : BaseContract.View {
 
-        fun showContent()
+        fun addEvents(eventsList: List<Event>)
 
     }
 
     interface Presenter<V: EventContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe()
+        fun subscribe(pageN: Int, itemsPerPage: Int)
 
     }
 
