@@ -42,4 +42,21 @@ interface PrefsHelper {
      */
     fun storeUser(user: User)
 
+    /**
+     * Get stored username
+     * @return String
+     */
+    fun getUsername(): String
+
+    /**
+     * Get stored fullname (if exists)
+     * @return String
+     */
+    fun getFullname(): String?
+
+    /**
+     * Get stored email address (if exists)
+     * @return String
+     */
+    fun getEmail(): String?
 }

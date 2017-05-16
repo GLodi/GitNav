@@ -53,8 +53,8 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                         },
                         { throwable ->
                             Log.e(TAG, throwable.message, throwable)
-                            getView().hideLoading()
                             getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
                         }
                 ))
     }

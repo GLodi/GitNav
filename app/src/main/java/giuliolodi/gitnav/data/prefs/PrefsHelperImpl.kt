@@ -72,4 +72,16 @@ class PrefsHelperImpl : PrefsHelper {
         ImageSaver(mContext).setFileName("thumbnail.png").setDirectoryName("images").save(profilePic)
     }
 
+    override fun getUsername(): String {
+        return mPrefs.getString(PREF_KEY_USERNAME, null)
+    }
+
+    override fun getFullname(): String? {
+        return mPrefs.getString(PREF_KEY_FULLNAME, null)
+    }
+
+    override fun getEmail(): String? {
+        return mPrefs.getString(PREF_KEY_EMAIL, null)
+    }
+
 }

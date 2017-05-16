@@ -297,4 +297,21 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun addLoading() {
+        mEventList.add(null)
+        notifyItemInserted(mEventList.size - 1)
+    }
+
+    fun addMoreEvents(eventList: List<Event>) {
+        val lastNull = mEventList.lastIndexOf(null)
+        mEventList.removeAt(lastNull)
+        mEventList.addAll(eventList)
+        notifyItemRangeInserted(lastNull, eventList.size)
+    }
+
+    fun clear() {
+        mEventList.clear()
+        notifyDataSetChanged()
+    }
+
 }

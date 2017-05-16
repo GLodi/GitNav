@@ -79,11 +79,11 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun apiDownloadEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
         return Observable.defer {
             val eventService: EventService = EventService()
             eventService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(eventService.pageUserReceivedEvents("GLodi", false, pageN, itemsPerPage).next()))
+            Observable.just(ArrayList(eventService.pageUserReceivedEvents(username, false, pageN, itemsPerPage).next()))
         }
     }
 

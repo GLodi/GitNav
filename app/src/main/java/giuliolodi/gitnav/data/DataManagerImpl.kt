@@ -81,7 +81,7 @@ class DataManagerImpl : DataManager {
     }
 
     override fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return apiDownloadEvents(mPrefsHelper.getToken(), pageN, itemsPerPage)
+        return apiDownloadEvents(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
     }
 
     override fun getUser(username: String): Observable<User> {
@@ -92,8 +92,8 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiAuthToGitHub(user, pass)
     }
 
-    override fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return mApiHelper.apiDownloadEvents(token, pageN, itemsPerPage)
+    override fun apiDownloadEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return mApiHelper.apiDownloadEvents(token, username, pageN, itemsPerPage)
     }
 
     override fun apiGetUser(token: String, username: String): Observable<User> {
@@ -102,6 +102,18 @@ class DataManagerImpl : DataManager {
 
     override fun storeUser(user: User) {
         mPrefsHelper.storeUser(user)
+    }
+
+    override fun getFullname(): String? {
+        return mPrefsHelper.getFullname()
+    }
+
+    override fun getEmail(): String? {
+        return mPrefsHelper.getEmail()
+    }
+
+    override fun getUsername(): String {
+        return mPrefsHelper.getUsername()
     }
 
 }

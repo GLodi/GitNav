@@ -40,7 +40,7 @@ interface ApiHelper {
      * @param token
      * @return Observable<List<Event>>
      */
-    fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+    fun apiDownloadEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
 
     /**
      * Get user from username

@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.events
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.DividerItemDecoration
@@ -31,6 +32,9 @@ import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.event_activity.*
 import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
+import android.support.v7.widget.RecyclerView
+import giuliolodi.gitnav.utils.CommonUtils
+import giuliolodi.gitnav.utils.NetworkUtils
 
 /**
  * Created by giulio on 15/05/2017.
@@ -40,9 +44,9 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
     @Inject lateinit var mPresenter: EventContract.Presenter<EventContract.View>
 
-    private val DOWNLOAD_PAGE_N = 1
+    private var DOWNLOAD_PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
-    private val LOADING = false
+    private var LOADING = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +58,14 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
         mPresenter.onAttach(this)
 
-        showLoading()
-        mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+            showLoading()
+            mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+        }
+        else {
+            Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            hideLoading()
+        }
     }
 
     private fun initLayout() {
@@ -68,10 +78,30 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         event_activity_rv.addItemDecoration(DividerItemDecoration(event_activity_rv.context, llm.orientation))
         event_activity_rv.itemAnimator = DefaultItemAnimator()
         event_activity_rv.adapter = EventAdapter()
+
+        setupOnScrollListener()
+
+        event_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
+        event_activity_swipe.setOnRefreshListener {
+            if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                DOWNLOAD_PAGE_N = 1
+                (event_activity_rv.adapter as EventAdapter).clear()
+                mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+            }
+            else {
+                Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                hideLoading()
+            }
+        }
     }
 
     override fun addEvents(eventList: List<Event>) {
-        (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
+        LOADING = false
+        if (DOWNLOAD_PAGE_N == 1)
+            (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
+        else {
+            (event_activity_rv.adapter as EventAdapter).addMoreEvents(eventList)
+        }
     }
 
     override fun showLoading() {
@@ -81,10 +111,40 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
     override fun hideLoading() {
         if (event_activity_progress_bar.isShown)
             event_activity_progress_bar.visibility = View.GONE
+        if (event_activity_swipe.isRefreshing)
+            event_activity_swipe.isRefreshing = false
     }
 
     override fun showError(error: String) {
         Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
+    }
+
+    private fun setupOnScrollListener() {
+
+        val mScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING)
+                    return
+                val visibleItemCount = (event_activity_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (event_activity_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (event_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                        LOADING = true
+                        DOWNLOAD_PAGE_N += 1
+                        (event_activity_rv.adapter as EventAdapter).addLoading()
+                        mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+                    }
+                    else {
+                        Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                        hideLoading()
+                    }
+                }
+            }
+        }
+
+        event_activity_rv.setOnScrollListener(mScrollListener)
+
     }
 
     companion object {
