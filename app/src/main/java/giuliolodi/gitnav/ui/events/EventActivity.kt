@@ -22,6 +22,9 @@ import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -37,8 +40,6 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
     @Inject lateinit var mPresenter: EventContract.Presenter<EventContract.View>
 
-    private val mEventAdapter: EventAdapter? = null
-
     private val DOWNLOAD_PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private val LOADING = false
@@ -53,6 +54,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
         mPresenter.onAttach(this)
 
+        showLoading()
         mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
     }
 
@@ -65,11 +67,24 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         event_activity_rv.layoutManager = llm
         event_activity_rv.addItemDecoration(DividerItemDecoration(event_activity_rv.context, llm.orientation))
         event_activity_rv.itemAnimator = DefaultItemAnimator()
-        event_activity_rv.adapter = mEventAdapter
+        event_activity_rv.adapter = EventAdapter()
     }
 
-    override fun addEvents(eventsList: List<Event>) {
+    override fun addEvents(eventList: List<Event>) {
+        (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
+    }
 
+    override fun showLoading() {
+        event_activity_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        if (event_activity_progress_bar.isShown)
+            event_activity_progress_bar.visibility = View.GONE
+    }
+
+    override fun showError(error: String) {
+        Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
     }
 
     companion object {

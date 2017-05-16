@@ -20,6 +20,7 @@ import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 
 /**
@@ -31,16 +32,23 @@ interface DataManager : ApiHelper, PrefsHelper {
      * Tries to authenticate to GitHub API.
      * If the authentication is successful, it stores the authentication token in shared prefs,
      * along with username and profile picture.
-     * @param user
-     * @param pass
+     * @param username
+     * @param password
      * @return Completable onNext if successful, onError otherwise
      */
-    fun tryAuthentication(user: String, pass: String): Completable
+    fun tryAuthentication(username: String, password: String): Completable
 
     /**
      * Downloads events of logged user.
      * @return List<Event>
      */
     fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+
+    /**
+     * Get user from username
+     * @param username
+     * @return Observable<User>
+     */
+    fun getUser(username: String): Observable<User>
 
 }

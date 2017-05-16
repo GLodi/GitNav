@@ -16,6 +16,8 @@
 
 package giuliolodi.gitnav.data.prefs
 
+import org.eclipse.egit.github.core.User
+
 /**
  * Created by giulio on 12/05/2017.
  */
@@ -33,5 +35,11 @@ interface PrefsHelper {
      * @return String
      */
     fun getToken(): String
+
+    /**
+     * Store authenticated user info
+     * @param user
+     */
+    fun storeUser(user: User)
 
 }

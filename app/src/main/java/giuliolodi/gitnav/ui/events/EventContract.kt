@@ -27,7 +27,13 @@ interface EventContract {
 
     interface View : BaseContract.View {
 
-        fun addEvents(eventsList: List<Event>)
+        fun addEvents(eventList: List<Event>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
 
     }
 

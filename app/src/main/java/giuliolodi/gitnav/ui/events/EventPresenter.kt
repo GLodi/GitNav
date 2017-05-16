@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.events
 
+import android.util.Log
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -39,8 +40,15 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {},
-                        {}
+                        { eventList ->
+                            getView().addEvents(eventList)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            Log.e(TAG, throwable.message, throwable)
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                        }
                 ))
     }
 

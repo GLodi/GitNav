@@ -33,7 +33,7 @@ import org.ocpsoft.prettytime.PrettyTime
 
 class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mEventList: MutableList<Event?> = arrayListOf()
+    private var mEventList: MutableList<Event?> = mutableListOf()
     val mPrettyTime: PrettyTime = PrettyTime()
 
     class EventHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -291,5 +291,10 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int { return mEventList.size }
 
     override fun getItemId(position: Int): Long { return position.toLong() }
+
+    fun addEvents(eventList: List<Event>) {
+        mEventList = eventList.toMutableList()
+        notifyDataSetChanged()
+    }
 
 }

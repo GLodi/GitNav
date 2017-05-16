@@ -22,9 +22,11 @@ import android.os.StrictMode
 import giuliolodi.gitnav.di.scope.AppContext
 import io.reactivex.Observable
 import org.eclipse.egit.github.core.Authorization
+import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.EventService
 import org.eclipse.egit.github.core.service.OAuthService
+import org.eclipse.egit.github.core.service.UserService
 import javax.inject.Inject
 import java.io.IOException
 
@@ -41,9 +43,9 @@ class ApiHelperImpl : ApiHelper {
         mContext = context
     }
 
-    override fun apiAuthToGitHub(user: String, pass: String): String {
+    override fun apiAuthToGitHub(username: String, password: String): String {
         val oAuthService: OAuthService = OAuthService()
-        oAuthService.client.setCredentials(user, pass)
+        oAuthService.client.setCredentials(username, password)
 
         // This will set the token parameters and its permissions
         var auth = Authorization()
@@ -81,8 +83,15 @@ class ApiHelperImpl : ApiHelper {
         return Observable.defer {
             val eventService: EventService = EventService()
             eventService.client.setOAuth2Token(token)
-            eventService.pageUserReceivedEvents("GLodi", false, pageN, itemsPerPage).next()
             Observable.just(ArrayList(eventService.pageUserReceivedEvents("GLodi", false, pageN, itemsPerPage).next()))
+        }
+    }
+
+    override fun apiGetUser(token: String, username: String): Observable<User> {
+        return Observable.defer {
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            Observable.just(userService.getUser(username))
         }
     }
 

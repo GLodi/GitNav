@@ -18,8 +18,12 @@ package giuliolodi.gitnav.data.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.PreferenceInfo
+import giuliolodi.gitnav.utils.ImageSaver
+import org.eclipse.egit.github.core.User
 import java.io.IOException
 import javax.inject.Inject
 
@@ -30,6 +34,9 @@ import javax.inject.Inject
 class PrefsHelperImpl : PrefsHelper {
 
     private val PREF_KEY_ACCESS_TOKEN = "PREF_KEY_ACCESS_TOKEN"
+    private val PREF_KEY_FULLNAME= "PREF_KEY_FULLNAME"
+    private val PREF_KEY_USERNAME = "PREF_KEY_USERNAME"
+    private val PREF_KEY_EMAIL = "PREF_KEY_EMAIL"
 
     private val mContext: Context
     private val mPrefs: SharedPreferences
@@ -45,13 +52,24 @@ class PrefsHelperImpl : PrefsHelper {
     }
 
     override fun getToken(): String {
-        var token: String
-        try {
+        val token: String
+        if (mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null) != null)
             token = mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null)
-        } catch (e: IOException) {
+        else
             token = ""
-        }
         return token
+    }
+
+    override fun storeUser(user: User) {
+        mPrefs.edit().putString(PREF_KEY_USERNAME, user.login).apply()
+        if (user.name != null && !user.name.isEmpty())
+            mPrefs.edit().putString(PREF_KEY_FULLNAME, user.name).apply()
+        if (user.email != null && !user.email.isEmpty())
+            mPrefs.edit().putString(PREF_KEY_EMAIL, user.email).apply()
+        else
+            mPrefs.edit().putString(PREF_KEY_EMAIL, "No public email address").apply()
+        val profilePic: Bitmap = Picasso.with(mContext).load(user.avatarUrl).get()
+        ImageSaver(mContext).setFileName("thumbnail.png").setDirectoryName("images").save(profilePic)
     }
 
 }

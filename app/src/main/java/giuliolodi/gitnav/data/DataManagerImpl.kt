@@ -22,7 +22,9 @@ import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
+import org.eclipse.egit.github.core.service.UserService
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,22 +49,27 @@ class DataManagerImpl : DataManager {
         mPrefsHelper = prefsHelper
     }
 
-    override fun tryAuthentication(user: String, pass: String): Completable {
+    override fun tryAuthentication(username: String, password: String): Completable {
         return Completable.fromAction {
             val token: String
+            val user: User
             try {
-                token = apiAuthToGitHub(user, pass)
+                token = apiAuthToGitHub(username, password)
             } catch (e: IOException) {
                 throw e
             }
             if (!token.isEmpty()) {
                 mPrefsHelper.storeAccessToken(token)
+                try {
+                    val userService: UserService = UserService()
+                    userService.client.setOAuth2Token(getToken())
+                    user = userService.getUser(username)
+                    storeUser(user)
+                } catch (e: IOException) {
+                    throw e
+                }
             }
         }
-    }
-
-    override fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return apiDownloadEvents(mPrefsHelper.getToken(), pageN, itemsPerPage)
     }
 
     override fun storeAccessToken(token: String) {
@@ -73,12 +80,28 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getToken()
     }
 
+    override fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return apiDownloadEvents(mPrefsHelper.getToken(), pageN, itemsPerPage)
+    }
+
+    override fun getUser(username: String): Observable<User> {
+        return apiGetUser(mPrefsHelper.getToken(), username)
+    }
+
     override fun apiAuthToGitHub(user: String, pass: String): String {
         return mApiHelper.apiAuthToGitHub(user, pass)
     }
 
     override fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
         return mApiHelper.apiDownloadEvents(token, pageN, itemsPerPage)
+    }
+
+    override fun apiGetUser(token: String, username: String): Observable<User> {
+        return mApiHelper.apiGetUser(token, username)
+    }
+
+    override fun storeUser(user: User) {
+        mPrefsHelper.storeUser(user)
     }
 
 }

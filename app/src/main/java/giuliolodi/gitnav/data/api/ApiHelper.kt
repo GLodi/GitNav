@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.data.api
 
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 
 /**
@@ -28,16 +29,25 @@ interface ApiHelper {
     /**
      * Tries to authenticate to GitHub API.
      * If the authentication is successful, it returns the access token.
-     * @param user
-     * @param pass
+     * @param username
+     * @param password
      * @return String access token
      */
-    fun apiAuthToGitHub(user: String, pass: String): String
+    fun apiAuthToGitHub(username: String, password: String): String
 
     /**
      * Downloads events of logged user.
      * @param token
-     * @return List<Event>
+     * @return Observable<List<Event>>
      */
     fun apiDownloadEvents(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+
+    /**
+     * Get user from username
+     * @param token
+     * @param username
+     * @return Observable<User>
+     */
+    fun apiGetUser(token: String, username: String): Observable<User>
+
 }
