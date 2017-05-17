@@ -97,11 +97,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
     override fun addEvents(eventList: List<Event>) {
         LOADING = false
-        if (DOWNLOAD_PAGE_N == 1)
-            (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
-        else {
-            (event_activity_rv.adapter as EventAdapter).addMoreEvents(eventList)
-        }
+        (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
     }
 
     override fun showLoading() {

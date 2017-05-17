@@ -286,27 +286,28 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    override fun getItemViewType(position: Int): Int { return if (mEventList.get(position) != null) 1 else 0 }
+    override fun getItemViewType(position: Int): Int { return if (mEventList[position] != null) 1 else 0 }
 
     override fun getItemCount(): Int { return mEventList.size }
 
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addEvents(eventList: List<Event>) {
-        mEventList = eventList.toMutableList()
-        notifyDataSetChanged()
+        if (mEventList.isEmpty()) {
+            mEventList = eventList.toMutableList()
+            notifyDataSetChanged()
+        }
+        else {
+            val lastNull = mEventList.lastIndexOf(null)
+            mEventList.removeAt(lastNull)
+            mEventList.addAll(eventList)
+            notifyItemRangeInserted(lastNull, eventList.size - 1)
+        }
     }
 
     fun addLoading() {
         mEventList.add(null)
         notifyItemInserted(mEventList.size - 1)
-    }
-
-    fun addMoreEvents(eventList: List<Event>) {
-        val lastNull = mEventList.lastIndexOf(null)
-        mEventList.removeAt(lastNull)
-        mEventList.addAll(eventList)
-        notifyItemRangeInserted(lastNull, eventList.size)
     }
 
     fun clear() {
