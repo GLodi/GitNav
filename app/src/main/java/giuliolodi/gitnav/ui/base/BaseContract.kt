@@ -16,6 +16,8 @@
 
 package giuliolodi.gitnav.ui.base
 
+import android.graphics.Bitmap
+
 /**
  * Created by giulio on 12/05/2017.
  */
@@ -25,6 +27,8 @@ interface BaseContract {
     interface View {
 
         fun isNetworkAvailable(): Boolean
+
+        fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap)
 
     }
 

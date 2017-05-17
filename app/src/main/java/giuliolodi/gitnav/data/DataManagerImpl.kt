@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.data
 
 import android.content.Context
+import android.graphics.Bitmap
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
@@ -114,6 +115,10 @@ class DataManagerImpl : DataManager {
 
     override fun getUsername(): String {
         return mPrefsHelper.getUsername()
+    }
+
+    override fun getPic(): Bitmap {
+        return mPrefsHelper.getPic()
     }
 
 }

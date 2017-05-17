@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.base
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AppCompatActivity
@@ -27,9 +28,13 @@ import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.utils.NetworkUtils
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.widget.TextView
 import giuliolodi.gitnav.R
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
+import de.hdodenhof.circleimageview.CircleImageView
+
+
 
 /**
  * Created by giulio on 15/05/2017.
@@ -41,7 +46,7 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        super.setContentView(R.layout.activity_base_drawer);
+        super.setContentView(R.layout.activity_base_drawer)
 
         val app: App = application as App
 
@@ -63,16 +68,24 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
         nav_view.setNavigationItemSelectedListener(this)
     }
 
+    override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap) {
+        val hView = nav_view.getHeaderView(0)
+        val nav_user = hView.findViewById(R.id.nav_user) as TextView
+        nav_user.text = username
+        val nav_email = hView.findViewById(R.id.nav_email) as TextView
+        nav_email.text = email
+        val nav_full_name = hView.findViewById(R.id.nav_full_name) as TextView
+        nav_full_name.text = fullName
+        val image_view = hView.findViewById(R.id.imageView) as CircleImageView
+        image_view.setImageBitmap(profilePic)
+    }
+
     fun getActivityComponent(): ActivityComponent {
         return mActivityComponent
     }
 
     override fun isNetworkAvailable(): Boolean {
         return NetworkUtils.isNetworkAvailable(applicationContext)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -87,6 +100,13 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START))
+            drawer_layout.closeDrawer(GravityCompat.START)
+        else
+            super.onBackPressed()
     }
 
 }

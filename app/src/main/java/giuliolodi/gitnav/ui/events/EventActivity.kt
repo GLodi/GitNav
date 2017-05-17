@@ -20,6 +20,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -34,6 +36,10 @@ import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
 import giuliolodi.gitnav.utils.NetworkUtils
+import kotlinx.android.synthetic.main.activity_base_drawer.*
+import android.os.Looper.getMainLooper
+
+
 
 /**
  * Created by giulio on 15/05/2017.
@@ -130,8 +136,8 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
                         (event_activity_rv.adapter as EventAdapter).addLoading()
                         mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
                     }
-                    else {
-                        Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                    else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
                         hideLoading()
                     }
                 }
@@ -140,6 +146,16 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
         event_activity_rv.setOnScrollListener(mScrollListener)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        nav_view.menu.getItem(0).isChecked = true
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
     companion object {

@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.data.prefs
 
+import android.graphics.Bitmap
 import org.eclipse.egit.github.core.User
 
 /**
@@ -50,13 +51,19 @@ interface PrefsHelper {
 
     /**
      * Get stored fullname (if exists)
-     * @return String
+     * @return String?
      */
     fun getFullname(): String?
 
     /**
      * Get stored email address (if exists)
-     * @return String
+     * @return String?
      */
     fun getEmail(): String?
+
+    /**
+     * Get stored profile pic
+     * @return pic
+     */
+    fun getPic(): Bitmap
 }

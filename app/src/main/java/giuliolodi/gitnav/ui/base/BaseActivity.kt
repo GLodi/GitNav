@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.base
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import giuliolodi.gitnav.App
@@ -43,6 +44,9 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View {
                 .appComponent(app.getAppComponent())
                 .build()
     }
+
+    // Not used here
+    override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap) {}
 
     fun getActivityComponent(): ActivityComponent {
         return mActivityComponent

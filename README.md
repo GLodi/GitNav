@@ -1,5 +1,18 @@
 # GitNav
 
+Right now I'm in the middle of a renovation. I'm basically remaking 
+the whole app from scratch because of poor decisions made at 
+the beginning of development.
+If you want to see the old version (1.0) check the releases.
+Interesting stuff I'm gonna use and implement:
+
+ - OAuth
+ - Dark mode/theme
+ - MVP architecture ([basic structure here][mvp])
+ - RxKotlin/RxAndroid
+ - Kotlin
+ - Dagger2
+
 Basic GitHub Android Client. [Google play link!][play]
 
 <div align="center">
@@ -73,4 +86,5 @@ Trending:
 [highlight]: https://github.com/PDDStudio/highlightjs-android
 [toasty]: https://github.com/GrenderG/Toasty
 [play]: https://play.google.com/store/apps/details?id=giuliolodi.gitnav
+[mvp]: https://github.com/MindorksOpenSource/android-mvp-architecture
 

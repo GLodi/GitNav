@@ -47,6 +47,9 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
 
     override fun onAttach(view: V) {
         mBaseView = view
+        if (mBaseView is BaseDrawerActivity) {
+            mBaseView!!.initDrawer(getDataManager().getUsername(), getDataManager().getFullname(), getDataManager().getEmail(), getDataManager().getPic())
+        }
     }
 
     override fun onDetach() {

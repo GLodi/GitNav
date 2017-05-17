@@ -84,4 +84,8 @@ class PrefsHelperImpl : PrefsHelper {
         return mPrefs.getString(PREF_KEY_EMAIL, null)
     }
 
+    override fun getPic(): Bitmap {
+        return ImageSaver(mContext).setFileName("thumbnail.png").setDirectoryName("images").load()
+    }
+
 }

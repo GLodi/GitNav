@@ -23,6 +23,7 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.client.RequestException
 import javax.inject.Inject
 
 /**
@@ -55,7 +56,8 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                         { throwable ->
                             Log.e(TAG, throwable.message, throwable)
                             getView().showError(throwable.localizedMessage)
-                            FirebaseCrash.report(throwable)
+                            if ((throwable as? RequestException)?.status != 401)
+                                FirebaseCrash.report(throwable)
                             getView().hideLoading()
                         }
                 ))
