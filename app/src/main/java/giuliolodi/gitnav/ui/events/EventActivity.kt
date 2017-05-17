@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.event_activity.*
 import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
-import giuliolodi.gitnav.utils.CommonUtils
 import giuliolodi.gitnav.utils.NetworkUtils
 
 /**

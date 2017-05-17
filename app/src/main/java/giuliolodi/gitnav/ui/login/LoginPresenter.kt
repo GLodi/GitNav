@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.login
 
 import android.util.Log
+import com.google.firebase.crash.FirebaseCrash
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -54,6 +55,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                         { throwable ->
                             Log.e(TAG, throwable.message, throwable)
                             getView().showError(throwable.localizedMessage)
+                            FirebaseCrash.report(throwable)
                             getView().hideLoading()
                         }
                 ))
