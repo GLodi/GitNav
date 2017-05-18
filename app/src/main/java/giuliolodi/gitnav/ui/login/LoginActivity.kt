@@ -103,4 +103,9 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         startActivity(EventActivity.getIntent(applicationContext))
     }
 
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
+    }
+
 }

@@ -22,10 +22,12 @@ import android.os.StrictMode
 import giuliolodi.gitnav.di.scope.AppContext
 import io.reactivex.Observable
 import org.eclipse.egit.github.core.Authorization
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.EventService
 import org.eclipse.egit.github.core.service.OAuthService
+import org.eclipse.egit.github.core.service.RepositoryService
 import org.eclipse.egit.github.core.service.UserService
 import javax.inject.Inject
 import java.io.IOException
@@ -79,7 +81,15 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiDownloadEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun apiGetUser(token: String, username: String): Observable<User> {
+        return Observable.defer {
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            Observable.just(userService.getUser(username))
+        }
+    }
+
+    override fun apiPageEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
         return Observable.defer {
             val eventService: EventService = EventService()
             eventService.client.setOAuth2Token(token)
@@ -87,11 +97,14 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiGetUser(token: String, username: String): Observable<User> {
+    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
         return Observable.defer {
-            val userService: UserService = UserService()
-            userService.client.setOAuth2Token(token)
-            Observable.just(userService.getUser(username))
+            val repositoryService: RepositoryService = RepositoryService()
+            repositoryService.client.setOAuth2Token(token)
+            if (filter?.get("sort") != "starred")
+                Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
+            else
+                Observable.just(ArrayList(repositoryService.getRepositories(username).sortedByDescending { it.watchers }))
         }
     }
 

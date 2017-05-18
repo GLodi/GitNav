@@ -37,19 +37,19 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(pageN: Int, itemsPerPage: Int) {
-        getCompositeDisposable().add(getDataManager().downloadEvents(pageN, itemsPerPage)
+        getCompositeDisposable().add(getDataManager().pageEvents(pageN, itemsPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { eventList ->
-                            getView().addEvents(eventList)
+                            getView().showEvents(eventList)
                             getView().hideLoading()
                         },
                         { throwable ->
                             Log.e(TAG, throwable.message, throwable)
                             getView().showError(throwable.localizedMessage)
-                            FirebaseCrash.report(throwable)
                             getView().hideLoading()
+                            FirebaseCrash.report(throwable)
                         }
                 ))
     }

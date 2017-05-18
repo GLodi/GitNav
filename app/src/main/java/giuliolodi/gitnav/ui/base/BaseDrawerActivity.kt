@@ -16,8 +16,10 @@
 
 package giuliolodi.gitnav.ui.base
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -33,7 +35,8 @@ import giuliolodi.gitnav.R
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import de.hdodenhof.circleimageview.CircleImageView
-
+import giuliolodi.gitnav.ui.events.EventActivity
+import giuliolodi.gitnav.ui.repositories.RepoListActivity
 
 
 /**
@@ -43,6 +46,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mActivityComponent: ActivityComponent
+
+    private val DRAWER_DELAY = 250L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +101,16 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             return false
         }
         when (item.itemId) {
-
+            R.id.nav_events ->
+                Handler().postDelayed({
+                    startActivity(EventActivity.getIntent(applicationContext))
+                    overridePendingTransition(0, 0)
+                }, DRAWER_DELAY)
+            R.id.nav_repos ->
+                Handler().postDelayed({
+                    startActivity(RepoListActivity.getIntent(applicationContext))
+                    overridePendingTransition(0, 0)
+                }, DRAWER_DELAY)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true

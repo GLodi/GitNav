@@ -26,6 +26,8 @@ import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
+import giuliolodi.gitnav.ui.repositories.RepoListContract
+import giuliolodi.gitnav.ui.repositories.RepoListPresenter
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -53,13 +55,19 @@ class ActivityModule(val activity: Activity) {
 
     @Provides
     @PerActivity
-    fun provideMainPresenter(presenter: LoginPresenter<LoginContract.View>): LoginContract.Presenter<LoginContract.View> {
+    fun provideLoginPresenter(presenter: LoginPresenter<LoginContract.View>): LoginContract.Presenter<LoginContract.View> {
         return presenter
     }
 
     @Provides
     @PerActivity
-    fun provideEventPresenter(presenter: EventPresenter<EventContract.View>) : EventContract.Presenter<EventContract.View> {
+    fun provideEventPresenter(presenter: EventPresenter<EventContract.View>): EventContract.Presenter<EventContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideRepoListPresenter(presenter: RepoListPresenter<RepoListContract.View>): RepoListContract.Presenter<RepoListContract.View> {
         return presenter
     }
 }

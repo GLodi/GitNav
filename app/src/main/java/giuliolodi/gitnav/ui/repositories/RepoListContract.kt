@@ -14,27 +14,35 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.di.component
+package giuliolodi.gitnav.ui.repositories
 
-import dagger.Component
-import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.di.scope.PerActivity
-import giuliolodi.gitnav.ui.events.EventActivity
-import giuliolodi.gitnav.ui.login.LoginActivity
-import giuliolodi.gitnav.ui.repositories.RepoListActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Repository
 
 /**
- * Created by giulio on 12/05/2017.
+ * Created by giulio on 18/05/2017.
  */
 
-@PerActivity
-@Component(dependencies = arrayOf(AppComponent::class), modules = arrayOf(ActivityModule::class))
-interface ActivityComponent {
+interface RepoListContract {
 
-    fun inject(loginActivity: LoginActivity)
+    interface View : BaseContract.View {
 
-    fun inject(eventActivity: EventActivity)
+        fun showRepos(repoList: List<Repository>)
 
-    fun inject(repoListActivity: RepoListActivity)
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
+
+    }
+
+    @PerActivity
+    interface Presenter<V: RepoListContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+
+    }
 
 }

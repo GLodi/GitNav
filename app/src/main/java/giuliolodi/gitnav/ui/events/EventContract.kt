@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.events
 
+import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.event.Event
 
@@ -27,7 +28,7 @@ interface EventContract {
 
     interface View : BaseContract.View {
 
-        fun addEvents(eventList: List<Event>)
+        fun showEvents(eventList: List<Event>)
 
         fun showLoading()
 
@@ -37,6 +38,7 @@ interface EventContract {
 
     }
 
+    @PerActivity
     interface Presenter<V: EventContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(pageN: Int, itemsPerPage: Int)

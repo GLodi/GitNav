@@ -23,6 +23,7 @@ import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.UserService
@@ -81,24 +82,12 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getToken()
     }
 
-    override fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return apiDownloadEvents(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+    override fun pageEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return apiPageEvents(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
     }
 
     override fun getUser(username: String): Observable<User> {
         return apiGetUser(mPrefsHelper.getToken(), username)
-    }
-
-    override fun apiAuthToGitHub(user: String, pass: String): String {
-        return mApiHelper.apiAuthToGitHub(user, pass)
-    }
-
-    override fun apiDownloadEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return mApiHelper.apiDownloadEvents(token, username, pageN, itemsPerPage)
-    }
-
-    override fun apiGetUser(token: String, username: String): Observable<User> {
-        return mApiHelper.apiGetUser(token, username)
     }
 
     override fun storeUser(user: User) {
@@ -119,6 +108,26 @@ class DataManagerImpl : DataManager {
 
     override fun getPic(): Bitmap {
         return mPrefsHelper.getPic()
+    }
+
+    override fun pageRepos(pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+        return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
+    }
+
+    override fun apiAuthToGitHub(username: String, password: String): String {
+        return mApiHelper.apiAuthToGitHub(username, password)
+    }
+
+    override fun apiPageEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return mApiHelper.apiPageEvents(token, username, pageN, itemsPerPage)
+    }
+
+    override fun apiGetUser(token: String, username: String): Observable<User> {
+        return mApiHelper.apiGetUser(token, username)
+    }
+
+    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>> {
+        return mApiHelper.apiPageRepos(token, username, pageN, itemsPerPage, filter)
     }
 
 }

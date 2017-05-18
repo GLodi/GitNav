@@ -45,6 +45,10 @@
                     android:id="@+id/repo_sort_alphabetical"
                     android:title="Alphabetical" />
 
+                <item
+                    android:id="@+id/repo_sort_stars"
+                    android:title="Starred" />
+
             </group>
 
         </menu>

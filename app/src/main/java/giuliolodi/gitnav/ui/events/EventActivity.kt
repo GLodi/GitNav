@@ -37,9 +37,6 @@ import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
 import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_base_drawer.*
-import android.os.Looper.getMainLooper
-
-
 
 /**
  * Created by giulio on 15/05/2017.
@@ -49,7 +46,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
     @Inject lateinit var mPresenter: EventContract.Presenter<EventContract.View>
 
-    private var DOWNLOAD_PAGE_N = 1
+    private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
 
@@ -65,7 +62,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
 
         if (NetworkUtils.isNetworkAvailable(applicationContext)) {
             showLoading()
-            mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+            mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
         }
         else {
             Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -89,9 +86,9 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         event_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         event_activity_swipe.setOnRefreshListener {
             if (NetworkUtils.isNetworkAvailable(applicationContext)) {
-                DOWNLOAD_PAGE_N = 1
+                PAGE_N = 1
                 (event_activity_rv.adapter as EventAdapter).clear()
-                mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+                mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
             }
             else {
                 Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -100,9 +97,11 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         }
     }
 
-    override fun addEvents(eventList: List<Event>) {
+    override fun showEvents(eventList: List<Event>) {
         LOADING = false
         (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
+        if (PAGE_N == 1 && eventList.isEmpty())
+            event_activity_no_events.visibility = View.VISIBLE
     }
 
     override fun showLoading() {
@@ -121,7 +120,6 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
     }
 
     private fun setupOnScrollListener() {
-
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING)
@@ -132,9 +130,9 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (NetworkUtils.isNetworkAvailable(applicationContext)) {
                         LOADING = true
-                        DOWNLOAD_PAGE_N += 1
+                        PAGE_N += 1
                         (event_activity_rv.adapter as EventAdapter).addLoading()
-                        mPresenter.subscribe(DOWNLOAD_PAGE_N, ITEMS_PER_PAGE)
+                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
                     }
                     else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -143,9 +141,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
                 }
             }
         }
-
         event_activity_rv.setOnScrollListener(mScrollListener)
-
     }
 
     override fun onResume() {
@@ -156,6 +152,11 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
     }
 
     companion object {

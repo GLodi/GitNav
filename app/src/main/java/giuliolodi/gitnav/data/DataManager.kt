@@ -20,6 +20,7 @@ import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 
@@ -39,16 +40,27 @@ interface DataManager : ApiHelper, PrefsHelper {
     fun tryAuthentication(username: String, password: String): Completable
 
     /**
-     * Downloads events of logged user.
-     * @return List<Event>
-     */
-    fun downloadEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>>
-
-    /**
-     * Get user from username
+     * Get user from username.
      * @param username
      * @return Observable<User>
      */
     fun getUser(username: String): Observable<User>
+
+    /**
+     * Page events of logged user.
+     * @param pageN
+     * @param itemsPerPage
+     * @return Observable<List<Event>>
+     */
+    fun pageEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+
+    /**
+     * Page repositories of logged user.
+     * @param pageN
+     * @param itemsPerPage
+     * @param filter
+     * @return Observable<List<Repository>>
+     */
+    fun pageRepos(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
 
 }

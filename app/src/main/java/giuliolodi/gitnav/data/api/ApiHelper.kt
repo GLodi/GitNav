@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.data.api
 
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
 
@@ -36,18 +37,32 @@ interface ApiHelper {
     fun apiAuthToGitHub(username: String, password: String): String
 
     /**
-     * Downloads events of logged user.
-     * @param token
-     * @return Observable<List<Event>>
-     */
-    fun apiDownloadEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
-
-    /**
      * Get user from username
      * @param token
      * @param username
      * @return Observable<User>
      */
     fun apiGetUser(token: String, username: String): Observable<User>
+
+    /**
+     * Downloads events of logged user.
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @return Observable<List<Event>>
+     */
+    fun apiPageEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+
+    /**
+     * Get logged user's repositories, along with a filter option
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @param filter
+     * @return List<Repository>
+     */
+    fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
 
 }

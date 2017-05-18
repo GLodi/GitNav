@@ -78,6 +78,7 @@
     <string name="no_comments">No comments</string>
     <string name="no_events">No events</string>
     <string name="no_forks">No forks</string>
+    <string name="no_description">No description</string>
 
     <string name="mine">Mine</string>
     <string name="users">Users</string>
