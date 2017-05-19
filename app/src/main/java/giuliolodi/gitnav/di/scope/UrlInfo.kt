@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.utils
+package giuliolodi.gitnav.di.scope
 
-import android.content.Context
-import giuliolodi.gitnav.R
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+import javax.inject.Qualifier
 
 /**
- * Created by giulio on 13/05/2017.
+ * Created by giulio on 18/05/2017.
  */
 
-class Constants {
-
-    companion object {
-        val PREFS_NAME = "gitnav_prefs"
-        val BASE_URL = "https://github.com/trending"
-        val DAILY_URL = "?since=daily"
-        val WEEKLY_URL = "?since=weekly"
-        val MONTHLY_URL = "?since=monthly"
-    }
-
-}
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+annotation class UrlInfo

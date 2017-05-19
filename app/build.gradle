@@ -55,7 +55,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
     compile 'com.squareup.okhttp:okhttp:1.6.0'
-    compile 'org.jsoup:jsoup:1.10.1'
+    compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.squareup.picasso:picasso:2.4.0'
 
     // DI
@@ -65,7 +65,7 @@ dependencies {
 
     // Rx
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'io.reactivex.rxjava2:rxkotlin:2.0.2'
+    compile 'io.reactivex.rxjava2:rxkotlin:2.0.3'
 
     // Stuff
     compile 'de.hdodenhof:circleimageview:2.1.0'

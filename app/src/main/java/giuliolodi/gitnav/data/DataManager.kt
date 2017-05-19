@@ -27,6 +27,7 @@ import org.eclipse.egit.github.core.event.Event
 /**
  * Created by giulio on 12/05/2017.
  */
+
 interface DataManager : ApiHelper, PrefsHelper {
 
     /**
@@ -62,5 +63,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @return Observable<List<Repository>>
      */
     fun pageRepos(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+
+    /**
+     * Downloads trending repos (one at a time) from github's websites.
+     * @param period (daily, weekly, monthly)
+     * @return Observable<Repository>
+     */
+    fun getTrending(period: String): Observable<Repository>
 
 }

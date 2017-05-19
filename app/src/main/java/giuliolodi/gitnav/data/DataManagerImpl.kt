@@ -57,7 +57,7 @@ class DataManagerImpl : DataManager {
             val user: User
             try {
                 token = apiAuthToGitHub(username, password)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 throw e
             }
             if (!token.isEmpty()) {
@@ -67,7 +67,7 @@ class DataManagerImpl : DataManager {
                     userService.client.setOAuth2Token(getToken())
                     user = userService.getUser(username)
                     storeUser(user)
-                } catch (e: IOException) {
+                } catch (e: Exception) {
                     throw e
                 }
             }
@@ -114,6 +114,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
     }
 
+    override fun getTrending(period: String): Observable<Repository> {
+        return mApiHelper.apiGetTrending(mPrefsHelper.getToken(), period)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -128,6 +132,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>> {
         return mApiHelper.apiPageRepos(token, username, pageN, itemsPerPage, filter)
+    }
+
+    override fun apiGetTrending(token: String, period: String): Observable<Repository> {
+        return mApiHelper.apiGetTrending(token, period)
     }
 
 }

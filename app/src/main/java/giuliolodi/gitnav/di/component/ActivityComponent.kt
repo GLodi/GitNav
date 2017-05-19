@@ -22,6 +22,7 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
+import giuliolodi.gitnav.ui.trending.TrendingActivity
 
 /**
  * Created by giulio on 12/05/2017.
@@ -36,5 +37,7 @@ interface ActivityComponent {
     fun inject(eventActivity: EventActivity)
 
     fun inject(repoListActivity: RepoListActivity)
+
+    fun inject(trendingActivity: TrendingActivity)
 
 }

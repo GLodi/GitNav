@@ -29,8 +29,8 @@ import giuliolodi.gitnav.data.prefs.PrefsHelperImpl
 import giuliolodi.gitnav.di.scope.AppContext
 import javax.inject.Singleton
 import giuliolodi.gitnav.di.scope.PreferenceInfo
+import giuliolodi.gitnav.di.scope.UrlInfo
 import giuliolodi.gitnav.utils.Constants
-
 
 /**
  * Created by giulio on 12/05/2017.
@@ -54,6 +54,12 @@ class AppModule(private val application: Application) {
     @PreferenceInfo
     fun providePreferenceName(): String {
         return Constants.PREFS_NAME
+    }
+
+    @Provides
+    @UrlInfo
+    fun provideUrlInfo(): Map<String,String> {
+        return mapOf("base" to Constants.BASE_URL, "daily" to Constants.DAILY_URL, "weekly" to Constants.WEEKLY_URL, "monthly" to Constants.MONTHLY_URL)
     }
 
     @Provides

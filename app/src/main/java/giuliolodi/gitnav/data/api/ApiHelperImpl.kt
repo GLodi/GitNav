@@ -19,8 +19,11 @@ package giuliolodi.gitnav.data.api
 import android.content.Context
 import android.os.Build
 import android.os.StrictMode
+import android.util.Log
 import giuliolodi.gitnav.di.scope.AppContext
+import giuliolodi.gitnav.di.scope.UrlInfo
 import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
 import org.eclipse.egit.github.core.Authorization
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
@@ -31,6 +34,10 @@ import org.eclipse.egit.github.core.service.RepositoryService
 import org.eclipse.egit.github.core.service.UserService
 import javax.inject.Inject
 import java.io.IOException
+import org.jsoup.select.Elements
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+
 
 /**
  * Created by giulio on 12/05/2017.
@@ -39,10 +46,12 @@ import java.io.IOException
 class ApiHelperImpl : ApiHelper {
 
     private val mContext: Context
+    private val mUrlMap: Map<String,String>
 
     @Inject
-    constructor(@AppContext context: Context) {
+    constructor(@AppContext context: Context, @UrlInfo urlMap: Map<String,String>) {
         mContext = context
+        mUrlMap = urlMap
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
@@ -101,10 +110,49 @@ class ApiHelperImpl : ApiHelper {
         return Observable.defer {
             val repositoryService: RepositoryService = RepositoryService()
             repositoryService.client.setOAuth2Token(token)
-            if (filter?.get("sort") != "starred")
-                Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
-            else
+            if (filter?.get("sort") == "starred")
                 Observable.just(ArrayList(repositoryService.getRepositories(username).sortedByDescending { it.watchers }))
+            else
+                Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
+        }
+    }
+
+    override fun apiGetTrending(token: String, period: String): Observable<Repository> {
+        return Observable.create { disposable ->
+            var URL: String = ""
+            val ownerRepoList: MutableList<String> = mutableListOf()
+            when (period) {
+                "daily" ->  URL = mUrlMap["base"] + mUrlMap["daily"]
+                "weekly" ->  URL = mUrlMap["base"] + mUrlMap["weekly"]
+                "monthly" ->  URL = mUrlMap["base"] + mUrlMap["monthly"]
+            }
+            try {
+                val document = Jsoup.connect(URL).get()
+                val repoList = document.getElementsByTag("ol")[0].getElementsByTag("li")
+                if (repoList != null && !repoList.isEmpty()) {
+                    var string: Element
+                    var ss: String
+                    for (i in 0..repoList.size - 1) {
+                        string = repoList[i].getElementsByTag("div")[0].getElementsByTag("h3")[0].getElementsByTag("a")[0]
+                        ss = string.children()[0].ownText() + string.ownText()
+                        val t = ss.split("/")
+                        val a = t[0].replace(" ", "")
+                        val b = t[1]
+                        ownerRepoList.add(a)
+                        ownerRepoList.add(b)
+                    }
+                    val repositoryService: RepositoryService = RepositoryService()
+                    repositoryService.client.setOAuth2Token(token)
+                    for (i in 0..ownerRepoList.size - 1 step 2) {
+                        Log.e("i", i.toString())
+                        disposable.onNext(repositoryService.getRepository(ownerRepoList[i], ownerRepoList[i+1]))
+                    }
+                    disposable.onComplete()
+                }
+            } catch (e: Exception) {
+                if (!disposable.isDisposed)
+                    disposable.onError(e)
+            }
         }
     }
 

@@ -48,6 +48,12 @@
 
         </activity>
 
+        <activity
+            android:name=".ui.trending.TrendingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
     </application>
 
 </manifest>

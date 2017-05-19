@@ -61,8 +61,16 @@ interface ApiHelper {
      * @param pageN
      * @param itemsPerPage
      * @param filter
-     * @return List<Repository>
+     * @return Observable<List<Repository>>
      */
     fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+
+    /**
+     * Downloads trending repos (one at a time) from github's websites.
+     * @param token
+     * @param period (daily, weekly, monthly)
+     * @return Observable<Repository
+     */
+    fun apiGetTrending(token: String, period: String): Observable<Repository>
 
 }

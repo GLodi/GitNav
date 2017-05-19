@@ -151,7 +151,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-            // TODO: Intent to OptionActivity
+
         }
         if (NetworkUtils.isNetworkAvailable(applicationContext)) {
             when (item?.itemId) {

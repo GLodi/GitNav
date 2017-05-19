@@ -99,6 +99,11 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    fun addRepo(repo: Repository) {
+        mRepoList.add(repo)
+        notifyItemInserted(mRepoList.size - 1)
+    }
+
     fun addLoading() {
         mRepoList.add(null)
         notifyItemInserted(mRepoList.size - 1)
