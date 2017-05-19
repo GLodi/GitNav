@@ -19,22 +19,16 @@ package giuliolodi.gitnav.data.api
 import android.content.Context
 import android.os.Build
 import android.os.StrictMode
-import android.util.Log
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.UrlInfo
 import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
 import org.eclipse.egit.github.core.Authorization
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
-import org.eclipse.egit.github.core.service.EventService
-import org.eclipse.egit.github.core.service.OAuthService
-import org.eclipse.egit.github.core.service.RepositoryService
-import org.eclipse.egit.github.core.service.UserService
+import org.eclipse.egit.github.core.service.*
 import javax.inject.Inject
 import java.io.IOException
-import org.jsoup.select.Elements
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
@@ -144,7 +138,6 @@ class ApiHelperImpl : ApiHelper {
                     val repositoryService: RepositoryService = RepositoryService()
                     repositoryService.client.setOAuth2Token(token)
                     for (i in 0..ownerRepoList.size - 1 step 2) {
-                        Log.e("i", i.toString())
                         disposable.onNext(repositoryService.getRepository(ownerRepoList[i], ownerRepoList[i+1]))
                     }
                     disposable.onComplete()
@@ -153,6 +146,17 @@ class ApiHelperImpl : ApiHelper {
                 if (!disposable.isDisposed)
                     disposable.onError(e)
             }
+        }
+    }
+
+    override fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+        return Observable.defer {
+            val starService: StarService = StarService()
+            starService.client.setOAuth2Token(token)
+            if (filter?.get("sort") == "starred")
+                Observable.just(ArrayList(starService.getStarred(username).sortedByDescending { it.watchers }))
+            else
+                Observable.just(ArrayList(starService.pageStarred(username, filter, pageN, itemsPerPage).next()))
         }
     }
 

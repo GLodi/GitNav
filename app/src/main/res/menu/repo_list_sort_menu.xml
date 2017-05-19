@@ -47,7 +47,7 @@
 
                 <item
                     android:id="@+id/repo_sort_stars"
-                    android:title="Starred" />
+                    android:title="Stars" />
 
             </group>
 

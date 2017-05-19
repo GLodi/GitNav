@@ -14,46 +14,43 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.repositories
+package giuliolodi.gitnav.ui.starred
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
-import kotlinx.android.synthetic.main.row_repo.view.*
+import kotlinx.android.synthetic.main.row_starred.view.*
 import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
+import com.squareup.picasso.Picasso
 
 /**
- * Created by giulio on 18/05/2017.
+ * Created by giulio on 19/05/2017.
  */
 
-class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (repo: Repository, p: PrettyTime) = with(itemView) {
-            row_repo_owner.text = repo.owner.login + "/"
-            row_repo_name.text = repo.name
+            row_starred_repo_name.text = repo.owner.login + "/" + repo.name
+            row_starred_star_number.text = repo.watchers.toString()
+            row_starred_repo_date.text = p.format(repo.createdAt)
+            Picasso.with(context).load(repo.owner.avatarUrl).resize(75, 75).centerCrop().into(row_starred_author_icon)
             if (repo.description != null && repo.description != "")
-                row_repo_description.text = repo.description
+                row_starred_repo_description.text = repo.description
             else
-                row_repo_description.text = context.getString(R.string.no_description)
+                row_starred_repo_description.text = context.getString(R.string.no_description)
             if (repo.language == null) {
-                row_repo_language.visibility = View.GONE
-                row_repo_language_icon.visibility = View.GONE
+                row_starred_language.visibility = View.GONE
+                row_starred_code.visibility = View.GONE
             }
             else
-                row_repo_language.text = repo.language
-            row_repo_star_number.text = repo.watchers.toString()
-            row_repo_date.text = p.format(repo.createdAt)
-            if (repo.isFork && repo.parent != null)
-                row_repo_forked.text = repo.parent.name
-            else
-                row_repo_forked.visibility = View.GONE
+                row_starred_language.text = repo.language
         }
     }
 
@@ -62,7 +59,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val root: RecyclerView.ViewHolder
         if (viewType == 1) {
-            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_repo, parent, false))
+            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_starred, parent, false))
             root = RepoHolder(view)
         } else  {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_loading, parent, false))

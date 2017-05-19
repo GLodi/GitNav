@@ -22,6 +22,7 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
+import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 
 /**
@@ -39,5 +40,7 @@ interface ActivityComponent {
     fun inject(repoListActivity: RepoListActivity)
 
     fun inject(trendingActivity: TrendingActivity)
+
+    fun inject(starredActivity: StarredActivity)
 
 }

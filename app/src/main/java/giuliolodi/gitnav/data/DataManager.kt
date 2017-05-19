@@ -71,4 +71,13 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getTrending(period: String): Observable<Repository>
 
+    /**
+     * Get user's starred repos
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @param filter
+     */
+    fun pageStarred(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+
 }

@@ -29,13 +29,17 @@
             <group android:checkableBehavior="single">
 
                 <item
-                    android:id="@+id/starred_sort_starred"
-                    android:title="Starred"
+                    android:id="@+id/starred_sort_created"
+                    android:title="Created"
                     android:checked="true"/>
 
                 <item
                     android:id="@+id/starred_sort_updated"
                     android:title="Updated" />
+
+                <item
+                    android:id="@+id/starred_sort_starred"
+                    android:title="Stars" />
 
             </group>
 

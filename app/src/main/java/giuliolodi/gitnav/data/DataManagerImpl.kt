@@ -118,6 +118,13 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetTrending(mPrefsHelper.getToken(), period)
     }
 
+    override fun pageStarred(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+        if (username == null)
+            return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
+        else
+            return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), username, pageN, itemsPerPage, filter)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -136,6 +143,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiGetTrending(token: String, period: String): Observable<Repository> {
         return mApiHelper.apiGetTrending(token, period)
+    }
+
+    override fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+        return mApiHelper.apiPageStarred(token, username, pageN, itemsPerPage, filter)
     }
 
 }

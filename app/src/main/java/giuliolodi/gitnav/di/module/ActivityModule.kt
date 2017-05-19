@@ -28,6 +28,8 @@ import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
 import giuliolodi.gitnav.ui.repositories.RepoListContract
 import giuliolodi.gitnav.ui.repositories.RepoListPresenter
+import giuliolodi.gitnav.ui.starred.StarredContract
+import giuliolodi.gitnav.ui.starred.StarredPresenter
 import giuliolodi.gitnav.ui.trending.TrendingContract
 import giuliolodi.gitnav.ui.trending.TrendingPresenter
 import io.reactivex.disposables.CompositeDisposable
@@ -78,4 +80,11 @@ class ActivityModule(val activity: Activity) {
     fun provideTrendingPresenter(presenter: TrendingPresenter<TrendingContract.View>): TrendingContract.Presenter<TrendingContract.View> {
         return presenter
     }
+
+    @Provides
+    @PerActivity
+    fun provideStarredPresenter(presenter: StarredPresenter<StarredContract.View>): StarredContract.Presenter<StarredContract.View> {
+        return presenter
+    }
+
 }

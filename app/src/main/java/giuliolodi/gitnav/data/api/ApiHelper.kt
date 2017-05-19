@@ -73,4 +73,14 @@ interface ApiHelper {
      */
     fun apiGetTrending(token: String, period: String): Observable<Repository>
 
+    /**
+     * Get user's starred repos
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @param filter
+     */
+    fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+
 }

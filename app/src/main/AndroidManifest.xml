@@ -54,6 +54,12 @@
 
         </activity>
 
+        <activity
+            android:name=".ui.starred.StarredActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
     </application>
 
 </manifest>

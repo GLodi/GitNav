@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.repositories
+package giuliolodi.gitnav.ui.starred
 
 import android.content.Context
 import android.content.Intent
@@ -36,17 +36,17 @@ import giuliolodi.gitnav.ui.base.BaseDrawerActivity
 import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
-import kotlinx.android.synthetic.main.repo_list_activity.*
+import kotlinx.android.synthetic.main.starred_activity.*
 import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject
 
 /**
- * Created by giulio on 18/05/2017.
+ * Created by giulio on 19/05/2017.
  */
 
-class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
+class StarredActivity : BaseDrawerActivity(), StarredContract.View {
 
-    @Inject lateinit var mPresenter: RepoListContract.Presenter<RepoListContract.View>
+    @Inject lateinit var mPresenter: StarredContract.Presenter<StarredContract.View>
 
     private var mFilter: HashMap<String,String> = HashMap()
     private var PAGE_N = 1
@@ -55,7 +55,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        layoutInflater.inflate(R.layout.repo_list_activity, content_frame)
+        layoutInflater.inflate(R.layout.starred_activity, content_frame)
 
         initLayout()
 
@@ -76,23 +76,23 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
     }
 
     private fun initLayout() {
-        supportActionBar?.title = getString(R.string.repositories)
+        supportActionBar?.title = getString(R.string.starred)
 
         val llm = LinearLayoutManager(applicationContext)
         llm.orientation = LinearLayoutManager.VERTICAL
 
-        repo_list_activity_rv.layoutManager = llm
-        repo_list_activity_rv.addItemDecoration(DividerItemDecoration(repo_list_activity_rv.context, llm.orientation))
-        repo_list_activity_rv.itemAnimator = DefaultItemAnimator()
-        repo_list_activity_rv.adapter = RepoListAdapter()
+        starred_activity_rv.layoutManager = llm
+        starred_activity_rv.addItemDecoration(DividerItemDecoration(starred_activity_rv.context, llm.orientation))
+        starred_activity_rv.itemAnimator = DefaultItemAnimator()
+        starred_activity_rv.adapter = StarredAdapter()
 
         setupOnScrollListener()
 
-        repo_list_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
-        repo_list_activity_swipe.setOnRefreshListener {
+        starred_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
+        starred_activity_swipe.setOnRefreshListener {
             if (NetworkUtils.isNetworkAvailable(applicationContext)) {
                 PAGE_N = 1
-                (repo_list_activity_rv.adapter as RepoListAdapter).clear()
+                (starred_activity_rv.adapter as StarredAdapter).clear()
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
             }
             else {
@@ -104,24 +104,28 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
     override fun showRepos(repoList: List<Repository>) {
         LOADING = false
-        (repo_list_activity_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (starred_activity_rv.adapter as StarredAdapter).addRepos(repoList)
         if (PAGE_N == 1 && repoList.isEmpty())
-            repo_list_activity_no_repo.visibility = View.VISIBLE
+            starred_activity_no_repo.visibility = View.VISIBLE
     }
 
     override fun showLoading() {
-        repo_list_activity_progress_bar.visibility = View.VISIBLE
+        starred_activity_progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        if (repo_list_activity_progress_bar.visibility == View.VISIBLE)
-            repo_list_activity_progress_bar.visibility = View.GONE
-        if (repo_list_activity_swipe.isRefreshing)
-            repo_list_activity_swipe.isRefreshing = false
+        if (starred_activity_progress_bar.visibility == View.VISIBLE)
+            starred_activity_progress_bar.visibility = View.GONE
+        if (starred_activity_swipe.isRefreshing)
+            starred_activity_swipe.isRefreshing = false
     }
 
     override fun showError(error: String) {
         Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoRepo() {
+        starred_activity_no_repo.visibility = View.VISIBLE
     }
 
     private fun setupOnScrollListener() {
@@ -129,14 +133,14 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING || mFilter["sort"] == "starred")
                     return
-                val visibleItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (repo_list_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val visibleItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (starred_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (NetworkUtils.isNetworkAvailable(applicationContext)) {
                         LOADING = true
                         PAGE_N += 1
-                        (repo_list_activity_rv.adapter as RepoListAdapter).addLoading()
+                        (starred_activity_rv.adapter as StarredAdapter).addLoading()
                         mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                     }
                     else if (dy > 0) {
@@ -146,7 +150,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
                 }
             }
         }
-        repo_list_activity_rv.setOnScrollListener(mScrollListener)
+        starred_activity_rv.setOnScrollListener(mScrollListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -155,43 +159,27 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
         }
         if (NetworkUtils.isNetworkAvailable(applicationContext)) {
             when (item?.itemId) {
-                R.id.repo_sort_created -> {
+                R.id.starred_sort_created -> {
                     item.isChecked = true
                     mFilter.put("sort", "created")
                     PAGE_N = 1
-                    (repo_list_activity_rv.adapter as RepoListAdapter).clear()
+                    (starred_activity_rv.adapter as StarredAdapter).clear()
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.repo_sort_updated -> {
+                R.id.starred_sort_updated -> {
                     item.isChecked = true
                     mFilter.put("sort", "updated")
                     PAGE_N = 1
-                    (repo_list_activity_rv.adapter as RepoListAdapter).clear()
+                    (starred_activity_rv.adapter as StarredAdapter).clear()
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.repo_sort_pushed -> {
-                    item.isChecked = true
-                    mFilter.put("sort", "pushed")
-                    PAGE_N = 1
-                    (repo_list_activity_rv.adapter as RepoListAdapter).clear()
-                    showLoading()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-                }
-                R.id.repo_sort_alphabetical -> {
-                    item.isChecked = true
-                    mFilter.put("sort", "full_name")
-                    PAGE_N = 1
-                    (repo_list_activity_rv.adapter as RepoListAdapter).clear()
-                    showLoading()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-                }
-                R.id.repo_sort_stars -> {
+                R.id.starred_sort_starred-> {
                     item.isChecked = true
                     mFilter.put("sort", "starred")
                     PAGE_N = 1
-                    (repo_list_activity_rv.adapter as RepoListAdapter).clear()
+                    (starred_activity_rv.adapter as StarredAdapter).clear()
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
@@ -204,11 +192,11 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
     override fun onResume() {
         super.onResume()
-        nav_view.menu.getItem(1).isChecked = true
+        nav_view.menu.getItem(2).isChecked = true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.repo_list_sort_menu, menu)
+        menuInflater.inflate(R.menu.starred_sort_menu, menu)
         super.onCreateOptionsMenu(menu)
         return true
     }
@@ -225,7 +213,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
     companion object {
         fun getIntent(context: Context): Intent {
-            return Intent(context, RepoListActivity::class.java)
+            return Intent(context, StarredActivity::class.java)
         }
     }
 
