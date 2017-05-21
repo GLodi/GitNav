@@ -90,18 +90,6 @@
                 android:paddingLeft="60dp"/>
 
             <TextView
-                android:id="@+id/row_starred_language"
-                android:text="Language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="4dp"
-                android:paddingLeft="4dp"
-                android:textSize="14sp"
-                android:layout_toRightOf="@id/row_starred_code"
-                android:textColor="#000000"
-                android:alpha="0.54"/>
-
-            <TextView
                 android:id="@+id/row_starred_repo_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,12 +101,29 @@
                 android:alpha="0.54"/>
 
             <ImageView
+                android:id="@+id/row_starred_date_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_schedule_black_24dp"
                 android:layout_toLeftOf="@id/row_starred_repo_date"
                 android:paddingRight="4dp"
                 android:paddingTop="7dp"/>
+
+            <TextView
+                android:id="@+id/row_starred_language"
+                android:text="Language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:paddingLeft="4dp"
+                android:textSize="14sp"
+                android:layout_toRightOf="@id/row_starred_code"
+                android:textColor="#000000"
+                android:alpha="0.54"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_toLeftOf="@id/row_starred_date_icon"
+                android:layout_marginRight="6dp"/>
 
         </RelativeLayout>
 

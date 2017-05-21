@@ -24,7 +24,6 @@ import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.PreferenceInfo
 import giuliolodi.gitnav.utils.ImageSaver
 import org.eclipse.egit.github.core.User
-import java.io.IOException
 import javax.inject.Inject
 
 /**

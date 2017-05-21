@@ -24,6 +24,7 @@ import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
+import giuliolodi.gitnav.ui.user.UserActivity
 
 /**
  * Created by giulio on 12/05/2017.
@@ -42,5 +43,7 @@ interface ActivityComponent {
     fun inject(trendingActivity: TrendingActivity)
 
     fun inject(starredActivity: StarredActivity)
+
+    fun inject(userActivity: UserActivity)
 
 }

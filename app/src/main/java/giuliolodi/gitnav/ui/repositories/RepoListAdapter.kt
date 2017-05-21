@@ -36,8 +36,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (repo: Repository, p: PrettyTime) = with(itemView) {
-            row_repo_owner.text = repo.owner.login + "/"
-            row_repo_name.text = repo.name
+            row_repo_name.text = repo.owner.login + " / " + repo.name
             if (repo.description != null && repo.description != "")
                 row_repo_description.text = repo.description
             else

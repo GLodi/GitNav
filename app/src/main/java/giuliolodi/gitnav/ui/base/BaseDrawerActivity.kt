@@ -30,6 +30,7 @@ import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.utils.NetworkUtils
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.widget.RelativeLayout
 import android.widget.TextView
 import giuliolodi.gitnav.R
 import kotlinx.android.synthetic.main.activity_base_drawer.*
@@ -39,6 +40,9 @@ import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
+import giuliolodi.gitnav.ui.user.UserActivity
+
+
 
 
 /**
@@ -78,13 +82,21 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
     override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap) {
         val hView = nav_view.getHeaderView(0)
         val nav_user = hView.findViewById(R.id.nav_user) as TextView
-        nav_user.text = username
         val nav_email = hView.findViewById(R.id.nav_email) as TextView
-        nav_email.text = email
         val nav_full_name = hView.findViewById(R.id.nav_full_name) as TextView
-        nav_full_name.text = fullName
         val image_view = hView.findViewById(R.id.imageView) as CircleImageView
+        val nav_click = hView.findViewById(R.id.nav_click) as RelativeLayout
+        nav_user.text = username
+        nav_email.text = email
+        nav_full_name.text = fullName
         image_view.setImageBitmap(profilePic)
+        nav_click.setOnClickListener {
+            drawer_layout.closeDrawer(GravityCompat.START)
+            Handler().postDelayed({
+                startActivity(Intent(applicationContext, UserActivity::class.java).putExtra("username", username))
+                overridePendingTransition(0, 0)
+            }, DRAWER_DELAY)
+        }
     }
 
     fun getActivityComponent(): ActivityComponent {
@@ -96,7 +108,6 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
         //to prevent current item select over and over
         if (item.isChecked) {
             drawer_layout.closeDrawer(GravityCompat.START)

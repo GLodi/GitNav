@@ -29,9 +29,9 @@
         android:visibility="gone"/>
 
     <RelativeLayout
+        android:id="@+id/user_activity_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/user_fragment_layout"
         android:visibility="invisible">
 
         <android.support.v7.widget.CardView
@@ -60,27 +60,41 @@
                         android:layout_height="60dp"/>
 
                     <TextView
-                        android:id="@+id/user_activity_name"
+                        android:id="@+id/user_activity_fullname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Username"
+                        android:text="Full ame"
                         android:layout_toRightOf="@id/user_activity_image"
-                        android:paddingLeft="16dp"
+                        android:layout_marginLeft="16dp"
                         android:textSize="18sp"
                         android:textColor="#000000"
                         android:alpha="0.87"/>
 
                     <TextView
-                        android:id="@+id/user_activity_login"
-                        android:text="Login"
+                        android:id="@+id/user_activity_username"
+                        android:text="Username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/user_activity_name"
+                        android:layout_below="@id/user_activity_fullname"
                         android:layout_toRightOf="@id/user_activity_image"
+                        android:layout_marginLeft="16dp"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:alpha="0.54" />
+
+                    <TextView
+                        android:id="@+id/user_activity_mail"
+                        android:text="Mail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:textColor="#000000"
                         android:alpha="0.54"
-                        android:paddingLeft="16dp"/>
+                        android:layout_marginLeft="16dp"
+                        android:maxLines="1"
+                        android:layout_below="@id/user_activity_username"
+                        android:layout_toRightOf="@id/user_activity_image"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -99,27 +113,6 @@
 
                         <TextView
                             android:id="@+id/user_activity_location"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textColor="#000000"
-                            android:alpha="0.54"
-                            android:paddingLeft="4dp"
-                            android:paddingTop="10dp"
-                            android:maxLines="1"
-                            android:visibility="gone"/>
-
-                        <ImageView
-                            android:id="@+id/user_activity_mail_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mail_outline_black_24dp"
-                            android:paddingLeft="16dp"
-                            android:paddingTop="13dp"
-                            android:visibility="gone"/>
-
-                        <TextView
-                            android:id="@+id/user_activity_mail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
@@ -151,7 +144,7 @@
                     android:orientation="vertical">
 
                     <net.lucode.hackware.magicindicator.MagicIndicator
-                        android:id="@+id/magic_indicator_user"
+                        android:id="@+id/user_activity_magic_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="56dp"
                         android:layout_gravity="center_horizontal"/>
@@ -163,7 +156,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/user_vp"
+            android:id="@+id/user_activity_vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/cv"

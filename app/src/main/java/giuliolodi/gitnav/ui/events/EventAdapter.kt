@@ -40,7 +40,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind (event: Event, p: PrettyTime) = with (itemView) {
             row_event_name.text = event.actor.login
             row_event_date.text = p.format(event.createdAt)
-            Picasso.with(context).load(event.actor.avatarUrl).centerCrop().resize(75,75).into(row_event_image)
+            Picasso.with(context).load(event.actor.avatarUrl).resize(100,100).centerCrop().into(row_event_image)
 
             row_event_image.setOnClickListener {  }
             row_event_name.setOnClickListener {  }

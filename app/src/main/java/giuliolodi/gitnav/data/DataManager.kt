@@ -56,13 +56,14 @@ interface DataManager : ApiHelper, PrefsHelper {
     fun pageEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>>
 
     /**
-     * Page repositories of logged user.
+     * Page repositories of user (logged user if username is null).
+     * @param username
      * @param pageN
      * @param itemsPerPage
      * @param filter
      * @return Observable<List<Repository>>
      */
-    fun pageRepos(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+    fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
 
     /**
      * Downloads trending repos (one at a time) from github's websites.
@@ -72,12 +73,19 @@ interface DataManager : ApiHelper, PrefsHelper {
     fun getTrending(period: String): Observable<Repository>
 
     /**
-     * Get user's starred repos
+     * Get user's starred repos (logged user if username is null).
      * @param username
      * @param pageN
      * @param itemsPerPage
      * @param filter
      */
     fun pageStarred(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+
+    /**
+     * Check if user is followed by logged user
+     * @param username
+     * @return Boolean
+     */
+    fun getFollowed(username: String): Observable<Boolean>
 
 }

@@ -160,4 +160,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiGetFollowed(token: String, username: String): Observable<Boolean> {
+        return Observable.defer {
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            Observable.just(userService.isFollowing(username))
+        }
+    }
+
 }

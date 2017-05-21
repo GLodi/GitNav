@@ -32,7 +32,10 @@ import giuliolodi.gitnav.ui.starred.StarredContract
 import giuliolodi.gitnav.ui.starred.StarredPresenter
 import giuliolodi.gitnav.ui.trending.TrendingContract
 import giuliolodi.gitnav.ui.trending.TrendingPresenter
+import giuliolodi.gitnav.ui.user.UserContract
+import giuliolodi.gitnav.ui.user.UserPresenter
 import io.reactivex.disposables.CompositeDisposable
+import org.eclipse.egit.github.core.User
 
 /**
  * Created by giulio on 12/05/2017.
@@ -84,6 +87,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideStarredPresenter(presenter: StarredPresenter<StarredContract.View>): StarredContract.Presenter<StarredContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideUserPresenter(presenter: UserPresenter<UserContract.View>): UserContract.Presenter<UserContract.View> {
         return presenter
     }
 

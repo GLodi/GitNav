@@ -110,7 +110,7 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getPic()
     }
 
-    override fun pageRepos(pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+    override fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
         return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
     }
 
@@ -123,6 +123,10 @@ class DataManagerImpl : DataManager {
             return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
         else
             return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), username, pageN, itemsPerPage, filter)
+    }
+
+    override fun getFollowed(username: String): Observable<Boolean> {
+        return mApiHelper.apiGetFollowed(mPrefsHelper.getToken(), username)
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
@@ -149,4 +153,7 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageStarred(token, username, pageN, itemsPerPage, filter)
     }
 
+    override fun apiGetFollowed(token: String, username: String): Observable<Boolean> {
+        return mApiHelper.apiGetFollowed(token, username)
+    }
 }

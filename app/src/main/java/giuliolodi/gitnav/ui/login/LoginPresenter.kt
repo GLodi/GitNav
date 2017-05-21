@@ -16,14 +16,13 @@
 
 package giuliolodi.gitnav.ui.login
 
-import android.util.Log
-import com.google.firebase.crash.FirebaseCrash
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.client.RequestException
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -54,11 +53,10 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                             getView().intentToEventActivity()
                         },
                         { throwable ->
-                            Log.e(TAG, throwable.message, throwable)
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
                             if ((throwable as? RequestException)?.status != 401)
-                                FirebaseCrash.report(throwable)
+                                Timber.e(throwable)
                         }
                 ))
     }

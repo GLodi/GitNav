@@ -57,6 +57,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:1.6.0'
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.jakewharton.timber:timber:4.5.1'
 
     // DI
     compile 'com.google.dagger:dagger:2.5'

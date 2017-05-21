@@ -17,9 +17,13 @@
 package giuliolodi.gitnav
 
 import android.app.Application
+import android.util.Log
+import com.google.firebase.analytics.FirebaseAnalytics
 import giuliolodi.gitnav.di.component.AppComponent
 import giuliolodi.gitnav.di.component.DaggerAppComponent
 import giuliolodi.gitnav.di.module.AppModule
+import com.google.firebase.crash.FirebaseCrash
+import timber.log.Timber
 
 /**
  * Created by giulio on 12/05/2017.
@@ -37,10 +41,28 @@ class App : Application() {
                 .build()
 
         mAppComponent.inject(this)
+
+        Timber.plant(if (BuildConfig.DEBUG)
+            Timber.DebugTree()
+        else
+            CrashReportingTree())
+
+        FirebaseAnalytics.getInstance(this)
     }
 
     fun getAppComponent(): AppComponent {
         return mAppComponent
+    }
+
+    private inner class CrashReportingTree : Timber.Tree() {
+        override fun log(priority: Int, tag: String, message: String, throwable: Throwable?) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
+                return
+            }
+            val t = throwable ?: Exception(message)
+            FirebaseCrash.logcat(priority, tag, message)
+            FirebaseCrash.report(t)
+        }
     }
 
 }

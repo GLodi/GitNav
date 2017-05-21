@@ -69,7 +69,7 @@ interface ApiHelper {
      * Downloads trending repos (one at a time) from github's websites.
      * @param token
      * @param period (daily, weekly, monthly)
-     * @return Observable<Repository
+     * @return Observable<Repository>
      */
     fun apiGetTrending(token: String, period: String): Observable<Repository>
 
@@ -80,7 +80,16 @@ interface ApiHelper {
      * @param pageN
      * @param itemsPerPage
      * @param filter
+     * @return Observable<List<Repository>>
      */
     fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+
+    /**
+     * Check if user is followed by logged user
+     * @param token
+     * @param username
+     * @return Boolean
+     */
+    fun apiGetFollowed(token: String, username: String): Observable<Boolean>
 
 }

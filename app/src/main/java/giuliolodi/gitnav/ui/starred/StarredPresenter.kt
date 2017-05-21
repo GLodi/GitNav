@@ -16,13 +16,12 @@
 
 package giuliolodi.gitnav.ui.starred
 
-import android.util.Log
-import com.google.firebase.crash.FirebaseCrash
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -46,10 +45,9 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
                             getView().hideLoading()
                         },
                         { throwable ->
-                            Log.e(TAG, throwable.message, throwable)
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
-                            FirebaseCrash.report(throwable)
+                            Timber.e(throwable)
                         }
                 ))
     }

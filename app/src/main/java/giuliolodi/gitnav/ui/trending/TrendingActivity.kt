@@ -30,7 +30,7 @@ import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import giuliolodi.gitnav.ui.repositories.RepoListAdapter
+import giuliolodi.gitnav.ui.starred.StarredAdapter
 import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -68,7 +68,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
         trending_activity_rv.layoutManager = llm
         trending_activity_rv.addItemDecoration(DividerItemDecoration(trending_activity_rv.context, llm.orientation))
         trending_activity_rv.itemAnimator = DefaultItemAnimator()
-        trending_activity_rv.adapter = RepoListAdapter()
+        trending_activity_rv.adapter = StarredAdapter()
 
         main_spinner.visibility = View.VISIBLE
         val spinnerAdapter = ArrayAdapter<String>(supportActionBar!!.themedContext, R.layout.spinner_list_style, resources.getStringArray(R.array.trending_array))
@@ -80,7 +80,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
                     showLoading()
                     trending_activity_swipe.isRefreshing = false
                     trending_activity_no_repo.visibility = View.GONE
-                    (trending_activity_rv.adapter as RepoListAdapter).clear()
+                    (trending_activity_rv.adapter as StarredAdapter).clear()
                     mPresenter.unsubscribe()
                     when (position) {
                         0 -> mPresenter.subscribe("daily")
@@ -98,7 +98,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
         trending_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         trending_activity_swipe.setOnRefreshListener {
             if (NetworkUtils.isNetworkAvailable(applicationContext)) {
-                (trending_activity_rv.adapter as RepoListAdapter).clear()
+                (trending_activity_rv.adapter as StarredAdapter).clear()
                 mPresenter.subscribe(period)
             }
             else
@@ -108,7 +108,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
     }
 
     override fun addRepo(repo: Repository) {
-        (trending_activity_rv.adapter as RepoListAdapter).addRepo(repo)
+        (trending_activity_rv.adapter as StarredAdapter).addRepo(repo)
     }
 
     override fun showLoading() {
@@ -127,7 +127,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
     }
 
     override fun onComplete() {
-        if ((trending_activity_rv.adapter as RepoListAdapter).itemCount == 0)
+        if ((trending_activity_rv.adapter as StarredAdapter).itemCount == 0)
             trending_activity_no_repo.visibility = View.VISIBLE
     }
 

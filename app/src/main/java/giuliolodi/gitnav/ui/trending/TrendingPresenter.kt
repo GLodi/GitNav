@@ -16,13 +16,12 @@
 
 package giuliolodi.gitnav.ui.trending
 
-import android.util.Log
-import com.google.firebase.crash.FirebaseCrash
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -46,12 +45,11 @@ class TrendingPresenter<V: TrendingContract.View> : BasePresenter<V>, TrendingCo
                             getView().addRepo(repo)
                         },
                         { throwable ->
-                            Log.e(TAG, throwable.message, throwable)
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
-                            FirebaseCrash.report(throwable)
                             if (throwable is IndexOutOfBoundsException)
                                 getView().showNoRepo()
+                            Timber.e(throwable)
                         },
                         {
                             getView().hideLoading()
