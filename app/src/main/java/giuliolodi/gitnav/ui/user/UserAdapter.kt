@@ -16,8 +16,6 @@
 
 package giuliolodi.gitnav.ui.user
 
-import android.app.Activity
-import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +43,6 @@ class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class UserHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (user: User) = with(itemView) {
-            val a = context
             if (user.name == null) {
                 row_user_fullname.text = user.login
                 row_user_username.visibility = View.GONE

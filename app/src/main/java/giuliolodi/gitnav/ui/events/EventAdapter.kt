@@ -23,6 +23,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.R
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_event.view.*
 import org.eclipse.egit.github.core.event.*
 import org.ocpsoft.prettytime.PrettyTime
@@ -35,14 +37,23 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mEventList: MutableList<Event?> = mutableListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
+    private val onUserClick: PublishSubject<String> = PublishSubject.create()
+    private val onImageClick: PublishSubject<String> = PublishSubject.create()
+
+    fun getUserClicks(): Observable<String> {
+        return onUserClick
+    }
+
+    fun getImageClicks(): Observable<String> {
+        return onImageClick
+    }
 
     class EventHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind (event: Event, p: PrettyTime) = with (itemView) {
+        fun bind (event: Event, p: PrettyTime, onUserClick: PublishSubject<String>) = with (itemView) {
             row_event_name.text = event.actor.login
             row_event_date.text = p.format(event.createdAt)
             Picasso.with(context).load(event.actor.avatarUrl).resize(100,100).centerCrop().into(row_event_image)
 
-            row_event_image.setOnClickListener {  }
             row_event_name.setOnClickListener {  }
 
             val s = arrayListOf(event.repo.name.split("/"))
@@ -92,7 +103,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         val followPayload: FollowPayload = event.payload as FollowPayload
                         row_event_description.text = Html.fromHtml("Followed <font color='#326fba'>" + followPayload.target.login + "</font>")
                         row_event_ll.setOnClickListener {
-                            // user
+                            onUserClick.onNext(followPayload.target.login)
                         }
                     }
                     "ForkEvent" -> { // #8
@@ -282,7 +293,8 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is EventHolder) {
             val event = mEventList[position]!!
-            holder.bind(event, mPrettyTime)
+            holder.bind(event, mPrettyTime, onUserClick)
+            holder.itemView.row_event_image.setOnClickListener { onImageClick.onNext(mEventList[position]?.actor?.login) }
         }
     }
 

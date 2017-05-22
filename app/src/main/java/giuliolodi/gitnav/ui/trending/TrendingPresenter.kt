@@ -45,10 +45,11 @@ class TrendingPresenter<V: TrendingContract.View> : BasePresenter<V>, TrendingCo
                             getView().addRepo(repo)
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
                             if (throwable is IndexOutOfBoundsException)
                                 getView().showNoRepo()
+                            else
+                                getView().showError(throwable.localizedMessage)
                             Timber.e(throwable)
                         },
                         {

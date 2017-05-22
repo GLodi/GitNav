@@ -34,7 +34,10 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
+import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.NetworkUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.starred_activity.*
@@ -86,6 +89,13 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
         starred_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         starred_activity_rv.itemAnimator = DefaultItemAnimator()
         starred_activity_rv.adapter = StarredAdapter()
+        (starred_activity_rv.adapter as StarredAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
 
         setupOnScrollListener()
 

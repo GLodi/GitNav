@@ -35,7 +35,10 @@ import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.NetworkUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 
 /**
@@ -80,6 +83,20 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         event_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         event_activity_rv.itemAnimator = DefaultItemAnimator()
         event_activity_rv.adapter = EventAdapter()
+        (event_activity_rv.adapter as EventAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
+        (event_activity_rv.adapter as EventAdapter).getUserClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
 
         setupOnScrollListener()
 

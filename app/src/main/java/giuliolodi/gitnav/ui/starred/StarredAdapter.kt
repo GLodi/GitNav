@@ -29,7 +29,8 @@ import org.ocpsoft.prettytime.PrettyTime
 import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.ui.user.UserActivity
 import android.support.v4.content.ContextCompat.startActivity
-
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 
 /**
@@ -40,6 +41,11 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
+    private val onClickSubject: PublishSubject<String> = PublishSubject.create()
+
+    fun getPositionClicks(): Observable<String> {
+        return onClickSubject
+    }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (repo: Repository, p: PrettyTime) = with(itemView) {
@@ -82,6 +88,7 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime)
+            holder.itemView.row_starred_author_icon.setOnClickListener { onClickSubject.onNext(mRepoList[position]?.owner?.login) }
         }
     }
 
