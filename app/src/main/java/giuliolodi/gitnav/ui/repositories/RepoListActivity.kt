@@ -30,6 +30,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
@@ -82,7 +83,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
         llm.orientation = LinearLayoutManager.VERTICAL
 
         repo_list_activity_rv.layoutManager = llm
-        repo_list_activity_rv.addItemDecoration(DividerItemDecoration(repo_list_activity_rv.context, llm.orientation))
+        repo_list_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         repo_list_activity_rv.itemAnimator = DefaultItemAnimator()
         repo_list_activity_rv.adapter = RepoListAdapter()
 

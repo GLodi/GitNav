@@ -74,7 +74,7 @@ interface ApiHelper {
     fun apiGetTrending(token: String, period: String): Observable<Repository>
 
     /**
-     * Get user's starred repos
+     * Get logged user's starred repos
      * @param token
      * @param username
      * @param pageN
@@ -82,7 +82,7 @@ interface ApiHelper {
      * @param filter
      * @return Observable<List<Repository>>
      */
-    fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+    fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
 
     /**
      * Check if user is followed by logged user
@@ -91,5 +91,25 @@ interface ApiHelper {
      * @return Boolean
      */
     fun apiGetFollowed(token: String, username: String): Observable<Boolean>
+
+    /**
+     * Page followers of specific user (logged user if username is null)
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @return List<User>
+     */
+    fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
+
+    /**
+     * Page users that follow specific user (logged user if username is null)
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @return List<User>
+     */
+    fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
 
 }

@@ -111,22 +111,36 @@ class DataManagerImpl : DataManager {
     }
 
     override fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
-        return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
+        if (username == null)
+            return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
+        else
+            return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), username, pageN, itemsPerPage, filter)
     }
 
     override fun getTrending(period: String): Observable<Repository> {
         return mApiHelper.apiGetTrending(mPrefsHelper.getToken(), period)
     }
 
-    override fun pageStarred(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
-        if (username == null)
-            return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
-        else
-            return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), username, pageN, itemsPerPage, filter)
+    override fun pageStarred(pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+        return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
     }
 
     override fun getFollowed(username: String): Observable<Boolean> {
         return mApiHelper.apiGetFollowed(mPrefsHelper.getToken(), username)
+    }
+
+    override fun pageFollowers(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+        if (username == null)
+            return mApiHelper.apiGetFollowers(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+        else
+            return mApiHelper.apiGetFollowers(mPrefsHelper.getToken(), username, pageN, itemsPerPage)
+    }
+
+    override fun pageFollowing(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+        if (username == null)
+            return mApiHelper.apiGetFollowing(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+        else
+            return mApiHelper.apiGetFollowing(mPrefsHelper.getToken(), username, pageN, itemsPerPage)
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
@@ -149,11 +163,20 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetTrending(token, period)
     }
 
-    override fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+    override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
         return mApiHelper.apiPageStarred(token, username, pageN, itemsPerPage, filter)
     }
 
     override fun apiGetFollowed(token: String, username: String): Observable<Boolean> {
         return mApiHelper.apiGetFollowed(token, username)
     }
+
+    override fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+        return mApiHelper.apiGetFollowers(token, username, pageN, itemsPerPage)
+    }
+
+    override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+        return mApiHelper.apiGetFollowers(token, username, pageN, itemsPerPage)
+    }
+
 }

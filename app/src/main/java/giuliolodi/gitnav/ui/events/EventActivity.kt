@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -35,6 +34,7 @@ import kotlinx.android.synthetic.main.event_activity.*
 import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 
@@ -77,7 +77,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         llm.orientation = LinearLayoutManager.VERTICAL
 
         event_activity_rv.layoutManager = llm
-        event_activity_rv.addItemDecoration(DividerItemDecoration(event_activity_rv.context, llm.orientation))
+        event_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         event_activity_rv.itemAnimator = DefaultItemAnimator()
         event_activity_rv.adapter = EventAdapter()
 

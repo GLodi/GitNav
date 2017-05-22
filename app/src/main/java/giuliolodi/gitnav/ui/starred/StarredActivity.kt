@@ -30,6 +30,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
@@ -82,7 +83,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
         llm.orientation = LinearLayoutManager.VERTICAL
 
         starred_activity_rv.layoutManager = llm
-        starred_activity_rv.addItemDecoration(DividerItemDecoration(starred_activity_rv.context, llm.orientation))
+        starred_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         starred_activity_rv.itemAnimator = DefaultItemAnimator()
         starred_activity_rv.adapter = StarredAdapter()
 

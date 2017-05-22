@@ -41,9 +41,12 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.TextView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.ui.repositories.RepoListAdapter
 import giuliolodi.gitnav.utils.NetworkUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_followers.*
 import kotlinx.android.synthetic.main.user_following.*
 import kotlinx.android.synthetic.main.user_repos.*
@@ -79,12 +82,10 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
     private val ITEMS_PER_PAGE_REPOS = 10
     private var LOADING_REPOS = false
 
-    private var mFilterFollowers: HashMap<String,String> = HashMap()
     private var PAGE_N_FOLLOWERS = 1
     private val ITEMS_PER_PAGE_FOLLOWERS = 10
     private var LOADING_FOLLOWERS = false
 
-    private var mFilterFollowing: HashMap<String,String> = HashMap()
     private var PAGE_N_FOLLOWING = 1
     private val ITEMS_PER_PAGE_FOLLOWING = 10
     private var LOADING_FOLLOWING = false
@@ -147,7 +148,7 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
         val llmRepos = LinearLayoutManager(applicationContext)
         llmRepos.orientation = LinearLayoutManager.VERTICAL
         user_repos_rv.layoutManager = llmRepos
-        user_repos_rv.addItemDecoration(DividerItemDecoration(user_repos_rv.context, llmRepos.orientation))
+        user_repos_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_repos_rv.itemAnimator = DefaultItemAnimator()
         user_repos_rv.adapter = RepoListAdapter()
 
@@ -155,17 +156,33 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
         val llmFollowers = LinearLayoutManager(applicationContext)
         llmFollowers.orientation = LinearLayoutManager.VERTICAL
         user_followers_rv.layoutManager = llmFollowers
-        user_followers_rv.addItemDecoration(DividerItemDecoration(user_followers_rv.context, llmFollowers.orientation))
+        user_followers_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_followers_rv.itemAnimator = DefaultItemAnimator()
-        user_followers_rv.adapter = RepoListAdapter()
+        user_followers_rv.adapter = UserAdapter()
 
         // Following
         val llmFollowing = LinearLayoutManager(applicationContext)
         llmFollowing.orientation = LinearLayoutManager.VERTICAL
         user_following_rv.layoutManager = llmFollowing
-        user_following_rv.addItemDecoration(DividerItemDecoration(user_following_rv.context, llmFollowing.orientation))
+        user_following_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_following_rv.itemAnimator = DefaultItemAnimator()
-        user_following_rv.adapter = RepoListAdapter()
+        user_following_rv.adapter = UserAdapter()
+
+        (user_followers_rv.adapter as UserAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
+
+        (user_following_rv.adapter as UserAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
 
         setupOnScrollListener()
 
@@ -185,7 +202,11 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
             user_activity_description.ellipsize = TextUtils.TruncateAt.END
             user_activity_description.text = mUser.bio
             user_activity_description.setOnClickListener {
-
+                HAS_CLICKED_BIO = !HAS_CLICKED_BIO
+                if (HAS_CLICKED_BIO)
+                    user_activity_description.maxLines = 2
+                else
+                    user_activity_description.maxLines = 100
             }
         }
         if (mUser.email != null) {
@@ -228,22 +249,55 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
                 return mTitleDataList.size
             }
         }
-
         user_activity_magic_indicator.navigator = commonNavigator
         ViewPagerHelper.bind(user_activity_magic_indicator, user_activity_vp)
+
+        mFilterRepos.put("sort","created")
+
+        // Initialize recycler views
+        showLoadingUserRepos()
+        showLoadingUserFollowers()
+        showLoadingUserFollowing()
+        mPresenter.getRepos(mUser.login, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+        mPresenter.getFollowers(mUser.login, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
+        mPresenter.getFollowing(mUser.login, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
     }
 
     override fun showUserRepos(repoList: List<Repository>) {
+        LOADING_REPOS = false
+        (user_repos_rv.adapter as RepoListAdapter).addRepos(repoList)
+        if (PAGE_N_REPOS == 1 && repoList.isEmpty())
+            user_repos_tv.visibility = View.VISIBLE
     }
 
     override fun showUserFollowers(userList: List<User>) {
+        LOADING_FOLLOWERS = false
+        (user_followers_rv.adapter as UserAdapter).addUserList(userList)
+        if (PAGE_N_FOLLOWERS == 1 && userList.isEmpty())
+            user_followers_tv.visibility = View.VISIBLE
     }
 
     override fun showUserFollowing(userList: List<User>) {
+        LOADING_FOLLOWING = false
+        (user_following_rv.adapter as UserAdapter).addUserList(userList)
+        if (PAGE_N_FOLLOWING == 1 && userList.isEmpty())
+            user_following_tv.visibility = View.VISIBLE
     }
 
     override fun showLoading() {
         user_activity_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun showLoadingUserRepos() {
+        user_repos_progressbar.visibility = View.VISIBLE
+    }
+
+    override fun showLoadingUserFollowers() {
+        user_followers_progressbar.visibility = View.VISIBLE
+    }
+
+    override fun showLoadingUserFollowing() {
+        user_following_progressbar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
@@ -251,6 +305,21 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
             user_activity_progress_bar.visibility = View.GONE
             user_activity_layout.visibility = View.VISIBLE
         }
+    }
+
+    override fun hideLoadingUserRepos() {
+        if (user_repos_progressbar.visibility == View.VISIBLE)
+            user_repos_progressbar.visibility = View.GONE
+    }
+
+    override fun hideLoadingUserFollowers() {
+        if (user_followers_progressbar.visibility == View.VISIBLE)
+            user_followers_progressbar.visibility = View.GONE
+    }
+
+    override fun hideLoadingUserFollowing() {
+        if (user_following_progressbar.visibility == View.VISIBLE)
+            user_following_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
@@ -314,7 +383,6 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
                     }
                     else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
                     }
                 }
             }
@@ -322,7 +390,7 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
         user_repos_rv.setOnScrollListener(mScrollListenerRepos)
         val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING_FOLLOWERS || mFilterFollowers["sort"] == "starred")
+                if (LOADING_FOLLOWERS)
                     return
                 val visibleItemCount = (user_followers_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (user_followers_rv.layoutManager as LinearLayoutManager).itemCount
@@ -331,12 +399,11 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
                     if (NetworkUtils.isNetworkAvailable(applicationContext)) {
                         LOADING_FOLLOWERS = true
                         PAGE_N_FOLLOWERS += 1
-                        (user_followers_rv.adapter as RepoListAdapter).addLoading()
-                        mPresenter.getRepos(username, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS, mFilterFollowers)
+                        (user_followers_rv.adapter as UserAdapter).addLoading()
+                        mPresenter.getFollowers(username, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
                     }
                     else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
                     }
                 }
             }
@@ -344,7 +411,7 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
         user_followers_rv.setOnScrollListener(mScrollListenerFollowers)
         val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING_FOLLOWING || mFilterFollowing["sort"] == "starred")
+                if (LOADING_FOLLOWING)
                     return
                 val visibleItemCount = (user_following_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (user_following_rv.layoutManager as LinearLayoutManager).itemCount
@@ -353,12 +420,11 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
                     if (NetworkUtils.isNetworkAvailable(applicationContext)) {
                         LOADING_FOLLOWING = true
                         PAGE_N_FOLLOWING += 1
-                        (user_following_rv.adapter as RepoListAdapter).addLoading()
-                        mPresenter.getRepos(username, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING, mFilterFollowing)
+                        (user_following_rv.adapter as UserAdapter).addLoading()
+                        mPresenter.getFollowing(username, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
                     }
                     else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
                     }
                 }
             }

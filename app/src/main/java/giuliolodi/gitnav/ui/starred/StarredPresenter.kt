@@ -36,7 +36,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>) {
-        getCompositeDisposable().add(getDataManager().pageStarred(null, pageN, itemsPerPage, filter)
+        getCompositeDisposable().add(getDataManager().pageStarred(pageN, itemsPerPage, filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

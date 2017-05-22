@@ -67,19 +67,49 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
+                            getView().hideLoadingUserRepos()
+                            getView().showUserRepos(repoList)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
+                            getView().hideLoadingUserRepos()
                             Timber.e(throwable)
                         }
                 ))
     }
 
-    override fun getFollowers(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>) {
+    override fun getFollowers(username: String, pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().pageFollowers(username, pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { userList ->
+                            getView().hideLoadingUserFollowers()
+                            getView().showUserFollowers(userList)
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoadingUserFollowers()
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
-    override fun getFollowing(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>) {
+    override fun getFollowing(username: String, pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().pageFollowing(username, pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoList ->
+                            getView().hideLoadingUserFollowing()
+                            getView().showUserFollowing(repoList)
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoadingUserFollowing()
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
     override fun followUser(username: String) {

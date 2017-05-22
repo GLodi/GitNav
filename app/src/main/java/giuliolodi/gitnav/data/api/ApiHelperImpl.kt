@@ -149,7 +149,7 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiPageStarred(token: String, username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+    override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
         return Observable.defer {
             val starService: StarService = StarService()
             starService.client.setOAuth2Token(token)
@@ -165,6 +165,22 @@ class ApiHelperImpl : ApiHelper {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
             Observable.just(userService.isFollowing(username))
+        }
+    }
+
+    override fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+        return Observable.defer {
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            Observable.just(ArrayList(userService.pageFollowers(username, pageN, itemsPerPage).next()))
+        }
+    }
+
+    override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+        return Observable.defer {
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            Observable.just(ArrayList(userService.pageFollowing(username, pageN, itemsPerPage).next()))
         }
     }
 

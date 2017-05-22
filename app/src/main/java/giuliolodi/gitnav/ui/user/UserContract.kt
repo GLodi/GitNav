@@ -43,6 +43,18 @@ interface UserContract {
 
         fun showUserFollowing(userList: List<User>)
 
+        fun showLoadingUserRepos()
+
+        fun showLoadingUserFollowers()
+
+        fun showLoadingUserFollowing()
+
+        fun hideLoadingUserRepos()
+
+        fun hideLoadingUserFollowers()
+
+        fun hideLoadingUserFollowing()
+
     }
 
     @PerActivity
@@ -52,9 +64,9 @@ interface UserContract {
 
         fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
 
-        fun getFollowers(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+        fun getFollowers(username: String, pageN: Int, itemsPerPage: Int)
 
-        fun getFollowing(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+        fun getFollowing(username: String, pageN: Int, itemsPerPage: Int)
 
         fun followUser(username: String)
 

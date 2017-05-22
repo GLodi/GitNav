@@ -21,12 +21,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
@@ -66,7 +66,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
         llm.orientation = LinearLayoutManager.VERTICAL
 
         trending_activity_rv.layoutManager = llm
-        trending_activity_rv.addItemDecoration(DividerItemDecoration(trending_activity_rv.context, llm.orientation))
+        trending_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         trending_activity_rv.itemAnimator = DefaultItemAnimator()
         trending_activity_rv.adapter = StarredAdapter()
 

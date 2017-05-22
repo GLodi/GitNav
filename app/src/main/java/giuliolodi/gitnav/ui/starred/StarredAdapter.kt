@@ -16,6 +16,8 @@
 
 package giuliolodi.gitnav.ui.starred
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +27,10 @@ import kotlinx.android.synthetic.main.row_starred.view.*
 import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
 import com.squareup.picasso.Picasso
+import giuliolodi.gitnav.ui.user.UserActivity
+import android.support.v4.content.ContextCompat.startActivity
+
+
 
 /**
  * Created by giulio on 19/05/2017.
@@ -51,6 +57,10 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             else
                 row_starred_language.text = repo.language
+            row_starred_author_icon.setOnClickListener {
+                context.startActivity(Intent(context, UserActivity::class.java).putExtra("username", repo.owner.login))
+                (context as Activity).overridePendingTransition(0, 0)
+            }
         }
     }
 
