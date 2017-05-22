@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -89,7 +88,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
         starred_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         starred_activity_rv.itemAnimator = DefaultItemAnimator()
         starred_activity_rv.adapter = StarredAdapter()
-        (starred_activity_rv.adapter as StarredAdapter).getPositionClicks()
+        (starred_activity_rv.adapter as StarredAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->

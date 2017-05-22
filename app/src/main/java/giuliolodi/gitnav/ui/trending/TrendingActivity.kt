@@ -31,7 +31,10 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
 import giuliolodi.gitnav.ui.starred.StarredAdapter
+import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.NetworkUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.trending_activity.*
@@ -69,6 +72,13 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
         trending_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         trending_activity_rv.itemAnimator = DefaultItemAnimator()
         trending_activity_rv.adapter = StarredAdapter()
+        (trending_activity_rv.adapter as StarredAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
 
         main_spinner.visibility = View.VISIBLE
         val spinnerAdapter = ArrayAdapter<String>(supportActionBar!!.themedContext, R.layout.spinner_list_style, resources.getStringArray(R.array.trending_array))

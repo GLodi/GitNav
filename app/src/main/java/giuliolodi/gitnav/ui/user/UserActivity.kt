@@ -32,7 +32,6 @@ import javax.inject.Inject
 import android.support.v4.view.ViewPager
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils

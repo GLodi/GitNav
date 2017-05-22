@@ -16,8 +16,6 @@
 
 package giuliolodi.gitnav.ui.starred
 
-import android.app.Activity
-import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +25,8 @@ import kotlinx.android.synthetic.main.row_starred.view.*
 import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
 import com.squareup.picasso.Picasso
-import giuliolodi.gitnav.ui.user.UserActivity
-import android.support.v4.content.ContextCompat.startActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-
 
 /**
  * Created by giulio on 19/05/2017.
@@ -41,10 +36,10 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
-    private val onClickSubject: PublishSubject<String> = PublishSubject.create()
+    private val onImageClick: PublishSubject<String> = PublishSubject.create()
 
-    fun getPositionClicks(): Observable<String> {
-        return onClickSubject
+    fun getImageClicks(): Observable<String> {
+        return onImageClick
     }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -63,10 +58,6 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             else
                 row_starred_language.text = repo.language
-            row_starred_author_icon.setOnClickListener {
-                context.startActivity(Intent(context, UserActivity::class.java).putExtra("username", repo.owner.login))
-                (context as Activity).overridePendingTransition(0, 0)
-            }
         }
     }
 
@@ -88,7 +79,7 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime)
-            holder.itemView.row_starred_author_icon.setOnClickListener { onClickSubject.onNext(mRepoList[position]?.owner?.login) }
+            holder.itemView.row_starred_author_icon.setOnClickListener { onImageClick.onNext(mRepoList[position]?.owner?.login) }
         }
     }
 
