@@ -101,17 +101,6 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
-        return Observable.defer {
-            val repositoryService: RepositoryService = RepositoryService()
-            repositoryService.client.setOAuth2Token(token)
-            if (filter?.get("sort") == "starred")
-                Observable.just(ArrayList(repositoryService.getRepositories(username).sortedByDescending { it.watchers }))
-            else
-                Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
-        }
-    }
-
     override fun apiGetTrending(token: String, period: String): Observable<Repository> {
         return Observable.create { disposable ->
             var URL: String = ""
@@ -150,14 +139,28 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+        return Observable.defer {
+            val repositoryService: RepositoryService = RepositoryService()
+            repositoryService.client.setOAuth2Token(token)
+            when (filter?.get("sort")) {
+                "stars" -> Observable.just(ArrayList(repositoryService.getRepositories(username).sortedByDescending { it.watchers }))
+                else -> Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
+            }
+        }
+    }
+
     override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
         return Observable.defer {
             val starService: StarService = StarService()
             starService.client.setOAuth2Token(token)
-            if (filter?.get("sort") == "starred")
-                Observable.just(ArrayList(starService.getStarred(username).sortedByDescending { it.watchers }))
-            else
-                Observable.just(ArrayList(starService.pageStarred(username, filter, pageN, itemsPerPage).next()))
+            when (filter?.get("sort")) {
+                "stars" -> Observable.just(ArrayList(starService.getStarred(username).sortedByDescending { it.watchers }))
+                "pushed" -> Observable.just(ArrayList(starService.getStarred(username).sortedByDescending { it.pushedAt }))
+                "alphabetical" -> Observable.just(ArrayList(starService.getStarred(username).sortedBy { it.name }))
+                else -> Observable.just(ArrayList(starService.pageStarred(username, filter, pageN, itemsPerPage).next()))
+            }
+
         }
     }
 

@@ -30,12 +30,20 @@
 
                 <item
                     android:id="@+id/starred_sort_created"
-                    android:title="Created"
+                    android:title="Starred"
                     android:checked="true"/>
 
                 <item
                     android:id="@+id/starred_sort_updated"
                     android:title="Updated" />
+
+                <item
+                    android:id="@+id/starred_sort_pushed"
+                    android:title="Pushed" />
+
+                <item
+                    android:id="@+id/starred_sort_alphabetical"
+                    android:title="Alphabetical" />
 
                 <item
                     android:id="@+id/starred_sort_starred"

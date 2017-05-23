@@ -185,9 +185,25 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
+                R.id.starred_sort_pushed -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "pushed")
+                    PAGE_N = 1
+                    (starred_activity_rv.adapter as StarredAdapter).clear()
+                    showLoading()
+                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                }
+                R.id.starred_sort_alphabetical -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "alphabetical")
+                    PAGE_N = 1
+                    (starred_activity_rv.adapter as StarredAdapter).clear()
+                    showLoading()
+                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                }
                 R.id.starred_sort_starred-> {
                     item.isChecked = true
-                    mFilter.put("sort", "starred")
+                    mFilter.put("sort", "stars")
                     PAGE_N = 1
                     (starred_activity_rv.adapter as StarredAdapter).clear()
                     showLoading()

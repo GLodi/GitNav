@@ -189,7 +189,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
                 }
                 R.id.repo_sort_stars -> {
                     item.isChecked = true
-                    mFilter.put("sort", "starred")
+                    mFilter.put("sort", "stars")
                     PAGE_N = 1
                     (repo_list_activity_rv.adapter as RepoListAdapter).clear()
                     showLoading()
