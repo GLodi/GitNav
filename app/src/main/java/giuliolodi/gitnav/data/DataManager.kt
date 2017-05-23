@@ -82,11 +82,15 @@ interface DataManager : ApiHelper, PrefsHelper {
     fun pageStarred(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
 
     /**
-     * Check if user is followed by logged user
+     * Check if user is followed by logged user.
+     * Returns
+     * "f" -> followed
+     * "n" -> not followed
+     * "u" -> username is logged user
      * @param username
-     * @return Boolean
+     * @return String
      */
-    fun getFollowed(username: String): Observable<Boolean>
+    fun getFollowed(username: String): Observable<String>
 
     /**
      * Page users that follow specific user (logged user if username is null)
@@ -105,5 +109,19 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @return List<User>
      */
     fun pageFollowing(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
+
+    /**
+     * Follow user
+     * @param username
+     * @return Completable
+     */
+    fun followUser(username: String): Completable
+
+    /**
+     * Unfollow user
+     * @param username
+     * @return Completable
+     */
+    fun unfollowUser(username: String): Completable
 
 }

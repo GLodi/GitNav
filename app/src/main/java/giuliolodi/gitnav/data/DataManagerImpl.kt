@@ -125,8 +125,11 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
     }
 
-    override fun getFollowed(username: String): Observable<Boolean> {
-        return mApiHelper.apiGetFollowed(mPrefsHelper.getToken(), username)
+    override fun getFollowed(username: String): Observable<String> {
+        if (mPrefsHelper.getUsername() == username)
+            return Observable.just("u")
+        else
+            return mApiHelper.apiGetFollowed(mPrefsHelper.getToken(), username)
     }
 
     override fun pageFollowers(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
@@ -141,6 +144,18 @@ class DataManagerImpl : DataManager {
             return mApiHelper.apiGetFollowing(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
         else
             return mApiHelper.apiGetFollowing(mPrefsHelper.getToken(), username, pageN, itemsPerPage)
+    }
+
+    override fun followUser(username: String): Completable {
+        if (username != mPrefsHelper.getUsername())
+            return mApiHelper.apiFollowUser(mPrefsHelper.getToken(), username)
+        return Completable.error(Exception())
+    }
+
+    override fun unfollowUser(username: String): Completable {
+        if (username != mPrefsHelper.getUsername())
+            return mApiHelper.apiUnfollowUser(mPrefsHelper.getToken(), username)
+        return Completable.error(Exception())
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
@@ -167,7 +182,7 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageStarred(token, username, pageN, itemsPerPage, filter)
     }
 
-    override fun apiGetFollowed(token: String, username: String): Observable<Boolean> {
+    override fun apiGetFollowed(token: String, username: String): Observable<String> {
         return mApiHelper.apiGetFollowed(token, username)
     }
 
@@ -177,6 +192,14 @@ class DataManagerImpl : DataManager {
 
     override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
         return mApiHelper.apiGetFollowers(token, username, pageN, itemsPerPage)
+    }
+
+    override fun apiFollowUser(token: String, username: String): Completable {
+        return mApiHelper.apiFollowUser(token, username)
+    }
+
+    override fun apiUnfollowUser(token: String, username: String): Completable {
+        return mApiHelper.apiUnfollowUser(token, username)
     }
 
 }

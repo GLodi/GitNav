@@ -103,6 +103,8 @@ class LoginActivity : BaseActivity(), LoginContract.View {
 
     override fun intentToEventActivity() {
         startActivity(EventActivity.getIntent(applicationContext))
+        finish()
+        overridePendingTransition(0,0)
     }
 
     override fun onDestroy() {

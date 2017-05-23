@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.data.api
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
@@ -85,12 +86,16 @@ interface ApiHelper {
     fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
 
     /**
-     * Check if user is followed by logged user
+     * Check if user is followed by logged user.
+     * Returns
+     * "f" -> followed
+     * "n" -> not followed
+     * "u" -> username is logged user
      * @param token
      * @param username
-     * @return Boolean
+     * @return String
      */
-    fun apiGetFollowed(token: String, username: String): Observable<Boolean>
+    fun apiGetFollowed(token: String, username: String): Observable<String>
 
     /**
      * Page followers of specific user (logged user if username is null)
@@ -111,5 +116,21 @@ interface ApiHelper {
      * @return List<User>
      */
     fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
+
+    /**
+     * Follow user
+     * @param token
+     * @param username
+     * @return Completable
+     */
+    fun apiFollowUser(token: String, username: String): Completable
+
+    /**
+     * Unollow user
+     * @param token
+     * @param username
+     * @return Completable
+     */
+    fun apiUnfollowUser(token: String, username: String): Completable
 
 }

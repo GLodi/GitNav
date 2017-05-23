@@ -21,6 +21,7 @@ import android.os.Build
 import android.os.StrictMode
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.UrlInfo
+import io.reactivex.Completable
 import io.reactivex.Observable
 import org.eclipse.egit.github.core.Authorization
 import org.eclipse.egit.github.core.Repository
@@ -160,11 +161,14 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiGetFollowed(token: String, username: String): Observable<Boolean> {
+    override fun apiGetFollowed(token: String, username: String): Observable<String> {
         return Observable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
-            Observable.just(userService.isFollowing(username))
+            if (userService.isFollowing(username))
+                Observable.just("f")
+            else
+                Observable.just("n")
         }
     }
 
@@ -181,6 +185,32 @@ class ApiHelperImpl : ApiHelper {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
             Observable.just(ArrayList(userService.pageFollowing(username, pageN, itemsPerPage).next()))
+        }
+    }
+
+    override fun apiFollowUser(token: String, username: String): Completable {
+        return Completable.create { subscriber ->
+             val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            try {
+                userService.follow(username)
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
+        }
+    }
+
+    override fun apiUnfollowUser(token: String, username: String): Completable {
+        return Completable.create { subscriber ->
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            try {
+                userService.unfollow(username)
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
         }
     }
 

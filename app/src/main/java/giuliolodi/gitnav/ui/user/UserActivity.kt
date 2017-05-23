@@ -24,8 +24,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import giuliolodi.gitnav.R
-import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.user_activity.*
 import org.eclipse.egit.github.core.User
 import javax.inject.Inject
@@ -42,6 +40,7 @@ import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
+import giuliolodi.gitnav.ui.base.BaseActivity
 import giuliolodi.gitnav.ui.repositories.RepoListAdapter
 import giuliolodi.gitnav.utils.NetworkUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -62,18 +61,19 @@ import org.eclipse.egit.github.core.Repository
  * Created by giulio on 19/05/2017.
  */
 
-class UserActivity : BaseDrawerActivity(), UserContract.View {
+class UserActivity : BaseActivity(), UserContract.View {
 
     val TAG = "UserActivity"
 
     @Inject lateinit var mPresenter: UserContract.Presenter<UserContract.View>
 
     private val mViews: MutableList<Int> = mutableListOf()
-    private lateinit var username: String
     private lateinit var mMenu: Menu
+    private lateinit var username: String
     private lateinit var mUser: User
 
     private var IS_FOLLOWED: Boolean = false
+    private var IS_LOGGED_USER: Boolean = false
     private var HAS_CLICKED_BIO: Boolean = false
 
     private var mFilterRepos: HashMap<String,String> = HashMap()
@@ -91,7 +91,7 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        layoutInflater.inflate(R.layout.user_activity, content_frame)
+        setContentView(R.layout.user_activity)
 
         initLayout()
 
@@ -110,8 +110,8 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
     private fun initLayout() {
         supportActionBar?.title = "Profile"
 
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        toolbar.setNavigationOnClickListener { onBackPressed() }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         mViews.add(R.layout.user_repos)
         mViews.add(R.layout.user_followers)
@@ -137,9 +137,12 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
         }
     }
 
-    override fun showUser(mapUserFollowed: Map<User, Boolean>) {
+    override fun showUser(mapUserFollowed: Map<User, String>) {
         mUser = mapUserFollowed.keys.first()
-        IS_FOLLOWED = mapUserFollowed[mUser]!!
+        if (mapUserFollowed[mUser] == "f")
+            IS_FOLLOWED = true
+        else if (mapUserFollowed[mUser] == "u")
+            IS_LOGGED_USER = true
 
         createOptionMenu()
 
@@ -203,9 +206,9 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
             user_activity_description.setOnClickListener {
                 HAS_CLICKED_BIO = !HAS_CLICKED_BIO
                 if (HAS_CLICKED_BIO)
-                    user_activity_description.maxLines = 2
-                else
                     user_activity_description.maxLines = 100
+                else
+                    user_activity_description.maxLines = 2
             }
         }
         if (mUser.email != null) {
@@ -332,19 +335,21 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
 
     private fun createOptionMenu() {
         menuInflater.inflate(R.menu.user_menu, mMenu)
-        super.onCreateOptionsMenu(mMenu)
-
-        if (mUser.login != username && !IS_FOLLOWED)
+        if (!IS_LOGGED_USER && !IS_FOLLOWED)
             mMenu.findItem(R.id.unfollow_icon).isVisible = true
-        else if (mUser.login != username && IS_FOLLOWED)
-            mMenu.findItem(R.id.follow_icon).isVisible = false
-        if (mUser.login != username && !mUser.email?.isEmpty()!!)
+        else if (!IS_LOGGED_USER && IS_FOLLOWED)
+            mMenu.findItem(R.id.follow_icon).isVisible = true
+        if (!IS_LOGGED_USER && mUser.email != null && !mUser.email.isEmpty())
             mMenu.findItem(R.id.send_email).isVisible = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
 
+        }
+        if (item?.itemId == android.R.id.home) {
+            finish()
+            overridePendingTransition(0,0)
         }
         if (NetworkUtils.isNetworkAvailable(applicationContext)) {
             when (item?.itemId) {
@@ -429,6 +434,18 @@ class UserActivity : BaseDrawerActivity(), UserContract.View {
             }
         }
         user_following_rv.setOnScrollListener(mScrollListenerFollowing)
+    }
+
+    override fun onFollowCompleted() {
+        mMenu.findItem(R.id.follow_icon).isVisible = true
+        mMenu.findItem(R.id.unfollow_icon).isVisible = false
+        Toasty.success(applicationContext, getString(R.string.user_followed), Toast.LENGTH_LONG).show()
+    }
+
+    override fun onUnfollowCompleted() {
+        mMenu.findItem(R.id.follow_icon).isVisible = false
+        mMenu.findItem(R.id.unfollow_icon).isVisible = true
+        Toasty.success(applicationContext, getString(R.string.user_unfollowed), Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {

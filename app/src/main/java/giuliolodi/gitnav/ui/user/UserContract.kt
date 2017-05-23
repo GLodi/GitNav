@@ -29,7 +29,7 @@ interface UserContract {
 
     interface View : BaseContract.View {
 
-        fun showUser(mapUserFollowed: Map<User, Boolean>)
+        fun showUser(mapUserFollowed: Map<User, String>)
 
         fun showLoading()
 
@@ -54,6 +54,10 @@ interface UserContract {
         fun hideLoadingUserFollowers()
 
         fun hideLoadingUserFollowing()
+
+        fun onFollowCompleted()
+
+        fun onUnfollowCompleted()
 
     }
 

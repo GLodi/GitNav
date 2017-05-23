@@ -42,9 +42,6 @@ import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 
-
-
-
 /**
  * Created by giulio on 15/05/2017.
  */
@@ -57,7 +54,7 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        super.setContentView(R.layout.activity_base_drawer)
+        setContentView(R.layout.activity_base_drawer)
 
         val app: App = application as App
 
@@ -117,21 +114,25 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             R.id.nav_events ->
                 Handler().postDelayed({
                     startActivity(EventActivity.getIntent(applicationContext))
+                    finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
             R.id.nav_repos ->
                 Handler().postDelayed({
                     startActivity(RepoListActivity.getIntent(applicationContext))
+                    finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
             R.id.nav_starred ->
                 Handler().postDelayed({
                     startActivity(StarredActivity.getIntent(applicationContext))
+                    finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
             R.id.nav_trending ->
                 Handler().postDelayed({
                     startActivity(TrendingActivity.getIntent(applicationContext))
+                    finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
         }

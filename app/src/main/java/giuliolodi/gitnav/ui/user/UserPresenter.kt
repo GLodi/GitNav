@@ -39,14 +39,14 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(username: String) {
-        getCompositeDisposable().add(Observable.zip<User,Boolean,Map<User,Boolean>>(
+        getCompositeDisposable().add(Observable.zip<User, String, Map<User, String>>(
                 getDataManager().getUser(username)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 getDataManager().getFollowed(username)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
-                BiFunction { user, boolean -> return@BiFunction mapOf(user to boolean) })
+                BiFunction { user, string -> return@BiFunction mapOf(user to string) })
                 .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { map ->
@@ -113,9 +113,33 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     }
 
     override fun followUser(username: String) {
+        getCompositeDisposable().add(getDataManager().followUser(username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            getView().onFollowCompleted()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
     override fun unFollowUser(username: String) {
+        getCompositeDisposable().add(getDataManager().unfollowUser(username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            getView().onUnfollowCompleted()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
 }

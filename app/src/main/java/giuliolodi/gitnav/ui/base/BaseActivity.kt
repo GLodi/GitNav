@@ -25,7 +25,6 @@ import giuliolodi.gitnav.di.component.DaggerActivityComponent
 import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.utils.NetworkUtils
 
-
 /**
  * Created by giulio on 12/05/2017.
  */
