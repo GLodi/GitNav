@@ -18,6 +18,7 @@ package giuliolodi.gitnav.data.api
 
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.Gist
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
@@ -93,7 +94,7 @@ interface ApiHelper {
      * "u" -> username is logged user
      * @param token
      * @param username
-     * @return String
+     * @return Observable<String>
      */
     fun apiGetFollowed(token: String, username: String): Observable<String>
 
@@ -103,7 +104,7 @@ interface ApiHelper {
      * @param username
      * @param pageN
      * @param itemsPerPage
-     * @return List<User>
+     * @return Observable<List<User>>
      */
     fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
 
@@ -113,7 +114,7 @@ interface ApiHelper {
      * @param username
      * @param pageN
      * @param itemsPerPage
-     * @return List<User>
+     * @return Observable<List<User>>
      */
     fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
 
@@ -126,11 +127,30 @@ interface ApiHelper {
     fun apiFollowUser(token: String, username: String): Completable
 
     /**
-     * Unollow user
+     * Unfollow user
      * @param token
      * @param username
      * @return Completable
      */
     fun apiUnfollowUser(token: String, username: String): Completable
+
+    /**
+     * Page gists of specific user (logged user if username is null)
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @return Observable<List<Gist>>
+     */
+    fun apiPageGists(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>>
+
+    /**
+     * Page starred gists of logged user
+     * @param token
+     * @param pageN
+     * @param itemsPerPage
+     * @return Observable<List<Gist>>
+     */
+    fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Gist>>
 
 }

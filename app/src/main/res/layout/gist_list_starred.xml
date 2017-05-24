@@ -19,10 +19,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/gists_starred_rl">
+    android:id="@+id/gist_list_starred_rl">
 
     <ProgressBar
-        android:id="@+id/gists_starred_progress_bar"
+        android:id="@+id/gist_list_starred_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -32,12 +32,12 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/gists_starred_rv">
+        android:id="@+id/gist_list_starred_rv">
 
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/gists_starred_no"
+        android:id="@+id/gist_list_starred_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/no_gists_starred"

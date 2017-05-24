@@ -24,6 +24,8 @@ import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
+import giuliolodi.gitnav.ui.gists.GistListContract
+import giuliolodi.gitnav.ui.gists.GistListPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
 import giuliolodi.gitnav.ui.repositories.RepoListContract
@@ -93,6 +95,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideUserPresenter(presenter: UserPresenter<UserContract.View>): UserContract.Presenter<UserContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideGistListPresenter(presenter: GistListPresenter<GistListContract.View>): GistListContract.Presenter<GistListContract.View> {
         return presenter
     }
 

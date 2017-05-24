@@ -23,6 +23,7 @@ import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.eclipse.egit.github.core.Gist
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
@@ -158,6 +159,17 @@ class DataManagerImpl : DataManager {
         return Completable.error(Exception())
     }
 
+    override fun pageGists(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+        if (username == null)
+            return mApiHelper.apiPageGists(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+        else
+            return mApiHelper.apiPageGists(mPrefsHelper.getToken(), username, pageN, itemsPerPage)
+    }
+
+    override fun pageStarredGists(pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+        return mApiHelper.apiPageGists(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -200,6 +212,14 @@ class DataManagerImpl : DataManager {
 
     override fun apiUnfollowUser(token: String, username: String): Completable {
         return mApiHelper.apiUnfollowUser(token, username)
+    }
+
+    override fun apiPageGists(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+        return mApiHelper.apiPageGists(token, username, pageN, itemsPerPage)
+    }
+
+    override fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+        return mApiHelper.apiPageStarredGists(token, pageN, itemsPerPage)
     }
 
 }

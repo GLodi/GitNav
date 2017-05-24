@@ -62,6 +62,11 @@
             android:theme="@style/AppTheme">
         </activity>
 
+        <activity
+            android:name=".ui.gists.GistListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>
