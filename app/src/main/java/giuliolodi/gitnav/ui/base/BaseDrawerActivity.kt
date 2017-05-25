@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import de.hdodenhof.circleimageview.CircleImageView
 import giuliolodi.gitnav.ui.events.EventActivity
+import giuliolodi.gitnav.ui.gists.GistListActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
@@ -126,6 +127,12 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             R.id.nav_starred ->
                 Handler().postDelayed({
                     startActivity(StarredActivity.getIntent(applicationContext))
+                    finish()
+                    overridePendingTransition(0,0)
+                }, DRAWER_DELAY)
+            R.id.nav_gists ->
+                Handler().postDelayed({
+                    startActivity(GistListActivity.getIntent(applicationContext))
                     finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)

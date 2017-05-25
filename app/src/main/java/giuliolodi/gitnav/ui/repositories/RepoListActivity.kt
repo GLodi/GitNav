@@ -127,7 +127,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
     private fun setupOnScrollListener() {
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING || mFilter["sort"] == "starred")
+                if (LOADING || mFilter["sort"] == "stars")
                     return
                 val visibleItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).itemCount

@@ -39,9 +39,11 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         getCompositeDisposable().add(getDataManager().pageGists(null, pageN, itemsPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoadingMine() }
                 .subscribe(
                         { gistList ->
-
+                            getView().hideLoadingMine()
+                            getView().showMineGists(gistList)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -55,9 +57,11 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         getCompositeDisposable().add(getDataManager().pageStarredGists(pageN, itemsPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoadingStarred() }
                 .subscribe(
                         { gistList ->
-
+                            getView().hideLoadingStarred()
+                            getView().showStarredGists(gistList)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)

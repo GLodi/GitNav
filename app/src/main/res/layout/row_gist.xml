@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/gists_row_ll">
+        android:id="@+id/row_gist_ll">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,25 +36,27 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/gists_row_description"
+                android:id="@+id/row_gist_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description"
                 android:textSize="16sp"
                 android:textColor="#000000"
                 android:alpha="0.87"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:ellipsize="end" />
 
         </LinearLayout>
 
         <TextView
-            android:id="@+id/gists_row_id"
+            android:id="@+id/row_gist_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#000000"
             android:alpha="0.54"
             android:maxLines="1"
+            android:ellipsize="end"
             android:text="Id string"/>
 
         <RelativeLayout
@@ -64,17 +66,37 @@
             android:paddingTop="4dp">
 
             <ImageView
-                android:id="@+id/gists_row_files"
+                android:id="@+id/row_gist_files"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_content_copy_black_24dp"
                 android:paddingTop="1dp"/>
 
             <TextView
-                android:id="@+id/gists_row_files_n"
+                android:id="@+id/row_gist_files_n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/gists_row_files"
+                android:layout_toRightOf="@id/row_gist_files"
+                android:paddingLeft="4dp"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:alpha="0.54"
+                android:maxLines="1"/>
+
+            <ImageView
+                android:id="@+id/row_gist_comments_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_comment_24dp"
+                android:layout_toRightOf="@id/row_gist_files_n"
+                android:paddingLeft="16dp"
+                android:paddingTop="2dp"/>
+
+            <TextView
+                android:id="@+id/row_gist_comments_n"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/row_gist_comments_icon"
                 android:paddingLeft="4dp"
                 android:textSize="14sp"
                 android:textColor="#000000"
@@ -82,10 +104,10 @@
                 android:maxLines="1"/>
 
             <TextView
-                android:id="@+id/gists_row_public"
+                android:id="@+id/row_gist_public"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/gists_row_files_n"
+                android:layout_toRightOf="@id/row_gist_comments_n"
                 android:paddingLeft="16dp"
                 android:textSize="14sp"
                 android:textColor="#000000"
@@ -93,7 +115,7 @@
                 android:maxLines="1"/>
 
             <TextView
-                android:id="@+id/gists_row_date"
+                android:id="@+id/row_gist_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -107,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_schedule_black_24dp"
-                android:layout_toLeftOf="@id/gists_row_date"
+                android:layout_toLeftOf="@id/row_gist_date"
                 android:paddingRight="4dp"
                 android:paddingTop="3dp"/>
 

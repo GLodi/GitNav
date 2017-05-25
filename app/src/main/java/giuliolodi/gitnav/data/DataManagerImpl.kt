@@ -167,7 +167,7 @@ class DataManagerImpl : DataManager {
     }
 
     override fun pageStarredGists(pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
-        return mApiHelper.apiPageGists(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+        return mApiHelper.apiPageStarredGists(mPrefsHelper.getToken(), pageN, itemsPerPage)
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
