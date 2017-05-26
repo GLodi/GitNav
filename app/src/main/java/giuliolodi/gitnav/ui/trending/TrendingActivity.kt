@@ -22,6 +22,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -139,6 +141,18 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
     override fun onComplete() {
         if ((trending_activity_rv.adapter as StarredAdapter).itemCount == 0)
             trending_activity_no_repo.visibility = View.VISIBLE
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun showNoRepo() {

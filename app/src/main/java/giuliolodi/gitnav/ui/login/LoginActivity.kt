@@ -19,6 +19,7 @@ package giuliolodi.gitnav.ui.login
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.widget.Toast
@@ -77,6 +78,10 @@ class LoginActivity : BaseActivity(), LoginContract.View {
                 return@setOnKeyListener true
             }
             return@setOnKeyListener false
+        }
+        login_activity_signup.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/"))
+            startActivity(browserIntent)
         }
     }
 

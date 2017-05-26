@@ -34,6 +34,8 @@ import kotlinx.android.synthetic.main.event_activity.*
 import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.NetworkUtils
@@ -159,6 +161,18 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
             }
         }
         event_activity_rv.setOnScrollListener(mScrollListener)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
