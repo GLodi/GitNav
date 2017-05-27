@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.gists
+package giuliolodi.gitnav.ui.gistlist
 
 import android.content.Context
 import android.content.Intent

@@ -63,7 +63,7 @@
         </activity>
 
         <activity
-            android:name=".ui.gists.GistListActivity"
+            android:name=".ui.gistlist.GistListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 

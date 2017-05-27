@@ -24,12 +24,16 @@ import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
-import giuliolodi.gitnav.ui.gists.GistListContract
-import giuliolodi.gitnav.ui.gists.GistListPresenter
+import giuliolodi.gitnav.ui.gist.GistContract
+import giuliolodi.gitnav.ui.gist.GistPresenter
+import giuliolodi.gitnav.ui.gistlist.GistListContract
+import giuliolodi.gitnav.ui.gistlist.GistListPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
 import giuliolodi.gitnav.ui.repositories.RepoListContract
 import giuliolodi.gitnav.ui.repositories.RepoListPresenter
+import giuliolodi.gitnav.ui.search.SearchContract
+import giuliolodi.gitnav.ui.search.SearchPresenter
 import giuliolodi.gitnav.ui.starred.StarredContract
 import giuliolodi.gitnav.ui.starred.StarredPresenter
 import giuliolodi.gitnav.ui.trending.TrendingContract
@@ -37,7 +41,6 @@ import giuliolodi.gitnav.ui.trending.TrendingPresenter
 import giuliolodi.gitnav.ui.user.UserContract
 import giuliolodi.gitnav.ui.user.UserPresenter
 import io.reactivex.disposables.CompositeDisposable
-import org.eclipse.egit.github.core.User
 
 /**
  * Created by giulio on 12/05/2017.
@@ -101,6 +104,18 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideGistListPresenter(presenter: GistListPresenter<GistListContract.View>): GistListContract.Presenter<GistListContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideGistPresenter(presenter: GistPresenter<GistContract.View>): GistContract.Presenter<GistContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideSearchPresenter(presenter: SearchPresenter<SearchContract.View>): SearchContract.Presenter<SearchContract.View> {
         return presenter
     }
 

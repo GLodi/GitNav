@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import de.hdodenhof.circleimageview.CircleImageView
 import giuliolodi.gitnav.ui.events.EventActivity
-import giuliolodi.gitnav.ui.gists.GistListActivity
+import giuliolodi.gitnav.ui.gistlist.GistListActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity

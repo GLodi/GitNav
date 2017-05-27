@@ -20,9 +20,11 @@ import dagger.Component
 import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventActivity
-import giuliolodi.gitnav.ui.gists.GistListActivity
+import giuliolodi.gitnav.ui.gist.GistActivity
+import giuliolodi.gitnav.ui.gistlist.GistListActivity
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositories.RepoListActivity
+import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
@@ -48,5 +50,9 @@ interface ActivityComponent {
     fun inject(userActivity: UserActivity)
 
     fun inject(gistListActivity: GistListActivity)
+
+    fun inject(gistActivity: GistActivity)
+
+    fun inject(searchActivity: SearchActivity)
 
 }

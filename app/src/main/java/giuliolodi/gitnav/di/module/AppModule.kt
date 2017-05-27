@@ -59,7 +59,10 @@ class AppModule(private val application: Application) {
     @Provides
     @UrlInfo
     fun provideUrlInfo(): Map<String,String> {
-        return mapOf("base" to Constants.BASE_URL, "daily" to Constants.DAILY_URL, "weekly" to Constants.WEEKLY_URL, "monthly" to Constants.MONTHLY_URL)
+        return mapOf("base" to Constants.BASE_URL,
+                "daily" to Constants.DAILY_URL,
+                "weekly" to Constants.WEEKLY_URL,
+                "monthly" to Constants.MONTHLY_URL)
     }
 
     @Provides

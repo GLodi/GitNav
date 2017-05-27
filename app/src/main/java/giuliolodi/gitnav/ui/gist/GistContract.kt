@@ -14,43 +14,30 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.gists
+package giuliolodi.gitnav.ui.gist
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Gist
 
 /**
- * Created by giulio on 23/05/2017.
+ * Created by giulio on 26/05/2017.
  */
 
-interface GistListContract {
+interface GistContract {
 
     interface View : BaseContract.View {
 
-        fun showMineGists(gistList: List<Gist>)
-
-        fun showStarredGists(gistList: List<Gist>)
-
-        fun showLoadingMine()
-
-        fun showLoadingStarred()
-
-        fun hideLoadingMine()
-
-        fun hideLoadingStarred()
-
-        fun showError(error: String)
+        fun showGist(gist: Gist)
 
     }
 
     @PerActivity
-    interface Presenter<V: GistListContract.View> : BaseContract.Presenter<V> {
+    interface Presenter<V: GistContract.View> : BaseContract.Presenter<V> {
 
-        fun getMineGists(pageN: Int, itemsPerPage: Int)
-
-        fun getStarredGists(pageN: Int, itemsPerPage: Int)
+        fun subscribe()
 
     }
+
 
 }
