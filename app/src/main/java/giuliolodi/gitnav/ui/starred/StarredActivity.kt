@@ -68,7 +68,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
 
         mFilter.put("sort", "created")
 
-        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+        if (isNetworkAvailable()) {
             showLoading()
             mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
         }
@@ -100,7 +100,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
 
         starred_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         starred_activity_swipe.setOnRefreshListener {
-            if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+            if (isNetworkAvailable()) {
                 PAGE_N = 1
                 (starred_activity_rv.adapter as StarredAdapter).clear()
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
@@ -147,7 +147,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
                 val totalItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (starred_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING = true
                         PAGE_N += 1
                         (starred_activity_rv.adapter as StarredAdapter).addLoading()
@@ -167,7 +167,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
         if (item?.itemId == R.id.action_options) {
 
         }
-        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+        if (isNetworkAvailable()) {
             when (item?.itemId) {
                 R.id.starred_sort_created -> {
                     item.isChecked = true

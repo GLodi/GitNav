@@ -88,7 +88,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
         main_spinner.adapter = spinnerAdapter
         main_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                if (isNetworkAvailable()) {
                     showLoading()
                     trending_activity_swipe.isRefreshing = false
                     trending_activity_no_repo.visibility = View.GONE
@@ -109,7 +109,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
 
         trending_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         trending_activity_swipe.setOnRefreshListener {
-            if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+            if (isNetworkAvailable()) {
                 (trending_activity_rv.adapter as StarredAdapter).clear()
                 mPresenter.subscribe(period)
             }

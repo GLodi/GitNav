@@ -23,10 +23,7 @@ import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.UrlInfo
 import io.reactivex.Completable
 import io.reactivex.Observable
-import org.eclipse.egit.github.core.Authorization
-import org.eclipse.egit.github.core.Gist
-import org.eclipse.egit.github.core.Repository
-import org.eclipse.egit.github.core.User
+import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.*
 import javax.inject.Inject
@@ -230,6 +227,48 @@ class ApiHelperImpl : ApiHelper {
             val gistService: GistService = GistService()
             gistService.client.setOAuth2Token(token)
             Observable.just(ArrayList(gistService.pageStarredGists(pageN, itemsPerPage).next()))
+        }
+    }
+
+    override fun apiGetGist(token: String, gistId: String): Observable<Gist> {
+        return Observable.defer {
+            val gistService: GistService = GistService()
+            gistService.client.setOAuth2Token(token)
+            Observable.just(gistService.getGist(gistId))
+        }
+    }
+
+    override fun apiGetGistComments(token: String, gistId: String): Observable<List<Comment>> {
+        return Observable.defer {
+            val gistService: GistService = GistService()
+            gistService.client.setOAuth2Token(token)
+            Observable.just(gistService.getComments(gistId))
+        }
+    }
+
+    override fun apiStarGist(token: String, gistId: String): Completable {
+        return Completable.create { subscriber ->
+            val gistService: GistService = GistService()
+            gistService.client.setOAuth2Token(token)
+            try {
+                gistService.starGist(gistId)
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
+        }
+    }
+
+    override fun apiUnstarGist(token: String, gistId: String): Completable {
+        return Completable.create { subscriber ->
+            val gistService: GistService = GistService()
+            gistService.client.setOAuth2Token(token)
+            try {
+                gistService.unstarGist(gistId)
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
         }
     }
 

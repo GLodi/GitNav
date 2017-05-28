@@ -158,7 +158,7 @@ class GistListActivity : BaseDrawerActivity(), GistListContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
-        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+        if (isNetworkAvailable()) {
             val llmMine = LinearLayoutManager(applicationContext)
             llmMine.orientation = LinearLayoutManager.VERTICAL
             gist_list_mine_rv.layoutManager = llmMine
@@ -208,7 +208,7 @@ class GistListActivity : BaseDrawerActivity(), GistListContract.View {
                 val totalItemCount = (gist_list_mine_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (gist_list_mine_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING_MINE = true
                         PAGE_N_MINE += 1
                         (gist_list_mine_rv.adapter as GistListAdapter).addLoading()
@@ -229,7 +229,7 @@ class GistListActivity : BaseDrawerActivity(), GistListContract.View {
                 val totalItemCount = (gist_list_starred_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (gist_list_starred_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING_STARRED= true
                         PAGE_N_STARRED += 1
                         (gist_list_starred_rv.adapter as GistListAdapter).addLoading()

@@ -29,7 +29,7 @@ import giuliolodi.gitnav.utils.NetworkUtils
  * Created by giulio on 12/05/2017.
  */
 
-open class BaseActivity : AppCompatActivity(), BaseContract.View {
+open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.Callback {
 
     private lateinit var mActivityComponent: ActivityComponent
 
@@ -57,6 +57,12 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onFragmentAttached() {
+    }
+
+    override fun onFragmentDetached(tag: String) {
     }
 
 }

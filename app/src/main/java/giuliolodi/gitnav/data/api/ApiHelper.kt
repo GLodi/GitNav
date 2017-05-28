@@ -18,9 +18,7 @@ package giuliolodi.gitnav.data.api
 
 import io.reactivex.Completable
 import io.reactivex.Observable
-import org.eclipse.egit.github.core.Gist
-import org.eclipse.egit.github.core.Repository
-import org.eclipse.egit.github.core.User
+import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.event.Event
 
 /**
@@ -153,4 +151,35 @@ interface ApiHelper {
      */
     fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Gist>>
 
+    /**
+     * Returns gist
+     * @param token
+     * @param gistId
+     * @return Observable<Gist>
+     */
+    fun apiGetGist(token: String, gistId: String): Observable<Gist>
+
+    /**
+     * Get gist's comments
+     * @param token
+     * @param gistId
+     * @return Observable<List<Comment>>
+     */
+    fun apiGetGistComments(token: String, gistId: String): Observable<List<Comment>>
+
+    /**
+     * Star gist
+     * @param token
+     * @param gistId
+     * @return Completable
+     */
+    fun apiStarGist(token: String, gistId: String): Completable
+
+    /**
+     * Unstar gist
+     * @param token
+     * @param gistId
+     * @return Completable
+     */
+    fun apiUnstarGist(token: String, gistId: String): Completable
 }

@@ -59,7 +59,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             if (login_activity_user.text.isEmpty() || login_activity_pass.text.isEmpty())
                 Toasty.warning(applicationContext, getString(R.string.insert_credentials), Toast.LENGTH_LONG).show()
             else {
-                if (NetworkUtils.isNetworkAvailable(applicationContext))
+                if (isNetworkAvailable())
                     mPresenter.onLoginClick(login_activity_user.text.toString(), login_activity_pass.text.toString())
                 else
                     Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -70,7 +70,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
                 if (login_activity_user.text.isEmpty() || login_activity_pass.text.isEmpty())
                     Toasty.warning(applicationContext, getString(R.string.insert_credentials), Toast.LENGTH_LONG).show()
                 else {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext))
+                    if (isNetworkAvailable())
                         mPresenter.onLoginClick(login_activity_user.text.toString(), login_activity_pass.text.toString())
                     else
                         Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()

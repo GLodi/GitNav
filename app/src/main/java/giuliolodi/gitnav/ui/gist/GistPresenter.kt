@@ -18,7 +18,10 @@ package giuliolodi.gitnav.ui.gist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -32,7 +35,61 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe() {
+    override fun subscribe(gistId: String) {
+        getCompositeDisposable().add(getDataManager().getGist(gistId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { gist ->
+                            getView().showGist(gist)
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun getComments(gistId: String) {
+        getCompositeDisposable().add(getDataManager().getGistComments(gistId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { gistCommentList ->
+                            getView().hideLoadingComments()
+                            getView().showComments(gistCommentList)
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun starGist(gistId: String) {
+        getCompositeDisposable().add(getDataManager().starGist(gistId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { getView().onGistStarred() },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun unstarGist(gistId: String) {
+        getCompositeDisposable().add(getDataManager().unstarGist(gistId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { getView().onGistUnstarred() },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
 }

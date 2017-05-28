@@ -47,7 +47,7 @@ import giuliolodi.gitnav.ui.user.UserActivity
  * Created by giulio on 15/05/2017.
  */
 
-open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, NavigationView.OnNavigationItemSelectedListener {
+open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, NavigationView.OnNavigationItemSelectedListener, BaseFragment.Callback {
 
     private lateinit var mActivityComponent: ActivityComponent
 
@@ -152,6 +152,16 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             drawer_layout.closeDrawer(GravityCompat.START)
         else
             super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    override fun onFragmentAttached() {
+    }
+
+    override fun onFragmentDetached(tag: String) {
     }
 
 }

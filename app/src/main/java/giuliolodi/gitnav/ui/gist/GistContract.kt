@@ -18,7 +18,9 @@ package giuliolodi.gitnav.ui.gist
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Comment
 import org.eclipse.egit.github.core.Gist
+import org.eclipse.egit.github.core.GistFile
 
 /**
  * Created by giulio on 26/05/2017.
@@ -30,14 +32,31 @@ interface GistContract {
 
         fun showGist(gist: Gist)
 
+        fun showComments(gistCommentList: List<Comment>)
+
+        fun showLoadingComments()
+
+        fun hideLoadingComments()
+
+        fun showError(error: String)
+
+        fun onGistStarred()
+
+        fun onGistUnstarred()
+
     }
 
     @PerActivity
     interface Presenter<V: GistContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe()
+        fun subscribe(gistId: String)
+
+        fun getComments(gistId: String)
+
+        fun starGist(gistId: String)
+
+        fun unstarGist(gistId: String)
 
     }
-
 
 }

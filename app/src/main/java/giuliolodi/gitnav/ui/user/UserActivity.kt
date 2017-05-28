@@ -101,7 +101,7 @@ class UserActivity : BaseActivity(), UserContract.View {
 
         mPresenter.onAttach(this)
 
-        if (NetworkUtils.isNetworkAvailable(applicationContext))
+        if (isNetworkAvailable())
             mPresenter.subscribe(username)
         else
             Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -351,7 +351,7 @@ class UserActivity : BaseActivity(), UserContract.View {
             finish()
             overridePendingTransition(0,0)
         }
-        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+        if (isNetworkAvailable()) {
             when (item?.itemId) {
                 R.id.unfollow_icon -> mPresenter.followUser(username)
                 R.id.follow_icon -> mPresenter.unFollowUser(username)
@@ -379,7 +379,7 @@ class UserActivity : BaseActivity(), UserContract.View {
                 val totalItemCount = (user_repos_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_repos_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING_REPOS = true
                         PAGE_N_REPOS += 1
                         (user_repos_rv.adapter as RepoListAdapter).addLoading()
@@ -400,7 +400,7 @@ class UserActivity : BaseActivity(), UserContract.View {
                 val totalItemCount = (user_followers_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_followers_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING_FOLLOWERS = true
                         PAGE_N_FOLLOWERS += 1
                         (user_followers_rv.adapter as UserAdapter).addLoading()
@@ -421,7 +421,7 @@ class UserActivity : BaseActivity(), UserContract.View {
                 val totalItemCount = (user_following_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_following_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING_FOLLOWING = true
                         PAGE_N_FOLLOWING += 1
                         (user_following_rv.adapter as UserAdapter).addLoading()

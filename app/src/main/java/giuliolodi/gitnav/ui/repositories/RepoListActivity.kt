@@ -65,7 +65,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
         mFilter.put("sort", "created")
 
-        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+        if (isNetworkAvailable()) {
             showLoading()
             mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
         }
@@ -90,7 +90,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
         repo_list_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         repo_list_activity_swipe.setOnRefreshListener {
-            if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+            if (isNetworkAvailable()) {
                 PAGE_N = 1
                 (repo_list_activity_rv.adapter as RepoListAdapter).clear()
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
@@ -133,7 +133,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
                 val totalItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (repo_list_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+                    if (isNetworkAvailable()) {
                         LOADING = true
                         PAGE_N += 1
                         (repo_list_activity_rv.adapter as RepoListAdapter).addLoading()
@@ -153,7 +153,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
         if (item?.itemId == R.id.action_options) {
 
         }
-        if (NetworkUtils.isNetworkAvailable(applicationContext)) {
+        if (isNetworkAvailable()) {
             when (item?.itemId) {
                 R.id.repo_sort_created -> {
                     item.isChecked = true
