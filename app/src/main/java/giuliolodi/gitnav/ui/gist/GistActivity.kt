@@ -26,18 +26,17 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
-import com.jakewharton.rxbinding2.view.visible
+import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
-import giuliolodi.gitnav.utils.NetworkUtils
-import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.gist_activity.*
 import kotlinx.android.synthetic.main.gist_activity_comments.*
 import kotlinx.android.synthetic.main.gist_activity_files.*
 import org.eclipse.egit.github.core.Comment
 import org.eclipse.egit.github.core.Gist
+import org.ocpsoft.prettytime.PrettyTime
 import javax.inject.Inject
 
 /**
@@ -54,10 +53,11 @@ class GistActivity : BaseActivity(), GistContract.View {
     private lateinit var mGistId: String
     private lateinit var mMenu: Menu
     private var IS_GIST_STARRED: Boolean = false
+    private val mPrettyTime: PrettyTime = PrettyTime()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.user_activity)
+        setContentView(R.layout.gist_activity)
 
         initLayout()
 
@@ -75,10 +75,8 @@ class GistActivity : BaseActivity(), GistContract.View {
     }
 
     private fun initLayout() {
-        supportActionBar?.title = "Gist"
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        gist_activity_toolbar?.title = "Gist"
+        gist_activity_toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
 
         mViews.add(R.layout.gist_activity_files)
         mViews.add(R.layout.gist_activity_comments)
@@ -86,16 +84,16 @@ class GistActivity : BaseActivity(), GistContract.View {
         gist_activity_viewpager.offscreenPageLimit = 2
         gist_activity_viewpager.adapter = MyAdapter(applicationContext, mViews)
 
-        tab_layout.visibility = View.VISIBLE
-        tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
-        tab_layout.setupWithViewPager(gist_activity_viewpager)
+        gist_activity_tab_layout.visibility = View.VISIBLE
+        gist_activity_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
+        gist_activity_tab_layout.setupWithViewPager(gist_activity_viewpager)
     }
 
     override fun showGist(gist: Gist) {
         mGist = gist
-        createOptionsMenu()
-        gist_activity_files_progress_bar.visibility = View.GONE
         mPresenter.getComments(mGistId)
+
+        createOptionsMenu()
 
         val llmMine = LinearLayoutManager(applicationContext)
         llmMine.orientation = LinearLayoutManager.VERTICAL
@@ -103,6 +101,17 @@ class GistActivity : BaseActivity(), GistContract.View {
         gist_activity_files_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         gist_activity_files_rv.itemAnimator = DefaultItemAnimator()
         gist_activity_files_rv.adapter = GistFileAdapter()
+        (gist_activity_files_rv.adapter as GistFileAdapter).addGistFileList(mGist.files.values.toMutableList())
+
+        gist_activity_files_progress_bar.visibility = View.GONE
+        gist_activity_files_nested.visibility = View.VISIBLE
+        gist_activity_files_username.text = mGist.owner.login
+        gist_activity_files_title.text = mGist.description
+        gist_activity_files_date.text = mPrettyTime.format(mGist.createdAt)
+        gist_activity_files_sha.text = mGist.id
+        gist_activity_files_status.text = if (gist.isPublic) getString(R.string.publics) else getString(R.string.privates)
+        gist_activity_files_date.visibility = View.VISIBLE
+        Picasso.with(applicationContext).load(mGist.owner.avatarUrl).centerCrop().resize(75, 75).into(gist_activity_files_image)
     }
 
     override fun showComments(gistCommentList: List<Comment>) {

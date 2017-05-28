@@ -30,7 +30,7 @@ import org.eclipse.egit.github.core.GistFile
 
 class GistFileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mFileList: MutableList<GistFile?> = arrayListOf()
+    private var mGistFileList: MutableList<GistFile?> = arrayListOf()
 
     class GistFileHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (file: GistFile) = with(itemView) {
@@ -55,44 +55,44 @@ class GistFileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is GistFileHolder) {
-            val file = mFileList[position]!!
+            val file = mGistFileList[position]!!
             holder.bind(file)
         }
     }
 
-    override fun getItemViewType(position: Int): Int { return if (mFileList[position] != null) 1 else 0 }
+    override fun getItemViewType(position: Int): Int { return if (mGistFileList[position] != null) 1 else 0 }
 
-    override fun getItemCount(): Int { return mFileList.size }
+    override fun getItemCount(): Int { return mGistFileList.size }
 
     override fun getItemId(position: Int): Long { return position.toLong() }
 
-    fun addRepos(gistFileList: List<GistFile>) {
-        if (mFileList.isEmpty()) {
-            mFileList.clear()
-            mFileList.addAll(gistFileList.toMutableList())
+    fun addGistFileList(gistFileList: List<GistFile>) {
+        if (mGistFileList.isEmpty()) {
+            mGistFileList.clear()
+            mGistFileList.addAll(gistFileList.toMutableList())
             notifyDataSetChanged()
         }
         else {
-            val lastNull = mFileList.lastIndexOf(null)
-            mFileList.removeAt(lastNull)
+            val lastNull = mGistFileList.lastIndexOf(null)
+            mGistFileList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
-            mFileList.addAll(gistFileList)
-            notifyItemRangeInserted(lastNull, mFileList.size - 1)
+            mGistFileList.addAll(gistFileList)
+            notifyItemRangeInserted(lastNull, mGistFileList.size - 1)
         }
     }
 
-    fun addRepo(gistFile: GistFile) {
-        mFileList.add(gistFile)
-        notifyItemInserted(mFileList.size - 1)
+    fun addGistFile(gistFile: GistFile) {
+        mGistFileList.add(gistFile)
+        notifyItemInserted(mGistFileList.size - 1)
     }
 
     fun addLoading() {
-        mFileList.add(null)
-        notifyItemInserted(mFileList.size - 1)
+        mGistFileList.add(null)
+        notifyItemInserted(mGistFileList.size - 1)
     }
 
     fun clear() {
-        mFileList.clear()
+        mGistFileList.clear()
         notifyDataSetChanged()
     }
 

@@ -36,7 +36,7 @@ import javax.inject.Inject
 import giuliolodi.gitnav.R.string.network_error
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
-import giuliolodi.gitnav.utils.NetworkUtils
+import giuliolodi.gitnav.ui.gist.GistActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -181,12 +181,18 @@ class GistListActivity : BaseDrawerActivity(), GistListContract.View {
             (gist_list_mine_rv.adapter as GistListAdapter).getPositionClicks()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {  }
+                    .subscribe { gistId ->
+                        startActivity(GistActivity.getIntent(applicationContext).putExtra("gistId", gistId))
+                        overridePendingTransition(0,0)
+                    }
 
             (gist_list_starred_rv.adapter as GistListAdapter).getPositionClicks()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {  }
+                    .subscribe { gistId ->
+                        startActivity(GistActivity.getIntent(applicationContext).putExtra("gistId", gistId))
+                        overridePendingTransition(0,0)
+                    }
         } else
             Toasty.warning(applicationContext, getString(network_error), Toast.LENGTH_LONG).show()
         return true

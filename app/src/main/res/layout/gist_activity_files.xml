@@ -82,7 +82,7 @@
                                 android:paddingLeft="8dp" />
 
                             <TextView
-                                android:id="@+id/gist_files_title"
+                                android:id="@+id/gist_activity_files_title"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/gist_activity_files_username"
