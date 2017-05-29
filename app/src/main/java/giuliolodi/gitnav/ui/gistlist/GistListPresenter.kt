@@ -42,8 +42,8 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                 .doOnSubscribe { getView().showLoadingMine() }
                 .subscribe(
                         { gistList ->
-                            getView().hideLoadingMine()
                             getView().showMineGists(gistList)
+                            getView().hideLoadingMine()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)

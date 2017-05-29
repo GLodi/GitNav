@@ -109,7 +109,6 @@ class UserActivity : BaseActivity(), UserContract.View {
 
     private fun initLayout() {
         supportActionBar?.title = "Profile"
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 

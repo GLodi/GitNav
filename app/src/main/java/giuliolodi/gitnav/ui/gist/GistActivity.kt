@@ -31,6 +31,9 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
+import giuliolodi.gitnav.ui.user.UserActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.gist_activity.*
 import kotlinx.android.synthetic.main.gist_activity_comments.*
 import kotlinx.android.synthetic.main.gist_activity_files.*
@@ -52,7 +55,7 @@ class GistActivity : BaseActivity(), GistContract.View {
     private lateinit var mGist: Gist
     private lateinit var mGistId: String
     private lateinit var mMenu: Menu
-    private var IS_GIST_STARRED: Boolean = false
+    private var IS_GIST_STARRED: Boolean? = false
     private val mPrettyTime: PrettyTime = PrettyTime()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,16 +70,18 @@ class GistActivity : BaseActivity(), GistContract.View {
 
         mPresenter.onAttach(this)
 
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable())
             mPresenter.subscribe(mGistId)
-        }
         else
             Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     private fun initLayout() {
-        gist_activity_toolbar?.title = "Gist"
-        gist_activity_toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        setSupportActionBar(gist_activity_toolbar)
+        supportActionBar?.title = "Gist"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        gist_activity_toolbar.setNavigationOnClickListener { onBackPressed() }
 
         mViews.add(R.layout.gist_activity_files)
         mViews.add(R.layout.gist_activity_comments)
@@ -89,15 +94,16 @@ class GistActivity : BaseActivity(), GistContract.View {
         gist_activity_tab_layout.setupWithViewPager(gist_activity_viewpager)
     }
 
-    override fun showGist(gist: Gist) {
-        mGist = gist
+    override fun showGist(map: Map<Gist,Boolean>) {
+        mGist = map.keys.first()
+        IS_GIST_STARRED = map[mGist]
         mPresenter.getComments(mGistId)
 
         createOptionsMenu()
 
-        val llmMine = LinearLayoutManager(applicationContext)
-        llmMine.orientation = LinearLayoutManager.VERTICAL
-        gist_activity_files_rv.layoutManager = llmMine
+        val llmFiles = LinearLayoutManager(applicationContext)
+        llmFiles.orientation = LinearLayoutManager.VERTICAL
+        gist_activity_files_rv.layoutManager = llmFiles
         gist_activity_files_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         gist_activity_files_rv.itemAnimator = DefaultItemAnimator()
         gist_activity_files_rv.adapter = GistFileAdapter()
@@ -109,12 +115,29 @@ class GistActivity : BaseActivity(), GistContract.View {
         gist_activity_files_title.text = mGist.description
         gist_activity_files_date.text = mPrettyTime.format(mGist.createdAt)
         gist_activity_files_sha.text = mGist.id
-        gist_activity_files_status.text = if (gist.isPublic) getString(R.string.publics) else getString(R.string.privates)
+        gist_activity_files_status.text = if (mGist.isPublic) getString(R.string.publics) else getString(R.string.privates)
         gist_activity_files_date.visibility = View.VISIBLE
         Picasso.with(applicationContext).load(mGist.owner.avatarUrl).centerCrop().resize(75, 75).into(gist_activity_files_image)
     }
 
     override fun showComments(gistCommentList: List<Comment>) {
+        if (gistCommentList.isEmpty())
+            gist_activity_comments_nocomments.visibility = View.VISIBLE
+
+        val llmComments = LinearLayoutManager(applicationContext)
+        llmComments.orientation = LinearLayoutManager.VERTICAL
+        gist_activity_comments_rv.layoutManager = llmComments
+        gist_activity_comments_rv.itemAnimator = DefaultItemAnimator()
+        gist_activity_comments_rv.adapter = GistCommentAdapter()
+        (gist_activity_comments_rv.adapter as GistCommentAdapter).addGistCommentList(gistCommentList)
+
+        (gist_activity_comments_rv.adapter as GistCommentAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
     }
 
     override fun showLoadingComments() {
@@ -172,12 +195,12 @@ class GistActivity : BaseActivity(), GistContract.View {
     override fun onGistUnstarred() {
         mMenu.findItem(R.id.follow_icon).isVisible = false
         mMenu.findItem(R.id.unfollow_icon).isVisible = true
-        Toasty.success(applicationContext, getString(R.string.gist_starred), Toast.LENGTH_LONG).show()
+        Toasty.success(applicationContext, getString(R.string.gist_unstarred), Toast.LENGTH_LONG).show()
     }
 
     private fun createOptionsMenu() {
         menuInflater.inflate(R.menu.gist_activity_menu, mMenu)
-        if (IS_GIST_STARRED)
+        if (IS_GIST_STARRED!!)
             mMenu.findItem(R.id.follow_icon).isVisible = true
         else
             mMenu.findItem(R.id.unfollow_icon).isVisible = true

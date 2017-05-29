@@ -168,4 +168,11 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun unstarGist(gistId: String): Completable
 
+    /**
+     * Returns true if gist is starred, false otherwise
+     * @param gistId
+     * @return Observable<Boolean>
+     */
+    fun isGistStarred(gistId: String): Observable<Boolean>
+
 }

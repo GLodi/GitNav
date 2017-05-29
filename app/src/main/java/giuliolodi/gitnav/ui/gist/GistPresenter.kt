@@ -18,9 +18,12 @@ package giuliolodi.gitnav.ui.gist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Gist
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,12 +39,17 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(gistId: String) {
-        getCompositeDisposable().add(getDataManager().getGist(gistId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        getCompositeDisposable().add(Observable.zip< Gist,Boolean,Map<Gist,Boolean>>(
+                getDataManager().getGist(gistId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getDataManager().isGistStarred(gistId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                BiFunction { gist, boolean -> return@BiFunction mapOf(gist to boolean) })
                 .subscribe(
-                        { gist ->
-                            getView().showGist(gist)
+                        { map ->
+                            getView().showGist(map)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -54,6 +62,7 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
         getCompositeDisposable().add(getDataManager().getGistComments(gistId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoadingComments() }
                 .subscribe(
                         { gistCommentList ->
                             getView().hideLoadingComments()

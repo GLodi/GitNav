@@ -184,6 +184,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiUnstarGist(mPrefsHelper.getToken(), gistId)
     }
 
+    override fun isGistStarred(gistId: String): Observable<Boolean> {
+        return mApiHelper.apiIsGistStarred(mPrefsHelper.getToken(), gistId)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -250,6 +254,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiUnstarGist(token: String, gistId: String): Completable {
         return mApiHelper.apiUnstarGist(token, gistId)
+    }
+
+    override fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean> {
+        return mApiHelper.apiIsGistStarred(token, gistId)
     }
 
 }

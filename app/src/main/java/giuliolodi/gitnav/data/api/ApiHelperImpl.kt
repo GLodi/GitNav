@@ -272,4 +272,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean> {
+        return Observable.defer {
+            val gistService: GistService = GistService()
+            gistService.client.setOAuth2Token(token)
+            Observable.just(gistService.isStarred(gistId))
+        }
+    }
+
 }

@@ -20,7 +20,6 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Comment
 import org.eclipse.egit.github.core.Gist
-import org.eclipse.egit.github.core.GistFile
 
 /**
  * Created by giulio on 26/05/2017.
@@ -30,7 +29,7 @@ interface GistContract {
 
     interface View : BaseContract.View {
 
-        fun showGist(gist: Gist)
+        fun showGist(map: Map<Gist,Boolean>)
 
         fun showComments(gistCommentList: List<Comment>)
 

@@ -182,4 +182,13 @@ interface ApiHelper {
      * @return Completable
      */
     fun apiUnstarGist(token: String, gistId: String): Completable
+
+    /**
+     * Returns true if gist is starred, false otherwise.
+     * @param token
+     * @param gistId
+     * @return Observable<Boolean>
+     */
+    fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean>
+
 }
