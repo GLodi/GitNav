@@ -30,12 +30,22 @@ interface SearchContract {
 
         fun showRepos(repoList: List<Repository>)
 
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
+
     }
 
     @PerActivity
     interface Presenter<V: SearchContract.View> : BaseContract.Presenter<V> {
 
-        fun onSearch(string: String)
+        fun onSearchRepos(query: String)
+
+        fun onSearchUsers(query: String)
+
+        fun onSearchCode(query: String)
 
     }
 

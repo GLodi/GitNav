@@ -188,6 +188,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiIsGistStarred(mPrefsHelper.getToken(), gistId)
     }
 
+    override fun searchRepos(query: String): Observable<List<Repository>> {
+        return mApiHelper.apiSearchRepos(mPrefsHelper.getToken(), query)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -258,6 +262,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean> {
         return mApiHelper.apiIsGistStarred(token, gistId)
+    }
+
+    override fun apiSearchRepos(token: String, query: String): Observable<List<Repository>> {
+        return mApiHelper.apiSearchRepos(token, query)
     }
 
 }

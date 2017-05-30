@@ -280,4 +280,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiSearchRepos(token: String, query: String): Observable<List<Repository>> {
+        return Observable.defer {
+            val repoService: RepositoryService = RepositoryService()
+            repoService.client.setOAuth2Token(token)
+            Observable.just(repoService.searchRepositories(query))
+        }
+    }
+
 }

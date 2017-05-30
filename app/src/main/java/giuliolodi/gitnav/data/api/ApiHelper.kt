@@ -191,4 +191,12 @@ interface ApiHelper {
      */
     fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean>
 
+    /**
+     * Searches for repositories
+     * @param token
+     * @param query
+     * @return Observable<List<Repository>>
+     */
+    fun apiSearchRepos(token: String, query: String): Observable<List<Repository>>
+
 }

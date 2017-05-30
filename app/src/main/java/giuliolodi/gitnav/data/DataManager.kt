@@ -175,4 +175,11 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun isGistStarred(gistId: String): Observable<Boolean>
 
+    /**
+     * Searches for repositories
+     * @param query
+     * @return Observable<List<Repository>>
+     */
+    fun searchRepos(query: String): Observable<List<Repository>>
+
 }
