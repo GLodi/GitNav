@@ -37,6 +37,43 @@
     </item>
 
     <item
+        android:id="@+id/user_menu_sort_icon"
+        android:title=""
+        android:icon="@drawable/ic_sort_white_24dp"
+        app:showAsAction="always">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/user_menu_created"
+                    android:title="Created"
+                    android:checked="true"/>
+
+                <item
+                    android:id="@+id/user_menu_updated"
+                    android:title="Updated" />
+
+                <item
+                    android:id="@+id/user_menu_pushed"
+                    android:title="Pushed" />
+
+                <item
+                    android:id="@+id/user_menu_alphabetical"
+                    android:title="Alphabetical" />
+
+                <item
+                    android:id="@+id/user_menu_stars"
+                    android:title="Stars" />
+
+            </group>
+
+        </menu>
+
+    </item>
+
+    <item
         android:id="@+id/action_options"
         android:orderInCategory="100"
         android:title="@string/options"

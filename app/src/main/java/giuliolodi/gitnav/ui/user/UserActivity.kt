@@ -352,6 +352,46 @@ class UserActivity : BaseActivity(), UserContract.View {
         }
         if (isNetworkAvailable()) {
             when (item?.itemId) {
+                R.id.user_menu_created -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "created")
+                    PAGE_N_REPOS = 1
+                    (user_repos_rv.adapter as RepoListAdapter).clear()
+                    showLoadingUserRepos()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_updated -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "updated")
+                    PAGE_N_REPOS = 1
+                    (user_repos_rv.adapter as RepoListAdapter).clear()
+                    showLoadingUserRepos()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_pushed -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "pushed")
+                    PAGE_N_REPOS = 1
+                    (user_repos_rv.adapter as RepoListAdapter).clear()
+                    showLoadingUserRepos()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_alphabetical -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "full_name")
+                    PAGE_N_REPOS = 1
+                    (user_repos_rv.adapter as RepoListAdapter).clear()
+                    showLoadingUserRepos()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_stars -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "stars")
+                    PAGE_N_REPOS = 1
+                    (user_repos_rv.adapter as RepoListAdapter).clear()
+                    showLoadingUserRepos()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
                 R.id.unfollow_icon -> mPresenter.followUser(username)
                 R.id.follow_icon -> mPresenter.unFollowUser(username)
                 R.id.send_email -> {
@@ -372,7 +412,7 @@ class UserActivity : BaseActivity(), UserContract.View {
     private fun setupOnScrollListener() {
         val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING_REPOS || mFilterRepos["sort"] == "starred")
+                if (LOADING_REPOS || mFilterRepos["sort"] == "stars")
                     return
                 val visibleItemCount = (user_repos_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (user_repos_rv.layoutManager as LinearLayoutManager).itemCount
