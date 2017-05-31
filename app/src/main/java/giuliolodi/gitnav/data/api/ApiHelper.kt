@@ -199,4 +199,12 @@ interface ApiHelper {
      */
     fun apiSearchRepos(token: String, query: String): Observable<List<Repository>>
 
+    /**
+     * Searches for users
+     * @param token
+     * @param query
+     * @return Observable<List<User>>
+     */
+    fun apiSearchUsers(token: String, query: String): Observable<List<SearchUser>>
+
 }

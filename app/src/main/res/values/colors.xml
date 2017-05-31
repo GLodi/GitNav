@@ -21,5 +21,6 @@
     <color name="colorAccent">#448AFF</color>
     <color name="back_tint">#F1F5F8</color>
     <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
 
 </resources>

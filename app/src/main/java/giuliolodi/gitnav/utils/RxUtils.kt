@@ -38,7 +38,6 @@ class RxUtils {
                 }
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    subject.onComplete()
                     return true
                 }
             })

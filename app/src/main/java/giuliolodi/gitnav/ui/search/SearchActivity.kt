@@ -29,8 +29,6 @@ import android.view.View
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import giuliolodi.gitnav.ui.starred.StarredAdapter
-import giuliolodi.gitnav.ui.user.UserAdapter
 import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.search_activity.*
 import org.eclipse.egit.github.core.Repository
@@ -39,9 +37,12 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v7.widget.SearchView
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
+import giuliolodi.gitnav.ui.repositories.RepoListAdapter
+import giuliolodi.gitnav.ui.starred.SearchUserAdapter
 import giuliolodi.gitnav.utils.RxUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.SearchUser
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -70,11 +71,12 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
         val llm = LinearLayoutManager(applicationContext)
         llm.orientation = LinearLayoutManager.VERTICAL
         search_activity_rv.layoutManager = llm
-        search_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(applicationContext).showLastDivider().build())
+        search_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         search_activity_rv.itemAnimator = DefaultItemAnimator()
-        search_activity_rv.adapter = StarredAdapter()
+        search_activity_rv.adapter = RepoListAdapter()
 
         tab_layout.visibility = View.VISIBLE
+        tab_layout.setSelectedTabIndicatorHeight(0)
         tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         tab_layout.addTab(tab_layout.newTab().setText(getString(R.string.repositories)))
         tab_layout.addTab(tab_layout.newTab().setText(getString(R.string.users)))
@@ -83,10 +85,19 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     0 -> {
-                        search_activity_rv.adapter = StarredAdapter()
-                    }
+                        search_activity_no.visibility = View.GONE
+                        search_activity_rv.adapter = RepoListAdapter()
+                        tab_layout2.removeAllTabs()
+                        tab_layout2.addTab(tab_layout2.newTab().setText("Alphabetical"))
+                        tab_layout2.addTab(tab_layout2.newTab().setText("Updated"))
+                        tab_layout2.addTab(tab_layout2.newTab().setText("Pushed"))
+                        tab_layout2.addTab(tab_layout2.newTab().setText("Stars"))                    }
                     1 -> {
-                        search_activity_rv.adapter = UserAdapter()
+                        search_activity_no.visibility = View.GONE
+                        search_activity_rv.adapter = SearchUserAdapter()
+                        tab_layout2.removeAllTabs()
+                        tab_layout2.addTab(tab_layout2.newTab().setText("Followers"))
+                        tab_layout2.addTab(tab_layout2.newTab().setText("Following"))
                     }
                     2 -> {
 
@@ -97,10 +108,12 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     0 -> {
-                        (search_activity_rv.adapter as StarredAdapter).clear()
+                        (search_activity_rv.adapter as RepoListAdapter).clear()
+                        mPresenter.unsubscribe()
                     }
                     1 -> {
-                        (search_activity_rv.adapter as UserAdapter).clear()
+                        (search_activity_rv.adapter as SearchUserAdapter).clear()
+                        mPresenter.unsubscribe()
                     }
                     2 -> {
 
@@ -111,10 +124,31 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+
+        tab_layout2.visibility = View.VISIBLE
+        tab_layout2.tabMode = TabLayout.MODE_SCROLLABLE
+        tab_layout2.setSelectedTabIndicatorHeight(0)
+        tab_layout2.setSelectedTabIndicatorColor(Color.WHITE)
+        tab_layout2.addTab(tab_layout2.newTab().setText("Alphabetical"))
+        tab_layout2.addTab(tab_layout2.newTab().setText("Updated"))
+        tab_layout2.addTab(tab_layout2.newTab().setText("Pushed"))
+        tab_layout2.addTab(tab_layout2.newTab().setText("Stars"))
     }
 
     override fun showRepos(repoList: List<Repository>) {
-        (search_activity_rv.adapter as StarredAdapter).addRepos(repoList)
+        (search_activity_rv.adapter as RepoListAdapter).addRepos(repoList)
+        if (repoList.isEmpty()) {
+            search_activity_no.visibility = View.VISIBLE
+            search_activity_no.text = getString(R.string.no_repositories)
+        }
+    }
+
+    override fun showUsers(userList: List<SearchUser>) {
+        (search_activity_rv.adapter as SearchUserAdapter).addUsers(userList)
+        if (userList.isEmpty()) {
+            search_activity_no.visibility = View.VISIBLE
+            search_activity_no.text = getString(R.string.no_users)
+        }
     }
 
     override fun showLoading() {
@@ -132,7 +166,6 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
-
         val searchView = MenuItemCompat.getActionView(menu?.findItem(R.id.action_search)) as SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
@@ -143,8 +176,18 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { query ->
-                            (search_activity_rv.adapter as StarredAdapter).clear()
-                            mPresenter.onSearchRepos(query)
+                            when (tab_layout.selectedTabPosition) {
+                                0 -> {
+                                    (search_activity_rv.adapter as RepoListAdapter).clear()
+                                    search_activity_no.visibility = View.GONE
+                                    mPresenter.onSearchRepos(query)
+                                }
+                                1 -> {
+                                    (search_activity_rv.adapter as SearchUserAdapter).clear()
+                                    search_activity_no.visibility = View.GONE
+                                    mPresenter.onSearchUsers(query)
+                                }
+                            }
                         },
                         { throwable ->
                             hideLoading()

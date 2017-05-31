@@ -51,14 +51,35 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                         { throwable ->
                             getView().hideLoading()
                             getView().showError(throwable.localizedMessage)
-                            Timber.e(throwable)}
+                            Timber.e(throwable)
+                        }
                 ))
     }
 
     override fun onSearchUsers(query: String) {
+        getCompositeDisposable().add(getDataManager().searchUsers(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoading() }
+                .subscribe(
+                        { userList ->
+                            getView().hideLoading()
+                            getView().showUsers(userList)
+                        },
+                        { throwable ->
+                            getView().hideLoading()
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
     override fun onSearchCode(query: String) {
+    }
+
+    override fun unsubscribe() {
+        if (getCompositeDisposable().size() != 0)
+            getCompositeDisposable().clear()
     }
 
 }

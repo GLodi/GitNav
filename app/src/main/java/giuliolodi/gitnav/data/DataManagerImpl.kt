@@ -192,6 +192,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiSearchRepos(mPrefsHelper.getToken(), query)
     }
 
+    override fun searchUsers(query: String): Observable<List<SearchUser>> {
+        return mApiHelper.apiSearchUsers(mPrefsHelper.getToken(), query)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -266,6 +270,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiSearchRepos(token: String, query: String): Observable<List<Repository>> {
         return mApiHelper.apiSearchRepos(token, query)
+    }
+
+    override fun apiSearchUsers(token: String, query: String): Observable<List<SearchUser>> {
+        return mApiHelper.apiSearchUsers(token, query)
     }
 
 }

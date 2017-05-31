@@ -182,4 +182,11 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun searchRepos(query: String): Observable<List<Repository>>
 
+    /**
+     * Searches for users
+     * @param query
+     * @return Observable<List<User>>
+     */
+    fun searchUsers(query: String): Observable<List<SearchUser>>
+
 }

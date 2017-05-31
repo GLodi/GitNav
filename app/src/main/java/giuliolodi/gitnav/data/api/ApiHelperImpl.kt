@@ -288,4 +288,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiSearchUsers(token: String, query: String): Observable<List<SearchUser>> {
+        return Observable.defer {
+            val userService: UserService = UserService()
+            userService.client.setOAuth2Token(token)
+            Observable.just(userService.searchUsers(query))
+        }
+    }
+
 }

@@ -19,6 +19,8 @@ package giuliolodi.gitnav.ui.search
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Repository
+import org.eclipse.egit.github.core.SearchUser
+import org.eclipse.egit.github.core.User
 
 /**
  * Created by giulio on 26/05/2017.
@@ -29,6 +31,8 @@ interface SearchContract {
     interface View : BaseContract.View {
 
         fun showRepos(repoList: List<Repository>)
+
+        fun showUsers(userList: List<SearchUser>)
 
         fun showLoading()
 
@@ -46,6 +50,8 @@ interface SearchContract {
         fun onSearchUsers(query: String)
 
         fun onSearchCode(query: String)
+
+        fun unsubscribe()
 
     }
 
