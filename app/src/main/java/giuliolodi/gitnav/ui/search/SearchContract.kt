@@ -20,7 +20,6 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.SearchUser
-import org.eclipse.egit.github.core.User
 
 /**
  * Created by giulio on 26/05/2017.

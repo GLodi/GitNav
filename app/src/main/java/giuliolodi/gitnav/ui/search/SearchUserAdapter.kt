@@ -41,6 +41,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class UserHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (user: SearchUser) = with(itemView) {
+            row_user_image.visibility = View.GONE
             if (user.name == null) {
                 row_user_fullname.text = user.login
                 row_user_username.visibility = View.GONE

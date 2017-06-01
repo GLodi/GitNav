@@ -35,6 +35,7 @@ import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject
 import android.support.v4.view.MenuItemCompat
 import android.support.v7.widget.SearchView
+import android.view.MenuItem
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.ui.repositories.RepoListAdapter
@@ -87,17 +88,10 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                     0 -> {
                         search_activity_no.visibility = View.GONE
                         search_activity_rv.adapter = RepoListAdapter()
-                        tab_layout2.removeAllTabs()
-                        tab_layout2.addTab(tab_layout2.newTab().setText("Alphabetical"))
-                        tab_layout2.addTab(tab_layout2.newTab().setText("Updated"))
-                        tab_layout2.addTab(tab_layout2.newTab().setText("Pushed"))
-                        tab_layout2.addTab(tab_layout2.newTab().setText("Stars"))                    }
+                    }
                     1 -> {
                         search_activity_no.visibility = View.GONE
                         search_activity_rv.adapter = SearchUserAdapter()
-                        tab_layout2.removeAllTabs()
-                        tab_layout2.addTab(tab_layout2.newTab().setText("Followers"))
-                        tab_layout2.addTab(tab_layout2.newTab().setText("Following"))
                     }
                     2 -> {
 
@@ -125,14 +119,6 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
             }
         })
 
-        tab_layout2.visibility = View.VISIBLE
-        tab_layout2.tabMode = TabLayout.MODE_SCROLLABLE
-        tab_layout2.setSelectedTabIndicatorHeight(0)
-        tab_layout2.setSelectedTabIndicatorColor(Color.WHITE)
-        tab_layout2.addTab(tab_layout2.newTab().setText("Alphabetical"))
-        tab_layout2.addTab(tab_layout2.newTab().setText("Updated"))
-        tab_layout2.addTab(tab_layout2.newTab().setText("Pushed"))
-        tab_layout2.addTab(tab_layout2.newTab().setText("Stars"))
     }
 
     override fun showRepos(repoList: List<Repository>) {

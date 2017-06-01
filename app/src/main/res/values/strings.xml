@@ -101,6 +101,16 @@
     <string name="publics">Public</string>
     <string name="privates">Private</string>
 
+    <string name="created">Created</string>
+    <string name="alphabetical">Alphabetical</string>
+    <string name="pushed">Pushed</string>
+    <string name="updated">Updated</string>
+    <string name="stars">Stars</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="name">Name</string>
+    <string name="repos_owned">Repos owned</string>
+
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="currently_logged_in_as">You are currently logged in as</string>
