@@ -142,6 +142,8 @@ class UserActivity : BaseActivity(), UserContract.View {
         else if (mapUserFollowed[mUser] == "u")
             IS_LOGGED_USER = true
 
+        mPresenter.updateLoggedUser(mUser)
+
         createOptionMenu()
 
         // Repos

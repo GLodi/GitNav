@@ -73,6 +73,18 @@ class DataManagerImpl : DataManager {
         }
     }
 
+    override fun updateUser(user: User): Completable {
+        return Completable.fromAction {
+            if (mPrefsHelper.getUsername() == user.login) {
+                try {
+                    storeUser(user)
+                } catch (e: Exception) {
+                    throw e
+                }
+            }
+        }
+    }
+
     override fun storeAccessToken(token: String) {
         mPrefsHelper.storeAccessToken(token)
     }

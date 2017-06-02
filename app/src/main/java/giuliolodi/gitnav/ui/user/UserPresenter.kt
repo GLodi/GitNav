@@ -142,4 +142,17 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 ))
     }
 
+    override fun updateLoggedUser(user: User) {
+        getCompositeDisposable().add(getDataManager().updateUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {},
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
 }

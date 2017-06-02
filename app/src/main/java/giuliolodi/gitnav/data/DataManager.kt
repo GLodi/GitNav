@@ -40,6 +40,13 @@ interface DataManager : ApiHelper, PrefsHelper {
     fun tryAuthentication(username: String, password: String): Completable
 
     /**
+     * Update logged user information. This is called when user opens his own user  page
+     * @param user
+     * @return Completable
+     */
+    fun updateUser(user: User): Completable
+
+    /**
      * Get user from username.
      * @param username
      * @return Observable<User>

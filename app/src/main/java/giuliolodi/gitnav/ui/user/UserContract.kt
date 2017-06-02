@@ -76,6 +76,8 @@ interface UserContract {
 
         fun unFollowUser(username: String)
 
+        fun updateLoggedUser(user: User)
+
     }
 
 }
