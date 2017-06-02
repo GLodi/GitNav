@@ -209,4 +209,12 @@ interface ApiHelper {
      */
     fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Observable<List<SearchUser>>
 
+    /**
+     * Searches code
+     * @param token
+     * @param query
+     * @return Observable<List<CodeSearchResult>>
+     */
+    fun apiSearchCode(token: String, query: String): Observable<List<CodeSearchResult>>
+
 }

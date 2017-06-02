@@ -25,7 +25,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
     <item
-        android:id="@+id/sort_icon"
+        android:id="@+id/search_sort_icon"
         android:title=""
         android:icon="@drawable/ic_sort_white_24dp"
         app:showAsAction="always">

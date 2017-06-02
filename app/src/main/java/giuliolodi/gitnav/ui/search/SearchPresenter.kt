@@ -74,7 +74,22 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                 ))
     }
 
-    override fun onSearchCode(query: String, filter: HashMap<String,String>) {
+    override fun onSearchCode(query: String) {
+        getCompositeDisposable().add(getDataManager().searchCode(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoading() }
+                .subscribe(
+                        { codeList ->
+                            getView().hideLoading()
+                            getView().showCode(codeList)
+                        },
+                        { throwable ->
+                            getView().hideLoading()
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
     override fun unsubscribe() {

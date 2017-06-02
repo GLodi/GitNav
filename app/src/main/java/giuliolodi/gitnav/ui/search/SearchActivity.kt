@@ -44,6 +44,7 @@ import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.RxUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.CodeSearchResult
 import org.eclipse.egit.github.core.SearchUser
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -111,7 +112,9 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                                 }
                     }
                     2 -> {
-
+                        search_activity_no.visibility = View.GONE
+                        search_activity_rv.adapter = SearchCodeAdapter()
+                        onCodeSearch()
                     }
                 }
             }
@@ -127,7 +130,8 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                         mPresenter.unsubscribe()
                     }
                     2 -> {
-
+                        (search_activity_rv.adapter as SearchCodeAdapter).clear()
+                        mPresenter.unsubscribe()
                     }
                 }
             }
@@ -138,6 +142,7 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
     }
 
     private fun onRepoSearch() {
+        mMenu?.findItem(R.id.search_sort_icon)?.isVisible = true
         mMenu?.findItem(R.id.search_sort_default)?.isChecked = true
         mMenu?.findItem(R.id.search_sort_alphabetical)?.isVisible = true
         mMenu?.findItem(R.id.search_sort_updated)?.isVisible = true
@@ -148,6 +153,7 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
     }
 
     private fun onUserSearch() {
+        mMenu?.findItem(R.id.search_sort_icon)?.isVisible = true
         mMenu?.findItem(R.id.search_sort_default)?.isChecked = true
         mMenu?.findItem(R.id.search_sort_alphabetical)?.isVisible = false
         mMenu?.findItem(R.id.search_sort_updated)?.isVisible = false
@@ -155,6 +161,10 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
         mMenu?.findItem(R.id.search_sort_stars)?.isVisible = false
         mMenu?.findItem(R.id.search_sort_repos)?.isVisible = true
         mMenu?.findItem(R.id.search_sort_followers)?.isVisible = true
+    }
+
+    private fun onCodeSearch() {
+        mMenu?.findItem(R.id.search_sort_icon)?.isVisible = false
     }
 
     override fun showRepos(repoList: List<Repository>) {
@@ -171,6 +181,14 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
         if (userList.isEmpty()) {
             search_activity_no.visibility = View.VISIBLE
             search_activity_no.text = getString(R.string.no_users)
+        }
+    }
+
+    override fun showCode(codeList: List<CodeSearchResult>) {
+        (search_activity_rv.adapter as SearchCodeAdapter).addCodeList(codeList)
+        if (codeList.isEmpty()) {
+            search_activity_no.visibility = View.VISIBLE
+            search_activity_no.text = getString(R.string.no_code)
         }
     }
 
@@ -210,6 +228,11 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                                     (search_activity_rv.adapter as SearchUserAdapter).clear()
                                     search_activity_no.visibility = View.GONE
                                     mPresenter.onSearchUsers(query, mFilter)
+                                }
+                                2 -> {
+                                    (search_activity_rv.adapter as SearchCodeAdapter).clear()
+                                    search_activity_no.visibility = View.GONE
+                                    mPresenter.onSearchCode(query)
                                 }
                             }
                         },

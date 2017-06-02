@@ -306,4 +306,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiSearchCode(token: String, query: String): Observable<List<CodeSearchResult>> {
+        return Observable.defer {
+            val repoService: RepositoryService = RepositoryService()
+            repoService.client.setOAuth2Token(token)
+            Observable.just(repoService.searchCode(query))
+        }
+    }
+
 }

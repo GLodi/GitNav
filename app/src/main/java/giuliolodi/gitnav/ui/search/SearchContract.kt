@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.search
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.CodeSearchResult
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.SearchUser
 
@@ -32,6 +33,8 @@ interface SearchContract {
         fun showRepos(repoList: List<Repository>)
 
         fun showUsers(userList: List<SearchUser>)
+
+        fun showCode(codeList: List<CodeSearchResult>)
 
         fun showLoading()
 
@@ -48,7 +51,7 @@ interface SearchContract {
 
         fun onSearchUsers(query: String, filter: HashMap<String,String>)
 
-        fun onSearchCode(query: String, filter: HashMap<String,String>)
+        fun onSearchCode(query: String)
 
         fun unsubscribe()
 

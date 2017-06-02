@@ -23,10 +23,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:id="@+id/code_row_ll">
+    android:id="@+id/row_code_ll">
 
     <TextView
-        android:id="@+id/code_row_name"
+        android:id="@+id/row_code_name"
         android:text="FileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,13 +36,23 @@
         android:maxLines="1"/>
 
     <TextView
-        android:id="@+id/code_row_path"
+        android:id="@+id/row_code_path"
         android:text="pathtofile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textColor="#000000"
         android:alpha="0.54"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/row_code_repo"
+        android:text="repo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:alpha="0.87"
         android:maxLines="1"/>
 
 </LinearLayout>
