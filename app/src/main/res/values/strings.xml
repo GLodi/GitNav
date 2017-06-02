@@ -110,6 +110,7 @@
     <string name="following">Following</string>
     <string name="name">Name</string>
     <string name="repos_owned">Repos owned</string>
+    <string name="def">Default</string>
 
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>

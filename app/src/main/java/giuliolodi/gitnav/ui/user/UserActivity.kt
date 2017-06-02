@@ -41,8 +41,7 @@ import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.ui.base.BaseActivity
-import giuliolodi.gitnav.ui.repositories.RepoListAdapter
-import giuliolodi.gitnav.utils.NetworkUtils
+import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_followers.*
@@ -267,6 +266,7 @@ class UserActivity : BaseActivity(), UserContract.View {
     override fun showUserRepos(repoList: List<Repository>) {
         LOADING_REPOS = false
         (user_repos_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (user_repos_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
         if (PAGE_N_REPOS == 1 && repoList.isEmpty())
             user_repos_tv.visibility = View.VISIBLE
     }

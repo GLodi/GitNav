@@ -188,12 +188,12 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiIsGistStarred(mPrefsHelper.getToken(), gistId)
     }
 
-    override fun searchRepos(query: String): Observable<List<Repository>> {
-        return mApiHelper.apiSearchRepos(mPrefsHelper.getToken(), query)
+    override fun searchRepos(query: String, filter: HashMap<String,String>): Observable<List<Repository>> {
+        return mApiHelper.apiSearchRepos(mPrefsHelper.getToken(), query, filter)
     }
 
-    override fun searchUsers(query: String): Observable<List<SearchUser>> {
-        return mApiHelper.apiSearchUsers(mPrefsHelper.getToken(), query)
+    override fun searchUsers(query: String, filter: HashMap<String,String>): Observable<List<SearchUser>> {
+        return mApiHelper.apiSearchUsers(mPrefsHelper.getToken(), query, filter)
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
@@ -268,12 +268,12 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiIsGistStarred(token, gistId)
     }
 
-    override fun apiSearchRepos(token: String, query: String): Observable<List<Repository>> {
-        return mApiHelper.apiSearchRepos(token, query)
+    override fun apiSearchRepos(token: String, query: String, filter: HashMap<String,String>): Observable<List<Repository>> {
+        return mApiHelper.apiSearchRepos(token, query, filter)
     }
 
-    override fun apiSearchUsers(token: String, query: String): Observable<List<SearchUser>> {
-        return mApiHelper.apiSearchUsers(token, query)
+    override fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Observable<List<SearchUser>> {
+        return mApiHelper.apiSearchUsers(token, query, filter)
     }
 
 }

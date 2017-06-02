@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.starred
+package giuliolodi.gitnav.ui.search
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -23,7 +23,7 @@ import android.view.ViewGroup
 import giuliolodi.gitnav.R
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.row_user.view.*
+import kotlinx.android.synthetic.main.row_search_user.view.*
 import org.eclipse.egit.github.core.SearchUser
 
 /**
@@ -35,21 +35,22 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mUserList: MutableList<SearchUser?> = arrayListOf()
     private val onImageClick: PublishSubject<String> = PublishSubject.create()
 
-    fun getImageClicks(): Observable<String> {
+    fun getPositionClicks(): Observable<String> {
         return onImageClick
     }
 
     class UserHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (user: SearchUser) = with(itemView) {
-            row_user_image.visibility = View.GONE
             if (user.name == null) {
-                row_user_fullname.text = user.login
-                row_user_username.visibility = View.GONE
+                row_search_user_fullname.text = user.login
+                row_search_user_username.visibility = View.GONE
             }
             else {
-                row_user_fullname.text = user.name
-                row_user_username.text = user.login
+                row_search_user_fullname.text = user.name
+                row_search_user_username.text = user.login
             }
+            row_search_user_followers.text = user.followers.toString()
+            row_search_user_repos.text = user.publicRepos.toString()
         }
     }
 
@@ -58,7 +59,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val root: RecyclerView.ViewHolder
         if (viewType == 1) {
-            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_user, parent, false))
+            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_search_user, parent, false))
             root = UserHolder(view)
         } else  {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_loading, parent, false))
@@ -71,7 +72,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is UserHolder) {
             val user = mUserList[position]!!
             holder.bind(user)
-            holder.itemView.row_user_ll.setOnClickListener { onImageClick.onNext(mUserList[position]?.login) }
+            holder.itemView.row_search_user_ll.setOnClickListener { onImageClick.onNext(mUserList[position]?.login) }
         }
     }
 

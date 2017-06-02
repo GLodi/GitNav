@@ -23,7 +23,7 @@ import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.ui.gist.GistActivity
 import giuliolodi.gitnav.ui.gistlist.GistListActivity
 import giuliolodi.gitnav.ui.login.LoginActivity
-import giuliolodi.gitnav.ui.repositories.RepoListActivity
+import giuliolodi.gitnav.ui.repositorylist.RepoListActivity
 import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity

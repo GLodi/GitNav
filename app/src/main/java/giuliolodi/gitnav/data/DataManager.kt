@@ -178,15 +178,17 @@ interface DataManager : ApiHelper, PrefsHelper {
     /**
      * Searches for repositories
      * @param query
+     * @param filter
      * @return Observable<List<Repository>>
      */
-    fun searchRepos(query: String): Observable<List<Repository>>
+    fun searchRepos(query: String, filter: HashMap<String,String>): Observable<List<Repository>>
 
     /**
      * Searches for users
      * @param query
+     * @param filter
      * @return Observable<List<User>>
      */
-    fun searchUsers(query: String): Observable<List<SearchUser>>
+    fun searchUsers(query: String, filter: HashMap<String,String>): Observable<List<SearchUser>>
 
 }

@@ -31,7 +31,6 @@ import java.io.IOException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
-
 /**
  * Created by giulio on 12/05/2017.
  */
@@ -142,7 +141,7 @@ class ApiHelperImpl : ApiHelper {
             val repositoryService: RepositoryService = RepositoryService()
             repositoryService.client.setOAuth2Token(token)
             when (filter?.get("sort")) {
-                "stars" -> Observable.just(ArrayList(repositoryService.getRepositories(username).sortedByDescending { it.watchers }))
+                "stars" -> Observable.just(repositoryService.getRepositories(username).sortedByDescending { it.watchers })
                 else -> Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
             }
         }
@@ -153,9 +152,10 @@ class ApiHelperImpl : ApiHelper {
             val starService: StarService = StarService()
             starService.client.setOAuth2Token(token)
             when (filter?.get("sort")) {
-                "stars" -> Observable.just(ArrayList(starService.getStarred(username).sortedByDescending { it.watchers }))
-                "pushed" -> Observable.just(ArrayList(starService.getStarred(username).sortedByDescending { it.pushedAt }))
-                "alphabetical" -> Observable.just(ArrayList(starService.getStarred(username).sortedBy { it.name }))
+                "stars" -> Observable.just(starService.getStarred(username).sortedByDescending { it.watchers })
+                "pushed" -> Observable.just(starService.getStarred(username).sortedByDescending { it.pushedAt })
+                "updated" -> Observable.just(starService.getStarred(username).sortedByDescending { it.updatedAt })
+                "alphabetical" -> Observable.just(starService.getStarred(username).sortedBy { it.name })
                 else -> Observable.just(ArrayList(starService.pageStarred(username, filter, pageN, itemsPerPage).next()))
             }
         }
@@ -280,19 +280,29 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiSearchRepos(token: String, query: String): Observable<List<Repository>> {
+    override fun apiSearchRepos(token: String, query: String, filter: HashMap<String,String>): Observable<List<Repository>> {
         return Observable.defer {
             val repoService: RepositoryService = RepositoryService()
             repoService.client.setOAuth2Token(token)
-            Observable.just(repoService.searchRepositories(query))
+            when (filter["sort"]) {
+                "stars" -> Observable.just(repoService.searchRepositories(query).sortedByDescending { it.watchers })
+                "pushed" -> Observable.just(repoService.searchRepositories(query).sortedByDescending { it.pushedAt })
+                "updated" -> Observable.just(repoService.searchRepositories(query).sortedByDescending { it.updatedAt })
+                "full_name" -> Observable.just(repoService.searchRepositories(query).sortedBy { it.name })
+                else -> Observable.just(repoService.searchRepositories(query))
+            }
         }
     }
 
-    override fun apiSearchUsers(token: String, query: String): Observable<List<SearchUser>> {
+    override fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Observable<List<SearchUser>> {
         return Observable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
-            Observable.just(userService.searchUsers(query))
+            when (filter["sort"]) {
+                "repos" -> Observable.just(userService.searchUsers(query).sortedByDescending { it.publicRepos })
+                "followers" -> Observable.just(userService.searchUsers(query).sortedByDescending { it.followers })
+                else -> Observable.just(userService.searchUsers(query))
+            }
         }
     }
 

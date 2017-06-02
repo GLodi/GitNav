@@ -44,11 +44,11 @@ interface SearchContract {
     @PerActivity
     interface Presenter<V: SearchContract.View> : BaseContract.Presenter<V> {
 
-        fun onSearchRepos(query: String)
+        fun onSearchRepos(query: String, filter: HashMap<String,String>)
 
-        fun onSearchUsers(query: String)
+        fun onSearchUsers(query: String, filter: HashMap<String,String>)
 
-        fun onSearchCode(query: String)
+        fun onSearchCode(query: String, filter: HashMap<String,String>)
 
         fun unsubscribe()
 

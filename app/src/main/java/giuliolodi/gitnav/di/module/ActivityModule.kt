@@ -30,8 +30,8 @@ import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
-import giuliolodi.gitnav.ui.repositories.RepoListContract
-import giuliolodi.gitnav.ui.repositories.RepoListPresenter
+import giuliolodi.gitnav.ui.repositorylist.RepoListContract
+import giuliolodi.gitnav.ui.repositorylist.RepoListPresenter
 import giuliolodi.gitnav.ui.search.SearchContract
 import giuliolodi.gitnav.ui.search.SearchPresenter
 import giuliolodi.gitnav.ui.starred.StarredContract

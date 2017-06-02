@@ -38,8 +38,8 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun onSearchRepos(query: String) {
-        getCompositeDisposable().add(getDataManager().searchRepos(query)
+    override fun onSearchRepos(query: String, filter: HashMap<String,String>) {
+        getCompositeDisposable().add(getDataManager().searchRepos(query, filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { getView().showLoading() }
@@ -56,8 +56,8 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                 ))
     }
 
-    override fun onSearchUsers(query: String) {
-        getCompositeDisposable().add(getDataManager().searchUsers(query)
+    override fun onSearchUsers(query: String, filter: HashMap<String,String>) {
+        getCompositeDisposable().add(getDataManager().searchUsers(query, filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { getView().showLoading() }
@@ -74,7 +74,7 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                 ))
     }
 
-    override fun onSearchCode(query: String) {
+    override fun onSearchCode(query: String, filter: HashMap<String,String>) {
     }
 
     override fun unsubscribe() {

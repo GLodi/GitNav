@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.repositories
+package giuliolodi.gitnav.ui.repositorylist
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -33,9 +33,10 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
+    private var mFilter: HashMap<String,String> = HashMap()
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind (repo: Repository, p: PrettyTime) = with(itemView) {
+        fun bind (repo: Repository, p: PrettyTime, filter: HashMap<String, String>) = with(itemView) {
             row_repo_name.text = repo.owner.login + " / " + repo.name
             if (repo.description != null && repo.description != "")
                 row_repo_description.text = repo.description
@@ -48,11 +49,16 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             else
                 row_repo_language.text = repo.language
             row_repo_star_number.text = repo.watchers.toString()
-            row_repo_date.text = p.format(repo.createdAt)
             if (repo.isFork && repo.parent != null)
                 row_repo_forked.text = repo.parent.name
             else
                 row_repo_forked.visibility = View.GONE
+            when (filter["sort"]) {
+                "pushed" -> row_repo_date.text = p.format(repo.pushedAt)
+                "updated" -> row_repo_date.text = p.format(repo.updatedAt)
+                null -> row_repo_date.text = p.format(repo.createdAt)
+                else -> row_repo_date.text = p.format(repo.createdAt)
+            }
         }
     }
 
@@ -73,7 +79,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
-            holder.bind(repo, mPrettyTime)
+            holder.bind(repo, mPrettyTime, mFilter)
         }
     }
 
@@ -111,6 +117,10 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun clear() {
         mRepoList.clear()
         notifyDataSetChanged()
+    }
+
+    fun setFilter(filter: HashMap<String,String>) {
+        mFilter = filter
     }
 
 }

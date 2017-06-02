@@ -25,6 +25,54 @@
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
     <item
+        android:id="@+id/sort_icon"
+        android:title=""
+        android:icon="@drawable/ic_sort_white_24dp"
+        app:showAsAction="always">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/search_sort_default"
+                    android:title="@string/def"
+                    android:checked="true"/>
+
+                <item
+                    android:id="@+id/search_sort_updated"
+                    android:title="@string/updated" />
+
+                <item
+                    android:id="@+id/search_sort_pushed"
+                    android:title="@string/pushed" />
+
+                <item
+                    android:id="@+id/search_sort_alphabetical"
+                    android:title="@string/alphabetical" />
+
+                <item
+                    android:id="@+id/search_sort_stars"
+                    android:title="@string/stars" />
+
+                <item
+                    android:id="@+id/search_sort_repos"
+                    android:title="@string/repos_owned"
+                    android:visible="false"/>
+
+                <item
+                    android:id="@+id/search_sort_followers"
+                    android:title="@string/followers"
+                    android:visible="false"/>
+
+            </group>
+
+        </menu>
+
+    </item>
+
+
+    <item
         android:id="@+id/action_options"
         android:orderInCategory="100"
         android:title="@string/options"

@@ -115,6 +115,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
     override fun showRepos(repoList: List<Repository>) {
         LOADING = false
         (starred_activity_rv.adapter as StarredAdapter).addRepos(repoList)
+        (starred_activity_rv.adapter as StarredAdapter).setFilter(mFilter)
         if (PAGE_N == 1 && repoList.isEmpty())
             starred_activity_no_repo.visibility = View.VISIBLE
     }
@@ -141,7 +142,7 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
     private fun setupOnScrollListener() {
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING || mFilter["sort"] == "stars" || mFilter["sort"] == "pushed" || mFilter["sort"] == "alphabetical" )
+                if (LOADING || mFilter["sort"] == "stars" || mFilter["sort"] == "pushed" || mFilter["sort"] == "alphabetical" || mFilter["sort"] == "updated" )
                     return
                 val visibleItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).itemCount

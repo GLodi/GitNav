@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.repositories
+package giuliolodi.gitnav.ui.repositorylist
 
 import android.content.Context
 import android.content.Intent
@@ -33,7 +33,6 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_base_drawer.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.repo_list_activity.*
@@ -105,6 +104,7 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
     override fun showRepos(repoList: List<Repository>) {
         LOADING = false
         (repo_list_activity_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (repo_list_activity_rv.adapter as RepoListAdapter).setFilter(mFilter)
         if (PAGE_N == 1 && repoList.isEmpty())
             repo_list_activity_no_repo.visibility = View.VISIBLE
     }

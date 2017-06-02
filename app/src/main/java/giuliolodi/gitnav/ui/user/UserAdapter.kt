@@ -34,7 +34,6 @@ import org.eclipse.egit.github.core.User
 class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mUserList: MutableList<User?> = arrayListOf()
-
     private val onClickSubject: PublishSubject<String> = PublishSubject.create()
 
     fun getPositionClicks(): Observable<String> {

@@ -38,8 +38,9 @@ import android.support.v7.widget.SearchView
 import android.view.MenuItem
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
-import giuliolodi.gitnav.ui.repositories.RepoListAdapter
-import giuliolodi.gitnav.ui.starred.SearchUserAdapter
+import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
+import giuliolodi.gitnav.ui.search.SearchUserAdapter
+import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.RxUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -54,6 +55,9 @@ import java.util.concurrent.TimeUnit
 class SearchActivity : BaseDrawerActivity(), SearchContract.View {
 
     @Inject lateinit var mPresenter: SearchContract.Presenter<SearchContract.View>
+
+    private val mFilter: HashMap<String,String> = HashMap()
+    private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +80,8 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
         search_activity_rv.itemAnimator = DefaultItemAnimator()
         search_activity_rv.adapter = RepoListAdapter()
 
+        mFilter.put("sort", "default")
+
         tab_layout.visibility = View.VISIBLE
         tab_layout.setSelectedTabIndicatorHeight(0)
         tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
@@ -86,12 +92,23 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     0 -> {
+                        mFilter.put("sort", "default")
                         search_activity_no.visibility = View.GONE
                         search_activity_rv.adapter = RepoListAdapter()
+                        onRepoSearch()
                     }
                     1 -> {
+                        mFilter.put("sort", "default")
                         search_activity_no.visibility = View.GONE
                         search_activity_rv.adapter = SearchUserAdapter()
+                        onUserSearch()
+                        (search_activity_rv.adapter as SearchUserAdapter).getPositionClicks()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe { username ->
+                                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                                    overridePendingTransition(0,0)
+                                }
                     }
                     2 -> {
 
@@ -118,11 +135,31 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+    }
 
+    private fun onRepoSearch() {
+        mMenu?.findItem(R.id.search_sort_default)?.isChecked = true
+        mMenu?.findItem(R.id.search_sort_alphabetical)?.isVisible = true
+        mMenu?.findItem(R.id.search_sort_updated)?.isVisible = true
+        mMenu?.findItem(R.id.search_sort_pushed)?.isVisible = true
+        mMenu?.findItem(R.id.search_sort_stars)?.isVisible = true
+        mMenu?.findItem(R.id.search_sort_repos)?.isVisible = false
+        mMenu?.findItem(R.id.search_sort_followers)?.isVisible = false
+    }
+
+    private fun onUserSearch() {
+        mMenu?.findItem(R.id.search_sort_default)?.isChecked = true
+        mMenu?.findItem(R.id.search_sort_alphabetical)?.isVisible = false
+        mMenu?.findItem(R.id.search_sort_updated)?.isVisible = false
+        mMenu?.findItem(R.id.search_sort_pushed)?.isVisible = false
+        mMenu?.findItem(R.id.search_sort_stars)?.isVisible = false
+        mMenu?.findItem(R.id.search_sort_repos)?.isVisible = true
+        mMenu?.findItem(R.id.search_sort_followers)?.isVisible = true
     }
 
     override fun showRepos(repoList: List<Repository>) {
         (search_activity_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (search_activity_rv.adapter as RepoListAdapter).setFilter(mFilter)
         if (repoList.isEmpty()) {
             search_activity_no.visibility = View.VISIBLE
             search_activity_no.text = getString(R.string.no_repositories)
@@ -151,7 +188,8 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.search_menu, menu)
+        mMenu = menu
+        menuInflater.inflate(R.menu.search_menu, mMenu)
         val searchView = MenuItemCompat.getActionView(menu?.findItem(R.id.action_search)) as SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
@@ -166,12 +204,12 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                                 0 -> {
                                     (search_activity_rv.adapter as RepoListAdapter).clear()
                                     search_activity_no.visibility = View.GONE
-                                    mPresenter.onSearchRepos(query)
+                                    mPresenter.onSearchRepos(query, mFilter)
                                 }
                                 1 -> {
                                     (search_activity_rv.adapter as SearchUserAdapter).clear()
                                     search_activity_no.visibility = View.GONE
-                                    mPresenter.onSearchUsers(query)
+                                    mPresenter.onSearchUsers(query, mFilter)
                                 }
                             }
                         },
@@ -182,6 +220,47 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                         }
                 )
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        if (isNetworkAvailable()) {
+            when (item?.itemId) {
+                R.id.search_sort_default -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "default")
+                }
+                R.id.search_sort_updated -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "updated")
+                }
+                R.id.search_sort_pushed -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "pushed")
+                }
+                R.id.search_sort_alphabetical -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "full_name")
+                }
+                R.id.search_sort_stars -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "stars")
+                }
+                R.id.search_sort_repos -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "repos")
+                }
+                R.id.search_sort_followers -> {
+                    item.isChecked = true
+                    mFilter.put("sort", "followers")
+                }
+            }
+        }
+        else
+            Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

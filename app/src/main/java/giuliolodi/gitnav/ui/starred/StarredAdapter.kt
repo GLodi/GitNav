@@ -37,16 +37,16 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
     private val onImageClick: PublishSubject<String> = PublishSubject.create()
+    private var mFilter: HashMap<String,String> = HashMap()
 
     fun getImageClicks(): Observable<String> {
         return onImageClick
     }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind (repo: Repository, p: PrettyTime) = with(itemView) {
+        fun bind (repo: Repository, p: PrettyTime, filter: HashMap<String, String>) = with(itemView) {
             row_starred_repo_name.text = repo.owner.login + " / " + repo.name
             row_starred_star_number.text = repo.watchers.toString()
-            row_starred_repo_date.text = p.format(repo.createdAt)
             Picasso.with(context).load(repo.owner.avatarUrl).resize(100, 100).centerCrop().into(row_starred_author_icon)
             if (repo.description != null && repo.description != "")
                 row_starred_repo_description.text = repo.description
@@ -58,6 +58,12 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             else
                 row_starred_language.text = repo.language
+            when (filter["sort"]) {
+                "updated" -> row_starred_repo_date.text = p.format(repo.updatedAt)
+                "pushed" -> row_starred_repo_date.text = p.format(repo.pushedAt)
+                null -> row_starred_repo_date.text = p.format(repo.createdAt)
+                else -> row_starred_repo_date.text = p.format(repo.createdAt)
+            }
         }
     }
 
@@ -78,7 +84,7 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
-            holder.bind(repo, mPrettyTime)
+            holder.bind(repo, mPrettyTime, mFilter)
             holder.itemView.row_starred_author_icon.setOnClickListener { onImageClick.onNext(mRepoList[position]?.owner?.login) }
         }
     }
@@ -117,6 +123,10 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun clear() {
         mRepoList.clear()
         notifyDataSetChanged()
+    }
+
+    fun setFilter(filter: HashMap<String,String>) {
+        mFilter = filter
     }
 
 }
