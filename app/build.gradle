@@ -30,6 +30,7 @@ android {
         versionCode 3
         versionName "1.2"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -85,11 +86,11 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // Testing
     testCompile 'junit:junit:4.12'
+    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // Firebase
     compile 'com.google.firebase:firebase-crash:10.2.4'
