@@ -17,8 +17,12 @@
 package giuliolodi.gitnav.ui.user
 
 import android.os.Bundle
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
+import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
 import org.eclipse.egit.github.core.User
+import javax.inject.Inject
 
 /**
  * Created by giulio on 03/06/2017.
@@ -26,8 +30,30 @@ import org.eclipse.egit.github.core.User
 
 class UserActivity2 : BaseActivity(), UserContract2.View {
 
+    @Inject lateinit var mPresenter: UserContract2.Presenter<UserContract2.View>
+
+    private lateinit var username: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.user_activity2)
+
+        initLayout()
+
+        username = intent.getStringExtra("username")
+
+        getActivityComponent().inject(this)
+
+        mPresenter.onAttach(this)
+
+        if (isNetworkAvailable())
+            mPresenter.subscribe(username)
+        else
+            Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    private fun initLayout() {
+
     }
 
     override fun showUser(mapUserFollowed: Map<User, String>) {

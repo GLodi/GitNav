@@ -39,7 +39,9 @@ import giuliolodi.gitnav.ui.starred.StarredPresenter
 import giuliolodi.gitnav.ui.trending.TrendingContract
 import giuliolodi.gitnav.ui.trending.TrendingPresenter
 import giuliolodi.gitnav.ui.user.UserContract
+import giuliolodi.gitnav.ui.user.UserContract2
 import giuliolodi.gitnav.ui.user.UserPresenter
+import giuliolodi.gitnav.ui.user.UserPresenter2
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -116,6 +118,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideSearchPresenter(presenter: SearchPresenter<SearchContract.View>): SearchContract.Presenter<SearchContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideUser2Presenter(presenter: UserPresenter2<UserContract2.View>): UserContract2.Presenter<UserContract2.View> {
         return presenter
     }
 

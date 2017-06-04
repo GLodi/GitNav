@@ -28,6 +28,7 @@ import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.ui.user.UserActivity2
 
 /**
  * Created by giulio on 12/05/2017.
@@ -54,5 +55,7 @@ interface ActivityComponent {
     fun inject(gistActivity: GistActivity)
 
     fun inject(searchActivity: SearchActivity)
+
+    fun inject(userActivity2: UserActivity2)
 
 }
