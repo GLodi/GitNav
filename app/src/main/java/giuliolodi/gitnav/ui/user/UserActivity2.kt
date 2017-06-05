@@ -16,11 +16,15 @@
 
 package giuliolodi.gitnav.ui.user
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
+import kotlinx.android.synthetic.main.user_activity2.*
 import org.eclipse.egit.github.core.User
 import javax.inject.Inject
 
@@ -32,6 +36,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     @Inject lateinit var mPresenter: UserContract2.Presenter<UserContract2.View>
 
+    private lateinit var mUser: User
     private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,10 +58,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun initLayout() {
-
+        setSupportActionBar(user_activity2_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun showUser(mapUserFollowed: Map<User, String>) {
+        mUser = mapUserFollowed.keys.first()
+        user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
+        Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
     }
 
     override fun showLoading() {
@@ -67,4 +76,11 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     override fun showError(error: String) {
     }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, UserActivity2::class.java)
+        }
+    }
+
 }

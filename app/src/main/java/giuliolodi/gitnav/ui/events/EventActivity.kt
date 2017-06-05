@@ -38,6 +38,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.ui.user.UserActivity2
 import giuliolodi.gitnav.utils.NetworkUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -89,7 +90,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
-                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
                     overridePendingTransition(0,0)
                 }
         (event_activity_rv.adapter as EventAdapter).getUserClicks()

@@ -43,6 +43,7 @@ import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.ui.user.UserActivity2
 
 /**
  * Created by giulio on 15/05/2017.
@@ -92,8 +93,8 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
         nav_click.setOnClickListener {
             drawer_layout.closeDrawer(GravityCompat.START)
             Handler().postDelayed({
-                startActivity(Intent(applicationContext, UserActivity::class.java).putExtra("username", username))
-                overridePendingTransition(0, 0)
+                startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                overridePendingTransition(0,0)
             }, DRAWER_DELAY)
         }
     }

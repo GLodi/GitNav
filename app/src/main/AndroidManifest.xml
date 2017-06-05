@@ -63,6 +63,11 @@
         </activity>
 
         <activity
+            android:name=".ui.user.UserActivity2"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".ui.gistlist.GistListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
