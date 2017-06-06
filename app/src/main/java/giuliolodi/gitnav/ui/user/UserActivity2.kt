@@ -61,6 +61,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     private fun initLayout() {
         setSupportActionBar(user_activity2_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
+        user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+
+            }
+            true
+        }
     }
 
     override fun showUser(mapUserFollowed: Map<User, String>) {
