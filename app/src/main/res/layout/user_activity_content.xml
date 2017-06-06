@@ -17,13 +17,13 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/user_activity_content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquam sapien eros, non porttitor tellus pharetra quis. Sed ac nibh lobortis, efficitur dolor et, egestas neque. Sed sed purus eu libero bibendum ultricies. Morbi turpis quam, facilisis vel suscipit sed, viverra non libero. Vivamus luctus ac nisi a malesuada. Nam quis nibh nulla. Mauris condimentum risus eget lacinia congue. Proin vitae aliquet sapien. Cras fermentum, mauris nec tincidunt semper, lorem leo facilisis massa, sit amet ultricies risus nulla a mauris. Suspendisse pulvinar libero porttitor, maximus sem vel, iaculis felis. Suspendisse rutrum condimentum finibus.
 
 Donec maximus convallis placerat. In facilisis tempus nunc auctor vestibulum. Nam massa lorem, blandit sit amet diam id, feugiat consectetur eros. Etiam ornare, metus non dignissim cursus, lorem tellus aliquet metus, eget pellentesque augue quam a quam. Etiam vel tincidunt erat, sollicitudin gravida turpis. Aliquam laoreet vulputate lacus vitae suscipit. Duis dapibus enim ipsum, in commodo leo luctus sit amet. Praesent velit lacus, pellentesque viverra porta id, fringilla nec nibh. Pellentesque eget lorem non enim bibendum commodo. Nulla et lectus a neque iaculis varius ut ut nibh. Mauris sollicitudin magna ut lacus sollicitudin maximus. Donec rhoncus dui nec lorem lobortis facilisis. Nam maximus in nulla eget imperdiet. Donec dignissim nulla eget enim euismod aliquam. Donec dapibus nisl ultrices risus dignissim imperdiet. Vestibulum ac velit lectus.

@@ -19,6 +19,7 @@ package giuliolodi.gitnav.ui.user
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
@@ -75,6 +76,20 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showError(error: String) {
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
     }
 
     companion object {
