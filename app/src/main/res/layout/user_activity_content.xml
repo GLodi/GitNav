@@ -15,9 +15,16 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/user_activity_content_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/user_activity_content_text"
@@ -34,4 +41,4 @@ Nulla ullamcorper arcu urna, sit amet ultrices dui volutpat consectetur. Mauris 
 
 Morbi euismod vehicula vestibulum. Duis pretium dolor non eros dictum aliquet. Praesent eu venenatis tortor. Phasellus orci ligula, imperdiet eu nibh dignissim, elementum iaculis sapien. Aliquam ultrices condimentum purus. Fusce quis dui nec lectus eleifend lacinia eu vestibulum leo. Donec a arcu orci."/>
 
-</LinearLayout>
+</RelativeLayout>

@@ -84,7 +84,8 @@
             app:backgroundTint="@color/colorAccent"
             app:srcCompat="@drawable/ic_star_empty_24dp"
             app:layout_anchor="@id/user_activity2_appbar"
-            app:layout_anchorGravity="bottom|right|end" />
+            app:layout_anchorGravity="bottom|right|end"
+            android:visibility="invisible"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

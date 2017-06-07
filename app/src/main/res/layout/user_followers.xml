@@ -40,7 +40,6 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:indeterminate="true"
         android:layout_centerInParent="true"
-        android:padding="10dp"
         android:visibility="gone"/>
 
 </RelativeLayout>

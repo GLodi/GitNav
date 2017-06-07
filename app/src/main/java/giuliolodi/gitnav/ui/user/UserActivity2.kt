@@ -19,7 +19,9 @@ package giuliolodi.gitnav.ui.user
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
@@ -39,6 +41,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     private lateinit var mUser: User
     private lateinit var username: String
+
+    private var IS_FOLLOWED: Boolean = false
+    private var IS_LOGGED_USER: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +70,26 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-
+                R.id.user_activity_bottom_menu_following -> {
+                    user_activity2_appbar.setExpanded(false)
+                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                }
+                R.id.user_activity_bottom_menu_followers -> {
+                    user_activity2_appbar.setExpanded(false)
+                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                }
+                R.id.user_activity_bottom_menu_info -> {
+                    user_activity2_appbar.setExpanded(true)
+                    user_activity2_nestedscrollview.isNestedScrollingEnabled = true
+                }
+                R.id.user_activity_bottom_menu_repos -> {
+                    user_activity2_appbar.setExpanded(false)
+                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                }
+                R.id.user_activity_bottom_menu_events -> {
+                    user_activity2_appbar.setExpanded(false)
+                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                }
             }
             true
         }
@@ -73,6 +97,18 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     override fun showUser(mapUserFollowed: Map<User, String>) {
         mUser = mapUserFollowed.keys.first()
+        if (mapUserFollowed[mUser] == "f")
+            IS_FOLLOWED = true
+        else if (mapUserFollowed[mUser] == "u")
+            IS_LOGGED_USER = true
+
+        user_activity2_fab.visibility = View.VISIBLE
+
+        if (IS_FOLLOWED)
+            user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
+        else
+            user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty_24dp))
+
         user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
     }
