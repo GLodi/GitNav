@@ -16,29 +16,39 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <ProgressBar
+        android:id="@+id/user_activity_content_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/user_activity_content_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
 
     <TextView
         android:id="@+id/user_activity_content_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/user_activity_content_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquam sapien eros, non porttitor tellus pharetra quis. Sed ac nibh lobortis, efficitur dolor et, egestas neque. Sed sed purus eu libero bibendum ultricies. Morbi turpis quam, facilisis vel suscipit sed, viverra non libero. Vivamus luctus ac nisi a malesuada. Nam quis nibh nulla. Mauris condimentum risus eget lacinia congue. Proin vitae aliquet sapien. Cras fermentum, mauris nec tincidunt semper, lorem leo facilisis massa, sit amet ultricies risus nulla a mauris. Suspendisse pulvinar libero porttitor, maximus sem vel, iaculis felis. Suspendisse rutrum condimentum finibus.
-
-Donec maximus convallis placerat. In facilisis tempus nunc auctor vestibulum. Nam massa lorem, blandit sit amet diam id, feugiat consectetur eros. Etiam ornare, metus non dignissim cursus, lorem tellus aliquet metus, eget pellentesque augue quam a quam. Etiam vel tincidunt erat, sollicitudin gravida turpis. Aliquam laoreet vulputate lacus vitae suscipit. Duis dapibus enim ipsum, in commodo leo luctus sit amet. Praesent velit lacus, pellentesque viverra porta id, fringilla nec nibh. Pellentesque eget lorem non enim bibendum commodo. Nulla et lectus a neque iaculis varius ut ut nibh. Mauris sollicitudin magna ut lacus sollicitudin maximus. Donec rhoncus dui nec lorem lobortis facilisis. Nam maximus in nulla eget imperdiet. Donec dignissim nulla eget enim euismod aliquam. Donec dapibus nisl ultrices risus dignissim imperdiet. Vestibulum ac velit lectus.
-
-Pellentesque elementum rhoncus diam ut dapibus. Fusce fermentum hendrerit mauris, a malesuada libero porta sed. Suspendisse bibendum vestibulum sapien. Duis vel pulvinar turpis. Integer eget suscipit nisl. Vivamus quis ultrices mi, ac vulputate lectus. Praesent mollis laoreet massa vitae ornare. Aliquam sed suscipit erat. Nulla consequat non ligula eget dictum.
-
-Nulla ullamcorper arcu urna, sit amet ultrices dui volutpat consectetur. Mauris eget ex sed nibh posuere aliquet. Ut aliquet tellus erat, eu aliquet orci egestas ut. Donec id ex ac ante tempus maximus. Etiam viverra risus diam, in dictum odio fringilla nec. Etiam gravida, mauris id lacinia vehicula, urna arcu vestibulum urna, sodales pretium augue ante et urna. Nullam ac lacus suscipit, imperdiet dolor a, porta sapien. Aliquam erat volutpat. Donec orci sem, suscipit vel augue a, venenatis ornare risus. Ut rhoncus, ligula at commodo pulvinar, mi diam tincidunt nulla, vitae lacinia lectus felis eget tortor. Vivamus ullamcorper porta ante venenatis pretium.
-
-Morbi euismod vehicula vestibulum. Duis pretium dolor non eros dictum aliquet. Praesent eu venenatis tortor. Phasellus orci ligula, imperdiet eu nibh dignissim, elementum iaculis sapien. Aliquam ultrices condimentum purus. Fusce quis dui nec lectus eleifend lacinia eu vestibulum leo. Donec a arcu orci."/>
+    <!--
+        This view is needed to prevent the bottom navigation bar
+        from overlapping content.
+    -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/user_activity_content_rv"/>
 
 </RelativeLayout>

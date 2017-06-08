@@ -19,15 +19,24 @@ package giuliolodi.gitnav.ui.user
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.squareup.picasso.Picasso
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
+import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
 import kotlinx.android.synthetic.main.user_activity2.*
+import kotlinx.android.synthetic.main.user_activity_content.*
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import javax.inject.Inject
 
@@ -44,6 +53,19 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     private var IS_FOLLOWED: Boolean = false
     private var IS_LOGGED_USER: Boolean = false
+
+    private var mFilterRepos: HashMap<String,String> = HashMap()
+    private var PAGE_N_REPOS = 1
+    private val ITEMS_PER_PAGE_REPOS = 10
+    private var LOADING_REPOS = false
+
+    private var PAGE_N_FOLLOWERS = 1
+    private val ITEMS_PER_PAGE_FOLLOWERS = 10
+    private var LOADING_FOLLOWERS = false
+
+    private var PAGE_N_FOLLOWING = 1
+    private val ITEMS_PER_PAGE_FOLLOWING = 10
+    private var LOADING_FOLLOWING = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +107,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 R.id.user_activity_bottom_menu_repos -> {
                     user_activity2_appbar.setExpanded(false)
                     user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                    onRepoNavClick()
                 }
                 R.id.user_activity_bottom_menu_events -> {
                     user_activity2_appbar.setExpanded(false)
@@ -113,13 +136,63 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
     }
 
+    private fun onRepoNavClick() {
+        mFilterRepos.put("sort","created")
+
+        val llmRepos = LinearLayoutManager(applicationContext)
+        llmRepos.orientation = LinearLayoutManager.VERTICAL
+        user_activity_content_rv.layoutManager = llmRepos
+        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
+        user_activity_content_rv.itemAnimator = DefaultItemAnimator()
+        user_activity_content_rv.adapter = RepoListAdapter()
+
+        val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING_REPOS || mFilterRepos["sort"] == "stars")
+                    return
+                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        LOADING_REPOS = true
+                        PAGE_N_REPOS += 1
+                        (user_activity_content_rv.adapter as RepoListAdapter).addLoading()
+                        mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_activity_content_rv.setOnScrollListener(mScrollListenerRepos)
+
+        showLoading()
+        mPresenter.getRepos(mUser.login, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+    }
+
+    override fun showUserRepos(repoList: List<Repository>) {
+        LOADING_REPOS = false
+        (user_activity_content_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
+        if (PAGE_N_REPOS == 1 && repoList.isEmpty()) {
+            user_activity_content_no.visibility = View.VISIBLE
+            user_activity_content_no.text = getString(R.string.no_repositories)
+        }
+    }
+
     override fun showLoading() {
+        user_activity_content_progress_bar.visibility = View.VISIBLE
+
     }
 
     override fun hideLoading() {
+        if (user_activity_content_progress_bar.visibility == View.VISIBLE)
+            user_activity_content_progress_bar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
+        Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

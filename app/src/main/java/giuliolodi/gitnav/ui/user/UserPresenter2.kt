@@ -61,4 +61,21 @@ class UserPresenter2<V: UserContract2.View> : BasePresenter<V>, UserContract2.Pr
                 ))
     }
 
+    override fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>) {
+        getCompositeDisposable().add(getDataManager().pageRepos(username, pageN, itemsPerPage, filter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoList ->
+                            getView().hideLoading()
+                            getView().showUserRepos(repoList)
+                        },
+                        { throwable ->
+                            getView().hideLoading()
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
 }

@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.user
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 
 /**
@@ -36,12 +37,16 @@ interface UserContract2 {
 
         fun showError(error: String)
 
+        fun showUserRepos(repoList: List<Repository>)
+
     }
 
     @PerActivity
     interface Presenter<V: BaseContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(username: String)
+
+        fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
 
     }
 
