@@ -88,17 +88,15 @@ class GistListActivity : BaseDrawerActivity(), GistListContract.View {
     }
 
     override fun showMineGists(gistList: List<Gist>) {
-        LOADING_MINE = false
         (gist_list_mine_rv.adapter as GistListAdapter).addGists(gistList)
-        if (PAGE_N_MINE == 1 && gistList.isEmpty())
-            gist_list_mine_no.visibility = View.VISIBLE
+        if (PAGE_N_MINE == 1 && gistList.isEmpty()) gist_list_mine_no.visibility = View.VISIBLE
+        LOADING_MINE = false
     }
 
     override fun showStarredGists(gistList: List<Gist>) {
-        LOADING_STARRED = false
         (gist_list_starred_rv.adapter as GistListAdapter).addGists(gistList)
-        if (PAGE_N_STARRED == 1 && gistList.isEmpty())
-            gist_list_starred_no.visibility = View.VISIBLE
+        if (PAGE_N_STARRED == 1 && gistList.isEmpty()) gist_list_starred_no.visibility = View.VISIBLE
+        LOADING_STARRED = false
     }
 
     override fun showLoadingMine() {

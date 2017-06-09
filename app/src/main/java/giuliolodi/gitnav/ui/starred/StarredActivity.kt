@@ -113,11 +113,10 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
     }
 
     override fun showRepos(repoList: List<Repository>) {
-        LOADING = false
         (starred_activity_rv.adapter as StarredAdapter).addRepos(repoList)
         (starred_activity_rv.adapter as StarredAdapter).setFilter(mFilter)
-        if (PAGE_N == 1 && repoList.isEmpty())
-            starred_activity_no_repo.visibility = View.VISIBLE
+        if (PAGE_N == 1 && repoList.isEmpty()) starred_activity_no_repo.visibility = View.VISIBLE
+        LOADING = false
     }
 
     override fun showLoading() {

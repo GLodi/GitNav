@@ -116,6 +116,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             }
             true
         }
+        user_activity2_bottomnv.setOnNavigationItemReselectedListener {  }
     }
 
     override fun showUser(mapUserFollowed: Map<User, String>) {
@@ -145,6 +146,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_activity_content_rv.itemAnimator = DefaultItemAnimator()
         user_activity_content_rv.adapter = RepoListAdapter()
+        (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
 
         val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -172,13 +174,12 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showUserRepos(repoList: List<Repository>) {
-        LOADING_REPOS = false
         (user_activity_content_rv.adapter as RepoListAdapter).addRepos(repoList)
-        (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
         if (PAGE_N_REPOS == 1 && repoList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_repositories)
         }
+        LOADING_REPOS = false
     }
 
     override fun showLoading() {

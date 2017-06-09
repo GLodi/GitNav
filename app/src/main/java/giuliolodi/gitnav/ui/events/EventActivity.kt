@@ -118,10 +118,9 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
     }
 
     override fun showEvents(eventList: List<Event>) {
-        LOADING = false
         (event_activity_rv.adapter as EventAdapter).addEvents(eventList)
-        if (PAGE_N == 1 && eventList.isEmpty())
-            event_activity_no_events.visibility = View.VISIBLE
+        if (PAGE_N == 1 && eventList.isEmpty()) event_activity_no_events.visibility = View.VISIBLE
+        LOADING = false
     }
 
     override fun showLoading() {

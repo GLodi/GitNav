@@ -102,11 +102,10 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
     }
 
     override fun showRepos(repoList: List<Repository>) {
-        LOADING = false
         (repo_list_activity_rv.adapter as RepoListAdapter).addRepos(repoList)
         (repo_list_activity_rv.adapter as RepoListAdapter).setFilter(mFilter)
-        if (PAGE_N == 1 && repoList.isEmpty())
-            repo_list_activity_no_repo.visibility = View.VISIBLE
+        if (PAGE_N == 1 && repoList.isEmpty()) repo_list_activity_no_repo.visibility = View.VISIBLE
+        LOADING = false
     }
 
     override fun showLoading() {
