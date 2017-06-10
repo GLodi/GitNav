@@ -70,7 +70,7 @@ class SearchCodeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addCodeList(repoList: List<CodeSearchResult>) {
         if (mCodeList.isEmpty()) {
             mCodeList.clear()
-            mCodeList.addAll(repoList.toMutableList())
+            mCodeList.addAll(repoList)
             notifyDataSetChanged()
         }
         else {

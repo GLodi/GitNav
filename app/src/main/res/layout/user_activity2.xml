@@ -89,6 +89,13 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_activity2_coolayout">
+
+    </android.support.v7.widget.RecyclerView>
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/user_activity2_bottomnv"
         android:layout_width="match_parent"

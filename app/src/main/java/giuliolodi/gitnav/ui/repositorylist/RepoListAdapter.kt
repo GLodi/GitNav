@@ -92,7 +92,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addRepos(repoList: List<Repository>) {
         if (mRepoList.isEmpty()) {
             mRepoList.clear()
-            mRepoList.addAll(repoList.toMutableList())
+            mRepoList.addAll(repoList)
             notifyDataSetChanged()
         }
         else {

@@ -96,7 +96,28 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
                     overridePendingTransition(0,0)
                 }
 
-        setupOnScrollListener()
+        val mScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING || mFilter["sort"] == "stars" || mFilter["sort"] == "pushed" || mFilter["sort"] == "alphabetical" || mFilter["sort"] == "updated" )
+                    return
+                val visibleItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (starred_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        LOADING = true
+                        PAGE_N += 1
+                        (starred_activity_rv.adapter as StarredAdapter).addLoading()
+                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    }
+                    else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                        hideLoading()
+                    }
+                }
+            }
+        }
+        starred_activity_rv.setOnScrollListener(mScrollListener)
 
         starred_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         starred_activity_swipe.setOnRefreshListener {
@@ -136,31 +157,6 @@ class StarredActivity : BaseDrawerActivity(), StarredContract.View {
 
     override fun showNoRepo() {
         starred_activity_no_repo.visibility = View.VISIBLE
-    }
-
-    private fun setupOnScrollListener() {
-        val mScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING || mFilter["sort"] == "stars" || mFilter["sort"] == "pushed" || mFilter["sort"] == "alphabetical" || mFilter["sort"] == "updated" )
-                    return
-                val visibleItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (starred_activity_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (starred_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        LOADING = true
-                        PAGE_N += 1
-                        (starred_activity_rv.adapter as StarredAdapter).addLoading()
-                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-                    }
-                    else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
-                    }
-                }
-            }
-        }
-        starred_activity_rv.setOnScrollListener(mScrollListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

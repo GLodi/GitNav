@@ -142,9 +142,11 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         val llmRepos = LinearLayoutManager(applicationContext)
         llmRepos.orientation = LinearLayoutManager.VERTICAL
+        llmRepos.isAutoMeasureEnabled = true
         user_activity_content_rv.layoutManager = llmRepos
         user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_activity_content_rv.itemAnimator = DefaultItemAnimator()
+        user_activity_content_rv.setHasFixedSize(true)
         user_activity_content_rv.adapter = RepoListAdapter()
         (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
 
@@ -184,7 +186,6 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     override fun showLoading() {
         user_activity_content_progress_bar.visibility = View.VISIBLE
-
     }
 
     override fun hideLoading() {

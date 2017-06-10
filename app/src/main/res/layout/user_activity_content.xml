@@ -17,7 +17,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="wrap_content">
 
     <ProgressBar
         android:id="@+id/user_activity_content_progress_bar"
@@ -30,9 +30,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_activity_content_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"/>
 
     <TextView
         android:id="@+id/user_activity_content_no"

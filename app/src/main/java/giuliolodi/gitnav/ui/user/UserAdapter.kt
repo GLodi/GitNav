@@ -85,7 +85,7 @@ class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addUserList(userList: List<User>) {
         if (mUserList.isEmpty()) {
             mUserList.clear()
-            mUserList.addAll(userList.toMutableList())
+            mUserList.addAll(userList)
             notifyDataSetChanged()
         }
         else {

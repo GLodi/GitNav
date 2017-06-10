@@ -79,13 +79,33 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
         val llm = LinearLayoutManager(applicationContext)
         llm.orientation = LinearLayoutManager.VERTICAL
-
         repo_list_activity_rv.layoutManager = llm
         repo_list_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         repo_list_activity_rv.itemAnimator = DefaultItemAnimator()
         repo_list_activity_rv.adapter = RepoListAdapter()
 
-        setupOnScrollListener()
+        val mScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING || mFilter["sort"] == "stars")
+                    return
+                val visibleItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (repo_list_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        LOADING = true
+                        PAGE_N += 1
+                        (repo_list_activity_rv.adapter as RepoListAdapter).addLoading()
+                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    }
+                    else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                        hideLoading()
+                    }
+                }
+            }
+        }
+        repo_list_activity_rv.setOnScrollListener(mScrollListener)
 
         repo_list_activity_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         repo_list_activity_swipe.setOnRefreshListener {
@@ -121,31 +141,6 @@ class RepoListActivity : BaseDrawerActivity(), RepoListContract.View {
 
     override fun showError(error: String) {
         Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
-    }
-
-    private fun setupOnScrollListener() {
-        val mScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING || mFilter["sort"] == "stars")
-                    return
-                val visibleItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (repo_list_activity_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (repo_list_activity_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        LOADING = true
-                        PAGE_N += 1
-                        (repo_list_activity_rv.adapter as RepoListAdapter).addLoading()
-                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-                    }
-                    else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
-                    }
-                }
-            }
-        }
-        repo_list_activity_rv.setOnScrollListener(mScrollListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

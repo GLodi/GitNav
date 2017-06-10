@@ -85,7 +85,7 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addGists(gistList: List<Gist>) {
         if (mGistList.isEmpty()) {
             mGistList.clear()
-            mGistList.addAll(gistList.toMutableList())
+            mGistList.addAll(gistList)
             notifyDataSetChanged()
         }
         else {

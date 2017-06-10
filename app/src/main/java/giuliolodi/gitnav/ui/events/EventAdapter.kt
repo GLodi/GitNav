@@ -307,7 +307,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addEvents(eventList: List<Event>) {
         if (mEventList.isEmpty()) {
             mEventList.clear()
-            mEventList.addAll(eventList.toMutableList())
+            mEventList.addAll(eventList)
             notifyDataSetChanged()
         }
         else {
