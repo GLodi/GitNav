@@ -93,8 +93,8 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getToken()
     }
 
-    override fun pageEvents(pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return apiPageEvents(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
+    override fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return apiPageEvents(mPrefsHelper.getToken(), username?.let { username } ?: mPrefsHelper.getUsername(), pageN, itemsPerPage)
     }
 
     override fun getUser(username: String): Observable<User> {
@@ -216,7 +216,7 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
 
-    override fun apiPageEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
         return mApiHelper.apiPageEvents(token, username, pageN, itemsPerPage)
     }
 

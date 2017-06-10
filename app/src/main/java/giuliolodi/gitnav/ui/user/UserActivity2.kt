@@ -33,11 +33,13 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
+import giuliolodi.gitnav.ui.events.EventAdapter
 import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
 import kotlinx.android.synthetic.main.user_activity2.*
 import kotlinx.android.synthetic.main.user_activity_content.*
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
+import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
 
 /**
@@ -67,6 +69,10 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     private val ITEMS_PER_PAGE_FOLLOWING = 10
     private var LOADING_FOLLOWING = false
 
+    private var PAGE_N_EVENTS = 1
+    private val ITEMS_PER_PAGE_EVENTS = 10
+    private var LOADING_EVENTS = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.user_activity2)
@@ -89,6 +95,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         setSupportActionBar(user_activity2_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val llm = LinearLayoutManager(applicationContext)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        llm.isAutoMeasureEnabled = true
+        user_activity_content_rv.layoutManager = llm
+        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
+        user_activity_content_rv.itemAnimator = DefaultItemAnimator()
+        user_activity_content_rv.setHasFixedSize(true)
+
         user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -107,16 +121,16 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 R.id.user_activity_bottom_menu_repos -> {
                     user_activity2_appbar.setExpanded(false)
                     user_activity2_nestedscrollview.isNestedScrollingEnabled = false
-                    onRepoNavClick()
+                    onReposNavClick()
                 }
                 R.id.user_activity_bottom_menu_events -> {
                     user_activity2_appbar.setExpanded(false)
                     user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                    onEventsNavClick()
                 }
             }
             true
         }
-        user_activity2_bottomnv.setOnNavigationItemReselectedListener {  }
     }
 
     override fun showUser(mapUserFollowed: Map<User, String>) {
@@ -137,17 +151,10 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
     }
 
-    private fun onRepoNavClick() {
-        mFilterRepos.put("sort","created")
-
-        val llmRepos = LinearLayoutManager(applicationContext)
-        llmRepos.orientation = LinearLayoutManager.VERTICAL
-        llmRepos.isAutoMeasureEnabled = true
-        user_activity_content_rv.layoutManager = llmRepos
-        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
-        user_activity_content_rv.itemAnimator = DefaultItemAnimator()
-        user_activity_content_rv.setHasFixedSize(true)
+    private fun onReposNavClick() {
         user_activity_content_rv.adapter = RepoListAdapter()
+
+        mFilterRepos.put("sort","created")
         (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
 
         val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
@@ -175,13 +182,50 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.getRepos(mUser.login, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
     }
 
-    override fun showUserRepos(repoList: List<Repository>) {
+    fun onEventsNavClick() {
+        user_activity_content_rv.adapter = EventAdapter()
+
+        val mScrollListenerEvents = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING_EVENTS)
+                    return
+                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        LOADING_EVENTS = true
+                        PAGE_N_EVENTS += 1
+                        (user_activity_content_rv.adapter as EventAdapter).addLoading()
+                        mPresenter.getEvents(username, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_activity_content_rv.setOnScrollListener(mScrollListenerEvents)
+
+        showLoading()
+        mPresenter.getEvents(mUser.login, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
+    }
+
+    override fun showRepos(repoList: List<Repository>) {
         (user_activity_content_rv.adapter as RepoListAdapter).addRepos(repoList)
         if (PAGE_N_REPOS == 1 && repoList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_repositories)
         }
         LOADING_REPOS = false
+    }
+
+    override fun showEvents(eventList: List<Event>) {
+        (user_activity_content_rv.adapter as EventAdapter).addEvents(eventList)
+        if (PAGE_N_EVENTS == 1 && eventList.isEmpty()) {
+            user_activity_content_no.visibility = View.VISIBLE
+            user_activity_content_no.text = getString(R.string.no_events)
+        }
+        LOADING_EVENTS = false
     }
 
     override fun showLoading() {

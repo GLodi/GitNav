@@ -90,7 +90,7 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiPageEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
         return Observable.defer {
             val eventService: EventService = EventService()
             eventService.client.setOAuth2Token(token)

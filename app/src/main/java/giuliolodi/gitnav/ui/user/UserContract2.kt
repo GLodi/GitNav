@@ -20,6 +20,7 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
+import org.eclipse.egit.github.core.event.Event
 
 /**
  * Created by giulio on 03/06/2017.
@@ -37,7 +38,9 @@ interface UserContract2 {
 
         fun showError(error: String)
 
-        fun showUserRepos(repoList: List<Repository>)
+        fun showRepos(repoList: List<Repository>)
+
+        fun showEvents(eventList: List<Event>)
 
     }
 
@@ -47,6 +50,8 @@ interface UserContract2 {
         fun subscribe(username: String)
 
         fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+
+        fun getEvents(username: String, pageN: Int, itemsPerPage: Int)
 
     }
 

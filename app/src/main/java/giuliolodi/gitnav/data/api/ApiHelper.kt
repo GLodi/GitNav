@@ -45,14 +45,14 @@ interface ApiHelper {
     fun apiGetUser(token: String, username: String): Observable<User>
 
     /**
-     * Downloads events of logged user.
+     * Downloads events of user. Logged user if username = null.
      * @param token
      * @param username
      * @param pageN
      * @param itemsPerPage
      * @return Observable<List<Event>>
      */
-    fun apiPageEvents(token: String, username: String, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+    fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
 
     /**
      * Get logged user's repositories, along with a filter option

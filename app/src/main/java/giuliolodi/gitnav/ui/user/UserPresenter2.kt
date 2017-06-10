@@ -67,12 +67,29 @@ class UserPresenter2<V: UserContract2.View> : BasePresenter<V>, UserContract2.Pr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
+                            getView().showRepos(repoList)
                             getView().hideLoading()
-                            getView().showUserRepos(repoList)
                         },
                         { throwable ->
-                            getView().hideLoading()
                             getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun getEvents(username: String, pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().pageEvents(username, pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { eventList ->
+                            getView().showEvents(eventList)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
