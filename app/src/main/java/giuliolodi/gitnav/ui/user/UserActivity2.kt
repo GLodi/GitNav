@@ -153,13 +153,13 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onInfoNavClick() {
-        user_activity2_nestedscrollview.visibility = View.VISIBLE
+        user_activity_content_rl.visibility = View.VISIBLE
         user_activity_content_rv.visibility = View.GONE
 
     }
 
     private fun onReposNavClick() {
-        user_activity2_nestedscrollview.visibility = View.GONE
+        user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
 
         user_activity_content_rv.adapter = RepoListAdapter()
@@ -193,7 +193,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     fun onEventsNavClick() {
-        user_activity2_nestedscrollview.visibility = View.GONE
+        user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
 
         user_activity_content_rv.adapter = EventAdapter()
