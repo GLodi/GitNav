@@ -102,7 +102,6 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_activity_content_rv.itemAnimator = DefaultItemAnimator()
         user_activity_content_rv.setHasFixedSize(true)
-        user_activity_content_rv.isNestedScrollingEnabled = false
 
         user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
