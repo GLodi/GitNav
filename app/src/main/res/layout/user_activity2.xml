@@ -23,7 +23,7 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         app:contentScrim="?attr/colorPrimary"
         android:id="@+id/user_activity2_coolayout">
@@ -69,7 +69,7 @@
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/user_activity2_nestedscrollview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include layout="@layout/user_activity_content"/>
@@ -87,14 +87,17 @@
             app:layout_anchorGravity="bottom|right|end"
             android:visibility="invisible"/>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/user_activity_content_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:visibility="gone">
+
+        </android.support.v7.widget.RecyclerView>
+
     </android.support.design.widget.CoordinatorLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/user_activity2_coolayout">
-
-    </android.support.v7.widget.RecyclerView>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/user_activity2_bottomnv"

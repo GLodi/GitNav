@@ -102,6 +102,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_activity_content_rv.itemAnimator = DefaultItemAnimator()
         user_activity_content_rv.setHasFixedSize(true)
+        user_activity_content_rv.isNestedScrollingEnabled = false
 
         user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
@@ -117,6 +118,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 R.id.user_activity_bottom_menu_info -> {
                     user_activity2_appbar.setExpanded(true)
                     user_activity2_nestedscrollview.isNestedScrollingEnabled = true
+                    onInfoNavClick()
                 }
                 R.id.user_activity_bottom_menu_repos -> {
                     user_activity2_appbar.setExpanded(false)
@@ -151,7 +153,16 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
     }
 
+    private fun onInfoNavClick() {
+        user_activity2_nestedscrollview.visibility = View.VISIBLE
+        user_activity_content_rv.visibility = View.GONE
+
+    }
+
     private fun onReposNavClick() {
+        user_activity2_nestedscrollview.visibility = View.GONE
+        user_activity_content_rv.visibility = View.VISIBLE
+
         user_activity_content_rv.adapter = RepoListAdapter()
 
         mFilterRepos.put("sort","created")
@@ -183,6 +194,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     fun onEventsNavClick() {
+        user_activity2_nestedscrollview.visibility = View.GONE
+        user_activity_content_rv.visibility = View.VISIBLE
+
         user_activity_content_rv.adapter = EventAdapter()
 
         val mScrollListenerEvents = object : RecyclerView.OnScrollListener() {
