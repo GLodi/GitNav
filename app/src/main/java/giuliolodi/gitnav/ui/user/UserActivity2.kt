@@ -102,6 +102,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_activity_content_rv.itemAnimator = DefaultItemAnimator()
         user_activity_content_rv.setHasFixedSize(true)
+        user_activity_content_rv.isNestedScrollingEnabled = false
 
         user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
@@ -109,10 +110,12 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 R.id.user_activity_bottom_menu_following -> {
                     user_activity2_appbar.setExpanded(false)
                     user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                    onFollowingNavClick()
                 }
                 R.id.user_activity_bottom_menu_followers -> {
                     user_activity2_appbar.setExpanded(false)
                     user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+                    onFollowersNavClick()
                 }
                 R.id.user_activity_bottom_menu_info -> {
                     user_activity2_appbar.setExpanded(true)
@@ -150,6 +153,68 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
+    }
+
+    private fun onFollowingNavClick() {
+        user_activity_content_rl.visibility = View.GONE
+        user_activity_content_rv.visibility = View.VISIBLE
+
+        user_activity_content_rv.adapter = UserAdapter()
+
+        val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING_FOLLOWING)
+                    return
+                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        LOADING_FOLLOWING = true
+                        PAGE_N_FOLLOWING += 1
+                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
+                        mPresenter.getFollowing(username, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_activity_content_rv.setOnScrollListener(mScrollListenerFollowing)
+
+        showLoading()
+        mPresenter.getFollowing(mUser.login, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
+    }
+
+    private fun onFollowersNavClick() {
+        user_activity_content_rl.visibility = View.GONE
+        user_activity_content_rv.visibility = View.VISIBLE
+
+        user_activity_content_rv.adapter = UserAdapter()
+
+        val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (LOADING_FOLLOWERS)
+                    return
+                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        LOADING_FOLLOWERS = true
+                        PAGE_N_FOLLOWERS += 1
+                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
+                        mPresenter.getFollowers(username, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_activity_content_rv.setOnScrollListener(mScrollListenerFollowers)
+
+        showLoading()
+        mPresenter.getFollowers(mUser.login, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
     }
 
     private fun onInfoNavClick() {
@@ -239,6 +304,24 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_no.text = getString(R.string.no_events)
         }
         LOADING_EVENTS = false
+    }
+
+    override fun showFollowers(followerList: List<User>) {
+        (user_activity_content_rv.adapter as UserAdapter).addUserList(followerList)
+        if (PAGE_N_FOLLOWERS == 1 && followerList.isEmpty()) {
+            user_activity_content_no.visibility = View.VISIBLE
+            user_activity_content_no.text = getString(R.string.no_users)
+        }
+        LOADING_FOLLOWERS= false
+    }
+
+    override fun showFollowing(followingList: List<User>) {
+        (user_activity_content_rv.adapter as UserAdapter).addUserList(followingList)
+        if (PAGE_N_FOLLOWING == 1 && followingList.isEmpty()) {
+            user_activity_content_no.visibility = View.VISIBLE
+            user_activity_content_no.text = getString(R.string.no_users)
+        }
+        LOADING_FOLLOWING = false
     }
 
     override fun showLoading() {

@@ -42,6 +42,10 @@ interface UserContract2 {
 
         fun showEvents(eventList: List<Event>)
 
+        fun showFollowers(followerList: List<User>)
+
+        fun showFollowing(followingList: List<User>)
+
     }
 
     @PerActivity
@@ -52,6 +56,10 @@ interface UserContract2 {
         fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
 
         fun getEvents(username: String, pageN: Int, itemsPerPage: Int)
+
+        fun getFollowers(username: String, pageN: Int, itemsPerPage: Int)
+
+        fun getFollowing(username: String, pageN: Int, itemsPerPage: Int)
 
     }
 

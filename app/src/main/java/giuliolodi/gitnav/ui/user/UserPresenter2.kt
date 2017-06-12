@@ -95,4 +95,38 @@ class UserPresenter2<V: UserContract2.View> : BasePresenter<V>, UserContract2.Pr
                 ))
     }
 
+    override fun getFollowers(username: String, pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().pageFollowers(username, pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { userList ->
+                            getView().showFollowers(userList)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun getFollowing(username: String, pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().pageFollowing(username, pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoList ->
+                            getView().showFollowing(repoList)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
 }
