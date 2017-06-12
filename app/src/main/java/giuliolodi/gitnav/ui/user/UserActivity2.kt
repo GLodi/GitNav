@@ -156,11 +156,15 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onFollowingNavClick() {
+        mPresenter.unsubscribe()
+
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
 
-        user_activity_content_rv.adapter = UserAdapter()
+        PAGE_N_FOLLOWING = 1
+        LOADING_FOLLOWING = false
 
+        user_activity_content_rv.adapter = UserAdapter()
         val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWING)
@@ -187,11 +191,15 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onFollowersNavClick() {
+        mPresenter.unsubscribe()
+
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
 
-        user_activity_content_rv.adapter = UserAdapter()
+        PAGE_N_FOLLOWERS = 1
+        LOADING_FOLLOWERS = false
 
+        user_activity_content_rv.adapter = UserAdapter()
         val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWERS)
@@ -218,17 +226,23 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onInfoNavClick() {
+        mPresenter.unsubscribe()
+
         user_activity_content_rl.visibility = View.VISIBLE
         user_activity_content_rv.visibility = View.GONE
 
     }
 
     private fun onReposNavClick() {
+        mPresenter.unsubscribe()
+
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
 
-        user_activity_content_rv.adapter = RepoListAdapter()
+        PAGE_N_REPOS = 1
+        LOADING_REPOS = false
 
+        user_activity_content_rv.adapter = RepoListAdapter()
         mFilterRepos.put("sort","created")
         (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
 
@@ -258,11 +272,15 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     fun onEventsNavClick() {
+        mPresenter.unsubscribe()
+
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
 
-        user_activity_content_rv.adapter = EventAdapter()
+        PAGE_N_EVENTS = 1
+        LOADING_EVENTS = false
 
+        user_activity_content_rv.adapter = EventAdapter()
         val mScrollListenerEvents = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_EVENTS)

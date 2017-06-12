@@ -61,6 +61,8 @@ interface UserContract2 {
 
         fun getFollowing(username: String, pageN: Int, itemsPerPage: Int)
 
+        fun unsubscribe()
+
     }
 
 }
