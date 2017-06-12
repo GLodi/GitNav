@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.user
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,6 +26,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -52,6 +54,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     private lateinit var mUser: User
     private lateinit var username: String
+    private lateinit var mMenu: Menu
 
     private var IS_FOLLOWED: Boolean = false
     private var IS_LOGGED_USER: Boolean = false
@@ -146,6 +149,8 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity2_fab.visibility = View.VISIBLE
 
+        createOptionMenu()
+
         if (IS_FOLLOWED)
             user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
         else
@@ -160,6 +165,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
+        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_FOLLOWING = 1
         LOADING_FOLLOWING = false
@@ -195,6 +201,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
+        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_FOLLOWERS = 1
         LOADING_FOLLOWERS = false
@@ -230,6 +237,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.VISIBLE
         user_activity_content_rv.visibility = View.GONE
+        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
     }
 
@@ -238,6 +246,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
+        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = true
 
         PAGE_N_REPOS = 1
         LOADING_REPOS = false
@@ -276,6 +285,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
+        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_EVENTS = 1
         LOADING_EVENTS = false
@@ -355,12 +365,80 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         Toasty.error(applicationContext, error, Toast.LENGTH_LONG).show()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        mMenu = menu!!
+        return true
+    }
+
+    private fun createOptionMenu() {
+        menuInflater.inflate(R.menu.user_menu, mMenu)
+        if (!IS_LOGGED_USER && mUser.email != null && !mUser.email.isEmpty())
+            mMenu.findItem(R.id.send_email).isVisible = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+            finish()
+            overridePendingTransition(0,0)
+        }
+        if (isNetworkAvailable()) {
+            when (item?.itemId) {
+                R.id.user_menu_created -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "created")
+                    PAGE_N_REPOS = 1
+                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    showLoading()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_updated -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "updated")
+                    PAGE_N_REPOS = 1
+                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    showLoading()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_pushed -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "pushed")
+                    PAGE_N_REPOS = 1
+                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    showLoading()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_alphabetical -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "full_name")
+                    PAGE_N_REPOS = 1
+                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    showLoading()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.user_menu_stars -> {
+                    item.isChecked = true
+                    mFilterRepos.put("sort", "stars")
+                    PAGE_N_REPOS = 1
+                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    showLoading()
+                    mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                }
+                R.id.send_email -> {
+                    val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser.email))
+                    startActivity(Intent.createChooser(emailIntent, "Email"))
+                }
+                R.id.open_in_browser -> {
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mUser.htmlUrl))
+                    startActivity(browserIntent)
+                }
             }
         }
+        else
+            Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
         return super.onOptionsItemSelected(item)
     }
 

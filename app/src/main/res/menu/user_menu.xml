@@ -40,7 +40,8 @@
         android:id="@+id/user_menu_sort_icon"
         android:title=""
         android:icon="@drawable/ic_sort_white_24dp"
-        app:showAsAction="always">
+        app:showAsAction="always"
+        android:visible="false">
 
         <menu>
 
