@@ -24,6 +24,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -98,10 +99,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         setSupportActionBar(user_activity2_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val llm = LinearLayoutManager(applicationContext)
-        llm.orientation = LinearLayoutManager.VERTICAL
-        llm.isAutoMeasureEnabled = true
-        user_activity_content_rv.layoutManager = llm
+        user_activity_content_rv.layoutManager = LinearLayoutManager(applicationContext)
         user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         user_activity_content_rv.itemAnimator = DefaultItemAnimator()
         user_activity_content_rv.setHasFixedSize(true)
@@ -167,10 +165,13 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
+        user_activity_content_rv.layoutManager = GridLayoutManager(applicationContext, 2)
+        user_activity_content_rv.invalidateItemDecorations()
+
         PAGE_N_FOLLOWING = 1
         LOADING_FOLLOWING = false
 
-        user_activity_content_rv.adapter = UserAdapter()
+        user_activity_content_rv.adapter = UserAdapter2()
         val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWING)
@@ -182,7 +183,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     if (isNetworkAvailable()) {
                         LOADING_FOLLOWING = true
                         PAGE_N_FOLLOWING += 1
-                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
+                        (user_activity_content_rv.adapter as UserAdapter2).addLoading()
                         mPresenter.getFollowing(username, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -203,10 +204,13 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
+        user_activity_content_rv.layoutManager = GridLayoutManager(applicationContext, 2)
+        user_activity_content_rv.invalidateItemDecorations()
+
         PAGE_N_FOLLOWERS = 1
         LOADING_FOLLOWERS = false
 
-        user_activity_content_rv.adapter = UserAdapter()
+        user_activity_content_rv.adapter = UserAdapter2()
         val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWERS)
@@ -218,7 +222,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     if (isNetworkAvailable()) {
                         LOADING_FOLLOWERS = true
                         PAGE_N_FOLLOWERS += 1
-                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
+                        (user_activity_content_rv.adapter as UserAdapter2).addLoading()
                         mPresenter.getFollowers(username, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -247,6 +251,10 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = true
+
+        user_activity_content_rv.layoutManager = LinearLayoutManager(applicationContext)
+        user_activity_content_rv.invalidateItemDecorations()
+        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
 
         PAGE_N_REPOS = 1
         LOADING_REPOS = false
@@ -287,6 +295,10 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
+        user_activity_content_rv.layoutManager = LinearLayoutManager(applicationContext)
+        user_activity_content_rv.invalidateItemDecorations()
+        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
+
         PAGE_N_EVENTS = 1
         LOADING_EVENTS = false
 
@@ -316,6 +328,24 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.getEvents(mUser.login, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
     }
 
+    override fun showFollowing(followingList: List<User>) {
+        (user_activity_content_rv.adapter as UserAdapter2).addUserList(followingList)
+        if (PAGE_N_FOLLOWING == 1 && followingList.isEmpty()) {
+            user_activity_content_no.visibility = View.VISIBLE
+            user_activity_content_no.text = getString(R.string.no_users)
+        }
+        LOADING_FOLLOWING = false
+    }
+
+    override fun showFollowers(followerList: List<User>) {
+        (user_activity_content_rv.adapter as UserAdapter2).addUserList(followerList)
+        if (PAGE_N_FOLLOWERS == 1 && followerList.isEmpty()) {
+            user_activity_content_no.visibility = View.VISIBLE
+            user_activity_content_no.text = getString(R.string.no_users)
+        }
+        LOADING_FOLLOWERS= false
+    }
+
     override fun showRepos(repoList: List<Repository>) {
         (user_activity_content_rv.adapter as RepoListAdapter).addRepos(repoList)
         if (PAGE_N_REPOS == 1 && repoList.isEmpty()) {
@@ -332,24 +362,6 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_no.text = getString(R.string.no_events)
         }
         LOADING_EVENTS = false
-    }
-
-    override fun showFollowers(followerList: List<User>) {
-        (user_activity_content_rv.adapter as UserAdapter).addUserList(followerList)
-        if (PAGE_N_FOLLOWERS == 1 && followerList.isEmpty()) {
-            user_activity_content_no.visibility = View.VISIBLE
-            user_activity_content_no.text = getString(R.string.no_users)
-        }
-        LOADING_FOLLOWERS= false
-    }
-
-    override fun showFollowing(followingList: List<User>) {
-        (user_activity_content_rv.adapter as UserAdapter).addUserList(followingList)
-        if (PAGE_N_FOLLOWING == 1 && followingList.isEmpty()) {
-            user_activity_content_no.visibility = View.VISIBLE
-            user_activity_content_no.text = getString(R.string.no_users)
-        }
-        LOADING_FOLLOWING = false
     }
 
     override fun showLoading() {

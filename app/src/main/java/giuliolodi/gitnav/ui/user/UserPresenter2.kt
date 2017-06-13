@@ -130,8 +130,10 @@ class UserPresenter2<V: UserContract2.View> : BasePresenter<V>, UserContract2.Pr
     }
 
     override fun unsubscribe() {
-        if (getCompositeDisposable().size() != 0)
+        if (getCompositeDisposable().size() != 0) {
             getCompositeDisposable().clear()
+            getView().hideLoading()
+        }
     }
 
 }
