@@ -23,10 +23,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -60,18 +57,18 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     private var IS_FOLLOWED: Boolean = false
     private var IS_LOGGED_USER: Boolean = false
 
+    private var PAGE_N_FOLLOWERS = 1
+    private val ITEMS_PER_PAGE_FOLLOWERS = 16
+    private var LOADING_FOLLOWERS = false
+
+    private var PAGE_N_FOLLOWING = 1
+    private val ITEMS_PER_PAGE_FOLLOWING = 16
+    private var LOADING_FOLLOWING = false
+
     private var mFilterRepos: HashMap<String,String> = HashMap()
     private var PAGE_N_REPOS = 1
     private val ITEMS_PER_PAGE_REPOS = 10
     private var LOADING_REPOS = false
-
-    private var PAGE_N_FOLLOWERS = 1
-    private val ITEMS_PER_PAGE_FOLLOWERS = 10
-    private var LOADING_FOLLOWERS = false
-
-    private var PAGE_N_FOLLOWING = 1
-    private val ITEMS_PER_PAGE_FOLLOWING = 10
-    private var LOADING_FOLLOWING = false
 
     private var PAGE_N_EVENTS = 1
     private val ITEMS_PER_PAGE_EVENTS = 10
@@ -109,28 +106,18 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.user_activity_bottom_menu_following -> {
-                    user_activity2_appbar.setExpanded(false)
-                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
                     onFollowingNavClick()
                 }
                 R.id.user_activity_bottom_menu_followers -> {
-                    user_activity2_appbar.setExpanded(false)
-                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
                     onFollowersNavClick()
                 }
                 R.id.user_activity_bottom_menu_info -> {
-                    user_activity2_appbar.setExpanded(true)
-                    user_activity2_nestedscrollview.isNestedScrollingEnabled = true
                     onInfoNavClick()
                 }
                 R.id.user_activity_bottom_menu_repos -> {
-                    user_activity2_appbar.setExpanded(false)
-                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
                     onReposNavClick()
                 }
                 R.id.user_activity_bottom_menu_events -> {
-                    user_activity2_appbar.setExpanded(false)
-                    user_activity2_nestedscrollview.isNestedScrollingEnabled = false
                     onEventsNavClick()
                 }
             }
@@ -159,19 +146,19 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onFollowingNavClick() {
+        user_activity2_appbar.setExpanded(false)
+        user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
-        user_activity_content_rv.layoutManager = GridLayoutManager(applicationContext, 2)
-        user_activity_content_rv.invalidateItemDecorations()
-
         PAGE_N_FOLLOWING = 1
         LOADING_FOLLOWING = false
 
-        user_activity_content_rv.adapter = UserAdapter2()
+        user_activity_content_rv.adapter = UserAdapter()
         val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWING)
@@ -183,7 +170,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     if (isNetworkAvailable()) {
                         LOADING_FOLLOWING = true
                         PAGE_N_FOLLOWING += 1
-                        (user_activity_content_rv.adapter as UserAdapter2).addLoading()
+                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
                         mPresenter.getFollowing(username, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -198,19 +185,19 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onFollowersNavClick() {
+        user_activity2_appbar.setExpanded(false)
+        user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
-        user_activity_content_rv.layoutManager = GridLayoutManager(applicationContext, 2)
-        user_activity_content_rv.invalidateItemDecorations()
-
         PAGE_N_FOLLOWERS = 1
         LOADING_FOLLOWERS = false
 
-        user_activity_content_rv.adapter = UserAdapter2()
+        user_activity_content_rv.adapter = UserAdapter()
         val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWERS)
@@ -222,7 +209,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     if (isNetworkAvailable()) {
                         LOADING_FOLLOWERS = true
                         PAGE_N_FOLLOWERS += 1
-                        (user_activity_content_rv.adapter as UserAdapter2).addLoading()
+                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
                         mPresenter.getFollowers(username, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -237,6 +224,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onInfoNavClick() {
+        user_activity2_appbar.setExpanded(true)
+        user_activity2_nestedscrollview.isNestedScrollingEnabled = true
+
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.VISIBLE
@@ -246,15 +236,15 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     private fun onReposNavClick() {
+        user_activity2_appbar.setExpanded(false)
+        user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = true
-
-        user_activity_content_rv.layoutManager = LinearLayoutManager(applicationContext)
-        user_activity_content_rv.invalidateItemDecorations()
-        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
+        mMenu.findItem(R.id.user_menu_created).isChecked = true
 
         PAGE_N_REPOS = 1
         LOADING_REPOS = false
@@ -289,15 +279,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     fun onEventsNavClick() {
+        user_activity2_appbar.setExpanded(false)
+        user_activity2_nestedscrollview.isNestedScrollingEnabled = false
+
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
         user_activity_content_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
-
-        user_activity_content_rv.layoutManager = LinearLayoutManager(applicationContext)
-        user_activity_content_rv.invalidateItemDecorations()
-        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
 
         PAGE_N_EVENTS = 1
         LOADING_EVENTS = false
@@ -329,7 +318,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showFollowing(followingList: List<User>) {
-        (user_activity_content_rv.adapter as UserAdapter2).addUserList(followingList)
+        (user_activity_content_rv.adapter as UserAdapter).addUserList(followingList)
         if (PAGE_N_FOLLOWING == 1 && followingList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_users)
@@ -338,7 +327,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showFollowers(followerList: List<User>) {
-        (user_activity_content_rv.adapter as UserAdapter2).addUserList(followerList)
+        (user_activity_content_rv.adapter as UserAdapter).addUserList(followerList)
         if (PAGE_N_FOLLOWERS == 1 && followerList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_users)

@@ -16,7 +16,6 @@
 
 package giuliolodi.gitnav.ui.base
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
@@ -42,7 +41,6 @@ import giuliolodi.gitnav.ui.repositorylist.RepoListActivity
 import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
-import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.ui.user.UserActivity2
 
 /**
