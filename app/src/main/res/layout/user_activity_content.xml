@@ -17,7 +17,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ProgressBar
         android:id="@+id/user_activity_content_progress_bar"
@@ -27,19 +28,31 @@
         android:indeterminate="true"
         android:visibility="gone"/>
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/user_activity_content_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/user_activity_content_rl">
+        android:id="@+id/user_activity_content_rl"
+        android:layout_alignParentBottom="true">
 
-        <TextView
-            android:id="@+id/user_activity_content_no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone"/>
+        <com.github.javierugarte.GitHubContributionsView
+            android:id="@+id/user_activity_content_contributionsview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            app:baseEmptyColor="@color/grey"
+            app:displayMonth="true"
+            app:lastWeeks="30"
+            app:baseColor="@color/colorAccent"
+            app:textColor="@color/colorPrimary"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

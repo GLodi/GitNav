@@ -132,10 +132,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         else if (mapUserFollowed[mUser] == "u")
             IS_LOGGED_USER = true
 
-        user_activity2_fab.visibility = View.VISIBLE
-
         createOptionMenu()
 
+        user_activity2_fab.visibility = View.VISIBLE
         if (IS_FOLLOWED)
             user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
         else
@@ -143,6 +142,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
+
+        user_activity_content_contributionsview.loadUserName(mUser.login)
+
     }
 
     private fun onFollowingNavClick() {
