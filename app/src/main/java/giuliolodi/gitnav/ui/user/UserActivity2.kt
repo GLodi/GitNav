@@ -35,6 +35,8 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
 import giuliolodi.gitnav.ui.events.EventAdapter
 import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_activity2.*
 import kotlinx.android.synthetic.main.user_activity_content.*
 import org.eclipse.egit.github.core.Repository
@@ -139,6 +141,8 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
         else
             user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty_24dp))
+        if (IS_LOGGED_USER)
+            user_activity2_fab.visibility = View.GONE
 
         user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
@@ -182,6 +186,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         }
         user_activity_content_rv.setOnScrollListener(mScrollListenerFollowing)
 
+        (user_activity_content_rv.adapter as UserAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
+
         showLoading()
         mPresenter.getFollowing(mUser.login, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
     }
@@ -220,6 +232,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             }
         }
         user_activity_content_rv.setOnScrollListener(mScrollListenerFollowers)
+
+        (user_activity_content_rv.adapter as UserAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
 
         showLoading()
         mPresenter.getFollowers(mUser.login, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
@@ -314,6 +334,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             }
         }
         user_activity_content_rv.setOnScrollListener(mScrollListenerEvents)
+
+        (user_activity_content_rv.adapter as EventAdapter).getUserClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                    overridePendingTransition(0,0)
+                }
 
         showLoading()
         mPresenter.getEvents(mUser.login, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)

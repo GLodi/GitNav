@@ -42,7 +42,7 @@
         android:id="@+id/user_activity_content_rl"
         android:layout_alignParentBottom="true">
 
-        <com.github.javierugarte.GitHubContributionsView
+        <giuliolodi.gitnav.utils.contributions.GitHubContributionsView
             android:id="@+id/user_activity_content_contributionsview"
             android:layout_width="match_parent"
             android:layout_height="100dp"
