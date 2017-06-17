@@ -79,7 +79,7 @@ class UserPresenter2<V: UserContract2.View> : BasePresenter<V>, UserContract2.Pr
     }
 
     override fun getEvents(username: String, pageN: Int, itemsPerPage: Int) {
-        getCompositeDisposable().add(getDataManager().pageEvents(username, pageN, itemsPerPage)
+        getCompositeDisposable().add(getDataManager().pageUserEvents(username, pageN, itemsPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

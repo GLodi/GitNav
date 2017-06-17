@@ -94,7 +94,11 @@ class DataManagerImpl : DataManager {
     }
 
     override fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return apiPageEvents(mPrefsHelper.getToken(), username?.let { username } ?: mPrefsHelper.getUsername(), pageN, itemsPerPage)
+        return mApiHelper.apiPageEvents(mPrefsHelper.getToken(), username?.let { username } ?: mPrefsHelper.getUsername(), pageN, itemsPerPage)
+    }
+
+    override fun pageUserEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return mApiHelper.apiPageUserEvents(mPrefsHelper.getToken(), username?.let { username } ?: mPrefsHelper.getUsername(), pageN, itemsPerPage)
     }
 
     override fun getUser(username: String): Observable<User> {
@@ -218,6 +222,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
         return mApiHelper.apiPageEvents(token, username, pageN, itemsPerPage)
+    }
+
+    override fun apiPageUserEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return mApiHelper.apiPageUserEvents(token, username, pageN, itemsPerPage)
     }
 
     override fun apiGetUser(token: String, username: String): Observable<User> {

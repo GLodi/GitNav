@@ -98,11 +98,11 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         setSupportActionBar(user_activity2_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        user_activity_content_rv.layoutManager = LinearLayoutManager(applicationContext)
-        user_activity_content_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
-        user_activity_content_rv.itemAnimator = DefaultItemAnimator()
-        user_activity_content_rv.setHasFixedSize(true)
-        user_activity_content_rv.isNestedScrollingEnabled = false
+        user_activity2_rv.layoutManager = LinearLayoutManager(applicationContext)
+        user_activity2_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
+        user_activity2_rv.itemAnimator = DefaultItemAnimator()
+        user_activity2_rv.setHasFixedSize(true)
+        user_activity2_rv.isNestedScrollingEnabled = false
 
         user_activity2_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_activity2_bottomnv.setOnNavigationItemSelectedListener { item ->
@@ -158,25 +158,25 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
-        user_activity_content_rv.visibility = View.VISIBLE
+        user_activity2_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_FOLLOWING = 1
         LOADING_FOLLOWING = false
 
-        user_activity_content_rv.adapter = UserAdapter()
+        user_activity2_rv.adapter = UserAdapter()
         val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWING)
                     return
-                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val visibleItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity2_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (isNetworkAvailable()) {
                         LOADING_FOLLOWING = true
                         PAGE_N_FOLLOWING += 1
-                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
+                        (user_activity2_rv.adapter as UserAdapter).addLoading()
                         mPresenter.getFollowing(username, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -184,9 +184,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
             }
         }
-        user_activity_content_rv.setOnScrollListener(mScrollListenerFollowing)
+        user_activity2_rv.setOnScrollListener(mScrollListenerFollowing)
 
-        (user_activity_content_rv.adapter as UserAdapter).getPositionClicks()
+        (user_activity2_rv.adapter as UserAdapter).getPositionClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
@@ -205,25 +205,25 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
-        user_activity_content_rv.visibility = View.VISIBLE
+        user_activity2_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_FOLLOWERS = 1
         LOADING_FOLLOWERS = false
 
-        user_activity_content_rv.adapter = UserAdapter()
+        user_activity2_rv.adapter = UserAdapter()
         val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_FOLLOWERS)
                     return
-                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val visibleItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity2_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (isNetworkAvailable()) {
                         LOADING_FOLLOWERS = true
                         PAGE_N_FOLLOWERS += 1
-                        (user_activity_content_rv.adapter as UserAdapter).addLoading()
+                        (user_activity2_rv.adapter as UserAdapter).addLoading()
                         mPresenter.getFollowers(username, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -231,9 +231,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
             }
         }
-        user_activity_content_rv.setOnScrollListener(mScrollListenerFollowers)
+        user_activity2_rv.setOnScrollListener(mScrollListenerFollowers)
 
-        (user_activity_content_rv.adapter as UserAdapter).getPositionClicks()
+        (user_activity2_rv.adapter as UserAdapter).getPositionClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
@@ -252,7 +252,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.VISIBLE
-        user_activity_content_rv.visibility = View.GONE
+        user_activity2_rv.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
     }
@@ -264,29 +264,29 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
-        user_activity_content_rv.visibility = View.VISIBLE
+        user_activity2_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = true
         mMenu.findItem(R.id.user_menu_created).isChecked = true
 
         PAGE_N_REPOS = 1
         LOADING_REPOS = false
 
-        user_activity_content_rv.adapter = RepoListAdapter()
+        user_activity2_rv.adapter = RepoListAdapter()
         mFilterRepos.put("sort","created")
-        (user_activity_content_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
+        (user_activity2_rv.adapter as RepoListAdapter).setFilter(mFilterRepos)
 
         val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_REPOS || mFilterRepos["sort"] == "stars")
                     return
-                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val visibleItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity2_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (isNetworkAvailable()) {
                         LOADING_REPOS = true
                         PAGE_N_REPOS += 1
-                        (user_activity_content_rv.adapter as RepoListAdapter).addLoading()
+                        (user_activity2_rv.adapter as RepoListAdapter).addLoading()
                         mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -294,7 +294,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
             }
         }
-        user_activity_content_rv.setOnScrollListener(mScrollListenerRepos)
+        user_activity2_rv.setOnScrollListener(mScrollListenerRepos)
 
         showLoading()
         mPresenter.getRepos(mUser.login, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
@@ -307,25 +307,25 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         mPresenter.unsubscribe()
 
         user_activity_content_rl.visibility = View.GONE
-        user_activity_content_rv.visibility = View.VISIBLE
+        user_activity2_rv.visibility = View.VISIBLE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_EVENTS = 1
         LOADING_EVENTS = false
 
-        user_activity_content_rv.adapter = EventAdapter()
+        user_activity2_rv.adapter = EventAdapter()
         val mScrollListenerEvents = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (LOADING_EVENTS)
                     return
-                val visibleItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (user_activity_content_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (user_activity_content_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val visibleItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_activity2_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_activity2_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (isNetworkAvailable()) {
                         LOADING_EVENTS = true
                         PAGE_N_EVENTS += 1
-                        (user_activity_content_rv.adapter as EventAdapter).addLoading()
+                        (user_activity2_rv.adapter as EventAdapter).addLoading()
                         mPresenter.getEvents(username, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -333,9 +333,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
             }
         }
-        user_activity_content_rv.setOnScrollListener(mScrollListenerEvents)
+        user_activity2_rv.setOnScrollListener(mScrollListenerEvents)
 
-        (user_activity_content_rv.adapter as EventAdapter).getImageClicks()
+        (user_activity2_rv.adapter as EventAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
@@ -348,7 +348,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showFollowing(followingList: List<User>) {
-        (user_activity_content_rv.adapter as UserAdapter).addUserList(followingList)
+        (user_activity2_rv.adapter as UserAdapter).addUserList(followingList)
         if (PAGE_N_FOLLOWING == 1 && followingList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_users)
@@ -357,7 +357,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showFollowers(followerList: List<User>) {
-        (user_activity_content_rv.adapter as UserAdapter).addUserList(followerList)
+        (user_activity2_rv.adapter as UserAdapter).addUserList(followerList)
         if (PAGE_N_FOLLOWERS == 1 && followerList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_users)
@@ -366,7 +366,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showRepos(repoList: List<Repository>) {
-        (user_activity_content_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (user_activity2_rv.adapter as RepoListAdapter).addRepos(repoList)
         if (PAGE_N_REPOS == 1 && repoList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_repositories)
@@ -375,7 +375,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     }
 
     override fun showEvents(eventList: List<Event>) {
-        (user_activity_content_rv.adapter as EventAdapter).addEvents(eventList)
+        (user_activity2_rv.adapter as EventAdapter).addEvents(eventList)
         if (PAGE_N_EVENTS == 1 && eventList.isEmpty()) {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_events)
@@ -422,7 +422,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     item.isChecked = true
                     mFilterRepos.put("sort", "created")
                     PAGE_N_REPOS = 1
-                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    (user_activity2_rv.adapter as RepoListAdapter).clear()
                     showLoading()
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }
@@ -430,7 +430,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     item.isChecked = true
                     mFilterRepos.put("sort", "updated")
                     PAGE_N_REPOS = 1
-                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    (user_activity2_rv.adapter as RepoListAdapter).clear()
                     showLoading()
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }
@@ -438,7 +438,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     item.isChecked = true
                     mFilterRepos.put("sort", "pushed")
                     PAGE_N_REPOS = 1
-                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    (user_activity2_rv.adapter as RepoListAdapter).clear()
                     showLoading()
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }
@@ -446,7 +446,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     item.isChecked = true
                     mFilterRepos.put("sort", "full_name")
                     PAGE_N_REPOS = 1
-                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    (user_activity2_rv.adapter as RepoListAdapter).clear()
                     showLoading()
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }
@@ -454,7 +454,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     item.isChecked = true
                     mFilterRepos.put("sort", "stars")
                     PAGE_N_REPOS = 1
-                    (user_activity_content_rv.adapter as RepoListAdapter).clear()
+                    (user_activity2_rv.adapter as RepoListAdapter).clear()
                     showLoading()
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }

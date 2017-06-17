@@ -98,6 +98,14 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiPageUserEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+        return Observable.defer {
+            val eventService: EventService = EventService()
+            eventService.client.setOAuth2Token(token)
+            Observable.just(ArrayList(eventService.pageUserEvents(username, false, pageN, itemsPerPage).next()))
+        }
+    }
+
     override fun apiGetTrending(token: String, period: String): Observable<Repository> {
         return Observable.create { disposable ->
             var URL: String = ""

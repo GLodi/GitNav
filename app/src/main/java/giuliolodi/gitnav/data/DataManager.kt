@@ -54,13 +54,23 @@ interface DataManager : ApiHelper, PrefsHelper {
     fun getUser(username: String): Observable<User>
 
     /**
-     * Page events of user. Logged user if username = null
+     * Downloads events received by user. Logged user if username = null.
      * @param username
      * @param pageN
      * @param itemsPerPage
      * @return Observable<List<Event>>
      */
     fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+
+    /**
+     * Downloads user events. Logged user if username = null.
+     * @param token
+     * @param username
+     * @param pageN
+     * @param itemsPerPage
+     * @return Observable<List<Event>>
+     */
+    fun pageUserEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
 
     /**
      * Page repositories of user (logged user if username is null).

@@ -73,9 +73,9 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             // repo
                         }
                     }
-                    "DeleteEvent" -> { // #3 NEED TEST
+                    "DeleteEvent" -> { // #3
                         val deletePayload: DeletePayload = event.payload as DeletePayload
-                        row_event_description.text = Html.fromHtml("Deleted <b>" + deletePayload.refType + "</b>")
+                        row_event_description.text = Html.fromHtml("Deleted " + deletePayload.refType + " <b>" + deletePayload.ref + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
                             // repo
                         }
@@ -133,14 +133,14 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             // repo
                         }
                     }
-                    "IssueCommentEvent" -> { // #12 NEED TEST
+                    "IssueCommentEvent" -> { // #12
                         val issueCommentPayload: IssueCommentPayload = event.payload as IssueCommentPayload
-                        row_event_description.text = Html.fromHtml(issueCommentPayload.action.substring(0,1).toUpperCase() + issueCommentPayload.action.substring(1) + " issue comment <b>" + issueCommentPayload.comment.body + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
+                        row_event_description.text = Html.fromHtml(issueCommentPayload.action.substring(0,1).toUpperCase() + issueCommentPayload.action.substring(1) + " issue comment: <b>" + issueCommentPayload.comment.body + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
                             // issue
                         }
                     }
-                    "IssuesEvent" -> { // #13 NEED TEST
+                    "IssuesEvent" -> { // #13
                         val issuesPayload: IssuesPayload = event.payload as IssuesPayload
                         row_event_description.text = Html.fromHtml(issuesPayload.action.substring(0,1).toUpperCase() + issuesPayload.action.substring(1) + " issue <b>#" + issuesPayload.issue.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
@@ -153,7 +153,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             // repo
                         }
                     }
-                    "MemberEvent" -> { // #15 NEED TEST
+                    "MemberEvent" -> { // #15
                         val memberPayload: MemberPayload = event.payload as MemberPayload
                         row_event_description.text = Html.fromHtml(memberPayload.action.substring(0,1).toUpperCase() + memberPayload.action.substring(1) + " <b>" + memberPayload.member.login + "</b> to <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
@@ -208,7 +208,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             // repo
                         }
                     }
-                    "PullRequestEvent" -> { // #24 NEED TEST
+                    "PullRequestEvent" -> { // #24
                         val pullRequestPayload: PullRequestPayload = event.payload as PullRequestPayload
                         row_event_description.text = Html.fromHtml(pullRequestPayload.action.substring(0,1).toUpperCase() + pullRequestPayload.action.substring(1) + " pull request <b>#" + pullRequestPayload.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
@@ -225,9 +225,12 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         val pullRequestReviewCommentPayload: PullRequestReviewCommentPayload = event.payload as PullRequestReviewCommentPayload
                         row_event_description.text = Html.fromHtml(pullRequestReviewCommentPayload.action.substring(0,1).toUpperCase() + pullRequestReviewCommentPayload.action.substring(1) + " pull request review comment <b>#" + pullRequestReviewCommentPayload.pullRequest.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                     }
-                    "PushEvent" -> { // #27 NEED TEST
+                    "PushEvent" -> { // #27
                         val pushPayload: PushPayload = event.payload as PushPayload
-                        row_event_description.text = Html.fromHtml("Pushed <b>" + pushPayload.ref + "</b>")
+                        if (pushPayload.commits.size == 1)
+                            row_event_description.text = Html.fromHtml("Pushed a commit to <b>" + pushPayload.ref + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
+                        else
+                            row_event_description.text = Html.fromHtml("Pushed " + pushPayload.commits.size.toString() + " commits to <b>" + pushPayload.ref + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
                             // repo
                         }

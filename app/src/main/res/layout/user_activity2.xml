@@ -88,7 +88,7 @@
             android:visibility="invisible"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/user_activity_content_rv"
+            android:id="@+id/user_activity2_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
