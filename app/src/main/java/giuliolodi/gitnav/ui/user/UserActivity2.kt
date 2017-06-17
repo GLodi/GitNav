@@ -335,7 +335,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         }
         user_activity_content_rv.setOnScrollListener(mScrollListenerEvents)
 
-        (user_activity_content_rv.adapter as EventAdapter).getUserClicks()
+        (user_activity_content_rv.adapter as EventAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->

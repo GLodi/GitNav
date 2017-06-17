@@ -86,18 +86,12 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
         event_activity_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(this).showLastDivider().build())
         event_activity_rv.itemAnimator = DefaultItemAnimator()
         event_activity_rv.adapter = EventAdapter()
+
         (event_activity_rv.adapter as EventAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
                     startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
-                    overridePendingTransition(0,0)
-                }
-        (event_activity_rv.adapter as EventAdapter).getUserClicks()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
                     overridePendingTransition(0,0)
                 }
 
