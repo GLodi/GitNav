@@ -33,8 +33,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
 import giuliolodi.gitnav.ui.starred.StarredAdapter
-import giuliolodi.gitnav.ui.user.UserActivity
-import giuliolodi.gitnav.utils.NetworkUtils
+import giuliolodi.gitnav.ui.user.UserActivity2
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_base_drawer.*
@@ -78,7 +77,7 @@ class TrendingActivity : BaseDrawerActivity(), TrendingContract.View {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
-                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
                     overridePendingTransition(0,0)
                 }
 

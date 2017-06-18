@@ -23,7 +23,7 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         app:contentScrim="?attr/colorPrimary"
         android:id="@+id/user_activity2_coolayout">
@@ -69,7 +69,9 @@
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/user_activity2_nestedscrollview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include layout="@layout/user_activity_content"/>

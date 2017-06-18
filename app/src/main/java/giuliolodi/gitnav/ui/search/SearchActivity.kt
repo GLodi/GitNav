@@ -39,8 +39,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
-import giuliolodi.gitnav.ui.search.SearchUserAdapter
-import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.ui.user.UserActivity2
 import giuliolodi.gitnav.utils.RxUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -107,7 +106,7 @@ class SearchActivity : BaseDrawerActivity(), SearchContract.View {
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe { username ->
-                                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
+                                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
                                     overridePendingTransition(0,0)
                                 }
                     }

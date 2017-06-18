@@ -135,7 +135,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     }
                     "IssueCommentEvent" -> { // #12
                         val issueCommentPayload: IssueCommentPayload = event.payload as IssueCommentPayload
-                        row_event_description.text = Html.fromHtml(issueCommentPayload.action.substring(0,1).toUpperCase() + issueCommentPayload.action.substring(1) + " issue comment: <b>" + issueCommentPayload.comment.body + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
+                        row_event_description.text = Html.fromHtml(issueCommentPayload.action.substring(0,1).toUpperCase() + issueCommentPayload.action.substring(1) + " comment on issue <b>#" + issueCommentPayload.issue.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>: <b>" + issueCommentPayload.comment.body + "</b>")
                         row_event_ll.setOnClickListener {
                             // issue
                         }
@@ -221,9 +221,9 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             // repo
                         }
                     }
-                    "PullRequestReviewCommentEvent" -> { // #26 NEED TEST
+                    "PullRequestReviewCommentEvent" -> { // #26
                         val pullRequestReviewCommentPayload: PullRequestReviewCommentPayload = event.payload as PullRequestReviewCommentPayload
-                        row_event_description.text = Html.fromHtml(pullRequestReviewCommentPayload.action.substring(0,1).toUpperCase() + pullRequestReviewCommentPayload.action.substring(1) + " pull request review comment <b>#" + pullRequestReviewCommentPayload.pullRequest.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
+                        row_event_description.text = Html.fromHtml(pullRequestReviewCommentPayload.action.substring(0,1).toUpperCase() + pullRequestReviewCommentPayload.action.substring(1) + " pull request review comment <b>#" + pullRequestReviewCommentPayload.pullRequest.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>: <b>" + pullRequestReviewCommentPayload.comment + "</b>")
                     }
                     "PushEvent" -> { // #27
                         val pushPayload: PushPayload = event.payload as PushPayload

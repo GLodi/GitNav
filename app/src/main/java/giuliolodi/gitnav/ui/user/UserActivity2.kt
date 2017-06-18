@@ -147,8 +147,51 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
         Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
 
+        // Full name
+        if (mUser.name != null && !mUser.name.isEmpty())
+            user_activity_content_fullname.text = mUser.name
+        else {
+            user_activity_content_fullname.visibility = View.GONE
+            user_activity_content_fullname_bottom.visibility = View.GONE
+        }
+
+        // Username
+        mUser.login?.let { user_activity_content_username.text = it }
+
+        // Bio
+        if (mUser.bio != null && !mUser.bio.isEmpty())
+            user_activity_content_bio.text = mUser.bio
+        else
+            user_activity_content_bio_rl.visibility = View.GONE
+
+        // Mail
+        if (mUser.email != null && !mUser.email.isEmpty())
+            user_activity_content_mail.text = mUser.email
+        else
+            user_activity_content_mail_rl.visibility = View.GONE
+
+        // Location
+        if (mUser.location != null && !mUser.location.isEmpty())
+            user_activity_content_location.text = mUser.location
+        else
+            user_activity_content_location_rl.visibility = View.GONE
+
+        // Company
+        if (mUser.company != null && !mUser.company.isEmpty())
+            user_activity_content_company.text = mUser.company
+        else
+            user_activity_content_company_rl.visibility = View.GONE
+
+        // Blog
+        if (mUser.blog != null && !mUser.blog.isEmpty())
+            user_activity_content_blog.text = mUser.blog
+        else
+            user_activity_content_blog_rl.visibility = View.GONE
+
         user_activity_content_contributionsview.loadUserName(mUser.login)
 
+        if (user_activity2_bottomnv.selectedItemId == R.id.user_activity_bottom_menu_info)
+            user_activity_content_rl.visibility = View.VISIBLE
     }
 
     private fun onFollowingNavClick() {
@@ -254,7 +297,6 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity_content_rl.visibility = View.VISIBLE
         user_activity2_rv.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
-
     }
 
     private fun onReposNavClick() {
