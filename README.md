@@ -70,6 +70,7 @@ Trending:
  - [material-about-library][material]
  - [highlightjs-android][highlight]
  - [Toasty][toasty]
+ - [GitHubContributionsView][gcv]
 
 [picasso]: http://square.github.io/picasso/
 [circle]: https://github.com/hdodenhof/CircleImageView
@@ -87,4 +88,5 @@ Trending:
 [toasty]: https://github.com/GrenderG/Toasty
 [play]: https://play.google.com/store/apps/details?id=giuliolodi.gitnav
 [mvp]: https://github.com/MindorksOpenSource/android-mvp-architecture
+[gcv]: https://github.com/javierugarte/GithubContributionsView
 
