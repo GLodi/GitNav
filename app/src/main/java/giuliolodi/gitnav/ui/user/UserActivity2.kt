@@ -60,11 +60,11 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
     private var IS_LOGGED_USER: Boolean = false
 
     private var PAGE_N_FOLLOWERS = 1
-    private val ITEMS_PER_PAGE_FOLLOWERS = 16
+    private val ITEMS_PER_PAGE_FOLLOWERS = 20
     private var LOADING_FOLLOWERS = false
 
     private var PAGE_N_FOLLOWING = 1
-    private val ITEMS_PER_PAGE_FOLLOWING = 16
+    private val ITEMS_PER_PAGE_FOLLOWING = 20
     private var LOADING_FOLLOWING = false
 
     private var mFilterRepos: HashMap<String,String> = HashMap()
@@ -165,14 +165,27 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_bio_rl.visibility = View.GONE
 
         // Mail
-        if (mUser.email != null && !mUser.email.isEmpty())
+        if (mUser.email != null && !mUser.email.isEmpty()) {
             user_activity_content_mail.text = mUser.email
+            user_activity_content_mail_rl.setOnClickListener {
+                startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser.email)), "Email"))
+            }
+        }
         else
             user_activity_content_mail_rl.visibility = View.GONE
 
         // Location
-        if (mUser.location != null && !mUser.location.isEmpty())
+        if (mUser.location != null && !mUser.location.isEmpty()) {
             user_activity_content_location.text = mUser.location
+            user_activity_content_location_rl.setOnClickListener {
+                val uriIntent = Uri.parse(Uri.encode(mUser.location))
+                val mapIntent = Intent(Intent.ACTION_VIEW, uriIntent)
+                mapIntent.`package` = "com.google.android.apps.maps"
+                if (mapIntent.resolveActivity(packageManager) != null) {
+                    startActivity(mapIntent)
+                }
+            }
+        }
         else
             user_activity_content_location_rl.visibility = View.GONE
 
@@ -183,8 +196,12 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_company_rl.visibility = View.GONE
 
         // Blog
-        if (mUser.blog != null && !mUser.blog.isEmpty())
+        if (mUser.blog != null && !mUser.blog.isEmpty()) {
             user_activity_content_blog.text = mUser.blog
+            user_activity_content_blog_rl.setOnClickListener {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser.blog)))
+            }
+        }
         else
             user_activity_content_blog_rl.visibility = View.GONE
 
@@ -404,7 +421,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_no.visibility = View.VISIBLE
             user_activity_content_no.text = getString(R.string.no_users)
         }
-        LOADING_FOLLOWERS= false
+        LOADING_FOLLOWERS = false
     }
 
     override fun showRepos(repoList: List<Repository>) {
@@ -445,8 +462,6 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     private fun createOptionMenu() {
         menuInflater.inflate(R.menu.user_menu, mMenu)
-        if (!IS_LOGGED_USER && mUser.email != null && !mUser.email.isEmpty())
-            mMenu.findItem(R.id.send_email).isVisible = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -500,13 +515,8 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     showLoading()
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }
-                R.id.send_email -> {
-                    val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser.email))
-                    startActivity(Intent.createChooser(emailIntent, "Email"))
-                }
                 R.id.open_in_browser -> {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mUser.htmlUrl))
-                    startActivity(browserIntent)
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser.htmlUrl)))
                 }
             }
         }

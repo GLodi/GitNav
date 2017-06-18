@@ -340,8 +340,6 @@ class UserActivity : BaseActivity(), UserContract.View {
             mMenu.findItem(R.id.unfollow_icon).isVisible = true
         else if (!IS_LOGGED_USER && IS_FOLLOWED)
             mMenu.findItem(R.id.follow_icon).isVisible = true
-        if (!IS_LOGGED_USER && mUser.email != null && !mUser.email.isEmpty())
-            mMenu.findItem(R.id.send_email).isVisible = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -396,10 +394,6 @@ class UserActivity : BaseActivity(), UserContract.View {
                 }
                 R.id.unfollow_icon -> mPresenter.followUser(username)
                 R.id.follow_icon -> mPresenter.unFollowUser(username)
-                R.id.send_email -> {
-                    val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser.email))
-                    startActivity(Intent.createChooser(emailIntent, "Email"))
-                }
                 R.id.open_in_browser -> {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mUser.htmlUrl))
                     startActivity(browserIntent)
