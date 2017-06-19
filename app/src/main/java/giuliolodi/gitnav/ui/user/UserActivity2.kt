@@ -52,7 +52,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     @Inject lateinit var mPresenter: UserContract2.Presenter<UserContract2.View>
 
-    private lateinit var mUser: User
+    private var mUser: User? = null
     private lateinit var username: String
     private lateinit var mMenu: Menu
 
@@ -129,9 +129,9 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
     override fun showUser(mapUserFollowed: Map<User, String>) {
         mUser = mapUserFollowed.keys.first()
-        if (mapUserFollowed[mUser] == "f")
+        if (mapUserFollowed[mUser!!] == "f")
             IS_FOLLOWED = true
-        else if (mapUserFollowed[mUser] == "u")
+        else if (mapUserFollowed[mUser!!] == "u")
             IS_LOGGED_USER = true
 
         createOptionMenu()
@@ -144,41 +144,41 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         if (IS_LOGGED_USER)
             user_activity2_fab.visibility = View.GONE
 
-        user_activity2_collapsing_toolbar.title = mUser.name ?: mUser.login
-        Picasso.with(applicationContext).load(mUser.avatarUrl).into(user_activity2_image)
+        user_activity2_collapsing_toolbar.title = mUser?.name ?: mUser?.login
+        Picasso.with(applicationContext).load(mUser?.avatarUrl).into(user_activity2_image)
 
         // Full name
-        if (mUser.name != null && !mUser.name.isEmpty())
-            user_activity_content_fullname.text = mUser.name
+        if (mUser?.name != null && !mUser?.name?.isEmpty()!!)
+            user_activity_content_fullname.text = mUser?.name
         else {
             user_activity_content_fullname.visibility = View.GONE
             user_activity_content_fullname_bottom.visibility = View.GONE
         }
 
         // Username
-        mUser.login?.let { user_activity_content_username.text = it }
+        mUser?.login?.let { user_activity_content_username.text = it }
 
         // Bio
-        if (mUser.bio != null && !mUser.bio.isEmpty())
-            user_activity_content_bio.text = mUser.bio
+        if (mUser?.bio != null && !mUser?.bio?.isEmpty()!!)
+            user_activity_content_bio.text = mUser?.bio
         else
             user_activity_content_bio_rl.visibility = View.GONE
 
         // Mail
-        if (mUser.email != null && !mUser.email.isEmpty()) {
-            user_activity_content_mail.text = mUser.email
+        if (mUser?.email != null && !mUser?.email?.isEmpty()!!) {
+            user_activity_content_mail.text = mUser?.email
             user_activity_content_mail_rl.setOnClickListener {
-                startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser.email)), "Email"))
+                startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser?.email)), "Email"))
             }
         }
         else
             user_activity_content_mail_rl.visibility = View.GONE
 
         // Location
-        if (mUser.location != null && !mUser.location.isEmpty()) {
-            user_activity_content_location.text = mUser.location
+        if (mUser?.location != null && !mUser?.location?.isEmpty()!!) {
+            user_activity_content_location.text = mUser?.location
             user_activity_content_location_rl.setOnClickListener {
-                val uriIntent = Uri.parse(Uri.encode(mUser.location))
+                val uriIntent = Uri.parse(Uri.encode(mUser?.location))
                 val mapIntent = Intent(Intent.ACTION_VIEW, uriIntent)
                 mapIntent.`package` = "com.google.android.apps.maps"
                 if (mapIntent.resolveActivity(packageManager) != null) {
@@ -190,22 +190,22 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_location_rl.visibility = View.GONE
 
         // Company
-        if (mUser.company != null && !mUser.company.isEmpty())
-            user_activity_content_company.text = mUser.company
+        if (mUser?.company != null && !mUser?.company?.isEmpty()!!)
+            user_activity_content_company.text = mUser?.company
         else
             user_activity_content_company_rl.visibility = View.GONE
 
         // Blog
-        if (mUser.blog != null && !mUser.blog.isEmpty()) {
-            user_activity_content_blog.text = mUser.blog
+        if (mUser?.blog != null && !mUser?.blog?.isEmpty()!!) {
+            user_activity_content_blog.text = mUser?.blog
             user_activity_content_blog_rl.setOnClickListener {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser.blog)))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser?.blog)))
             }
         }
         else
             user_activity_content_blog_rl.visibility = View.GONE
 
-        user_activity_content_contributionsview.loadUserName(mUser.login)
+        user_activity_content_contributionsview.loadUserName(mUser?.login)
 
         if (user_activity2_bottomnv.selectedItemId == R.id.user_activity_bottom_menu_info)
             user_activity_content_rl.visibility = View.VISIBLE
@@ -219,7 +219,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
-        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
+        mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         PAGE_N_FOLLOWING = 1
         LOADING_FOLLOWING = false
@@ -255,7 +255,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
 
         showLoading()
-        mPresenter.getFollowing(mUser.login, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING)
+        mUser?.login?.let { mPresenter.getFollowing(it, PAGE_N_FOLLOWING, ITEMS_PER_PAGE_FOLLOWING) }
     }
 
     private fun onFollowersNavClick() {
@@ -302,7 +302,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
 
         showLoading()
-        mPresenter.getFollowers(mUser.login, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS)
+        mUser?.login?.let { mPresenter.getFollowers(it, PAGE_N_FOLLOWERS, ITEMS_PER_PAGE_FOLLOWERS) }
     }
 
     private fun onInfoNavClick() {
@@ -313,7 +313,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.VISIBLE
         user_activity2_rv.visibility = View.GONE
-        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
+        mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
     }
 
     private fun onReposNavClick() {
@@ -324,8 +324,8 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
-        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = true
-        mMenu.findItem(R.id.user_menu_created).isChecked = true
+        mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = true }
+        mMenu.findItem(R.id.user_menu_created)?.let { it.isChecked = true }
 
         PAGE_N_REPOS = 1
         LOADING_REPOS = false
@@ -356,7 +356,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         user_activity2_rv.setOnScrollListener(mScrollListenerRepos)
 
         showLoading()
-        mPresenter.getRepos(mUser.login, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+        mUser?.login?.let { mPresenter.getRepos(it, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos) }
     }
 
     fun onEventsNavClick() {
@@ -367,7 +367,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
-        mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
+        mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         PAGE_N_EVENTS = 1
         LOADING_EVENTS = false
@@ -403,7 +403,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                 }
 
         showLoading()
-        mPresenter.getEvents(mUser.login, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
+        mUser?.login?.let { mPresenter.getEvents(it, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS) }
     }
 
     override fun showFollowing(followingList: List<User>) {
@@ -516,7 +516,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
                     mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                 }
                 R.id.open_in_browser -> {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser.htmlUrl)))
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser?.htmlUrl)))
                 }
             }
         }
