@@ -36,8 +36,8 @@ import giuliolodi.gitnav.ui.starred.StarredAdapter
 import giuliolodi.gitnav.ui.user.UserActivity2
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_base_drawer.*
-import kotlinx.android.synthetic.main.app_bar_home.*
+import kotlinx.android.synthetic.main.base_activity.*
+import kotlinx.android.synthetic.main.base_activity_drawer.*
 import kotlinx.android.synthetic.main.trending_activity.*
 import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject

@@ -45,7 +45,7 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.C
     }
 
     // Not used here
-    override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap) {}
+    override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap?) {}
 
     fun getActivityComponent(): ActivityComponent {
         return mActivityComponent

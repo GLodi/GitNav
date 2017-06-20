@@ -29,7 +29,6 @@ import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.event_activity.*
 import org.eclipse.egit.github.core.event.Event
 import javax.inject.Inject
@@ -37,12 +36,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
-import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.ui.user.UserActivity2
-import giuliolodi.gitnav.utils.NetworkUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_base_drawer.*
+import kotlinx.android.synthetic.main.base_activity.*
+import kotlinx.android.synthetic.main.base_activity_drawer.*
 
 /**
  * Created by giulio on 15/05/2017.

@@ -33,8 +33,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import kotlinx.android.synthetic.main.activity_base_drawer.*
-import kotlinx.android.synthetic.main.app_bar_home.*
+import kotlinx.android.synthetic.main.base_activity.*
+import kotlinx.android.synthetic.main.base_activity_drawer.*
 import kotlinx.android.synthetic.main.repo_list_activity.*
 import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject

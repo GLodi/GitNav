@@ -28,7 +28,7 @@ interface BaseContract {
 
         fun isNetworkAvailable(): Boolean
 
-        fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap)
+        fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap?)
 
     }
 

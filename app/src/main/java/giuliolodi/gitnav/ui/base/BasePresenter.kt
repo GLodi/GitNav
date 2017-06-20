@@ -50,6 +50,9 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
         if (mBaseView is BaseDrawerActivity) {
             mBaseView!!.initDrawer(getDataManager().getUsername(), getDataManager().getFullname(), getDataManager().getEmail(), getDataManager().getPic())
         }
+        if ((mBaseView as? BaseFragment)?.activity is BaseDrawerActivity) {
+            ((mBaseView as BaseFragment).activity as BaseDrawerActivity).initDrawer("Username", "FullName", "prova@gmail.com", null)
+        }
     }
 
     override fun onDetach() {

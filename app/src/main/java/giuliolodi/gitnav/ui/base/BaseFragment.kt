@@ -27,7 +27,7 @@ import giuliolodi.gitnav.di.component.ActivityComponent
  * Created by giulio on 28/05/2017.
  */
 
-open class BaseFragment : Fragment(), BaseContract.View {
+abstract class BaseFragment : Fragment(), BaseContract.View {
 
     private var mBaseActivity: BaseActivity? = null
     private var mBaseDrawerActivity: BaseDrawerActivity? = null
@@ -37,8 +37,7 @@ open class BaseFragment : Fragment(), BaseContract.View {
         initLayout(view)
     }
 
-    fun initLayout(view: View?) {
-    }
+    protected abstract fun initLayout(view: View?)
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -75,7 +74,7 @@ open class BaseFragment : Fragment(), BaseContract.View {
     }
 
     // Not used here
-    override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap) {
+    override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap?) {
     }
 
     override fun isNetworkAvailable(): Boolean {

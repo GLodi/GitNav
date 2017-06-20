@@ -30,7 +30,6 @@ import android.view.*
 import android.widget.Toast
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import kotlinx.android.synthetic.main.activity_base_drawer.*
 import org.eclipse.egit.github.core.Gist
 import javax.inject.Inject
 import giuliolodi.gitnav.R.string.network_error
@@ -39,7 +38,8 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.gist.GistActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.app_bar_home.*
+import kotlinx.android.synthetic.main.base_activity.*
+import kotlinx.android.synthetic.main.base_activity_drawer.*
 import kotlinx.android.synthetic.main.gist_list_activity.*
 import kotlinx.android.synthetic.main.gist_list_mine.*
 import kotlinx.android.synthetic.main.gist_list_starred.*

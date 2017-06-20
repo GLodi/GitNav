@@ -29,7 +29,6 @@ import android.view.View
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import kotlinx.android.synthetic.main.app_bar_home.*
 import kotlinx.android.synthetic.main.search_activity.*
 import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject
@@ -43,6 +42,7 @@ import giuliolodi.gitnav.ui.user.UserActivity2
 import giuliolodi.gitnav.utils.RxUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.base_activity.*
 import org.eclipse.egit.github.core.CodeSearchResult
 import org.eclipse.egit.github.core.SearchUser
 import timber.log.Timber
