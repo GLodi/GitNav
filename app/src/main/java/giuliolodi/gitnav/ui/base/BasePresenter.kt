@@ -51,7 +51,7 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
             mBaseView!!.initDrawer(getDataManager().getUsername(), getDataManager().getFullname(), getDataManager().getEmail(), getDataManager().getPic())
         }
         if ((mBaseView as? BaseFragment)?.activity is BaseDrawerActivity) {
-            ((mBaseView as BaseFragment).activity as BaseDrawerActivity).initDrawer("Username", "FullName", "prova@gmail.com", null)
+            ((mBaseView as BaseFragment).activity as BaseDrawerActivity).initDrawer(getDataManager().getUsername(), getDataManager().getFullname(), getDataManager().getEmail(), getDataManager().getPic())
         }
     }
 
