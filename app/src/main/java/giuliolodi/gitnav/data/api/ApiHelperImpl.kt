@@ -21,8 +21,9 @@ import android.os.Build
 import android.os.StrictMode
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.UrlInfo
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.*
@@ -82,32 +83,32 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiGetUser(token: String, username: String): Observable<User> {
-        return Observable.defer {
+    override fun apiGetUser(token: String, username: String): Flowable<User> {
+        return Flowable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
-            Observable.just(userService.getUser(username))
+            Flowable.just(userService.getUser(username))
         }
     }
 
-    override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return Observable.defer {
+    override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>> {
+        return Flowable.defer {
             val eventService: EventService = EventService()
             eventService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(eventService.pageUserReceivedEvents(username, false, pageN, itemsPerPage).next()))
+            Flowable.just(ArrayList(eventService.pageUserReceivedEvents(username, false, pageN, itemsPerPage).next()))
         }
     }
 
-    override fun apiPageUserEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
-        return Observable.defer {
+    override fun apiPageUserEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>> {
+        return Flowable.defer {
             val eventService: EventService = EventService()
             eventService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(eventService.pageUserEvents(username, false, pageN, itemsPerPage).next()))
+            Flowable.just(ArrayList(eventService.pageUserEvents(username, false, pageN, itemsPerPage).next()))
         }
     }
 
-    override fun apiGetTrending(token: String, period: String): Observable<Repository> {
-        return Observable.create { disposable ->
+    override fun apiGetTrending(token: String, period: String): Flowable<Repository> {
+        return Flowable.create({ emitter ->
             var URL: String = ""
             val ownerRepoList: MutableList<String> = mutableListOf()
             when (period) {
@@ -133,66 +134,66 @@ class ApiHelperImpl : ApiHelper {
                     val repositoryService: RepositoryService = RepositoryService()
                     repositoryService.client.setOAuth2Token(token)
                     for (i in 0..ownerRepoList.size - 1 step 2) {
-                        disposable.onNext(repositoryService.getRepository(ownerRepoList[i], ownerRepoList[i+1]))
+                        emitter.onNext(repositoryService.getRepository(ownerRepoList[i], ownerRepoList[i+1]))
                     }
-                    disposable.onComplete()
+                    emitter.onComplete()
                 }
             } catch (e: Exception) {
-                if (!disposable.isDisposed)
-                    disposable.onError(e)
+                if (!emitter.isCancelled)
+                    emitter.onError(e)
             }
-        }
+        }, BackpressureStrategy.BUFFER)
     }
 
-    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
-        return Observable.defer {
+    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Flowable<List<Repository>> {
+        return Flowable.defer {
             val repositoryService: RepositoryService = RepositoryService()
             repositoryService.client.setOAuth2Token(token)
             when (filter?.get("sort")) {
-                "stars" -> Observable.just(repositoryService.getRepositories(username).sortedByDescending { it.watchers })
-                else -> Observable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
+                "stars" -> Flowable.just(repositoryService.getRepositories(username).sortedByDescending { it.watchers })
+                else -> Flowable.just(ArrayList(repositoryService.pageRepositories(username, filter, pageN, itemsPerPage).next()))
             }
         }
     }
 
-    override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
-        return Observable.defer {
+    override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Flowable<List<Repository>> {
+        return Flowable.defer {
             val starService: StarService = StarService()
             starService.client.setOAuth2Token(token)
             when (filter?.get("sort")) {
-                "stars" -> Observable.just(starService.getStarred(username).sortedByDescending { it.watchers })
-                "pushed" -> Observable.just(starService.getStarred(username).sortedByDescending { it.pushedAt })
-                "updated" -> Observable.just(starService.getStarred(username).sortedByDescending { it.updatedAt })
-                "alphabetical" -> Observable.just(starService.getStarred(username).sortedBy { it.name })
-                else -> Observable.just(ArrayList(starService.pageStarred(username, filter, pageN, itemsPerPage).next()))
+                "stars" -> Flowable.just(starService.getStarred(username).sortedByDescending { it.watchers })
+                "pushed" -> Flowable.just(starService.getStarred(username).sortedByDescending { it.pushedAt })
+                "updated" -> Flowable.just(starService.getStarred(username).sortedByDescending { it.updatedAt })
+                "alphabetical" -> Flowable.just(starService.getStarred(username).sortedBy { it.name })
+                else -> Flowable.just(ArrayList(starService.pageStarred(username, filter, pageN, itemsPerPage).next()))
             }
         }
     }
 
-    override fun apiGetFollowed(token: String, username: String): Observable<String> {
-        return Observable.defer {
+    override fun apiGetFollowed(token: String, username: String): Flowable<String> {
+        return Flowable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
             if (userService.isFollowing(username))
-                Observable.just("f")
+                Flowable.just("f")
             else
-                Observable.just("n")
+                Flowable.just("n")
         }
     }
 
-    override fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
-        return Observable.defer {
+    override fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
+        return Flowable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(userService.pageFollowers(username, pageN, itemsPerPage).next()))
+            Flowable.just(ArrayList(userService.pageFollowers(username, pageN, itemsPerPage).next()))
         }
     }
 
-    override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
-        return Observable.defer {
+    override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
+        return Flowable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(userService.pageFollowing(username, pageN, itemsPerPage).next()))
+            Flowable.just(ArrayList(userService.pageFollowing(username, pageN, itemsPerPage).next()))
         }
     }
 
@@ -222,35 +223,35 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiPageGists(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
-        return Observable.defer {
+    override fun apiPageGists(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Gist>> {
+        return Flowable.defer {
             val gistService: GistService = GistService()
             gistService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(gistService.pageGists(username, pageN, itemsPerPage).next()))
+            Flowable.just(ArrayList(gistService.pageGists(username, pageN, itemsPerPage).next()))
         }
     }
 
-    override fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
-        return Observable.defer {
+    override fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Flowable<List<Gist>> {
+        return Flowable.defer {
             val gistService: GistService = GistService()
             gistService.client.setOAuth2Token(token)
-            Observable.just(ArrayList(gistService.pageStarredGists(pageN, itemsPerPage).next()))
+            Flowable.just(ArrayList(gistService.pageStarredGists(pageN, itemsPerPage).next()))
         }
     }
 
-    override fun apiGetGist(token: String, gistId: String): Observable<Gist> {
-        return Observable.defer {
+    override fun apiGetGist(token: String, gistId: String): Flowable<Gist> {
+        return Flowable.defer {
             val gistService: GistService = GistService()
             gistService.client.setOAuth2Token(token)
-            Observable.just(gistService.getGist(gistId))
+            Flowable.just(gistService.getGist(gistId))
         }
     }
 
-    override fun apiGetGistComments(token: String, gistId: String): Observable<List<Comment>> {
-        return Observable.defer {
+    override fun apiGetGistComments(token: String, gistId: String): Flowable<List<Comment>> {
+        return Flowable.defer {
             val gistService: GistService = GistService()
             gistService.client.setOAuth2Token(token)
-            Observable.just(gistService.getComments(gistId))
+            Flowable.just(gistService.getComments(gistId))
         }
     }
 
@@ -280,45 +281,45 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean> {
-        return Observable.defer {
+    override fun apiIsGistStarred(token: String, gistId: String): Flowable<Boolean> {
+        return Flowable.defer {
             val gistService: GistService = GistService()
             gistService.client.setOAuth2Token(token)
-            Observable.just(gistService.isStarred(gistId))
+            Flowable.just(gistService.isStarred(gistId))
         }
     }
 
-    override fun apiSearchRepos(token: String, query: String, filter: HashMap<String,String>): Observable<List<Repository>> {
-        return Observable.defer {
+    override fun apiSearchRepos(token: String, query: String, filter: HashMap<String,String>): Flowable<List<Repository>> {
+        return Flowable.defer {
             val repoService: RepositoryService = RepositoryService()
             repoService.client.setOAuth2Token(token)
             when (filter["sort"]) {
-                "stars" -> Observable.just(repoService.searchRepositories(query).sortedByDescending { it.watchers })
-                "pushed" -> Observable.just(repoService.searchRepositories(query).sortedByDescending { it.pushedAt })
-                "updated" -> Observable.just(repoService.searchRepositories(query).sortedByDescending { it.updatedAt })
-                "full_name" -> Observable.just(repoService.searchRepositories(query).sortedBy { it.name })
-                else -> Observable.just(repoService.searchRepositories(query))
+                "stars" -> Flowable.just(repoService.searchRepositories(query).sortedByDescending { it.watchers })
+                "pushed" -> Flowable.just(repoService.searchRepositories(query).sortedByDescending { it.pushedAt })
+                "updated" -> Flowable.just(repoService.searchRepositories(query).sortedByDescending { it.updatedAt })
+                "full_name" -> Flowable.just(repoService.searchRepositories(query).sortedBy { it.name })
+                else -> Flowable.just(repoService.searchRepositories(query))
             }
         }
     }
 
-    override fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Observable<List<SearchUser>> {
-        return Observable.defer {
+    override fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Flowable<List<SearchUser>> {
+        return Flowable.defer {
             val userService: UserService = UserService()
             userService.client.setOAuth2Token(token)
             when (filter["sort"]) {
-                "repos" -> Observable.just(userService.searchUsers(query).sortedByDescending { it.publicRepos })
-                "followers" -> Observable.just(userService.searchUsers(query).sortedByDescending { it.followers })
-                else -> Observable.just(userService.searchUsers(query))
+                "repos" -> Flowable.just(userService.searchUsers(query).sortedByDescending { it.publicRepos })
+                "followers" -> Flowable.just(userService.searchUsers(query).sortedByDescending { it.followers })
+                else -> Flowable.just(userService.searchUsers(query))
             }
         }
     }
 
-    override fun apiSearchCode(token: String, query: String): Observable<List<CodeSearchResult>> {
-        return Observable.defer {
+    override fun apiSearchCode(token: String, query: String): Flowable<List<CodeSearchResult>> {
+        return Flowable.defer {
             val repoService: RepositoryService = RepositoryService()
             repoService.client.setOAuth2Token(token)
-            Observable.just(repoService.searchCode(query))
+            Flowable.just(repoService.searchCode(query))
         }
     }
 

@@ -19,7 +19,7 @@ package giuliolodi.gitnav.data
 import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.event.Event
 
@@ -49,18 +49,18 @@ interface DataManager : ApiHelper, PrefsHelper {
     /**
      * Get user from username.
      * @param username
-     * @return Observable<User>
+     * @return Flowable<User>
      */
-    fun getUser(username: String): Observable<User>
+    fun getUser(username: String): Flowable<User>
 
     /**
      * Downloads events received by user. Logged user if username = null.
      * @param username
      * @param pageN
      * @param itemsPerPage
-     * @return Observable<List<Event>>
+     * @return Flowable<List<Event>>
      */
-    fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+    fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>>
 
     /**
      * Downloads user events. Logged user if username = null.
@@ -68,9 +68,9 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param username
      * @param pageN
      * @param itemsPerPage
-     * @return Observable<List<Event>>
+     * @return Flowable<List<Event>>
      */
-    fun pageUserEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>>
+    fun pageUserEvents(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>>
 
     /**
      * Page repositories of user (logged user if username is null).
@@ -78,16 +78,16 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param pageN
      * @param itemsPerPage
      * @param filter
-     * @return Observable<List<Repository>>
+     * @return Flowable<List<Repository>>
      */
-    fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+    fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Flowable<List<Repository>>
 
     /**
      * Downloads trending repos (one at a time) from github's websites.
      * @param period (daily, weekly, monthly)
-     * @return Observable<Repository>
+     * @return Flowable<Repository>
      */
-    fun getTrending(period: String): Observable<Repository>
+    fun getTrending(period: String): Flowable<Repository>
 
     /**
      * Get logged user's starred repos
@@ -96,7 +96,7 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param itemsPerPage
      * @param filter
      */
-    fun pageStarred(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>>
+    fun pageStarred(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Flowable<List<Repository>>
 
     /**
      * Check if user is followed by logged user.
@@ -107,7 +107,7 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param username
      * @return String
      */
-    fun getFollowed(username: String): Observable<String>
+    fun getFollowed(username: String): Flowable<String>
 
     /**
      * Page users that follow specific user (logged user if username is null)
@@ -116,7 +116,7 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param itemsPerPage
      * @return List<User>
      */
-    fun pageFollowers(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
+    fun pageFollowers(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>>
 
     /**
      * Page users that follow specific user (logged user if username is null)
@@ -125,7 +125,7 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param itemsPerPage
      * @return List<User>
      */
-    fun pageFollowing(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>>
+    fun pageFollowing(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>>
 
     /**
      * Follow user
@@ -146,31 +146,31 @@ interface DataManager : ApiHelper, PrefsHelper {
      * @param username
      * @param pageN
      * @param itemsPerPage
-     * @return Observable<List<Gist>>
+     * @return Flowable<List<Gist>>
      */
-    fun pageGists(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>>
+    fun pageGists(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Gist>>
 
     /**
      * Page starred gists of logged user
      * @param pageN
      * @param itemsPerPage
-     * @return Observable<List<Gist>>
+     * @return Flowable<List<Gist>>
      */
-    fun pageStarredGists(pageN: Int, itemsPerPage: Int): Observable<List<Gist>>
+    fun pageStarredGists(pageN: Int, itemsPerPage: Int): Flowable<List<Gist>>
 
     /**
      * Returns gist
      * @param gistId
-     * @return Observable<Gist>
+     * @return Flowable<Gist>
      */
-    fun getGist(gistId: String): Observable<Gist>
+    fun getGist(gistId: String): Flowable<Gist>
 
     /**
      * Get gist's comments
      * @param gistId
-     * @return Observable<List<Comment>>
+     * @return Flowable<List<Comment>>
      */
-    fun getGistComments(gistId: String): Observable<List<Comment>>
+    fun getGistComments(gistId: String): Flowable<List<Comment>>
 
     /**
      * Star gist
@@ -189,31 +189,31 @@ interface DataManager : ApiHelper, PrefsHelper {
     /**
      * Returns true if gist is starred, false otherwise
      * @param gistId
-     * @return Observable<Boolean>
+     * @return Flowable<Boolean>
      */
-    fun isGistStarred(gistId: String): Observable<Boolean>
+    fun isGistStarred(gistId: String): Flowable<Boolean>
 
     /**
      * Searches for repositories
      * @param query
      * @param filter
-     * @return Observable<List<Repository>>
+     * @return Flowable<List<Repository>>
      */
-    fun searchRepos(query: String, filter: HashMap<String,String>): Observable<List<Repository>>
+    fun searchRepos(query: String, filter: HashMap<String,String>): Flowable<List<Repository>>
 
     /**
      * Searches for users
      * @param query
      * @param filter
-     * @return Observable<List<User>>
+     * @return Flowable<List<User>>
      */
-    fun searchUsers(query: String, filter: HashMap<String,String>): Observable<List<SearchUser>>
+    fun searchUsers(query: String, filter: HashMap<String,String>): Flowable<List<SearchUser>>
 
     /**
      * Searches code
      * @param query
-     * @return Observable<List<CodeSearchResult>>
+     * @return Flowable<List<CodeSearchResult>>
      */
-    fun searchCode(query: String): Observable<List<CodeSearchResult>>
+    fun searchCode(query: String): Flowable<List<CodeSearchResult>>
 
 }

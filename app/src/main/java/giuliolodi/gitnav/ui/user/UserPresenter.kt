@@ -18,7 +18,7 @@ package giuliolodi.gitnav.ui.user
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
@@ -39,7 +39,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(username: String) {
-        getCompositeDisposable().add(Observable.zip<User, String, Map<User, String>>(
+        getCompositeDisposable().add(Flowable.zip<User, String, Map<User, String>>(
                 getDataManager().getUser(username)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),

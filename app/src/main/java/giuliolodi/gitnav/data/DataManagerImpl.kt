@@ -22,7 +22,7 @@ import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.data.api.ApiHelper
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.UserService
@@ -93,15 +93,15 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getToken()
     }
 
-    override fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun pageEvents(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>> {
         return mApiHelper.apiPageEvents(mPrefsHelper.getToken(), username?.let { username } ?: mPrefsHelper.getUsername(), pageN, itemsPerPage)
     }
 
-    override fun pageUserEvents(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun pageUserEvents(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>> {
         return mApiHelper.apiPageUserEvents(mPrefsHelper.getToken(), username?.let { username } ?: mPrefsHelper.getUsername(), pageN, itemsPerPage)
     }
 
-    override fun getUser(username: String): Observable<User> {
+    override fun getUser(username: String): Flowable<User> {
         return apiGetUser(mPrefsHelper.getToken(), username)
     }
 
@@ -125,36 +125,36 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.getPic()
     }
 
-    override fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+    override fun pageRepos(username: String?, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Flowable<List<Repository>> {
         if (username == null)
             return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
         else
             return mApiHelper.apiPageRepos(mPrefsHelper.getToken(), username, pageN, itemsPerPage, filter)
     }
 
-    override fun getTrending(period: String): Observable<Repository> {
+    override fun getTrending(period: String): Flowable<Repository> {
         return mApiHelper.apiGetTrending(mPrefsHelper.getToken(), period)
     }
 
-    override fun pageStarred(pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+    override fun pageStarred(pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Flowable<List<Repository>> {
         return mApiHelper.apiPageStarred(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage, filter)
     }
 
-    override fun getFollowed(username: String): Observable<String> {
+    override fun getFollowed(username: String): Flowable<String> {
         if (mPrefsHelper.getUsername() == username)
-            return Observable.just("u")
+            return Flowable.just("u")
         else
             return mApiHelper.apiGetFollowed(mPrefsHelper.getToken(), username)
     }
 
-    override fun pageFollowers(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+    override fun pageFollowers(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
         if (username == null)
             return mApiHelper.apiGetFollowers(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
         else
             return mApiHelper.apiGetFollowers(mPrefsHelper.getToken(), username, pageN, itemsPerPage)
     }
 
-    override fun pageFollowing(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+    override fun pageFollowing(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
         if (username == null)
             return mApiHelper.apiGetFollowing(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
         else
@@ -173,22 +173,22 @@ class DataManagerImpl : DataManager {
         return Completable.error(Exception())
     }
 
-    override fun pageGists(username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+    override fun pageGists(username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Gist>> {
         if (username == null)
             return mApiHelper.apiPageGists(mPrefsHelper.getToken(), mPrefsHelper.getUsername(), pageN, itemsPerPage)
         else
             return mApiHelper.apiPageGists(mPrefsHelper.getToken(), username, pageN, itemsPerPage)
     }
 
-    override fun pageStarredGists(pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+    override fun pageStarredGists(pageN: Int, itemsPerPage: Int): Flowable<List<Gist>> {
         return mApiHelper.apiPageStarredGists(mPrefsHelper.getToken(), pageN, itemsPerPage)
     }
 
-    override fun getGist(gistId: String): Observable<Gist> {
+    override fun getGist(gistId: String): Flowable<Gist> {
         return mApiHelper.apiGetGist(mPrefsHelper.getToken(), gistId)
     }
 
-    override fun getGistComments(gistId: String): Observable<List<Comment>> {
+    override fun getGistComments(gistId: String): Flowable<List<Comment>> {
         return mApiHelper.apiGetGistComments(mPrefsHelper.getToken(), gistId)
     }
 
@@ -200,19 +200,19 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiUnstarGist(mPrefsHelper.getToken(), gistId)
     }
 
-    override fun isGistStarred(gistId: String): Observable<Boolean> {
+    override fun isGistStarred(gistId: String): Flowable<Boolean> {
         return mApiHelper.apiIsGistStarred(mPrefsHelper.getToken(), gistId)
     }
 
-    override fun searchRepos(query: String, filter: HashMap<String,String>): Observable<List<Repository>> {
+    override fun searchRepos(query: String, filter: HashMap<String,String>): Flowable<List<Repository>> {
         return mApiHelper.apiSearchRepos(mPrefsHelper.getToken(), query, filter)
     }
 
-    override fun searchUsers(query: String, filter: HashMap<String,String>): Observable<List<SearchUser>> {
+    override fun searchUsers(query: String, filter: HashMap<String,String>): Flowable<List<SearchUser>> {
         return mApiHelper.apiSearchUsers(mPrefsHelper.getToken(), query, filter)
     }
 
-    override fun searchCode(query: String): Observable<List<CodeSearchResult>> {
+    override fun searchCode(query: String): Flowable<List<CodeSearchResult>> {
         return mApiHelper.apiSearchCode(mPrefsHelper.getToken(), query)
     }
 
@@ -220,39 +220,39 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
 
-    override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun apiPageEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>> {
         return mApiHelper.apiPageEvents(token, username, pageN, itemsPerPage)
     }
 
-    override fun apiPageUserEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Event>> {
+    override fun apiPageUserEvents(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Event>> {
         return mApiHelper.apiPageUserEvents(token, username, pageN, itemsPerPage)
     }
 
-    override fun apiGetUser(token: String, username: String): Observable<User> {
+    override fun apiGetUser(token: String, username: String): Flowable<User> {
         return mApiHelper.apiGetUser(token, username)
     }
 
-    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Observable<List<Repository>> {
+    override fun apiPageRepos(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>?): Flowable<List<Repository>> {
         return mApiHelper.apiPageRepos(token, username, pageN, itemsPerPage, filter)
     }
 
-    override fun apiGetTrending(token: String, period: String): Observable<Repository> {
+    override fun apiGetTrending(token: String, period: String): Flowable<Repository> {
         return mApiHelper.apiGetTrending(token, period)
     }
 
-    override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Observable<List<Repository>> {
+    override fun apiPageStarred(token: String, username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String, String>?): Flowable<List<Repository>> {
         return mApiHelper.apiPageStarred(token, username, pageN, itemsPerPage, filter)
     }
 
-    override fun apiGetFollowed(token: String, username: String): Observable<String> {
+    override fun apiGetFollowed(token: String, username: String): Flowable<String> {
         return mApiHelper.apiGetFollowed(token, username)
     }
 
-    override fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+    override fun apiGetFollowers(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
         return mApiHelper.apiGetFollowers(token, username, pageN, itemsPerPage)
     }
 
-    override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<User>> {
+    override fun apiGetFollowing(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
         return mApiHelper.apiGetFollowers(token, username, pageN, itemsPerPage)
     }
 
@@ -264,19 +264,19 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiUnfollowUser(token, username)
     }
 
-    override fun apiPageGists(token: String, username: String?, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+    override fun apiPageGists(token: String, username: String?, pageN: Int, itemsPerPage: Int): Flowable<List<Gist>> {
         return mApiHelper.apiPageGists(token, username, pageN, itemsPerPage)
     }
 
-    override fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Observable<List<Gist>> {
+    override fun apiPageStarredGists(token: String, pageN: Int, itemsPerPage: Int): Flowable<List<Gist>> {
         return mApiHelper.apiPageStarredGists(token, pageN, itemsPerPage)
     }
 
-    override fun apiGetGist(token: String, gistId: String): Observable<Gist> {
+    override fun apiGetGist(token: String, gistId: String): Flowable<Gist> {
         return mApiHelper.apiGetGist(token, gistId)
     }
 
-    override fun apiGetGistComments(token: String, gistId: String): Observable<List<Comment>> {
+    override fun apiGetGistComments(token: String, gistId: String): Flowable<List<Comment>> {
         return mApiHelper.apiGetGistComments(token, gistId)
     }
 
@@ -288,19 +288,19 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiUnstarGist(token, gistId)
     }
 
-    override fun apiIsGistStarred(token: String, gistId: String): Observable<Boolean> {
+    override fun apiIsGistStarred(token: String, gistId: String): Flowable<Boolean> {
         return mApiHelper.apiIsGistStarred(token, gistId)
     }
 
-    override fun apiSearchRepos(token: String, query: String, filter: HashMap<String,String>): Observable<List<Repository>> {
+    override fun apiSearchRepos(token: String, query: String, filter: HashMap<String,String>): Flowable<List<Repository>> {
         return mApiHelper.apiSearchRepos(token, query, filter)
     }
 
-    override fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Observable<List<SearchUser>> {
+    override fun apiSearchUsers(token: String, query: String, filter: HashMap<String,String>): Flowable<List<SearchUser>> {
         return mApiHelper.apiSearchUsers(token, query, filter)
     }
 
-    override fun apiSearchCode(token: String, query: String): Observable<List<CodeSearchResult>> {
+    override fun apiSearchCode(token: String, query: String): Flowable<List<CodeSearchResult>> {
         return mApiHelper.apiSearchCode(token, query)
     }
 

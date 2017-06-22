@@ -18,7 +18,7 @@ package giuliolodi.gitnav.ui.gist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
@@ -39,7 +39,7 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(gistId: String) {
-        getCompositeDisposable().add(Observable.zip< Gist,Boolean,Map<Gist,Boolean>>(
+        getCompositeDisposable().add(Flowable.zip< Gist,Boolean,Map<Gist,Boolean>>(
                 getDataManager().getGist(gistId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),

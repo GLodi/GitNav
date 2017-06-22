@@ -18,12 +18,9 @@ package giuliolodi.gitnav.ui.search
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.eclipse.egit.github.core.Repository
-import org.eclipse.egit.github.core.User
 import timber.log.Timber
 import javax.inject.Inject
 
