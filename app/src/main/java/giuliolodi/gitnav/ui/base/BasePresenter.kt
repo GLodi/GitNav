@@ -60,6 +60,10 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
         mBaseView = null
     }
 
+    override fun onDetachView() {
+        mBaseView = null
+    }
+
     fun isViewAttached(): Boolean {
         return mBaseView != null
     }

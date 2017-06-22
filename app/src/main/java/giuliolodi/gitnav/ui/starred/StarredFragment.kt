@@ -44,6 +44,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
     @Inject lateinit var mPresenter: StarredContract.Presenter<StarredContract.View>
 
+    private var mRepoList: MutableList<Repository>? = null
     private var mFilter: HashMap<String,String> = HashMap()
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
@@ -53,6 +54,8 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
+
+        mFilter.put("sort", "created")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -116,8 +119,6 @@ class StarredFragment : BaseFragment(), StarredContract.View {
             }
         }
 
-        mFilter.put("sort", "created")
-
         if (isNetworkAvailable()) {
             showLoading()
             mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
@@ -129,6 +130,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
     }
 
     override fun showRepos(repoList: List<Repository>) {
+        mRepoList?.addAll(repoList)
         (starred_fragment_rv.adapter as StarredAdapter).addRepos(repoList)
         (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
         if (PAGE_N == 1 && repoList.isEmpty()) starred_fragment_no_repo.visibility = View.VISIBLE
@@ -213,8 +215,13 @@ class StarredFragment : BaseFragment(), StarredContract.View {
     }
 
     override fun onDestroyView() {
-        mPresenter.onDetach()
+        mPresenter.onDetachView()
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }

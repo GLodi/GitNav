@@ -58,8 +58,7 @@
 
         <activity
             android:name=".ui.starred.StarredActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity

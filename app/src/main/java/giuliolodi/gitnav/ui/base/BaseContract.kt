@@ -38,6 +38,8 @@ interface BaseContract {
 
         fun onDetach()
 
+        fun onDetachView()
+
     }
 
 }
