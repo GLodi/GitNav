@@ -129,6 +129,49 @@ class UserPresenter2<V: UserContract2.View> : BasePresenter<V>, UserContract2.Pr
                 ))
     }
 
+    override fun followUser(username: String) {
+        getCompositeDisposable().add(getDataManager().followUser(username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            getView().onFollowCompleted()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun unFollowUser(username: String) {
+        getCompositeDisposable().add(getDataManager().unfollowUser(username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            getView().onUnfollowCompleted()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun updateLoggedUser(user: User) {
+        getCompositeDisposable().add(getDataManager().updateUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {},
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
     override fun unsubscribe() {
         if (getCompositeDisposable().size() != 0) {
             getCompositeDisposable().clear()

@@ -46,6 +46,10 @@ interface UserContract2 {
 
         fun showFollowing(followingList: List<User>)
 
+        fun onFollowCompleted()
+
+        fun onUnfollowCompleted()
+
     }
 
     @PerActivity
@@ -60,6 +64,12 @@ interface UserContract2 {
         fun getFollowers(username: String, pageN: Int, itemsPerPage: Int)
 
         fun getFollowing(username: String, pageN: Int, itemsPerPage: Int)
+
+        fun followUser(username: String)
+
+        fun unFollowUser(username: String)
+
+        fun updateLoggedUser(user: User)
 
         fun unsubscribe()
 

@@ -45,7 +45,7 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (repo: Repository, p: PrettyTime, filter: HashMap<String, String>) = with(itemView) {
-            row_starred_repo_name.text = repo.owner.login + " / " + repo.name
+            row_starred_repo_name.text = repo.owner.login + "/" + repo.name
             row_starred_star_number.text = repo.watchers.toString()
             Picasso.with(context).load(repo.owner.avatarUrl).resize(100, 100).centerCrop().into(row_starred_author_icon)
             if (repo.description != null && repo.description != "")

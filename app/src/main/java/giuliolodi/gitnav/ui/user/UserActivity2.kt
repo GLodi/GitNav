@@ -134,8 +134,14 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
         else if (mapUserFollowed[mUser!!] == "u")
             IS_LOGGED_USER = true
 
+        mUser?.let { mPresenter.updateLoggedUser(it) }
+
         createOptionMenu()
 
+        user_activity2_collapsing_toolbar.title = mUser?.name ?: mUser?.login
+        Picasso.with(applicationContext).load(mUser?.avatarUrl).into(user_activity2_image)
+
+        // FAB follow/unfollow
         user_activity2_fab.visibility = View.VISIBLE
         if (IS_FOLLOWED)
             user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
@@ -143,9 +149,16 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty_24dp))
         if (IS_LOGGED_USER)
             user_activity2_fab.visibility = View.GONE
-
-        user_activity2_collapsing_toolbar.title = mUser?.name ?: mUser?.login
-        Picasso.with(applicationContext).load(mUser?.avatarUrl).into(user_activity2_image)
+        user_activity2_fab.setOnClickListener {
+            if (isNetworkAvailable()) {
+                if (IS_FOLLOWED)
+                    mPresenter.unFollowUser(username)
+                else
+                    mPresenter.followUser(username)
+            }
+            else
+                Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
 
         // Full name
         if (mUser?.name != null && !mUser?.name?.isEmpty()!!)
@@ -219,6 +232,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
+        user_activity_content_no.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         PAGE_N_FOLLOWING = 1
@@ -266,6 +280,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
+        user_activity_content_no.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon).isVisible = false
 
         PAGE_N_FOLLOWERS = 1
@@ -313,6 +328,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.VISIBLE
         user_activity2_rv.visibility = View.GONE
+        user_activity_content_no.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
     }
 
@@ -324,6 +340,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
+        user_activity_content_no.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = true }
         mMenu.findItem(R.id.user_menu_created)?.let { it.isChecked = true }
 
@@ -367,6 +384,7 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
 
         user_activity_content_rl.visibility = View.GONE
         user_activity2_rv.visibility = View.VISIBLE
+        user_activity_content_no.visibility = View.GONE
         mMenu.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         PAGE_N_EVENTS = 1
@@ -440,6 +458,18 @@ class UserActivity2 : BaseActivity(), UserContract2.View {
             user_activity_content_no.text = getString(R.string.no_events)
         }
         LOADING_EVENTS = false
+    }
+
+    override fun onFollowCompleted() {
+        IS_FOLLOWED = true
+        user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
+        Toasty.success(applicationContext, getString(R.string.user_followed), Toast.LENGTH_LONG).show()
+    }
+
+    override fun onUnfollowCompleted() {
+        IS_FOLLOWED = false
+        user_activity2_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty_24dp))
+        Toasty.success(applicationContext, getString(R.string.user_unfollowed), Toast.LENGTH_LONG).show()
     }
 
     override fun showLoading() {
