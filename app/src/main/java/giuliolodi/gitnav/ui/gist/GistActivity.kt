@@ -31,7 +31,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
-import giuliolodi.gitnav.ui.user.UserActivity2
+import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.gist_activity.*
@@ -135,7 +135,7 @@ class GistActivity : BaseActivity(), GistContract.View {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
-                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
                     overridePendingTransition(0,0)
                 }
     }

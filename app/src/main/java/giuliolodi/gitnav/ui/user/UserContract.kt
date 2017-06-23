@@ -20,9 +20,10 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
+import org.eclipse.egit.github.core.event.Event
 
 /**
- * Created by giulio on 19/05/2017.
+ * Created by giulio on 03/06/2017.
  */
 
 interface UserContract {
@@ -37,23 +38,13 @@ interface UserContract {
 
         fun showError(error: String)
 
-        fun showUserRepos(repoList: List<Repository>)
+        fun showRepos(repoList: List<Repository>)
 
-        fun showUserFollowers(userList: List<User>)
+        fun showEvents(eventList: List<Event>)
 
-        fun showUserFollowing(userList: List<User>)
+        fun showFollowers(followerList: List<User>)
 
-        fun showLoadingUserRepos()
-
-        fun showLoadingUserFollowers()
-
-        fun showLoadingUserFollowing()
-
-        fun hideLoadingUserRepos()
-
-        fun hideLoadingUserFollowers()
-
-        fun hideLoadingUserFollowing()
+        fun showFollowing(followingList: List<User>)
 
         fun onFollowCompleted()
 
@@ -62,11 +53,13 @@ interface UserContract {
     }
 
     @PerActivity
-    interface Presenter<V: UserContract.View> : BaseContract.Presenter<V> {
+    interface Presenter<V: BaseContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(username: String)
 
         fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+
+        fun getEvents(username: String, pageN: Int, itemsPerPage: Int)
 
         fun getFollowers(username: String, pageN: Int, itemsPerPage: Int)
 
@@ -77,6 +70,8 @@ interface UserContract {
         fun unFollowUser(username: String)
 
         fun updateLoggedUser(user: User)
+
+        fun unsubscribe()
 
     }
 

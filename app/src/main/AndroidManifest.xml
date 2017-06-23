@@ -63,12 +63,6 @@
 
         <activity
             android:name=".ui.user.UserActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".ui.user.UserActivity2"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
         </activity>

@@ -39,7 +39,7 @@ import giuliolodi.gitnav.ui.repositorylist.RepoListActivity
 import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
-import giuliolodi.gitnav.ui.user.UserActivity2
+import giuliolodi.gitnav.ui.user.UserActivity
 import kotlinx.android.synthetic.main.base_activity.*
 import kotlinx.android.synthetic.main.base_activity_drawer.*
 
@@ -91,7 +91,7 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
         nav_click.setOnClickListener {
             drawer_layout.closeDrawer(GravityCompat.START)
             Handler().postDelayed({
-                startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
                 overridePendingTransition(0,0)
             }, DRAWER_DELAY)
         }

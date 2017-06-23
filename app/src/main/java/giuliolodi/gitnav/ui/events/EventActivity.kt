@@ -36,7 +36,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
-import giuliolodi.gitnav.ui.user.UserActivity2
+import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.base_activity.*
@@ -89,7 +89,7 @@ class EventActivity : BaseDrawerActivity(), EventContract.View {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
-                    startActivity(UserActivity2.getIntent(applicationContext).putExtra("username", username))
+                    startActivity(UserActivity.getIntent(applicationContext).putExtra("username", username))
                     overridePendingTransition(0,0)
                 }
 

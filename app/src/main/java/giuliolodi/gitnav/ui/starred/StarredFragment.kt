@@ -29,7 +29,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
-import giuliolodi.gitnav.ui.user.UserActivity2
+import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.starred_fragment.*
@@ -79,7 +79,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username ->
-                    startActivity(UserActivity2.getIntent(context).putExtra("username", username))
+                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
                     activity.overridePendingTransition(0,0)
                 }
 

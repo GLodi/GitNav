@@ -67,12 +67,29 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
-                            getView().hideLoadingUserRepos()
-                            getView().showUserRepos(repoList)
+                            getView().showRepos(repoList)
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoadingUserRepos()
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun getEvents(username: String, pageN: Int, itemsPerPage: Int) {
+        getCompositeDisposable().add(getDataManager().pageUserEvents(username, pageN, itemsPerPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { eventList ->
+                            getView().showEvents(eventList)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
@@ -84,12 +101,12 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { userList ->
-                            getView().hideLoadingUserFollowers()
-                            getView().showUserFollowers(userList)
+                            getView().showFollowers(userList)
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoadingUserFollowers()
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
@@ -101,12 +118,12 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
-                            getView().hideLoadingUserFollowing()
-                            getView().showUserFollowing(repoList)
+                            getView().showFollowing(repoList)
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoadingUserFollowing()
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
@@ -153,6 +170,13 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    override fun unsubscribe() {
+        if (getCompositeDisposable().size() != 0) {
+            getCompositeDisposable().clear()
+            getView().hideLoading()
+        }
     }
 
 }
