@@ -34,10 +34,10 @@ abstract class BaseFragment : Fragment(), BaseContract.View {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout(view)
+        initLayout(view, savedInstanceState)
     }
 
-    protected abstract fun initLayout(view: View?)
+    protected abstract fun initLayout(view: View?, savedInstanceState: Bundle?)
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

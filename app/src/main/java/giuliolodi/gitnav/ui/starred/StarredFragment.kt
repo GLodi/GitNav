@@ -44,11 +44,13 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
     @Inject lateinit var mPresenter: StarredContract.Presenter<StarredContract.View>
 
-    private var mRepoList: MutableList<Repository>? = null
+    private var mRepoList: MutableList<Repository> = mutableListOf()
     private var mFilter: HashMap<String,String> = HashMap()
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
+    private var SORT_OPTION: String = "starred"
+    private var mMenuItem: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,10 +64,9 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         return inflater?.inflate(R.layout.starred_fragment, container, false)
     }
 
-    override fun initLayout(view: View?) {
+    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
-
         activity?.title = getString(R.string.starred)
 
         val llm = LinearLayoutManager(context)
@@ -111,6 +112,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
             if (isNetworkAvailable()) {
                 PAGE_N = 1
                 (starred_fragment_rv.adapter as StarredAdapter).clear()
+                mRepoList.clear()
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
             }
             else {
@@ -119,18 +121,24 @@ class StarredFragment : BaseFragment(), StarredContract.View {
             }
         }
 
-        if (isNetworkAvailable()) {
-            showLoading()
-            mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+        if (!mRepoList.isEmpty()) {
+            (starred_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
+            (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
         }
         else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            hideLoading()
+            if (isNetworkAvailable()) {
+                showLoading()
+                mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+            }
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                hideLoading()
+            }
         }
     }
 
     override fun showRepos(repoList: List<Repository>) {
-        mRepoList?.addAll(repoList)
+        mRepoList.addAll(repoList)
         (starred_fragment_rv.adapter as StarredAdapter).addRepos(repoList)
         (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
         if (PAGE_N == 1 && repoList.isEmpty()) starred_fragment_no_repo.visibility = View.VISIBLE
@@ -158,6 +166,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.starred_sort_menu, menu)
+        mMenuItem?.let { menu?.findItem(it)?.isChecked = true }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -166,12 +175,15 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
         }
         if (isNetworkAvailable()) {
+            mMenuItem = item?.itemId
             when (item?.itemId) {
-                R.id.starred_sort_created -> {
+                R.id.starred_sort_starred -> {
                     item.isChecked = true
-                    mFilter.put("sort", "created")
+                    mFilter.put("sort", "starred")
                     PAGE_N = 1
                     (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    mRepoList.clear()
+                    SORT_OPTION = "starred"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
@@ -180,6 +192,8 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mFilter.put("sort", "updated")
                     PAGE_N = 1
                     (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    mRepoList.clear()
+                    SORT_OPTION = "updated"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
@@ -188,6 +202,8 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mFilter.put("sort", "pushed")
                     PAGE_N = 1
                     (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    mRepoList.clear()
+                    SORT_OPTION = "pushed"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
@@ -196,14 +212,18 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mFilter.put("sort", "alphabetical")
                     PAGE_N = 1
                     (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    mRepoList.clear()
+                    SORT_OPTION = "alphabetical"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.starred_sort_starred-> {
+                R.id.starred_sort_stars -> {
                     item.isChecked = true
                     mFilter.put("sort", "stars")
                     PAGE_N = 1
                     (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    mRepoList.clear()
+                    SORT_OPTION = "stars"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
