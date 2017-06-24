@@ -314,12 +314,17 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mEventList.addAll(eventList)
             notifyDataSetChanged()
         }
-        else {
+        else if (mEventList.lastIndexOf(null) != -1){
             val lastNull = mEventList.lastIndexOf(null)
             mEventList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
             mEventList.addAll(eventList)
             notifyItemRangeInserted(lastNull, eventList.size - 1)
+        }
+        else {
+            val lastItemIndex = mEventList.size - 1
+            mEventList.addAll(eventList)
+            notifyItemRangeInserted(lastItemIndex, mEventList.size - 1)
         }
     }
 

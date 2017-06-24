@@ -40,14 +40,12 @@
 
         <activity
             android:name=".ui.events.EventActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
             android:name=".ui.repositorylist.RepoListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity

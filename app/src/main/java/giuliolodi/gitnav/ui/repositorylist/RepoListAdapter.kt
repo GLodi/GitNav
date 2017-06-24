@@ -95,12 +95,17 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mRepoList.addAll(repoList)
             notifyDataSetChanged()
         }
-        else {
+        else if (mRepoList.lastIndexOf(null) != -1){
             val lastNull = mRepoList.lastIndexOf(null)
             mRepoList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
             mRepoList.addAll(repoList)
             notifyItemRangeInserted(lastNull, mRepoList.size - 1)
+        }
+        else {
+            val lastItemIndex = mRepoList.size - 1
+            mRepoList.addAll(repoList)
+            notifyItemRangeInserted(lastItemIndex, mRepoList.size - 1)
         }
     }
 

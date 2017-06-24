@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.starred
+package giuliolodi.gitnav.ui.repositorylist
 
 import android.graphics.Color
 import android.os.Bundle
@@ -29,27 +29,24 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
-import giuliolodi.gitnav.ui.user.UserActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.starred_fragment.*
+import kotlinx.android.synthetic.main.repo_list_fragment.*
 import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject
 
 /**
- * Created by giulio on 20/06/2017.
+ * Created by giulio on 24/06/2017.
  */
 
-class StarredFragment : BaseFragment(), StarredContract.View {
+class RepoListFragment : BaseFragment(), RepoListContract.View {
 
-    @Inject lateinit var mPresenter: StarredContract.Presenter<StarredContract.View>
+    @Inject lateinit var mPresenter: RepoListContract.Presenter<RepoListContract.View>
 
     private var mRepoList: MutableList<Repository> = mutableListOf()
     private var mFilter: HashMap<String,String> = HashMap()
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
-    private var SORT_OPTION: String = "starred"
+    private var SORT_OPTION: String = "created"
     private var mMenuItem: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,44 +54,37 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         retainInstance = true
         getActivityComponent()?.inject(this)
 
-        mFilter.put("sort", "starred")
+        mFilter.put("sort", "created")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.starred_fragment, container, false)
+        return inflater?.inflate(R.layout.repo_list_fragment, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
-        activity?.title = getString(R.string.starred)
+        activity?.title = getString(R.string.repositories)
 
         val llm = LinearLayoutManager(context)
         llm.orientation = LinearLayoutManager.VERTICAL
-        starred_fragment_rv.layoutManager = llm
-        starred_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
-        starred_fragment_rv.itemAnimator = DefaultItemAnimator()
-        starred_fragment_rv.adapter = StarredAdapter()
-        (starred_fragment_rv.adapter as StarredAdapter).getImageClicks()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
-                    activity.overridePendingTransition(0,0)
-                }
+        repo_list_fragment_rv.layoutManager = llm
+        repo_list_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
+        repo_list_fragment_rv.itemAnimator = DefaultItemAnimator()
+        repo_list_fragment_rv.adapter = RepoListAdapter()
 
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING || mFilter["sort"] == "stars" || mFilter["sort"] == "pushed" || mFilter["sort"] == "alphabetical" || mFilter["sort"] == "updated" )
+                if (LOADING || mFilter["sort"] == "stars")
                     return
-                val visibleItemCount = (starred_fragment_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (starred_fragment_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (starred_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val visibleItemCount = (repo_list_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (repo_list_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (repo_list_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     if (isNetworkAvailable()) {
                         LOADING = true
                         PAGE_N += 1
-                        (starred_fragment_rv.adapter as StarredAdapter).addLoading()
+                        (repo_list_fragment_rv.adapter as RepoListAdapter).addLoading()
                         mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                     }
                     else if (dy > 0) {
@@ -104,13 +94,13 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                 }
             }
         }
-        starred_fragment_rv.setOnScrollListener(mScrollListener)
+        repo_list_fragment_rv.setOnScrollListener(mScrollListener)
 
-        starred_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
-        starred_fragment_swipe.setOnRefreshListener {
+        repo_list_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
+        repo_list_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
                 PAGE_N = 1
-                (starred_fragment_rv.adapter as StarredAdapter).clear()
+                (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                 mRepoList.clear()
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
             }
@@ -121,8 +111,8 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         }
 
         if (!mRepoList.isEmpty()) {
-            (starred_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
-            (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
+            (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(mRepoList)
+            (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
         }
         else {
             if (isNetworkAvailable()) {
@@ -134,37 +124,34 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                 hideLoading()
             }
         }
+
     }
 
     override fun showRepos(repoList: List<Repository>) {
         mRepoList.addAll(repoList)
-        (starred_fragment_rv.adapter as StarredAdapter).addRepos(repoList)
-        (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
-        if (PAGE_N == 1 && repoList.isEmpty()) starred_fragment_no_repo.visibility = View.VISIBLE
+        (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(repoList)
+        (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
+        if (PAGE_N == 1 && repoList.isEmpty()) repo_list_fragment_no_repo.visibility = View.VISIBLE
         LOADING = false
     }
 
     override fun showLoading() {
-        starred_fragment_progress_bar.visibility = View.VISIBLE
+        repo_list_fragment_progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        if (starred_fragment_progress_bar.visibility == View.VISIBLE)
-            starred_fragment_progress_bar.visibility = View.GONE
-        if (starred_fragment_swipe.isRefreshing)
-            starred_fragment_swipe.isRefreshing = false
+        if (repo_list_fragment_progress_bar.visibility == View.VISIBLE)
+            repo_list_fragment_progress_bar.visibility = View.GONE
+        if (repo_list_fragment_swipe.isRefreshing)
+            repo_list_fragment_swipe.isRefreshing = false
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    override fun showNoRepo() {
-        starred_fragment_no_repo.visibility = View.VISIBLE
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.starred_sort_menu, menu)
+        inflater?.inflate(R.menu.repo_list_sort_menu, menu)
         mMenuItem?.let { menu?.findItem(it)?.isChecked = true }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -174,53 +161,52 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
         }
         if (isNetworkAvailable()) {
-            mMenuItem = item?.itemId
             when (item?.itemId) {
-                R.id.starred_sort_starred -> {
+                R.id.repo_sort_created -> {
                     item.isChecked = true
-                    mFilter.put("sort", "starred")
+                    mFilter.put("sort", "created")
                     PAGE_N = 1
-                    (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                     mRepoList.clear()
-                    SORT_OPTION = "starred"
+                    SORT_OPTION = "created"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.starred_sort_updated -> {
+                R.id.repo_sort_updated -> {
                     item.isChecked = true
                     mFilter.put("sort", "updated")
                     PAGE_N = 1
-                    (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                     mRepoList.clear()
                     SORT_OPTION = "updated"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.starred_sort_pushed -> {
+                R.id.repo_sort_pushed -> {
                     item.isChecked = true
                     mFilter.put("sort", "pushed")
                     PAGE_N = 1
-                    (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                     mRepoList.clear()
                     SORT_OPTION = "pushed"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.starred_sort_alphabetical -> {
+                R.id.repo_sort_alphabetical -> {
                     item.isChecked = true
-                    mFilter.put("sort", "alphabetical")
+                    mFilter.put("sort", "full_name")
                     PAGE_N = 1
-                    (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                     mRepoList.clear()
-                    SORT_OPTION = "alphabetical"
+                    SORT_OPTION = "full_name"
                     showLoading()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
-                R.id.starred_sort_stars -> {
+                R.id.repo_sort_stars -> {
                     item.isChecked = true
                     mFilter.put("sort", "stars")
                     PAGE_N = 1
-                    (starred_fragment_rv.adapter as StarredAdapter).clear()
+                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                     mRepoList.clear()
                     SORT_OPTION = "stars"
                     showLoading()

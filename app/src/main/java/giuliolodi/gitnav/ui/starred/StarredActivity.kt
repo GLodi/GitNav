@@ -19,7 +19,6 @@ package giuliolodi.gitnav.ui.starred
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
 import kotlinx.android.synthetic.main.base_activity.*
@@ -31,7 +30,7 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 
 class StarredActivity : BaseDrawerActivity() {
 
-    private val STARRED_FRAGMENT_TAG = "starredFragmentTag"
+    private val STARRED_FRAGMENT_TAG = "STARRED_FRAGMENT_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
