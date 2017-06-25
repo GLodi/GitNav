@@ -22,6 +22,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.*
 import android.view.Menu
@@ -227,6 +229,13 @@ class UserActivity : BaseActivity(), UserContract.View {
     private fun onFollowingNavClick() {
         user_activity_appbar.setExpanded(false)
         user_activity_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_activity_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
 
         mPresenter.unsubscribe()
 
@@ -275,6 +284,13 @@ class UserActivity : BaseActivity(), UserContract.View {
     private fun onFollowersNavClick() {
         user_activity_appbar.setExpanded(false)
         user_activity_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_activity_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
 
         mPresenter.unsubscribe()
 
@@ -323,6 +339,13 @@ class UserActivity : BaseActivity(), UserContract.View {
     private fun onInfoNavClick() {
         user_activity_appbar.setExpanded(true)
         user_activity_nestedscrollview.isNestedScrollingEnabled = true
+        val params = user_activity_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return true
+            }
+        })
 
         mPresenter.unsubscribe()
 
@@ -335,6 +358,13 @@ class UserActivity : BaseActivity(), UserContract.View {
     private fun onReposNavClick() {
         user_activity_appbar.setExpanded(false)
         user_activity_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_activity_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
 
         mPresenter.unsubscribe()
 
@@ -379,6 +409,13 @@ class UserActivity : BaseActivity(), UserContract.View {
     fun onEventsNavClick() {
         user_activity_appbar.setExpanded(false)
         user_activity_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_activity_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
 
         mPresenter.unsubscribe()
 
