@@ -63,6 +63,9 @@
     <string name="options">Options</string>
     <string name="language">Language</string>
     <string name="events">Events</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
 
     <string name="no_repositories">No repositories</string>
     <string name="no_users">No users</string>

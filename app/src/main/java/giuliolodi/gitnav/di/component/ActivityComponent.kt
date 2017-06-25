@@ -26,7 +26,7 @@ import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositorylist.RepoListFragment
 import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredFragment
-import giuliolodi.gitnav.ui.trending.TrendingActivity
+import giuliolodi.gitnav.ui.trending.TrendingFragment
 import giuliolodi.gitnav.ui.user.UserActivity
 
 /**
@@ -45,7 +45,7 @@ interface ActivityComponent {
 
     fun inject(starredFragment: StarredFragment)
 
-    fun inject(trendingActivity: TrendingActivity)
+    fun inject(trendingFragment: TrendingFragment)
 
     fun inject(gistListActivity: GistListActivity)
 
