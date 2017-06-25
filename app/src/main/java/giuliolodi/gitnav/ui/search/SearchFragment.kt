@@ -24,7 +24,6 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
-import giuliolodi.gitnav.ui.starred.StarredContract
 import kotlinx.android.synthetic.main.search_activity.*
 import org.eclipse.egit.github.core.CodeSearchResult
 import org.eclipse.egit.github.core.Repository
