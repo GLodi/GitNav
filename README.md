@@ -21,6 +21,9 @@ Basic GitHub Android Client. [Google play link!][play]
 
 ## Screenshots
 
+![](https://github.com/GLodi/GitNav/master/gfx/gitnavgif.gif?raw=true)
+
+
 ![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
 
 
