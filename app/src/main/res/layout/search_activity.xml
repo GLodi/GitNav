@@ -15,30 +15,7 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_activity_frame"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/search_ll"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/search_activity_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <ProgressBar
-        android:id="@+id/search_activity_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/search_activity_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-
-</RelativeLayout>
+    android:layout_height="match_parent" />
