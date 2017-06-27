@@ -48,6 +48,7 @@ class EventFragment : BaseFragment(), EventContract.View {
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
+    private var LOADING_MAIN = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +110,7 @@ class EventFragment : BaseFragment(), EventContract.View {
                 PAGE_N = 1
                 (event_fragment_rv.adapter as EventAdapter).clear()
                 mEventList.clear()
+                LOADING_MAIN = true
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
             }
             else {
@@ -119,6 +121,9 @@ class EventFragment : BaseFragment(), EventContract.View {
 
         if(!mEventList.isEmpty()) {
             (event_fragment_rv.adapter as EventAdapter).addEvents(mEventList)
+        }
+        else if (LOADING_MAIN) {
+            showLoading()
         }
         else {
             if (isNetworkAvailable()) {
@@ -141,6 +146,7 @@ class EventFragment : BaseFragment(), EventContract.View {
 
     override fun showLoading() {
         event_fragment_progress_bar.visibility = View.VISIBLE
+        LOADING_MAIN = true
     }
 
     override fun hideLoading() {
@@ -148,6 +154,7 @@ class EventFragment : BaseFragment(), EventContract.View {
             event_fragment_progress_bar.visibility = View.GONE
         if (event_fragment_swipe.isRefreshing)
             event_fragment_swipe.isRefreshing = false
+        LOADING_MAIN = false
     }
 
     override fun showError(error: String) {

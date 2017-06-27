@@ -46,6 +46,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
+    private var LOADING_MAIN = false
     private var SORT_OPTION: String = "created"
     private var mMenuItem: Int? = null
 
@@ -102,6 +103,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
                 PAGE_N = 1
                 (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                 mRepoList.clear()
+                LOADING_MAIN = true
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
             }
             else {
@@ -113,6 +115,9 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         if (!mRepoList.isEmpty()) {
             (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(mRepoList)
             (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
+        }
+        else if (LOADING_MAIN) {
+            showLoading()
         }
         else {
             if (isNetworkAvailable()) {
@@ -137,6 +142,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
 
     override fun showLoading() {
         repo_list_fragment_progress_bar.visibility = View.VISIBLE
+        LOADING_MAIN = true
     }
 
     override fun hideLoading() {
@@ -144,6 +150,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
             repo_list_fragment_progress_bar.visibility = View.GONE
         if (repo_list_fragment_swipe.isRefreshing)
             repo_list_fragment_swipe.isRefreshing = false
+        LOADING_MAIN = false
     }
 
     override fun showError(error: String) {

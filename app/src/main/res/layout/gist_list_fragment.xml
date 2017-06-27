@@ -7,7 +7,7 @@
   ~ You may obtain a copy of the License at
   ~
   ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~      
+  ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,14 +23,14 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/trending_fragment_swipe">
+        android:id="@+id/gist_list_fragment_swipe">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ProgressBar
-                android:id="@+id/trending_fragment_progress_bar"
+                android:id="@+id/gist_list_fragment_progress_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -38,13 +38,13 @@
                 android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/trending_fragment_rv"
+                android:id="@+id/gist_list_fragment_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="?attr/actionBarSize"/>
 
             <TextView
-                android:id="@+id/trending_fragment_no_repo"
+                android:id="@+id/gist_list_fragment_no_repo"
                 android:text="@string/no_repositories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,13 +57,13 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/trending_fragment_bottomview"
+        android:id="@+id/gist_list_fragment_bottomview"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
         app:itemBackground="@color/grey"
         app:itemIconTint="@color/colorPrimary"
         app:itemTextColor="@color/colorPrimary"
-        app:menu="@menu/trending_fragment_bottom_menu"/>
+        app:menu="@menu/gist_list_fragment_bottom_menu"/>
 
 </RelativeLayout>

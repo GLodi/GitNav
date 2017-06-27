@@ -28,17 +28,11 @@ interface GistListContract {
 
     interface View : BaseContract.View {
 
-        fun showMineGists(gistList: List<Gist>)
+        fun showGists(gistList: List<Gist>)
 
-        fun showStarredGists(gistList: List<Gist>)
+        fun showLoading()
 
-        fun showLoadingMine()
-
-        fun showLoadingStarred()
-
-        fun hideLoadingMine()
-
-        fun hideLoadingStarred()
+        fun hideLoading()
 
         fun showError(error: String)
 
@@ -50,6 +44,8 @@ interface GistListContract {
         fun getMineGists(pageN: Int, itemsPerPage: Int)
 
         fun getStarredGists(pageN: Int, itemsPerPage: Int)
+
+        fun unsubscribe()
 
     }
 

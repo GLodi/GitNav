@@ -228,14 +228,14 @@ class SearchFragment : BaseFragment(), SearchContract.View {
     }
 
     override fun showLoading() {
-        LOADING = true
         search_fragment_progress_bar.visibility = View.VISIBLE
+        LOADING = true
     }
 
     override fun hideLoading() {
-        LOADING = false
         if (search_fragment_progress_bar.visibility == View.VISIBLE)
             search_fragment_progress_bar.visibility = View.GONE
+        LOADING = false
     }
 
     override fun showError(error: String) {

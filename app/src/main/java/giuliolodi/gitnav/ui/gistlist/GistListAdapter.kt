@@ -41,7 +41,7 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return onClickSubject
     }
 
-    class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
+    class GistHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (gist: Gist, p: PrettyTime) = with(itemView) {
             row_gist_description.text = gist.description
             row_gist_public.text = if (gist.isPublic) context.getString(R.string.publics) else context.getString(R.string.privates)
@@ -58,7 +58,7 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val root: RecyclerView.ViewHolder
         if (viewType == 1) {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_gist, parent, false))
-            root = RepoHolder(view)
+            root = GistHolder(view)
         } else  {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_loading, parent, false))
             root = LoadingHolder(view)
@@ -67,9 +67,9 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is RepoHolder) {
-            val repo = mGistList[position]!!
-            holder.bind(repo, mPrettyTime)
+        if (holder is GistHolder) {
+            val gist = mGistList[position]!!
+            holder.bind(gist, mPrettyTime)
             holder.itemView.setOnClickListener {
                 onClickSubject.onNext(mGistList[position]?.id)
             }
@@ -88,12 +88,17 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mGistList.addAll(gistList)
             notifyDataSetChanged()
         }
-        else {
+        else if (mGistList.lastIndexOf(null) != -1) {
             val lastNull = mGistList.lastIndexOf(null)
             mGistList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
             mGistList.addAll(gistList)
             notifyItemRangeInserted(lastNull, mGistList.size - 1)
+        }
+        else {
+            val lastItemIndex = mGistList.size - 1
+            mGistList.addAll(gistList)
+            notifyItemRangeInserted(lastItemIndex, mGistList.size - 1)
         }
     }
 

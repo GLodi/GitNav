@@ -95,7 +95,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mRepoList.addAll(repoList)
             notifyDataSetChanged()
         }
-        else if (mRepoList.lastIndexOf(null) != -1){
+        else if (mRepoList.lastIndexOf(null) != -1) {
             val lastNull = mRepoList.lastIndexOf(null)
             mRepoList.removeAt(lastNull)
             notifyItemRemoved(lastNull)

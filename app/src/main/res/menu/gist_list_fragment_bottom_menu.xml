@@ -18,21 +18,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/trending_fragment_menu_daily"
+        android:id="@+id/gist_list_fragment_bottom_menu_mine"
         android:enabled="true"
-        android:icon="@drawable/ic_today_black_24dp"
-        android:title="@string/daily"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="@string/mine"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/trending_fragment_menu_weekly"
+        android:id="@+id/gist_list_fragment_bottom_menu_starred"
         android:enabled="true"
-        android:icon="@drawable/ic_today_black_24dp"
-        android:title="@string/weekly"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/trending_fragment_menu_monthly"
-        android:enabled="true"
-        android:icon="@drawable/ic_today_black_24dp"
-        android:title="@string/monthly"
+        android:icon="@drawable/ic_star_full_24dp"
+        android:title="@string/starred"
         app:showAsAction="ifRoom" />
 </menu>

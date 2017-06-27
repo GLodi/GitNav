@@ -21,7 +21,7 @@ import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventFragment
 import giuliolodi.gitnav.ui.gist.GistActivity
-import giuliolodi.gitnav.ui.gistlist.GistListActivity
+import giuliolodi.gitnav.ui.gistlist.GistListFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositorylist.RepoListFragment
 import giuliolodi.gitnav.ui.search.SearchFragment
@@ -47,7 +47,7 @@ interface ActivityComponent {
 
     fun inject(trendingFragment: TrendingFragment)
 
-    fun inject(gistListActivity: GistListActivity)
+    fun inject(gistListFragment: GistListFragment)
 
     fun inject(gistActivity: GistActivity)
 

@@ -49,6 +49,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
+    private var LOADING_MAIN = false
     private var SORT_OPTION: String = "starred"
     private var mMenuItem: Int? = null
 
@@ -112,6 +113,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                 PAGE_N = 1
                 (starred_fragment_rv.adapter as StarredAdapter).clear()
                 mRepoList.clear()
+                LOADING_MAIN
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
             }
             else {
@@ -123,6 +125,9 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         if (!mRepoList.isEmpty()) {
             (starred_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
             (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
+        }
+        else if (LOADING_MAIN) {
+            showLoading()
         }
         else {
             if (isNetworkAvailable()) {
@@ -146,6 +151,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
     override fun showLoading() {
         starred_fragment_progress_bar.visibility = View.VISIBLE
+        LOADING_MAIN = true
     }
 
     override fun hideLoading() {
@@ -153,6 +159,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
             starred_fragment_progress_bar.visibility = View.GONE
         if (starred_fragment_swipe.isRefreshing)
             starred_fragment_swipe.isRefreshing = false
+        LOADING_MAIN = false
     }
 
     override fun showError(error: String) {

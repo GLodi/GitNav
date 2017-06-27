@@ -21,8 +21,6 @@ import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
@@ -46,6 +44,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
 
     private var mRepoList: MutableList<Repository> = mutableListOf()
     private var mPeriod: String = "daily"
+    private var LOADING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +81,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
                 (trending_fragment_rv.adapter as StarredAdapter).clear()
                 mRepoList.clear()
                 mPresenter.unsubscribe()
+                LOADING = true
                 mPresenter.subscribe(mPeriod)
             } else {
                 Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -91,7 +91,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
 
         trending_fragment_bottomview.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.trending_fragment_menu_daily -> {
+                R.id.trending_fragment_bottom_menu_daily -> {
                     showLoading()
                     (trending_fragment_rv.adapter as StarredAdapter).clear()
                     mRepoList.clear()
@@ -99,7 +99,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
                     mPeriod = "daily"
                     mPresenter.subscribe(mPeriod)
                 }
-                R.id.trending_fragment_menu_weekly -> {
+                R.id.trending_fragment_bottom_menu_weekly -> {
                     showLoading()
                     (trending_fragment_rv.adapter as StarredAdapter).clear()
                     mRepoList.clear()
@@ -108,7 +108,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
                     mPresenter.subscribe(mPeriod)
                 }
 
-                R.id.trending_fragment_menu_monthly -> {
+                R.id.trending_fragment_bottom_menu_monthly -> {
                     showLoading()
                     (trending_fragment_rv.adapter as StarredAdapter).clear()
                     mRepoList.clear()
@@ -122,6 +122,9 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
 
         if (!mRepoList.isEmpty()) {
             (trending_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
+        }
+        else if (LOADING) {
+            showLoading()
         }
         else {
             if (isNetworkAvailable()) {
@@ -141,6 +144,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
 
     override fun showLoading() {
         trending_fragment_progress_bar.visibility = View.VISIBLE
+        LOADING = true
     }
 
     override fun hideLoading() {
@@ -148,6 +152,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
             trending_fragment_progress_bar.visibility = View.GONE
         if (trending_fragment_swipe.isRefreshing)
             trending_fragment_swipe.isRefreshing = false
+        LOADING = false
     }
 
     override fun showError(error: String) {
@@ -157,6 +162,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
     override fun onComplete() {
         if ((trending_fragment_rv.adapter as StarredAdapter).itemCount == 0)
             trending_fragment_no_repo.visibility = View.VISIBLE
+
     }
 
     override fun showNoRepo() {

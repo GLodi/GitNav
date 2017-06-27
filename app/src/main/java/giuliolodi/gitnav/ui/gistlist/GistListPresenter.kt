@@ -39,15 +39,14 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         getCompositeDisposable().add(getDataManager().pageGists(null, pageN, itemsPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { getView().showLoadingMine() }
                 .subscribe(
                         { gistList ->
-                            getView().showMineGists(gistList)
-                            getView().hideLoadingMine()
+                            getView().hideLoading()
+                            getView().showGists(gistList)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoadingMine()
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
@@ -57,18 +56,22 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         getCompositeDisposable().add(getDataManager().pageStarredGists(pageN, itemsPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { getView().showLoadingStarred() }
                 .subscribe(
                         { gistList ->
-                            getView().hideLoadingStarred()
-                            getView().showStarredGists(gistList)
+                            getView().hideLoading()
+                            getView().showGists(gistList)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoadingStarred()
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    override fun unsubscribe() {
+        if (getCompositeDisposable().size() != 0)
+            getCompositeDisposable().clear()
     }
 
 }
