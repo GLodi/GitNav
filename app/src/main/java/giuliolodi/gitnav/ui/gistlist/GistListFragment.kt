@@ -132,6 +132,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     showLoading()
                     hideNoGists()
                     PAGE_N = 1
+                    gist_list_fragment_rv.adapter = GistListAdapter()
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
                     MINE_STARRED = "mine"
@@ -141,6 +142,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     showLoading()
                     hideNoGists()
                     PAGE_N = 1
+                    gist_list_fragment_rv.adapter = GistListAdapter()
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
                     MINE_STARRED = "starred"
