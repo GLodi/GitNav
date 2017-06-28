@@ -52,6 +52,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
     private var LOADING_MAIN = false
     private var SORT_OPTION: String = "starred"
     private var mMenuItem: Int? = null
+    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +111,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         starred_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         starred_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
+                hideNoRepo()
                 PAGE_N = 1
                 (starred_fragment_rv.adapter as StarredAdapter).clear()
                 mRepoList.clear()
@@ -126,9 +128,8 @@ class StarredFragment : BaseFragment(), StarredContract.View {
             (starred_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
             (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
         }
-        else if (LOADING_MAIN) {
-            showLoading()
-        }
+        else if (LOADING_MAIN) showLoading()
+        else if (NO_SHOWING) showNoRepo()
         else {
             if (isNetworkAvailable()) {
                 showLoading()
@@ -145,7 +146,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         mRepoList.addAll(repoList)
         (starred_fragment_rv.adapter as StarredAdapter).addRepos(repoList)
         (starred_fragment_rv.adapter as StarredAdapter).setFilter(mFilter)
-        if (PAGE_N == 1 && repoList.isEmpty()) starred_fragment_no_repo.visibility = View.VISIBLE
+        if (PAGE_N == 1 && repoList.isEmpty()) showNoRepo()
         LOADING = false
     }
 
@@ -166,8 +167,15 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    override fun showNoRepo() {
+    private fun showNoRepo() {
         starred_fragment_no_repo.visibility = View.VISIBLE
+        NO_SHOWING = true
+    }
+
+    private fun hideNoRepo() {
+        if (starred_fragment_no_repo.visibility == View.VISIBLE)
+            starred_fragment_no_repo.visibility = View.GONE
+        NO_SHOWING = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -191,6 +199,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "starred"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.starred_sort_updated -> {
@@ -201,6 +210,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "updated"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.starred_sort_pushed -> {
@@ -211,6 +221,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "pushed"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.starred_sort_alphabetical -> {
@@ -221,6 +232,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "alphabetical"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.starred_sort_stars -> {
@@ -231,6 +243,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "stars"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
             }

@@ -45,6 +45,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
     private var mRepoList: MutableList<Repository> = mutableListOf()
     private var mPeriod: String = "daily"
     private var LOADING: Boolean = false
+    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +79,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
         trending_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         trending_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
+                hideNoRepo()
                 (trending_fragment_rv.adapter as StarredAdapter).clear()
                 mRepoList.clear()
                 mPresenter.unsubscribe()
@@ -93,6 +95,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
             when (item.itemId) {
                 R.id.trending_fragment_bottom_menu_daily -> {
                     showLoading()
+                    hideNoRepo()
                     (trending_fragment_rv.adapter as StarredAdapter).clear()
                     mRepoList.clear()
                     mPresenter.unsubscribe()
@@ -101,6 +104,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
                 }
                 R.id.trending_fragment_bottom_menu_weekly -> {
                     showLoading()
+                    hideNoRepo()
                     (trending_fragment_rv.adapter as StarredAdapter).clear()
                     mRepoList.clear()
                     mPresenter.unsubscribe()
@@ -110,6 +114,7 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
 
                 R.id.trending_fragment_bottom_menu_monthly -> {
                     showLoading()
+                    hideNoRepo()
                     (trending_fragment_rv.adapter as StarredAdapter).clear()
                     mRepoList.clear()
                     mPresenter.unsubscribe()
@@ -120,12 +125,9 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
             true
         }
 
-        if (!mRepoList.isEmpty()) {
-            (trending_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
-        }
-        else if (LOADING) {
-            showLoading()
-        }
+        if (!mRepoList.isEmpty()) (trending_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
+        else if (LOADING) showLoading()
+        else if (NO_SHOWING) showNoRepo()
         else {
             if (isNetworkAvailable()) {
                 showLoading()
@@ -162,11 +164,17 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
     override fun onComplete() {
         if ((trending_fragment_rv.adapter as StarredAdapter).itemCount == 0)
             trending_fragment_no_repo.visibility = View.VISIBLE
-
     }
 
     override fun showNoRepo() {
         trending_fragment_no_repo.visibility = View.VISIBLE
+        NO_SHOWING = true
+    }
+
+    private fun hideNoRepo() {
+        if (trending_fragment_no_repo.visibility == View.VISIBLE)
+            trending_fragment_no_repo.visibility = View.GONE
+        NO_SHOWING = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

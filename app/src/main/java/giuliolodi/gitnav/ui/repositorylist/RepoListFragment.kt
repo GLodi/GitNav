@@ -49,6 +49,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
     private var LOADING_MAIN = false
     private var SORT_OPTION: String = "created"
     private var mMenuItem: Int? = null
+    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +101,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         repo_list_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         repo_list_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
+                hideNoRepo()
                 PAGE_N = 1
                 (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
                 mRepoList.clear()
@@ -116,9 +118,8 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
             (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(mRepoList)
             (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
         }
-        else if (LOADING_MAIN) {
-            showLoading()
-        }
+        else if (LOADING_MAIN) showLoading()
+        else if (NO_SHOWING) showNoRepo()
         else {
             if (isNetworkAvailable()) {
                 showLoading()
@@ -136,7 +137,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         mRepoList.addAll(repoList)
         (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(repoList)
         (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
-        if (PAGE_N == 1 && repoList.isEmpty()) repo_list_fragment_no_repo.visibility = View.VISIBLE
+        if (PAGE_N == 1 && repoList.isEmpty()) showNoRepo()
         LOADING = false
     }
 
@@ -155,6 +156,17 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showNoRepo() {
+        repo_list_fragment_no_repo.visibility = View.VISIBLE
+        NO_SHOWING = true
+    }
+
+    private fun hideNoRepo() {
+        if (repo_list_fragment_no_repo.visibility == View.VISIBLE)
+            repo_list_fragment_no_repo.visibility = View.GONE
+        NO_SHOWING = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -177,6 +189,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "created"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.repo_sort_updated -> {
@@ -187,6 +200,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "updated"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.repo_sort_pushed -> {
@@ -197,6 +211,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "pushed"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.repo_sort_alphabetical -> {
@@ -207,6 +222,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "full_name"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
                 R.id.repo_sort_stars -> {
@@ -217,6 +233,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
                     mRepoList.clear()
                     SORT_OPTION = "stars"
                     showLoading()
+                    hideNoRepo()
                     mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
                 }
             }

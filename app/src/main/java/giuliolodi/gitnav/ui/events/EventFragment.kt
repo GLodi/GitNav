@@ -49,6 +49,7 @@ class EventFragment : BaseFragment(), EventContract.View {
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
     private var LOADING_MAIN = false
+    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +108,7 @@ class EventFragment : BaseFragment(), EventContract.View {
         event_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         event_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
+                hideNoEvents()
                 PAGE_N = 1
                 (event_fragment_rv.adapter as EventAdapter).clear()
                 mEventList.clear()
@@ -119,12 +121,9 @@ class EventFragment : BaseFragment(), EventContract.View {
             }
         }
 
-        if(!mEventList.isEmpty()) {
-            (event_fragment_rv.adapter as EventAdapter).addEvents(mEventList)
-        }
-        else if (LOADING_MAIN) {
-            showLoading()
-        }
+        if (!mEventList.isEmpty()) (event_fragment_rv.adapter as EventAdapter).addEvents(mEventList)
+        else if (NO_SHOWING) showNoEvents()
+        else if (LOADING_MAIN) showLoading()
         else {
             if (isNetworkAvailable()) {
                 showLoading()
@@ -140,7 +139,7 @@ class EventFragment : BaseFragment(), EventContract.View {
     override fun showEvents(eventList: List<Event>) {
         mEventList.addAll(eventList)
         (event_fragment_rv.adapter as EventAdapter).addEvents(eventList)
-        if (PAGE_N == 1 && eventList.isEmpty()) event_fragment_no_events.visibility = View.VISIBLE
+        if (PAGE_N == 1 && eventList.isEmpty()) showNoEvents()
         LOADING = false
     }
 
@@ -159,6 +158,17 @@ class EventFragment : BaseFragment(), EventContract.View {
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showNoEvents() {
+        event_fragment_no_events.visibility = View.VISIBLE
+        NO_SHOWING = true
+    }
+
+    private fun hideNoEvents() {
+        if (event_fragment_no_events.visibility == View.VISIBLE)
+            event_fragment_no_events.visibility = View.VISIBLE
+        NO_SHOWING = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

@@ -50,6 +50,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
     private var LOADING: Boolean = false
     private var LOADING_MAIN: Boolean = false
     private var MINE_STARRED: String = "mine"
+    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +111,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
         gist_list_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         gist_list_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
+                hideNoGists()
                 PAGE_N = 1
                 (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                 mGistList.clear()
@@ -128,6 +130,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
             when (item.itemId) {
                 R.id.gist_list_fragment_bottom_menu_mine -> {
                     showLoading()
+                    hideNoGists()
                     PAGE_N = 1
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
@@ -136,6 +139,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                 }
                 R.id.gist_list_fragment_bottom_menu_starred -> {
                     showLoading()
+                    hideNoGists()
                     PAGE_N = 1
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
@@ -146,12 +150,9 @@ class GistListFragment : BaseFragment(), GistListContract.View {
             true
         }
 
-        if (!mGistList.isEmpty()) {
-            (gist_list_fragment_rv.adapter as GistListAdapter).addGists(mGistList)
-        }
-        else if (LOADING_MAIN) {
-            showLoading()
-        }
+        if (!mGistList.isEmpty()) (gist_list_fragment_rv.adapter as GistListAdapter).addGists(mGistList)
+        else if (LOADING_MAIN) showLoading()
+        else if (NO_SHOWING) showNoGists()
         else {
             if (isNetworkAvailable()) {
                 showLoading()
@@ -170,14 +171,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
     override fun showGists(gistList: List<Gist>) {
         mGistList.addAll(gistList)
         (gist_list_fragment_rv.adapter as GistListAdapter).addGists(gistList)
-        if (PAGE_N == 1 && gistList.isEmpty() && MINE_STARRED == "mine") {
-            gist_list_fragment_no.visibility = View.VISIBLE
-            gist_list_fragment_no.text = getString(R.string.no_gists_mine)
-        }
-        else if (PAGE_N == 1 && gistList.isEmpty() && MINE_STARRED == "starred") {
-            gist_list_fragment_no.visibility = View.VISIBLE
-            gist_list_fragment_no.text = getString(R.string.no_gists_starred)
-        }
+        if (PAGE_N == 1 && gistList.isEmpty()) showNoGists()
         LOADING = false
     }
 
@@ -196,6 +190,20 @@ class GistListFragment : BaseFragment(), GistListContract.View {
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showNoGists() {
+        gist_list_fragment_no.visibility = View.VISIBLE
+        when(MINE_STARRED) {
+            "mine" -> gist_list_fragment_no.text = getString(R.string.no_gists_mine)
+            "starred" -> gist_list_fragment_no.text = getString(R.string.no_gists_starred)
+        }
+        NO_SHOWING = true
+    }
+
+    private fun hideNoGists() {
+        gist_list_fragment_no.visibility = View.GONE
+        NO_SHOWING = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

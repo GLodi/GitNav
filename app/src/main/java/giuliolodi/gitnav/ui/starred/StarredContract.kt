@@ -36,8 +36,6 @@ interface StarredContract {
 
         fun showError(error: String)
 
-        fun showNoRepo()
-
     }
 
     @PerActivity
