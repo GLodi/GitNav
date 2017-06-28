@@ -44,8 +44,7 @@
                 android:layout_marginBottom="?attr/actionBarSize"/>
 
             <TextView
-                android:id="@+id/gist_list_fragment_no_repo"
-                android:text="@string/no_repositories"
+                android:id="@+id/gist_list_fragment_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

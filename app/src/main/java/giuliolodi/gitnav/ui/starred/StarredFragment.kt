@@ -113,7 +113,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                 PAGE_N = 1
                 (starred_fragment_rv.adapter as StarredAdapter).clear()
                 mRepoList.clear()
-                LOADING_MAIN
+                LOADING_MAIN = true
                 mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
             }
             else {

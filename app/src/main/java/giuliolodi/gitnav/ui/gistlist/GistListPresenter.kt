@@ -41,8 +41,8 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { gistList ->
-                            getView().hideLoading()
                             getView().showGists(gistList)
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -58,8 +58,8 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { gistList ->
-                            getView().hideLoading()
                             getView().showGists(gistList)
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)

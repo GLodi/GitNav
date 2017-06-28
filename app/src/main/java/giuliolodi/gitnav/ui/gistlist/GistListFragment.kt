@@ -100,6 +100,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     }
                     else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                        hideLoading()
                     }
                 }
             }
@@ -109,9 +110,10 @@ class GistListFragment : BaseFragment(), GistListContract.View {
         gist_list_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         gist_list_fragment_swipe.setOnRefreshListener {
             if (isNetworkAvailable()) {
+                PAGE_N = 1
                 (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                 mGistList.clear()
-                mPresenter.unsubscribe()
+                LOADING_MAIN = true
                 when (MINE_STARRED) {
                     "mine" -> mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
                     "starred" -> mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
@@ -126,20 +128,18 @@ class GistListFragment : BaseFragment(), GistListContract.View {
             when (item.itemId) {
                 R.id.gist_list_fragment_bottom_menu_mine -> {
                     showLoading()
-                    mGistList.clear()
-                    (gist_list_fragment_rv.adapter as GistListAdapter).clear()
-                    mPresenter.unsubscribe()
-                    MINE_STARRED = "mine"
                     PAGE_N = 1
+                    (gist_list_fragment_rv.adapter as GistListAdapter).clear()
+                    mGistList.clear()
+                    MINE_STARRED = "mine"
                     mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
                 }
                 R.id.gist_list_fragment_bottom_menu_starred -> {
                     showLoading()
-                    mGistList.clear()
-                    (gist_list_fragment_rv.adapter as GistListAdapter).clear()
-                    mPresenter.unsubscribe()
-                    MINE_STARRED = "starred"
                     PAGE_N = 1
+                    (gist_list_fragment_rv.adapter as GistListAdapter).clear()
+                    mGistList.clear()
+                    MINE_STARRED = "starred"
                     mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
                 }
             }
@@ -161,15 +161,23 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                 }
             }
             else {
-                hideLoading()
                 Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                hideLoading()
             }
         }
     }
 
     override fun showGists(gistList: List<Gist>) {
         mGistList.addAll(gistList)
-        (gist_list_fragment_rv.adapter as GistListAdapter).addGists(mGistList)
+        (gist_list_fragment_rv.adapter as GistListAdapter).addGists(gistList)
+        if (PAGE_N == 1 && gistList.isEmpty() && MINE_STARRED == "mine") {
+            gist_list_fragment_no.visibility = View.VISIBLE
+            gist_list_fragment_no.text = getString(R.string.no_gists_mine)
+        }
+        else if (PAGE_N == 1 && gistList.isEmpty() && MINE_STARRED == "starred") {
+            gist_list_fragment_no.visibility = View.VISIBLE
+            gist_list_fragment_no.text = getString(R.string.no_gists_starred)
+        }
         LOADING = false
     }
 
@@ -181,6 +189,8 @@ class GistListFragment : BaseFragment(), GistListContract.View {
     override fun hideLoading() {
         if (gist_list_fragment_progress_bar.visibility == View.VISIBLE)
             gist_list_fragment_progress_bar.visibility = View.GONE
+        if (gist_list_fragment_swipe.isRefreshing)
+            gist_list_fragment_swipe.isRefreshing = false
         LOADING_MAIN = false
     }
 
