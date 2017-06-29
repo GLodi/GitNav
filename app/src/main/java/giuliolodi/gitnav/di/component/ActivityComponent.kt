@@ -20,7 +20,7 @@ import dagger.Component
 import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventFragment
-import giuliolodi.gitnav.ui.gist.GistActivity
+import giuliolodi.gitnav.ui.gist.GistFragment
 import giuliolodi.gitnav.ui.gistlist.GistListFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repositorylist.RepoListFragment
@@ -49,7 +49,7 @@ interface ActivityComponent {
 
     fun inject(gistListFragment: GistListFragment)
 
-    fun inject(gistActivity: GistActivity)
+    fun inject(gistFragment: GistFragment)
 
     fun inject(searchFragment: SearchFragment)
 
