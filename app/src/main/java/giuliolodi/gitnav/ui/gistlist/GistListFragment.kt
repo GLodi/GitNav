@@ -136,6 +136,13 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
                     MINE_STARRED = "mine"
+                    (gist_list_fragment_rv.adapter as GistListAdapter).getPositionClicks()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { gistId ->
+                                startActivity(GistActivity.getIntent(context).putExtra("gistId", gistId))
+                                activity.overridePendingTransition(0,0)
+                            }
                     mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
                 }
                 R.id.gist_list_fragment_bottom_menu_starred -> {
@@ -146,6 +153,13 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
                     MINE_STARRED = "starred"
+                    (gist_list_fragment_rv.adapter as GistListAdapter).getPositionClicks()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { gistId ->
+                                startActivity(GistActivity.getIntent(context).putExtra("gistId", gistId))
+                                activity.overridePendingTransition(0,0)
+                            }
                     mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
                 }
             }

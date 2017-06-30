@@ -22,7 +22,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.PagerAdapter
-import android.support.v7.app.ActionBarActivity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
@@ -67,7 +67,7 @@ class GistFragment : BaseFragment(), GistContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.gist_list_fragment, container, false)
+        return inflater?.inflate(R.layout.gist_fragment, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
@@ -75,10 +75,10 @@ class GistFragment : BaseFragment(), GistContract.View {
         setHasOptionsMenu(true)
         activity?.title = getString(R.string.gist)
 
-        (activity as ActionBarActivity).setSupportActionBar(gist_fragment_toolbar)
-        (activity as ActionBarActivity).supportActionBar?.title = "Gist"
-        (activity as ActionBarActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as ActionBarActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        (activity as AppCompatActivity).setSupportActionBar(gist_fragment_toolbar)
+        (activity as AppCompatActivity).supportActionBar?.title = "Gist"
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         gist_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
 
         mViews.add(R.layout.gist_fragment_files)
@@ -90,6 +90,11 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_tab_layout.visibility = View.VISIBLE
         gist_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         gist_fragment_tab_layout.setupWithViewPager(gist_fragment_viewpager)
+
+        if (isNetworkAvailable())
+            mPresenter.subscribe(mGistId)
+        else
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
 
     }
 
