@@ -18,11 +18,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/gist_comments_rl"
+    android:id="@+id/gist_fragment_comments_rl"
     android:background="@color/back_tint">
 
     <ProgressBar
-        android:id="@+id/gist_activity_comments_progressbar"
+        android:id="@+id/gist_fragment_comments_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -30,15 +30,15 @@
         android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/gist_activity_comments_rv"
+        android:id="@+id/gist_fragment_comments_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/gist_activity_comments_progressbar">
+        android:layout_below="@id/gist_fragment_comments_progressbar">
 
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/gist_activity_comments_nocomments"
+        android:id="@+id/gist_fragment_comments_nocomments"
         android:text="@string/no_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -21,17 +21,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/back_tint"
-    android:id="@+id/gist_activity_files_rl">
+    android:id="@+id/gist_fragment_files_rl">
 
     <ProgressBar
-        android:id="@+id/gist_activity_files_progress_bar"
+        android:id="@+id/gist_fragment_files_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:indeterminate="true"/>
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/gist_activity_files_nested"
+        android:id="@+id/gist_fragment_files_nested"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -42,7 +42,7 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                android:id="@+id/gist_activity_files_cv"
+                android:id="@+id/gist_fragment_files_cv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#ffffff"
@@ -62,7 +62,7 @@
                         android:paddingBottom="@dimen/activity_vertical_margin">
 
                         <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/gist_activity_files_image"
+                            android:id="@+id/gist_fragment_files_image"
                             android:layout_width="40dp"
                             android:layout_height="40dp" />
 
@@ -70,10 +70,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:layout_toRightOf="@id/gist_activity_files_image">
+                            android:layout_toRightOf="@id/gist_fragment_files_image">
 
                             <TextView
-                                android:id="@+id/gist_activity_files_username"
+                                android:id="@+id/gist_fragment_files_username"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14sp"
@@ -84,10 +84,10 @@
                                 android:paddingLeft="8dp" />
 
                             <TextView
-                                android:id="@+id/gist_activity_files_title"
+                                android:id="@+id/gist_fragment_files_title"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/gist_activity_files_username"
+                                android:layout_below="@id/gist_fragment_files_username"
                                 android:paddingLeft="8dp"
                                 android:textSize="16sp"
                                 android:textColor="#000000"
@@ -107,7 +107,7 @@
                         android:paddingBottom="@dimen/activity_vertical_margin">
 
                         <TextView
-                            android:id="@+id/gist_activity_files_sha"
+                            android:id="@+id/gist_fragment_files_sha"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
@@ -117,32 +117,32 @@
                             android:paddingBottom="2dp"/>
 
                         <TextView
-                            android:id="@+id/gist_activity_files_status"
+                            android:id="@+id/gist_fragment_files_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textColor="#000000"
                             android:alpha="0.87"
                             android:maxLines="1"
-                            android:layout_below="@id/gist_activity_files_sha"/>
+                            android:layout_below="@id/gist_fragment_files_sha"/>
 
                         <TextView
-                            android:id="@+id/gist_activity_files_date"
+                            android:id="@+id/gist_fragment_files_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textColor="#000000"
                             android:alpha="0.54"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@id/gist_activity_files_sha"/>
+                            android:layout_below="@id/gist_fragment_files_sha"/>
 
                         <ImageView
-                            android:id="@+id/gist_activity_files_date_icon"
+                            android:id="@+id/gist_fragment_files_date_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_schedule_black_24dp"
-                            android:layout_toLeftOf="@id/gist_activity_files_date"
-                            android:layout_below="@id/gist_activity_files_sha"
+                            android:layout_toLeftOf="@id/gist_fragment_files_date"
+                            android:layout_below="@id/gist_fragment_files_sha"
                             android:paddingRight="4dp"
                             android:paddingTop="3dp"
                             android:visibility="gone"/>
@@ -154,7 +154,7 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/gist_activity_files_rv"
+                android:id="@+id/gist_fragment_files_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
