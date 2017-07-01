@@ -28,7 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"/>
+        android:indeterminate="true"
+        android:visibility="visible"/>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/gist_fragment_files_nested"

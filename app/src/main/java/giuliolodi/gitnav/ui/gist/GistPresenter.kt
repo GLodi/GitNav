@@ -47,12 +47,15 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { gist, boolean -> return@BiFunction mapOf(gist to boolean) })
+                .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { map ->
                             getView().showGist(map)
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))
@@ -65,11 +68,12 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                 .doOnSubscribe { getView().showLoadingComments() }
                 .subscribe(
                         { gistCommentList ->
-                            getView().hideLoadingComments()
                             getView().showComments(gistCommentList)
+                            getView().hideLoadingComments()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
+                            getView().hideLoadingComments()
                             Timber.e(throwable)
                         }
                 ))

@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -53,11 +54,17 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     private val mViews: MutableList<Int> = arrayListOf()
 
-    private lateinit var mGist: Gist
-    private lateinit var mGistId: String
-    private lateinit var mMenu: Menu
-    private var IS_GIST_STARRED: Boolean? = false
+    private var mMap: Map<Gist,Boolean>? = null
+    private var mGist: Gist? = null
+    private var mGistCommentList: MutableList<Comment>? = null
+    private var mGistId: String? = null
+    private var mMenu: Menu? = null
     private val mPrettyTime: PrettyTime = PrettyTime()
+
+    private var IS_GIST_STARRED: Boolean? = false
+    private var NO_COMMENTS: Boolean = false
+    private var LOADING_FILES: Boolean = false
+    private var LOADING_COMMENTS: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,17 +98,32 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         gist_fragment_tab_layout.setupWithViewPager(gist_fragment_viewpager)
 
-        if (isNetworkAvailable())
-            mPresenter.subscribe(mGistId)
-        else
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        if (NO_COMMENTS) gist_fragment_comments_nocomments.visibility = View.VISIBLE
+        if (LOADING_FILES) showLoading()
+        if (LOADING_COMMENTS) showLoadingComments()
+
+        if (mMap != null && mGistCommentList != null) {
+            mMap?.let { showGist(it) }
+            mGistCommentList?.let { showComments(it) }
+        }
+        else {
+            if (isNetworkAvailable()) {
+                mGistId?.let { mPresenter.subscribe(it) }
+                mGistId?.let { mPresenter.getComments(it) }
+            }
+            else
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
 
     }
 
     override fun showGist(map: Map<Gist,Boolean>) {
-        mGist = map.keys.first()
-        IS_GIST_STARRED = map[mGist]
-        mPresenter.getComments(mGistId)
+        mMap = map
+        mGist = mMap?.keys?.first()
+        mGist?.let {
+            val gist = it
+            IS_GIST_STARRED = mMap?.let { it[gist] }
+        }
 
         createOptionsMenu()
 
@@ -111,29 +133,36 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_files_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
         gist_fragment_files_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_files_rv.adapter = GistFileAdapter()
-        (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(mGist.files.values.toMutableList())
+        (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(mGist?.files?.values?.toMutableList()!!)
 
-        gist_fragment_files_progress_bar.visibility = View.GONE
         gist_fragment_files_nested.visibility = View.VISIBLE
-        gist_fragment_files_username.text = mGist.owner.login
-        gist_fragment_files_title.text = mGist.description
-        gist_fragment_files_date.text = mPrettyTime.format(mGist.createdAt)
-        gist_fragment_files_sha.text = mGist.id
-        gist_fragment_files_status.text = if (mGist.isPublic) getString(R.string.publics) else getString(R.string.privates)
+        gist_fragment_files_username.text = mGist?.owner?.login
+        gist_fragment_files_title.text = mGist?.description
+        gist_fragment_files_date.text = mPrettyTime.format(mGist?.createdAt)
+        gist_fragment_files_sha.text = mGist?.id
+        gist_fragment_files_status.text = if (mGist?.isPublic!!) getString(R.string.publics) else getString(R.string.privates)
         gist_fragment_files_date.visibility = View.VISIBLE
-        Picasso.with(context).load(mGist.owner.avatarUrl).centerCrop().resize(75, 75).into(gist_fragment_files_image)
+        Picasso.with(context).load(mGist?.owner?.avatarUrl).centerCrop().resize(75, 75).into(gist_fragment_files_image)
     }
 
     override fun showComments(gistCommentList: List<Comment>) {
-        if (gistCommentList.isEmpty())
-            gist_fragment_comments_nocomments.visibility = View.VISIBLE
+        mGistCommentList = gistCommentList.toMutableList()
+
+        NO_COMMENTS = false
+
+        mGistCommentList?.let {
+            if (it.isEmpty()) {
+                gist_fragment_comments_nocomments.visibility = View.VISIBLE
+                NO_COMMENTS = true
+            }
+        }
 
         val llmComments = LinearLayoutManager(context)
         llmComments.orientation = LinearLayoutManager.VERTICAL
         gist_fragment_comments_rv.layoutManager = llmComments
         gist_fragment_comments_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_comments_rv.adapter = GistCommentAdapter()
-        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(gistCommentList)
+        mGistCommentList?.let { (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(it) }
 
         (gist_fragment_comments_rv.adapter as GistCommentAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
@@ -144,24 +173,37 @@ class GistFragment : BaseFragment(), GistContract.View {
                 }
     }
 
+    override fun showLoading() {
+        gist_fragment_files_progress_bar.visibility = View.VISIBLE
+        LOADING_FILES = true
+    }
+
+    override fun hideLoading() {
+        if (gist_fragment_files_progress_bar.visibility == View.VISIBLE)
+            gist_fragment_files_progress_bar.visibility = View.GONE
+        LOADING_FILES = false
+    }
+
     override fun showLoadingComments() {
         gist_fragment_comments_progressbar.visibility = View.VISIBLE
+        LOADING_COMMENTS = true
     }
 
     override fun hideLoadingComments() {
         if (gist_fragment_comments_progressbar.visibility == View.VISIBLE)
             gist_fragment_comments_progressbar.visibility = View.GONE
+        LOADING_FILES = true
     }
 
     override fun onGistStarred() {
-        mMenu.findItem(R.id.follow_icon).isVisible = true
-        mMenu.findItem(R.id.unfollow_icon).isVisible = false
+        mMenu?.findItem(R.id.follow_icon)?.isVisible = true
+        mMenu?.findItem(R.id.unfollow_icon)?.isVisible = false
         Toasty.success(context, getString(R.string.gist_starred), Toast.LENGTH_LONG).show()
     }
 
     override fun onGistUnstarred() {
-        mMenu.findItem(R.id.follow_icon).isVisible = false
-        mMenu.findItem(R.id.unfollow_icon).isVisible = true
+        mMenu?.findItem(R.id.follow_icon)?.isVisible = false
+        mMenu?.findItem(R.id.unfollow_icon)?.isVisible = true
         Toasty.success(context, getString(R.string.gist_unstarred), Toast.LENGTH_LONG).show()
     }
 
@@ -205,13 +247,13 @@ class GistFragment : BaseFragment(), GistContract.View {
     private fun createOptionsMenu() {
         activity.menuInflater.inflate(R.menu.gist_fragment_menu, mMenu)
         if (IS_GIST_STARRED!!)
-            mMenu.findItem(R.id.follow_icon).isVisible = true
+            mMenu?.findItem(R.id.follow_icon)?.isVisible = true
         else
-            mMenu.findItem(R.id.unfollow_icon).isVisible = true
+            mMenu?.findItem(R.id.unfollow_icon)?.isVisible = true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
-        mMenu = menu!!
+        menu?.let { mMenu = it }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -220,10 +262,10 @@ class GistFragment : BaseFragment(), GistContract.View {
         }
         if (isNetworkAvailable()) {
             when (item?.itemId) {
-                R.id.follow_icon -> mPresenter.unstarGist(mGistId)
-                R.id.unfollow_icon -> mPresenter.starGist(mGistId)
+                R.id.follow_icon -> mGistId?.let { mPresenter.unstarGist(it) }
+                R.id.unfollow_icon -> mGistId?.let { mPresenter.starGist(it) }
                 R.id.open_in_browser -> {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mGist.htmlUrl))
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mGist?.htmlUrl))
                     startActivity(browserIntent)
                 }
             }

@@ -33,6 +33,10 @@ interface GistContract {
 
         fun showComments(gistCommentList: List<Comment>)
 
+        fun showLoading()
+
+        fun hideLoading()
+
         fun showLoadingComments()
 
         fun hideLoadingComments()
