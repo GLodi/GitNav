@@ -26,7 +26,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -56,7 +55,7 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     private var mMap: Map<Gist,Boolean>? = null
     private var mGist: Gist? = null
-    private var mGistCommentList: MutableList<Comment>? = null
+    private var mGistCommentList: MutableList<Comment> = mutableListOf()
     private var mGistId: String? = null
     private var mMenu: Menu? = null
     private val mPrettyTime: PrettyTime = PrettyTime()
@@ -71,6 +70,8 @@ class GistFragment : BaseFragment(), GistContract.View {
         retainInstance = true
         getActivityComponent()?.inject(this)
         mGistId = activity.intent.getStringExtra("gistId")
+        mViews.add(R.layout.gist_fragment_files)
+        mViews.add(R.layout.gist_fragment_comments)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,11 +89,8 @@ class GistFragment : BaseFragment(), GistContract.View {
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         gist_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
 
-        mViews.add(R.layout.gist_fragment_files)
-        mViews.add(R.layout.gist_fragment_comments)
-
         gist_fragment_viewpager.offscreenPageLimit = 2
-        gist_fragment_viewpager.adapter = GistFragment.MyAdapter(context, mViews)
+        gist_fragment_viewpager.adapter = MyAdapter(context, mViews)
 
         gist_fragment_tab_layout.visibility = View.VISIBLE
         gist_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
@@ -102,9 +100,9 @@ class GistFragment : BaseFragment(), GistContract.View {
         if (LOADING_FILES) showLoading()
         if (LOADING_COMMENTS) showLoadingComments()
 
-        if (mMap != null && mGistCommentList != null) {
+        if (mMap != null && !mGistCommentList.isEmpty()) {
             mMap?.let { showGist(it) }
-            mGistCommentList?.let { showComments(it) }
+            showComments(mGistCommentList)
         }
         else {
             if (isNetworkAvailable()) {
@@ -146,15 +144,14 @@ class GistFragment : BaseFragment(), GistContract.View {
     }
 
     override fun showComments(gistCommentList: List<Comment>) {
-        mGistCommentList = gistCommentList.toMutableList()
+        mGistCommentList.clear()
+        mGistCommentList.addAll(gistCommentList.toMutableList())
 
         NO_COMMENTS = false
 
-        mGistCommentList?.let {
-            if (it.isEmpty()) {
-                gist_fragment_comments_nocomments.visibility = View.VISIBLE
-                NO_COMMENTS = true
-            }
+        if (mGistCommentList.isEmpty()) {
+            gist_fragment_comments_nocomments.visibility = View.VISIBLE
+            NO_COMMENTS = true
         }
 
         val llmComments = LinearLayoutManager(context)
@@ -162,7 +159,7 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_comments_rv.layoutManager = llmComments
         gist_fragment_comments_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_comments_rv.adapter = GistCommentAdapter()
-        mGistCommentList?.let { (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(it) }
+        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
 
         (gist_fragment_comments_rv.adapter as GistCommentAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
@@ -174,7 +171,6 @@ class GistFragment : BaseFragment(), GistContract.View {
     }
 
     override fun showLoading() {
-        gist_fragment_files_progress_bar.visibility = View.VISIBLE
         LOADING_FILES = true
     }
 
@@ -185,7 +181,6 @@ class GistFragment : BaseFragment(), GistContract.View {
     }
 
     override fun showLoadingComments() {
-        gist_fragment_comments_progressbar.visibility = View.VISIBLE
         LOADING_COMMENTS = true
     }
 
