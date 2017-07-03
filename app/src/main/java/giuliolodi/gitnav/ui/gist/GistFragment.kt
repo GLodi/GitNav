@@ -21,6 +21,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
@@ -51,8 +54,6 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     @Inject lateinit var mPresenter: GistContract.Presenter<GistContract.View>
 
-    private val mViews: MutableList<Int> = arrayListOf()
-
     private var mMap: Map<Gist,Boolean>? = null
     private var mGist: Gist? = null
     private var mGistCommentList: MutableList<Comment> = mutableListOf()
@@ -70,8 +71,6 @@ class GistFragment : BaseFragment(), GistContract.View {
         retainInstance = true
         getActivityComponent()?.inject(this)
         mGistId = activity.intent.getStringExtra("gistId")
-        mViews.add(R.layout.gist_fragment_files)
-        mViews.add(R.layout.gist_fragment_comments)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,13 +88,14 @@ class GistFragment : BaseFragment(), GistContract.View {
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         gist_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
 
-        gist_fragment_viewpager.offscreenPageLimit = 2
-        gist_fragment_viewpager.adapter = MyAdapter(context, mViews)
-
         gist_fragment_tab_layout.visibility = View.VISIBLE
         gist_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         gist_fragment_tab_layout.setupWithViewPager(gist_fragment_viewpager)
 
+        gist_fragment_viewpager.offscreenPageLimit = 2
+        gist_fragment_viewpager.adapter = MyAdapter(context, fragmentManager)
+
+        /*
         if (NO_COMMENTS) gist_fragment_comments_nocomments.visibility = View.VISIBLE
         if (LOADING_FILES) showLoading()
         if (LOADING_COMMENTS) showLoadingComments()
@@ -112,6 +112,7 @@ class GistFragment : BaseFragment(), GistContract.View {
             else
                 Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
         }
+        */
 
     }
 
@@ -206,39 +207,6 @@ class GistFragment : BaseFragment(), GistContract.View {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    private class MyAdapter(context: Context, views: List<Int>) : PagerAdapter() {
-
-        private var mContext = context
-        private var mViews = views
-
-        override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-            val layout = LayoutInflater.from(mContext).inflate(mViews[position], container, false)
-            container?.addView(layout)
-            return layout
-        }
-
-        override fun getPageTitle(position: Int): CharSequence {
-            when (position) {
-                0 -> return mContext.getString(R.string.files)
-                1 -> return mContext.getString(R.string.comments)
-            }
-            return super.getPageTitle(position)
-        }
-
-        override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-            container?.removeView(`object` as View)
-        }
-
-        override fun isViewFromObject(view: View?, `object`: Any?): Boolean {
-            return view?.equals(`object`)!!
-        }
-
-        override fun getCount(): Int {
-            return 2
-        }
-
-    }
-
     private fun createOptionsMenu() {
         activity.menuInflater.inflate(R.menu.gist_fragment_menu, mMenu)
         if (IS_GIST_STARRED!!)
@@ -277,6 +245,32 @@ class GistFragment : BaseFragment(), GistContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    private class MyAdapter(context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+
+        private val mContext: Context = context
+        private val mFragmentManager: FragmentManager = fragmentManager
+
+        override fun getItem(position: Int): Fragment {
+            return when(position) {
+                1 -> GistFragmentComments()
+                else -> GistFragmentComments()
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+            when (position) {
+                0 -> return mContext.getString(R.string.files)
+                1 -> return mContext.getString(R.string.comments)
+            }
+            return super.getPageTitle(position)
+        }
+
+        override fun getCount(): Int {
+            return 2
+        }
+
     }
 
 }

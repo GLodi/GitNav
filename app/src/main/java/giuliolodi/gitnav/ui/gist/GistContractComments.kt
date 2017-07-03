@@ -16,15 +16,33 @@
 
 package giuliolodi.gitnav.ui.gist
 
-import android.support.v4.app.Fragment
-import org.eclipse.egit.github.core.Gist
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Comment
 
 /**
  * Created by giulio on 03/07/2017.
  */
 
-class GistFragmentFiles(var map: Map<Gist,Boolean>? = null) : Fragment() {
+interface GistContractComments {
 
+    interface View : BaseContract.View {
 
+        fun showComments(gistCommentList: List<Comment>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
+
+    }
+
+    @PerActivity
+    interface Presenter<V: GistContractComments.View> : BaseContract.Presenter<V> {
+
+        fun getComments(gistId: String)
+
+    }
 
 }

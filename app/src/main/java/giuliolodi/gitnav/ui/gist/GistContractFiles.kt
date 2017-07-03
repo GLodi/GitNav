@@ -16,15 +16,33 @@
 
 package giuliolodi.gitnav.ui.gist
 
-import android.support.v4.app.Fragment
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Gist
 
 /**
  * Created by giulio on 03/07/2017.
  */
 
-class GistFragmentFiles(var map: Map<Gist,Boolean>? = null) : Fragment() {
+interface GistContractFiles {
 
+    interface View : BaseContract.View {
 
+        fun showGist(gist: Gist)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
+
+    }
+
+    @PerActivity
+    interface Presenter<V: GistContractFiles.View> : BaseContract.Presenter<V> {
+
+        fun getFiles(gistId: String)
+
+    }
 
 }
