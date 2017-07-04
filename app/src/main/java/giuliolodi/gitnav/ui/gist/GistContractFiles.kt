@@ -41,7 +41,7 @@ interface GistContractFiles {
     @PerActivity
     interface Presenter<V: GistContractFiles.View> : BaseContract.Presenter<V> {
 
-        fun getFiles(gistId: String)
+        fun getGist(gistId: String)
 
     }
 
