@@ -33,7 +33,6 @@ import javax.inject.Singleton
 /**
  * Created by giulio on 12/05/2017.
  */
-
 @Singleton
 class DataManagerImpl : DataManager {
 

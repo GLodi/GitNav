@@ -36,7 +36,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 24/06/2017.
  */
-
 class RepoListFragment : BaseFragment(), RepoListContract.View {
 
     @Inject lateinit var mPresenter: RepoListContract.Presenter<RepoListContract.View>

@@ -31,7 +31,6 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by giulio on 19/05/2017.
  */
-
 class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()

@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 18/05/2017.
  */
-
 class TrendingPresenter<V: TrendingContract.View> : BasePresenter<V>, TrendingContract.Presenter<V> {
 
     val TAG = "TrendingPresenter"

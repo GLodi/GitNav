@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 26/05/2017.
  */
-
 class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract.Presenter<V> {
 
     val TAG = "SearchPresenter"

@@ -35,7 +35,6 @@ import giuliolodi.gitnav.utils.Constants
 /**
  * Created by giulio on 12/05/2017.
  */
-
 @Module
 class AppModule(private val application: Application) {
 

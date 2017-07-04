@@ -34,7 +34,6 @@ import giuliolodi.gitnav.ui.user.UserActivity
 /**
  * Created by giulio on 12/05/2017.
  */
-
 @PerActivity
 @Component(dependencies = arrayOf(AppComponent::class), modules = arrayOf(ActivityModule::class))
 interface ActivityComponent {

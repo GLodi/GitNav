@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 04/07/2017.
  */
-
 class GistPresenterFiles<V: GistContractFiles.View> : BasePresenter<V>, GistContractFiles.Presenter<V> {
 
     val TAG = "GistPresenterFiles"

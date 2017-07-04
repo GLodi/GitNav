@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 26/05/2017.
  */
-
 class SearchActivity : BaseDrawerActivity() {
 
     private val SEARCH_FRAGMENT_TAG = "SEARCH_FRAGMENT_TAG"

@@ -16,15 +16,56 @@
 
 package giuliolodi.gitnav.ui.gist
 
-import android.support.v4.app.Fragment
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.base.BaseFragment
 import org.eclipse.egit.github.core.Gist
+import javax.inject.Inject
 
 /**
  * Created by giulio on 03/07/2017.
  */
+class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
 
-class GistFragmentFiles(var map: Map<Gist,Boolean>? = null) : Fragment() {
 
+    @Inject lateinit var mPresenter: GistContractFiles.Presenter<GistContractFiles.View>
 
+    companion object {
+        fun newInstance(gistId: String): GistFragmentFiles {
+            val gistFragmentFiles: GistFragmentFiles = GistFragmentFiles()
+            val bundle: Bundle = Bundle()
+            bundle.putString("gistId", gistId)
+            gistFragmentFiles.arguments = bundle
+            return gistFragmentFiles
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        getActivityComponent()?.inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.gist_fragment_files, container, false)
+    }
+
+    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+    }
+
+    override fun showGist(gist: Gist) {
+    }
+
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
+
+    override fun showError(error: String) {
+    }
 
 }

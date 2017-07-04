@@ -21,7 +21,6 @@ import android.graphics.Bitmap
 /**
  * Created by giulio on 12/05/2017.
  */
-
 interface BaseContract {
 
     interface View {

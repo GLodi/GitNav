@@ -28,7 +28,6 @@ import giuliolodi.gitnav.utils.NetworkUtils
 /**
  * Created by giulio on 12/05/2017.
  */
-
 open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.Callback {
 
     private lateinit var mActivityComponent: ActivityComponent

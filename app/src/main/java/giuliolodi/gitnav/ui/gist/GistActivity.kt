@@ -25,7 +25,6 @@ import giuliolodi.gitnav.ui.base.BaseActivity
 /**
  * Created by giulio on 26/05/2017.
  */
-
 class GistActivity : BaseActivity() {
 
     private val GIST_FRAGMENT_TAG = "GIST_FRAGMENT_TAG"

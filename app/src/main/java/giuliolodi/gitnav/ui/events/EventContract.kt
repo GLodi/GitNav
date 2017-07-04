@@ -23,7 +23,6 @@ import org.eclipse.egit.github.core.event.Event
 /**
  * Created by giulio on 15/05/2017.
  */
-
 interface EventContract {
 
     interface View : BaseContract.View {

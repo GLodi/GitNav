@@ -23,7 +23,6 @@ import org.eclipse.egit.github.core.Gist
 /**
  * Created by giulio on 03/07/2017.
  */
-
 interface GistContractFiles {
 
     interface View : BaseContract.View {

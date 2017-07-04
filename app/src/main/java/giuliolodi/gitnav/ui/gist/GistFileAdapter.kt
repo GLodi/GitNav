@@ -27,7 +27,6 @@ import org.eclipse.egit.github.core.GistFile
 /**
  * Created by giulio on 28/05/2017.
  */
-
 class GistFileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mGistFileList: MutableList<GistFile?> = arrayListOf()

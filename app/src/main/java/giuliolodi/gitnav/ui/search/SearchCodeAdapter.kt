@@ -27,7 +27,6 @@ import org.eclipse.egit.github.core.CodeSearchResult
 /**
  * Created by giulio on 02/06/2017.
  */
-
 class SearchCodeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mCodeList: MutableList<CodeSearchResult?> = arrayListOf()

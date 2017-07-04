@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 15/05/2017.
  */
-
 class EventActivity : BaseDrawerActivity() {
 
     private val EVENT_FRAGMENT_TAG = "EVENT_FRAGMENT_TAG"

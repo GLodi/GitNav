@@ -23,7 +23,6 @@ import io.reactivex.subjects.BehaviorSubject
 /**
  * Created by giulio on 30/05/2017.
  */
-
 class RxUtils {
 
     companion object {

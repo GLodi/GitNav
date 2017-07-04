@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 19/05/2017.
  */
-
 class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContract.Presenter<V> {
 
     val TAG = "StarredPresenter"

@@ -23,7 +23,6 @@ import org.eclipse.egit.github.core.Comment
 /**
  * Created by giulio on 03/07/2017.
  */
-
 interface GistContractComments {
 
     interface View : BaseContract.View {

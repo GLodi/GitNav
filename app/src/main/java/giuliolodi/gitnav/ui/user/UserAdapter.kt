@@ -30,7 +30,6 @@ import org.eclipse.egit.github.core.User
 /**
  * Created by giulio on 20/05/2017.
  */
-
 class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mUserList: MutableList<User?> = arrayListOf()

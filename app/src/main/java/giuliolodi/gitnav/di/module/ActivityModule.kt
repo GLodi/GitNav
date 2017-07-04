@@ -45,7 +45,6 @@ import io.reactivex.disposables.CompositeDisposable
 /**
  * Created by giulio on 12/05/2017.
  */
-
 @Module
 class ActivityModule(val activity: Activity) {
 

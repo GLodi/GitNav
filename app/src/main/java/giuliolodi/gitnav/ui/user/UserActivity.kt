@@ -49,7 +49,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 03/06/2017.
  */
-
 class UserActivity : BaseActivity(), UserContract.View {
 
     @Inject lateinit var mPresenter: UserContract.Presenter<UserContract.View>

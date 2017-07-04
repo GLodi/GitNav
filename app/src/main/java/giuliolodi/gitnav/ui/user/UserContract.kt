@@ -25,7 +25,6 @@ import org.eclipse.egit.github.core.event.Event
 /**
  * Created by giulio on 03/06/2017.
  */
-
 interface UserContract {
 
     interface View : BaseContract.View {

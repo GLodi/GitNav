@@ -26,7 +26,6 @@ import org.eclipse.egit.github.core.event.Event
 /**
  * Created by giulio on 12/05/2017.
  */
-
 interface DataManager : ApiHelper, PrefsHelper {
 
     /**

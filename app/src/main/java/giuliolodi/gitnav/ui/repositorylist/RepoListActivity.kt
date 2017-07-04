@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 18/05/2017.
  */
-
 class RepoListActivity : BaseDrawerActivity() {
 
     private val REPO_LIST_FRAGMENT_TAG = "REPO_LIST_FRAGMENT_TAG"

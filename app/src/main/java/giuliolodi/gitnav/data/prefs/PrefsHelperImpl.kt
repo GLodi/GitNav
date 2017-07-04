@@ -29,7 +29,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 12/05/2017.
  */
-
 class PrefsHelperImpl : PrefsHelper {
 
     private val PREF_KEY_ACCESS_TOKEN = "PREF_KEY_ACCESS_TOKEN"

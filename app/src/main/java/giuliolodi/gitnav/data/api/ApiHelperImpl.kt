@@ -35,7 +35,6 @@ import org.jsoup.nodes.Element
 /**
  * Created by giulio on 12/05/2017.
  */
-
 class ApiHelperImpl : ApiHelper {
 
     private val mContext: Context

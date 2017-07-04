@@ -22,7 +22,6 @@ import org.eclipse.egit.github.core.User
 /**
  * Created by giulio on 12/05/2017.
  */
-
 interface PrefsHelper {
 
     /**

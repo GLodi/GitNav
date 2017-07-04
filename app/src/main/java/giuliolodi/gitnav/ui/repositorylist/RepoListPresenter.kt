@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 18/05/2017.
  */
-
 class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListContract.Presenter<V> {
 
     val TAG = "RepoListPresenter"

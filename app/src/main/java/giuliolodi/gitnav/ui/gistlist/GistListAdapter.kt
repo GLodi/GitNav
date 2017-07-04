@@ -30,7 +30,6 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by giulio on 25/05/2017.
  */
-
 class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mGistList: MutableList<Gist?> = arrayListOf()

@@ -31,7 +31,6 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by giulio on 28/05/2017.
  */
-
 class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mGistCommentList: MutableList<Comment?> = arrayListOf()

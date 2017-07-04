@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 23/05/2017.
  */
-
 class GistListActivity : BaseDrawerActivity() {
 
     private val GIST_LIST_FRAGMENT_TAG = "GIST_LIST_FRAGMENT_TAG"

@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 15/05/2017.
  */
-
 class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Presenter<V> {
 
     val TAG = "EventPresenter"

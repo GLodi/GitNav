@@ -49,7 +49,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 28/06/2017.
  */
-
 class GistFragment : BaseFragment(), GistContract.View {
 
     @Inject lateinit var mPresenter: GistContract.Presenter<GistContract.View>

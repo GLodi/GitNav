@@ -39,7 +39,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 24/06/2017.
  */
-
 class EventFragment : BaseFragment(), EventContract.View {
 
     @Inject lateinit var mPresenter: EventContract.Presenter<EventContract.View>

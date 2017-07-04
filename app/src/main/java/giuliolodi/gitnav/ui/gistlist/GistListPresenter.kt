@@ -27,7 +27,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 23/05/2017.
  */
-
 class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListContract.Presenter<V> {
 
     val TAG = "GistListPresenter"

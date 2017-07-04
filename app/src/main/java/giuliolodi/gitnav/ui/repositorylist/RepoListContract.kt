@@ -23,7 +23,6 @@ import org.eclipse.egit.github.core.Repository
 /**
  * Created by giulio on 18/05/2017.
  */
-
 interface RepoListContract {
 
     interface View : BaseContract.View {

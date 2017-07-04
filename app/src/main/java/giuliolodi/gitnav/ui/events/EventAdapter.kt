@@ -32,7 +32,6 @@ import org.ocpsoft.prettytime.PrettyTime
 /**
  * Created by giulio on 16/05/2017.
  */
-
 class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mEventList: MutableList<Event?> = mutableListOf()

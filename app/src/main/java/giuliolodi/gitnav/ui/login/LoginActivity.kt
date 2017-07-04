@@ -34,7 +34,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 12/05/2017.
  */
-
 class LoginActivity : BaseActivity(), LoginContract.View {
 
     @Inject lateinit var mPresenter: LoginContract.Presenter<LoginContract.View>

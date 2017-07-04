@@ -23,7 +23,6 @@ import org.eclipse.egit.github.core.Repository
 /**
  * Created by giulio on 19/05/2017.
  */
-
 interface StarredContract {
 
     interface View : BaseContract.View {

@@ -28,7 +28,6 @@ import timber.log.Timber
 /**
  * Created by giulio on 12/05/2017.
  */
-
 class App : Application() {
 
     lateinit var mAppComponent: AppComponent

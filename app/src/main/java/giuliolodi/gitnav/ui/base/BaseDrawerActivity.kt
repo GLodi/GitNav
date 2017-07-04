@@ -46,7 +46,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 15/05/2017.
  */
-
 open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, NavigationView.OnNavigationItemSelectedListener, BaseFragment.Callback {
 
     private lateinit var mActivityComponent: ActivityComponent

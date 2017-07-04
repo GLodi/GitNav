@@ -28,7 +28,6 @@ import org.ocpsoft.prettytime.PrettyTime
 /**
  * Created by giulio on 18/05/2017.
  */
-
 class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()

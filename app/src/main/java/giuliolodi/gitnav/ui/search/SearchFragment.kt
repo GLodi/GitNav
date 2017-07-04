@@ -48,7 +48,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 25/06/2017.
  */
-
 class SearchFragment : BaseFragment(), SearchContract.View {
 
     @Inject lateinit var mPresenter: SearchContract.Presenter<SearchContract.View>

@@ -28,7 +28,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 03/07/2017.
  */
-
 class GistFragmentComments : BaseFragment(), GistContractComments.View {
 
     @Inject lateinit var mPresenter: GistContractComments.Presenter<GistContractComments.View>
@@ -50,7 +49,7 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.gist_fragment, container, false)
+        return inflater?.inflate(R.layout.gist_fragment_comments, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {

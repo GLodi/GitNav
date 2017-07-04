@@ -22,7 +22,6 @@ import android.net.ConnectivityManager
 /**
  * Created by giulio on 12/05/2017.
  */
-
 class NetworkUtils {
 
     companion object {

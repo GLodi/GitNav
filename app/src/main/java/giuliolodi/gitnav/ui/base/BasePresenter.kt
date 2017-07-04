@@ -23,7 +23,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 12/05/2017.
  */
-
 open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
 
     private val mCompositeDisposable: CompositeDisposable

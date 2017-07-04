@@ -28,7 +28,6 @@ import javax.inject.Singleton
 /**
  * Created by giulio on 12/05/2017.
  */
-
 @Singleton
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {

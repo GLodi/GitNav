@@ -28,7 +28,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 12/05/2017.
  */
-
 class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Presenter<V> {
 
     val TAG = "LoginPresenter"

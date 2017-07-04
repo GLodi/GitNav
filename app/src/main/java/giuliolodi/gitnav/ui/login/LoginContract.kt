@@ -22,7 +22,6 @@ import giuliolodi.gitnav.ui.base.BaseContract
 /**
  * Created by giulio on 12/05/2017.
  */
-
 interface LoginContract {
 
     interface View : BaseContract.View {

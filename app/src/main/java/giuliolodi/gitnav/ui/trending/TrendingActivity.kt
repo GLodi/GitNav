@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 18/05/2017.
  */
-
 class TrendingActivity : BaseDrawerActivity() {
 
     private val TRENDING_FRAGMENT_TAG = "TRENDING_FRAGMENT_TAG"

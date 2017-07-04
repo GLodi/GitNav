@@ -39,7 +39,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 20/06/2017.
  */
-
 class StarredFragment : BaseFragment(), StarredContract.View {
 
     @Inject lateinit var mPresenter: StarredContract.Presenter<StarredContract.View>

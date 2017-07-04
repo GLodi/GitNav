@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.base_activity_drawer.*
 /**
  * Created by giulio on 19/05/2017.
  */
-
 class StarredActivity : BaseDrawerActivity() {
 
     private val STARRED_FRAGMENT_TAG = "STARRED_FRAGMENT_TAG"

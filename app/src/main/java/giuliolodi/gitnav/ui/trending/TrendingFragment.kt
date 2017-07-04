@@ -37,7 +37,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 24/06/2017.
  */
-
 class TrendingFragment : BaseFragment(), TrendingContract.View {
 
     @Inject lateinit var mPresenter: TrendingContract.Presenter<TrendingContract.View>

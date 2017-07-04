@@ -29,7 +29,6 @@ import org.eclipse.egit.github.core.SearchUser
 /**
  * Created by giulio on 31/05/2017.
  */
-
 class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mUserList: MutableList<SearchUser?> = arrayListOf()

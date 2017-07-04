@@ -22,7 +22,6 @@ import giuliolodi.gitnav.R
 /**
  * Created by giulio on 13/05/2017.
  */
-
 class Constants {
 
     companion object {

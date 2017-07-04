@@ -30,7 +30,6 @@ import javax.inject.Inject
 /**
  * Created by giulio on 19/05/2017.
  */
-
 class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Presenter<V> {
 
     val TAG = "UserPresenter"

@@ -25,7 +25,6 @@ import org.eclipse.egit.github.core.SearchUser
 /**
  * Created by giulio on 26/05/2017.
  */
-
 interface SearchContract {
 
     interface View : BaseContract.View {

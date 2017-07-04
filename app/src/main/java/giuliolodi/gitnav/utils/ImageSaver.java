@@ -31,7 +31,6 @@ import java.io.IOException;
 /**
  * Created by giulio on 16/05/2017.
  */
-
 public class ImageSaver {
 
     private String directoryName = "images";
