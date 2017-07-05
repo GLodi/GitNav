@@ -54,6 +54,7 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+        mPresenter.onAttach(this)
     }
 
     override fun showGist(gist: Gist) {
