@@ -17,21 +17,28 @@
 package giuliolodi.gitnav.ui.gist
 
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.picasso.Picasso
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.gist_fragment_files.*
 import org.eclipse.egit.github.core.Gist
+import org.ocpsoft.prettytime.PrettyTime
 import javax.inject.Inject
 
 /**
  * Created by giulio on 03/07/2017.
  */
 class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
-
-
+    
     @Inject lateinit var mPresenter: GistContractFiles.Presenter<GistContractFiles.View>
+
+    private val mPrettyTime: PrettyTime = PrettyTime()
 
     companion object {
         fun newInstance(gistId: String): GistFragmentFiles {
@@ -55,9 +62,26 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
+
+        val llmFiles = LinearLayoutManager(context)
+        llmFiles.orientation = LinearLayoutManager.VERTICAL
+        gist_fragment_files_rv.layoutManager = llmFiles
+        gist_fragment_files_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
+        gist_fragment_files_rv.itemAnimator = DefaultItemAnimator()
+        gist_fragment_files_rv.adapter = GistFileAdapter()
     }
 
     override fun showGist(gist: Gist) {
+        (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(gist.files.values.toMutableList())
+
+        gist_fragment_files_nested.visibility = View.VISIBLE
+        gist_fragment_files_username.text = gist.owner.login
+        gist_fragment_files_title.text = gist.description
+        gist_fragment_files_date.text = mPrettyTime.format(gist.createdAt)
+        gist_fragment_files_sha.text = gist.id
+        gist_fragment_files_status.text = if (gist.isPublic) getString(R.string.publics) else getString(R.string.privates)
+        gist_fragment_files_date.visibility = View.VISIBLE
+        Picasso.with(context).load(gist.owner.avatarUrl).centerCrop().resize(75, 75).into(gist_fragment_files_image)
     }
 
     override fun showLoading() {
