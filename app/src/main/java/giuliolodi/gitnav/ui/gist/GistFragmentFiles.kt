@@ -22,8 +22,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.gist_fragment_files.*
@@ -85,12 +87,16 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
     }
 
     override fun showLoading() {
+        gist_fragment_files_progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
+        if (gist_fragment_files_progress_bar.visibility == View.VISIBLE)
+            gist_fragment_files_progress_bar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
 }
