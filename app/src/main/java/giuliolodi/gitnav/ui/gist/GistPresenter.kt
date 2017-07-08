@@ -38,41 +38,15 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(gistId: String) {
-        getCompositeDisposable().add(Flowable.zip< Gist,Boolean,Map<Gist,Boolean>>(
-                getDataManager().getGist(gistId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()),
-                getDataManager().isGistStarred(gistId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()),
-                BiFunction { gist, boolean -> return@BiFunction mapOf(gist to boolean) })
-                .doOnSubscribe { getView().showLoading() }
-                .subscribe(
-                        { map ->
-                            getView().showGist(map)
-                            getView().hideLoading()
-                        },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
-                            Timber.e(throwable)
-                        }
-                ))
-    }
-
-    override fun getComments(gistId: String) {
-        getCompositeDisposable().add(getDataManager().getGistComments(gistId)
+        getCompositeDisposable().add(getDataManager().isGistStarred(gistId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { getView().showLoadingComments() }
                 .subscribe(
-                        { gistCommentList ->
-                            getView().showComments(gistCommentList)
-                            getView().hideLoadingComments()
+                        { isGistStarred ->
+                            getView().onGistDownloaded(isGistStarred)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoadingComments()
                             Timber.e(throwable)
                         }
                 ))

@@ -28,17 +28,7 @@ interface GistContract {
 
     interface View : BaseContract.View {
 
-        fun showGist(map: Map<Gist,Boolean>)
-
-        fun showComments(gistCommentList: List<Comment>)
-
-        fun showLoading()
-
-        fun hideLoading()
-
-        fun showLoadingComments()
-
-        fun hideLoadingComments()
+        fun onGistDownloaded(isGistStarred: Boolean)
 
         fun showError(error: String)
 
@@ -52,8 +42,6 @@ interface GistContract {
     interface Presenter<V: GistContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(gistId: String)
-
-        fun getComments(gistId: String)
 
         fun starGist(gistId: String)
 

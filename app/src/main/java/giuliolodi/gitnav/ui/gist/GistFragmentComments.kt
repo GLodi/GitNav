@@ -103,4 +103,14 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
+    }
+
 }

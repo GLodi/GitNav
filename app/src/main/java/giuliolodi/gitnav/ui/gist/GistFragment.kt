@@ -53,17 +53,11 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     @Inject lateinit var mPresenter: GistContract.Presenter<GistContract.View>
 
-    private var mMap: Map<Gist,Boolean>? = null
     private var mGist: Gist? = null
-    private var mGistCommentList: MutableList<Comment> = mutableListOf()
     private var mGistId: String? = null
     private var mMenu: Menu? = null
-    private val mPrettyTime: PrettyTime = PrettyTime()
 
     private var IS_GIST_STARRED: Boolean? = false
-    private var NO_COMMENTS: Boolean = false
-    private var LOADING_FILES: Boolean = false
-    private var LOADING_COMMENTS: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,100 +88,18 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_viewpager.offscreenPageLimit = 2
         gist_fragment_viewpager.adapter = MyAdapter(context, fragmentManager)
 
-        /*
-        if (NO_COMMENTS) gist_fragment_comments_nocomments.visibility = View.VISIBLE
-        if (LOADING_FILES) showLoading()
-        if (LOADING_COMMENTS) showLoadingComments()
-
-        if (mMap != null && !mGistCommentList.isEmpty()) {
-            mMap?.let { showGist(it) }
-            showComments(mGistCommentList)
+        if (isNetworkAvailable()) {
+            mGistId?.let { mPresenter.subscribe(it) }
         }
         else {
-            if (isNetworkAvailable()) {
-                mGistId?.let { mPresenter.subscribe(it) }
-                mGistId?.let { mPresenter.getComments(it) }
-            }
-            else
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
         }
-        */
 
     }
 
-    override fun showGist(map: Map<Gist,Boolean>) {
-        mMap = map
-        mGist = mMap?.keys?.first()
-        mGist?.let {
-            val gist = it
-            IS_GIST_STARRED = mMap?.let { it[gist] }
-        }
-
+    override fun onGistDownloaded(boolean: Boolean) {
+        IS_GIST_STARRED = boolean
         createOptionsMenu()
-
-        val llmFiles = LinearLayoutManager(context)
-        llmFiles.orientation = LinearLayoutManager.VERTICAL
-        gist_fragment_files_rv.layoutManager = llmFiles
-        gist_fragment_files_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
-        gist_fragment_files_rv.itemAnimator = DefaultItemAnimator()
-        gist_fragment_files_rv.adapter = GistFileAdapter()
-        (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(mGist?.files?.values?.toMutableList()!!)
-
-        gist_fragment_files_nested.visibility = View.VISIBLE
-        gist_fragment_files_username.text = mGist?.owner?.login
-        gist_fragment_files_title.text = mGist?.description
-        gist_fragment_files_date.text = mPrettyTime.format(mGist?.createdAt)
-        gist_fragment_files_sha.text = mGist?.id
-        gist_fragment_files_status.text = if (mGist?.isPublic!!) getString(R.string.publics) else getString(R.string.privates)
-        gist_fragment_files_date.visibility = View.VISIBLE
-        Picasso.with(context).load(mGist?.owner?.avatarUrl).centerCrop().resize(75, 75).into(gist_fragment_files_image)
-    }
-
-    override fun showComments(gistCommentList: List<Comment>) {
-        mGistCommentList.clear()
-        mGistCommentList.addAll(gistCommentList.toMutableList())
-
-        NO_COMMENTS = false
-
-        if (mGistCommentList.isEmpty()) {
-            gist_fragment_comments_nocomments.visibility = View.VISIBLE
-            NO_COMMENTS = true
-        }
-
-        val llmComments = LinearLayoutManager(context)
-        llmComments.orientation = LinearLayoutManager.VERTICAL
-        gist_fragment_comments_rv.layoutManager = llmComments
-        gist_fragment_comments_rv.itemAnimator = DefaultItemAnimator()
-        gist_fragment_comments_rv.adapter = GistCommentAdapter()
-        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
-
-        (gist_fragment_comments_rv.adapter as GistCommentAdapter).getImageClicks()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
-                    activity.overridePendingTransition(0,0)
-                }
-    }
-
-    override fun showLoading() {
-        LOADING_FILES = true
-    }
-
-    override fun hideLoading() {
-        if (gist_fragment_files_progress_bar.visibility == View.VISIBLE)
-            gist_fragment_files_progress_bar.visibility = View.GONE
-        LOADING_FILES = false
-    }
-
-    override fun showLoadingComments() {
-        LOADING_COMMENTS = true
-    }
-
-    override fun hideLoadingComments() {
-        if (gist_fragment_comments_progressbar.visibility == View.VISIBLE)
-            gist_fragment_comments_progressbar.visibility = View.GONE
-        LOADING_FILES = true
     }
 
     override fun onGistStarred() {
