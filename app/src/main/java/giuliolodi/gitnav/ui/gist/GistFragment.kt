@@ -86,7 +86,7 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_tab_layout.setupWithViewPager(gist_fragment_viewpager)
 
         gist_fragment_viewpager.offscreenPageLimit = 2
-        gist_fragment_viewpager.adapter = MyAdapter(context, fragmentManager)
+        mGistId?.let { gist_fragment_viewpager.adapter = MyAdapter(context, it, fragmentManager) }
 
         if (isNetworkAvailable()) {
             mGistId?.let { mPresenter.subscribe(it) }
@@ -158,15 +158,15 @@ class GistFragment : BaseFragment(), GistContract.View {
         super.onDestroy()
     }
 
-    private class MyAdapter(context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+    private class MyAdapter(context: Context, gistId: String, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
         private val mContext: Context = context
-        private val mFragmentManager: FragmentManager = fragmentManager
+        private val mGistId: String = gistId
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-                1 -> GistFragmentComments()
-                else -> GistFragmentComments()
+                1 -> GistFragmentFiles.newInstance(mGistId)
+                else -> GistFragmentComments.newInstance(mGistId)
             }
         }
 
