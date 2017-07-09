@@ -41,6 +41,7 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
     @Inject lateinit var mPresenter: GistContractFiles.Presenter<GistContractFiles.View>
 
     private val mPrettyTime: PrettyTime = PrettyTime()
+    private var mGistId: String? = null
 
     companion object {
         fun newInstance(gistId: String): GistFragmentFiles {
@@ -56,6 +57,7 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
+        mGistId = arguments.getString("gistId")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,6 +73,13 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
         gist_fragment_files_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
         gist_fragment_files_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_files_rv.adapter = GistFileAdapter()
+
+        if (isNetworkAvailable()) {
+            mGistId?.let { mPresenter.getGist(it) }
+        }
+        else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun showGist(gist: Gist) {

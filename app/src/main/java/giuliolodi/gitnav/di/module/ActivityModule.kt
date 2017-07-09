@@ -24,8 +24,7 @@ import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
-import giuliolodi.gitnav.ui.gist.GistContract
-import giuliolodi.gitnav.ui.gist.GistPresenter
+import giuliolodi.gitnav.ui.gist.*
 import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
@@ -108,13 +107,25 @@ class ActivityModule(val activity: Activity) {
 
     @Provides
     @PerActivity
+    fun provideGistFilesPresenter(presenter: GistPresenterFiles<GistContractFiles.View>): GistContractFiles.Presenter<GistContractFiles.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideGistCommentsPresenter(presenter: GistPresenterComments<GistContractComments.View>): GistContractComments.Presenter<GistContractComments.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
     fun provideSearchPresenter(presenter: SearchPresenter<SearchContract.View>): SearchContract.Presenter<SearchContract.View> {
         return presenter
     }
 
     @Provides
     @PerActivity
-    fun provideUser2Presenter(presenter: UserPresenter<UserContract.View>): UserContract.Presenter<UserContract.View> {
+    fun provideUserPresenter(presenter: UserPresenter<UserContract.View>): UserContract.Presenter<UserContract.View> {
         return presenter
     }
 

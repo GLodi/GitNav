@@ -41,6 +41,7 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
     @Inject lateinit var mPresenter: GistContractComments.Presenter<GistContractComments.View>
 
     private val mGistCommentList: MutableList<Comment> = mutableListOf()
+    private var mGistId: String? = null
 
     companion object {
         fun newInstance(gistId: String): GistFragmentComments {
@@ -56,6 +57,7 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
+        mGistId = arguments.getString("gistId")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,11 +81,19 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
                     startActivity(UserActivity.getIntent(context).putExtra("username", username))
                     activity.overridePendingTransition(0,0)
                 }
+
+        if (isNetworkAvailable()) {
+            mGistId?.let { mPresenter.getComments(it) }
+        }
+        else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun showComments(gistCommentList: List<Comment>) {
         mGistCommentList.clear()
         mGistCommentList.addAll(gistCommentList.toMutableList())
+        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
 
         if (mGistCommentList.isEmpty()) {
             gist_fragment_comments_nocomments.visibility = View.VISIBLE

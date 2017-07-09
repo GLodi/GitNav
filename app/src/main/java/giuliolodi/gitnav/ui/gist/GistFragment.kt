@@ -24,26 +24,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
-import com.squareup.picasso.Picasso
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
-import giuliolodi.gitnav.ui.user.UserActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.gist_fragment.*
-import kotlinx.android.synthetic.main.gist_fragment_comments.*
-import kotlinx.android.synthetic.main.gist_fragment_files.*
-import org.eclipse.egit.github.core.Comment
 import org.eclipse.egit.github.core.Gist
-import org.ocpsoft.prettytime.PrettyTime
 import javax.inject.Inject
 
 /**
@@ -97,8 +85,8 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     }
 
-    override fun onGistDownloaded(boolean: Boolean) {
-        IS_GIST_STARRED = boolean
+    override fun onGistDownloaded(isGistStarred: Boolean) {
+        IS_GIST_STARRED = isGistStarred
         createOptionsMenu()
     }
 
@@ -165,7 +153,7 @@ class GistFragment : BaseFragment(), GistContract.View {
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-                1 -> GistFragmentFiles.newInstance(mGistId)
+                0 -> GistFragmentFiles.newInstance(mGistId)
                 else -> GistFragmentComments.newInstance(mGistId)
             }
         }
