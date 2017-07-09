@@ -42,6 +42,8 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
 
     private val mGistCommentList: MutableList<Comment> = mutableListOf()
     private var mGistId: String? = null
+    private var LOADING: Boolean = false
+    private var NO_COMMENTS: Boolean = false
 
     companion object {
         fun newInstance(gistId: String): GistFragmentComments {
@@ -72,7 +74,6 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
         gist_fragment_comments_rv.layoutManager = llmComments
         gist_fragment_comments_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_comments_rv.adapter = GistCommentAdapter()
-        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
 
         (gist_fragment_comments_rv.adapter as GistCommentAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
@@ -82,11 +83,16 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
                     activity.overridePendingTransition(0,0)
                 }
 
-        if (isNetworkAvailable()) {
-            mGistId?.let { mPresenter.getComments(it) }
-        }
+        if (!mGistCommentList.isEmpty()) (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
+        else if (LOADING) showLoading()
+        else if (NO_COMMENTS) showNoComments()
         else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            if (isNetworkAvailable()) {
+                mGistId?.let { mPresenter.getComments(it) }
+            }
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -95,18 +101,23 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
         mGistCommentList.addAll(gistCommentList.toMutableList())
         (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
 
-        if (mGistCommentList.isEmpty()) {
-            gist_fragment_comments_nocomments.visibility = View.VISIBLE
-        }
+        if (mGistCommentList.isEmpty()) showNoComments()
     }
 
     override fun showLoading() {
         gist_fragment_comments_progressbar.visibility = View.VISIBLE
+        LOADING = true
+    }
+
+    private fun showNoComments() {
+        gist_fragment_comments_nocomments.visibility = View.VISIBLE
+        NO_COMMENTS = true
     }
 
     override fun hideLoading() {
         if (gist_fragment_comments_progressbar.visibility == View.VISIBLE)
             gist_fragment_comments_progressbar.visibility = View.GONE
+        LOADING = false
     }
 
     override fun showError(error: String) {
