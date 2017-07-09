@@ -42,6 +42,8 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
 
     private val mPrettyTime: PrettyTime = PrettyTime()
     private var mGistId: String? = null
+    private var mGist: Gist? = null
+    private var LOADING: Boolean = false
 
     companion object {
         fun newInstance(gistId: String): GistFragmentFiles {
@@ -74,16 +76,20 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
         gist_fragment_files_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_files_rv.adapter = GistFileAdapter()
 
-        if (isNetworkAvailable()) {
-            mGistId?.let { mPresenter.getGist(it) }
-        }
+        if (mGist != null) mGist?.let { showGist(it) }
+        else if (LOADING) showLoading()
         else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            if (isNetworkAvailable()) {
+                mGistId?.let { mPresenter.getGist(it) }
+            }
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
     override fun showGist(gist: Gist) {
-        (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(gist.files.values.toMutableList())
+        mGist = gist
 
         gist_fragment_files_nested.visibility = View.VISIBLE
         gist_fragment_files_username.text = gist.owner.login
@@ -93,15 +99,19 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
         gist_fragment_files_status.text = if (gist.isPublic) getString(R.string.publics) else getString(R.string.privates)
         gist_fragment_files_date.visibility = View.VISIBLE
         Picasso.with(context).load(gist.owner.avatarUrl).centerCrop().resize(75, 75).into(gist_fragment_files_image)
+
+        (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(gist.files.values.toMutableList())
     }
 
     override fun showLoading() {
         gist_fragment_files_progress_bar.visibility = View.VISIBLE
+        LOADING = true
     }
 
     override fun hideLoading() {
         if (gist_fragment_files_progress_bar.visibility == View.VISIBLE)
             gist_fragment_files_progress_bar.visibility = View.GONE
+        LOADING = false
     }
 
     override fun showError(error: String) {
