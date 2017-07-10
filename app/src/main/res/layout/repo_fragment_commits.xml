@@ -18,10 +18,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/repo_commits_ll">
+    android:id="@+id/repo_fragment_commits_ll">
 
     <ProgressBar
-        android:id="@+id/repo_commits_progressbar"
+        android:id="@+id/repo_fragment_commits_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -29,7 +29,7 @@
         android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/repo_commits_rv"
+        android:id="@+id/repo_fragment_commits_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

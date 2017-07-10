@@ -25,6 +25,7 @@ import giuliolodi.gitnav.ui.gist.GistFragmentComments
 import giuliolodi.gitnav.ui.gist.GistFragmentFiles
 import giuliolodi.gitnav.ui.gistlist.GistListFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
+import giuliolodi.gitnav.ui.repository.RepoFragment
 import giuliolodi.gitnav.ui.repositorylist.RepoListFragment
 import giuliolodi.gitnav.ui.search.SearchFragment
 import giuliolodi.gitnav.ui.starred.StarredFragment
@@ -59,5 +60,7 @@ interface ActivityComponent {
     fun inject(searchFragment: SearchFragment)
 
     fun inject(userActivity: UserActivity)
+
+    fun inject(repoFragment: RepoFragment)
 
 }

@@ -15,23 +15,7 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/repo_activity_frame"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/repo_viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v4.view.ViewPager>
-
-    <ProgressBar
-        android:id="@+id/repo_progressbar"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:indeterminate="true"
-        android:layout_centerInParent="true"/>
-
-</RelativeLayout>
+    android:layout_height="match_parent" />
