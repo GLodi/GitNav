@@ -44,8 +44,7 @@ class GistFragment : BaseFragment(), GistContract.View {
     private var mGist: Gist? = null
     private var mGistId: String? = null
     private var mMenu: Menu? = null
-
-    private var IS_GIST_STARRED: Boolean? = false
+    private var IS_GIST_STARRED: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +60,7 @@ class GistFragment : BaseFragment(), GistContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
-        activity?.title = getString(R.string.gist)
+        activity.title = getString(R.string.gist)
 
         (activity as AppCompatActivity).setSupportActionBar(gist_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = "Gist"
@@ -108,7 +107,7 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     private fun createOptionsMenu() {
         activity.menuInflater.inflate(R.menu.gist_fragment_menu, mMenu)
-        if (IS_GIST_STARRED!!)
+        if (IS_GIST_STARRED)
             mMenu?.findItem(R.id.follow_icon)?.isVisible = true
         else
             mMenu?.findItem(R.id.unfollow_icon)?.isVisible = true

@@ -31,10 +31,16 @@ class RepoFragment : BaseFragment(), RepoContract.View {
 
     @Inject lateinit var mPresenter : RepoContract.Presenter<RepoContract.View>
 
+    private var mOwner: String? = null
+    private var mName: String? = null
+    private var IS_REPO_STARRED: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
+        mOwner = activity.intent.getStringExtra("owner")
+        mName = activity.intent.getStringExtra("name")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,6 +50,7 @@ class RepoFragment : BaseFragment(), RepoContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
+        activity.title = getString(R.string.repository)
     }
 
     override fun onRepoDownloaded(isRepoStarred: Boolean) {
