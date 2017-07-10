@@ -215,4 +215,20 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun searchCode(query: String): Flowable<List<CodeSearchResult>>
 
+    /**
+     * Returns true if specified repo is starred by user
+     * @param owner
+     * @param name
+     * @return Flowable<Boolean>
+     */
+    fun isRepoStarred(owner: String, name: String): Flowable<Boolean>
+
+    /**
+     * Returns repo
+     * @param owner
+     * @param name
+     * @Return Flowable<Repository>
+     */
+    fun getRepo(owner: String, name: String): Flowable<Repository>
+
 }

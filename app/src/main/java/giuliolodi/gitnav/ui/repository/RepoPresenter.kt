@@ -18,7 +18,13 @@ package giuliolodi.gitnav.ui.repository
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Repository
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -31,7 +37,33 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe() {
+    override fun subscribe(owner: String, name: String) {
+        getCompositeDisposable().add(Flowable.zip<Repository, Boolean, Map<Repository, Boolean>>(
+                getDataManager().getRepo(owner, name)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getDataManager().isRepoStarred(owner, name)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                BiFunction { repo, boolean -> return@BiFunction mapOf(repo to boolean) })
+                .doOnSubscribe { getView().showLoading() }
+                .subscribe(
+                        { map ->
+                            getView().hideLoading()
+                            getView().showRepo(map)
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
+    override fun starRepo(owner: String, name: String) {
+    }
+
+    override fun unstarRepo(owner: String, name: String) {
     }
 
 }

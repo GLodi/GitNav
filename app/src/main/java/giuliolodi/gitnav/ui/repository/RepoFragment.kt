@@ -16,13 +16,20 @@
 
 package giuliolodi.gitnav.ui.repository
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import javax.inject.Inject
+import android.content.Intent.ACTION_VIEW
+import android.net.Uri
+import android.view.MenuItem
+import org.eclipse.egit.github.core.Repository
 
 /**
  * Created by giulio on 10/07/2017.
@@ -31,6 +38,7 @@ class RepoFragment : BaseFragment(), RepoContract.View {
 
     @Inject lateinit var mPresenter : RepoContract.Presenter<RepoContract.View>
 
+    private var mRepo: Repository? = null
     private var mOwner: String? = null
     private var mName: String? = null
     private var IS_REPO_STARRED: Boolean = false
@@ -53,7 +61,34 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         activity.title = getString(R.string.repository)
     }
 
-    override fun onRepoDownloaded(isRepoStarred: Boolean) {
+    override fun onRepoDownloaded(repo: Repository, isRepoStarred: Boolean) {
+        mRepo = repo
+        IS_REPO_STARRED = isRepoStarred
+
+    }
+
+    override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        if (isNetworkAvailable()) {
+            when (item?.itemId) {
+                R.id.star_icon -> if (mOwner != null && mName != null) mPresenter.unstarRepo(mOwner!!, mName!!)
+                R.id.unstar_icon -> if (mOwner != null && mName != null) mPresenter.starRepo(mOwner!!, mName!!)
+                R.id.open_in_browser -> {
+                    mRepo?.let {
+                        val browserIntent = Intent(ACTION_VIEW, Uri.parse(it.htmlUrl))
+                        startActivity(browserIntent)
+                    }
+                }
+            }
+        } else
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        return super.onOptionsItemSelected(item)
     }
 
 }

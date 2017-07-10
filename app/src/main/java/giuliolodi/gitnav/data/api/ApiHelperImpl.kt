@@ -322,4 +322,20 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiIsRepoStarred(token: String, owner: String, name: String): Flowable<Boolean> {
+        return Flowable.defer {
+            val starService: StarService = StarService()
+            starService.client.setOAuth2Token(token)
+            Flowable.just(starService.isStarring(RepositoryId(owner, name)))
+        }
+    }
+
+    override fun apiGetRepo(token: String, owner: String, name: String): Flowable<Repository> {
+        return Flowable.defer {
+            val repoService: RepositoryService = RepositoryService()
+            repoService.client.setOAuth2Token(token)
+            Flowable.just(repoService.getRepository(RepositoryId(owner, name)))
+        }
+    }
+
 }

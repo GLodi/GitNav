@@ -226,4 +226,22 @@ interface ApiHelper {
      */
     fun apiSearchCode(token: String, query: String): Flowable<List<CodeSearchResult>>
 
+    /**
+     * Returns true if specified repo is starred by user
+     * @param token
+     * @param owner
+     * @param name
+     * @return Flowable<Boolean>
+     */
+    fun apiIsRepoStarred(token: String, owner: String, name: String): Flowable<Boolean>
+
+    /**
+     * Returns repo
+     * @param token
+     * @param owner
+     * @param name
+     * @Return Flowable<Repository>
+     */
+    fun apiGetRepo(token: String, owner: String, name: String): Flowable<Repository>
+
 }

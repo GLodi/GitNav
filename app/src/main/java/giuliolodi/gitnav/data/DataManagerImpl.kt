@@ -215,6 +215,14 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiSearchCode(mPrefsHelper.getToken(), query)
     }
 
+    override fun isRepoStarred(owner: String, name: String): Flowable<Boolean> {
+        return mApiHelper.apiIsRepoStarred(mPrefsHelper.getToken(), owner, name)
+    }
+
+    override fun getRepo(owner: String, name: String): Flowable<Repository> {
+        return mApiHelper.apiGetRepo(mPrefsHelper.getToken(), owner, name)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -301,6 +309,14 @@ class DataManagerImpl : DataManager {
 
     override fun apiSearchCode(token: String, query: String): Flowable<List<CodeSearchResult>> {
         return mApiHelper.apiSearchCode(token, query)
+    }
+
+    override fun apiIsRepoStarred(token: String, owner: String, name: String): Flowable<Boolean> {
+        return mApiHelper.apiIsRepoStarred(token, owner, name)
+    }
+
+    override fun apiGetRepo(token: String, owner: String, name: String): Flowable<Repository> {
+        return mApiHelper.apiGetRepo(token, owner, name)
     }
 
 }
