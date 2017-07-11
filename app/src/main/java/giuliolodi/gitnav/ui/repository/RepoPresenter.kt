@@ -61,9 +61,29 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
     }
 
     override fun starRepo(owner: String, name: String) {
+        getCompositeDisposable().add(getDataManager().starRepo(owner, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { getView().onRepoStarred() },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
     override fun unstarRepo(owner: String, name: String) {
+        getCompositeDisposable().add(getDataManager().unstarRepo(owner, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { getView().onRepoUnstarred() },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
 }

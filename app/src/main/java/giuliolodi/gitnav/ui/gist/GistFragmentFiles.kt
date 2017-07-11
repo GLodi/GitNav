@@ -30,6 +30,7 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.gist_fragment_files.*
 import org.eclipse.egit.github.core.Gist
+import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
 import javax.inject.Inject
 

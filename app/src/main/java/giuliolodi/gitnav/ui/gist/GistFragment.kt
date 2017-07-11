@@ -60,10 +60,9 @@ class GistFragment : BaseFragment(), GistContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
-        activity.title = getString(R.string.gist)
 
         (activity as AppCompatActivity).setSupportActionBar(gist_fragment_toolbar)
-        (activity as AppCompatActivity).supportActionBar?.title = "Gist"
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.gist)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         gist_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
@@ -71,7 +70,6 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_tab_layout.visibility = View.VISIBLE
         gist_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         gist_fragment_tab_layout.setupWithViewPager(gist_fragment_viewpager)
-
         gist_fragment_viewpager.offscreenPageLimit = 2
         mGistId?.let { gist_fragment_viewpager.adapter = MyAdapter(context, it, fragmentManager) }
 

@@ -35,6 +35,10 @@ interface RepoContract {
 
         fun showError(error: String)
 
+        fun onRepoStarred()
+
+        fun onRepoUnstarred()
+
     }
 
     @PerActivity

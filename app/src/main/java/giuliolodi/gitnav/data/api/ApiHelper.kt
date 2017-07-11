@@ -240,8 +240,26 @@ interface ApiHelper {
      * @param token
      * @param owner
      * @param name
-     * @Return Flowable<Repository>
+     * @return Flowable<Repository>
      */
     fun apiGetRepo(token: String, owner: String, name: String): Flowable<Repository>
+
+    /**
+     * Star repo
+     * @param token
+     * @param owner
+     * @param name
+     * @return Completable
+     */
+    fun apiStarRepo(token: String, owner: String, name: String): Completable
+
+    /**
+     * Unstar repo
+     * @param token
+     * @param owner
+     * @param name
+     * @return Completable
+     */
+    fun apiUnstarRepo(token: String, owner: String, name: String): Completable
 
 }

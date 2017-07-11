@@ -231,4 +231,20 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getRepo(owner: String, name: String): Flowable<Repository>
 
+    /**
+     * Star repo
+     * @param owner
+     * @param name
+     * @return Completable
+     */
+    fun starRepo(owner: String, name: String): Completable
+
+    /**
+     * Unstar repo
+     * @param owner
+     * @param name
+     * @return Completable
+     */
+    fun unstarRepo(owner: String, name: String): Completable
+
 }

@@ -338,4 +338,30 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiStarRepo(token: String, owner: String, name: String): Completable {
+        return Completable.create { subscriber ->
+            val starService: StarService = StarService()
+            starService.client.setOAuth2Token(token)
+            try {
+                starService.star(RepositoryId(owner, name))
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
+        }
+    }
+
+    override fun apiUnstarRepo(token: String, owner: String, name: String): Completable {
+        return Completable.create { subscriber ->
+            val starService: StarService = StarService()
+            starService.client.setOAuth2Token(token)
+            try {
+                starService.unstar(RepositoryId(owner, name))
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
+        }
+    }
+
 }

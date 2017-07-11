@@ -223,6 +223,14 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetRepo(mPrefsHelper.getToken(), owner, name)
     }
 
+    override fun starRepo(owner: String, name: String): Completable {
+        return mApiHelper.apiStarRepo(mPrefsHelper.getToken(), owner, name)
+    }
+
+    override fun unstarRepo(owner: String, name: String): Completable {
+        return mApiHelper.apiUnstarRepo(mPrefsHelper.getToken(), owner, name)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -317,6 +325,14 @@ class DataManagerImpl : DataManager {
 
     override fun apiGetRepo(token: String, owner: String, name: String): Flowable<Repository> {
         return mApiHelper.apiGetRepo(token, owner, name)
+    }
+
+    override fun apiStarRepo(token: String, owner: String, name: String): Completable {
+        return mApiHelper.apiStarRepo(token, owner, name)
+    }
+
+    override fun apiUnstarRepo(token: String, owner: String, name: String): Completable {
+        return mApiHelper.apiUnstarRepo(token, owner, name)
     }
 
 }
