@@ -142,4 +142,10 @@ class ActivityModule(val activity: Activity) {
         return presenter
     }
 
+    @Provides
+    @PerActivity
+    fun provideRepoCommitsPresenter(presenter: RepoCommitsPresenter<RepoCommitsContract.View>): RepoCommitsContract.Presenter<RepoCommitsContract.View> {
+        return presenter
+    }
+
 }

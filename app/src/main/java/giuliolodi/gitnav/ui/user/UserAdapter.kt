@@ -71,7 +71,7 @@ class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is UserHolder) {
             val user = mUserList[position]!!
             holder.bind(user)
-            holder.itemView.setOnClickListener { onClickSubject.onNext(mUserList[position]?.login) }
+            holder.itemView.setOnClickListener { onClickSubject.onNext(user.login) }
         }
     }
 

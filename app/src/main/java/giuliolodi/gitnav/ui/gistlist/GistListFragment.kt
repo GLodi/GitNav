@@ -72,8 +72,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
         gist_list_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
         gist_list_fragment_rv.itemAnimator = DefaultItemAnimator()
         gist_list_fragment_rv.adapter = GistListAdapter()
-
-        (gist_list_fragment_rv.adapter as GistListAdapter).getPositionClicks()
+        (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { gistId ->
@@ -135,7 +134,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
                     MINE_STARRED = "mine"
-                    (gist_list_fragment_rv.adapter as GistListAdapter).getPositionClicks()
+                    (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe { gistId ->
@@ -152,7 +151,7 @@ class GistListFragment : BaseFragment(), GistListContract.View {
                     (gist_list_fragment_rv.adapter as GistListAdapter).clear()
                     mGistList.clear()
                     MINE_STARRED = "starred"
-                    (gist_list_fragment_rv.adapter as GistListAdapter).getPositionClicks()
+                    (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe { gistId ->

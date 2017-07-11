@@ -34,7 +34,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mUserList: MutableList<SearchUser?> = arrayListOf()
     private val onImageClick: PublishSubject<String> = PublishSubject.create()
 
-    fun getPositionClicks(): Observable<String> {
+    fun getUserClicks(): Observable<String> {
         return onImageClick
     }
 
@@ -71,7 +71,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is UserHolder) {
             val user = mUserList[position]!!
             holder.bind(user)
-            holder.itemView.row_search_user_ll.setOnClickListener { onImageClick.onNext(mUserList[position]?.login) }
+            holder.itemView.row_search_user_ll.setOnClickListener { onImageClick.onNext(user.login) }
         }
     }
 

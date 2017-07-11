@@ -255,4 +255,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getReadme(owner: String, name: String): Flowable<String>
 
+    /**
+     * Returns repo's commit list
+     * @param owner
+     * @param name
+     * @return Flowable<List<RepositoryCommit>>
+     */
+    fun getRepoCommits(owner: String, name: String): Flowable<List<RepositoryCommit>>
+
 }

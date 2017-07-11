@@ -26,6 +26,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.starred.StarredAdapter
 import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -73,6 +74,13 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
                 .subscribe { username ->
                     startActivity(UserActivity.getIntent(context).putExtra("username", username))
                     activity.overridePendingTransition(0, 0)
+                }
+        (trending_fragment_rv.adapter as StarredAdapter).getRepoClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { repo ->
+                    startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
+                    activity.overridePendingTransition(0,0)
                 }
 
         trending_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))

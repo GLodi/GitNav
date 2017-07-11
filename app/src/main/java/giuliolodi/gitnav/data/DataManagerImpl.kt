@@ -235,6 +235,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetReadme(mPrefsHelper.getToken(), owner, name)
     }
 
+    override fun getRepoCommits(owner: String, name: String): Flowable<List<RepositoryCommit>> {
+        return mApiHelper.apiGetRepoCommits(mPrefsHelper.getToken(), owner, name)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -341,6 +345,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiGetReadme(token: String, owner: String, name: String): Flowable<String> {
         return mApiHelper.apiGetReadme(token, owner, name)
+    }
+
+    override fun apiGetRepoCommits(token: String, owner: String, name: String): Flowable<List<RepositoryCommit>> {
+        return mApiHelper.apiGetRepoCommits(token, owner, name)
     }
 
 }

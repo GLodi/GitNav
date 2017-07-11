@@ -36,6 +36,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
 import giuliolodi.gitnav.ui.events.EventAdapter
+import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -400,6 +401,14 @@ class UserActivity : BaseActivity(), UserContract.View {
             }
         }
         user_activity_rv.setOnScrollListener(mScrollListenerRepos)
+
+        (user_activity_rv.adapter as RepoListAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { repo ->
+                    startActivity(RepoActivity.getIntent(applicationContext).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
+                    overridePendingTransition(0,0)
+                }
 
         showLoading()
         mUser?.login?.let { mPresenter.getRepos(it, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos) }

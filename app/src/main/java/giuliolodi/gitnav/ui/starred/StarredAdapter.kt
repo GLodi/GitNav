@@ -35,11 +35,16 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
-    private val onImageClick: PublishSubject<String> = PublishSubject.create()
     private var mFilter: HashMap<String,String> = HashMap()
+    private val onImageClick: PublishSubject<String> = PublishSubject.create()
+    private val onRepoClick: PublishSubject<Repository> = PublishSubject.create()
 
     fun getImageClicks(): Observable<String> {
         return onImageClick
+    }
+
+    fun getRepoClicks(): Observable<Repository> {
+        return onRepoClick
     }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -84,7 +89,8 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime, mFilter)
-            holder.itemView.row_starred_author_icon.setOnClickListener { onImageClick.onNext(mRepoList[position]?.owner?.login) }
+            holder.itemView.row_starred_author_icon.setOnClickListener { onImageClick.onNext(repo.owner?.login) }
+            holder.itemView.row_starred_ll.setOnClickListener { onRepoClick.onNext(repo) }
         }
     }
 

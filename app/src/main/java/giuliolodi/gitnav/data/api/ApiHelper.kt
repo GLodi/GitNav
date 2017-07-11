@@ -271,4 +271,13 @@ interface ApiHelper {
      */
     fun apiGetReadme(token: String, owner: String, name: String): Flowable<String>
 
+    /**
+     * Returns repo's commit list
+     * @param token
+     * @param owner
+     * @param name
+     * @return Flowable<List<RepositoryCommit>>
+     */
+    fun apiGetRepoCommits(token: String, owner: String, name: String): Flowable<List<RepositoryCommit>>
+
 }

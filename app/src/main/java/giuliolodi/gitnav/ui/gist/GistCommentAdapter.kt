@@ -69,7 +69,7 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is GistCommentHolder) {
             val comment = mGistCommentList[position]!!
             holder.bind(comment, mPrettyTime)
-            holder.itemView.row_comment_image.setOnClickListener { onImageClick.onNext(mGistCommentList[position]?.user?.login) }
+            holder.itemView.row_comment_ll.setOnClickListener { onImageClick.onNext(comment.user?.login) }
         }
     }
 

@@ -34,10 +34,10 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mGistList: MutableList<Gist?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
-    private val onClickSubject: PublishSubject<String> = PublishSubject.create()
+    private val onGistClick: PublishSubject<String> = PublishSubject.create()
 
-    fun getPositionClicks(): Observable<String> {
-        return onClickSubject
+    fun getGistClicks(): Observable<String> {
+        return onGistClick
     }
 
     class GistHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -69,9 +69,7 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is GistHolder) {
             val gist = mGistList[position]!!
             holder.bind(gist, mPrettyTime)
-            holder.itemView.setOnClickListener {
-                onClickSubject.onNext(mGistList[position]?.id)
-            }
+            holder.itemView.setOnClickListener { onGistClick.onNext(gist.id) }
         }
     }
 

@@ -380,4 +380,12 @@ class ApiHelperImpl : ApiHelper {
         }, BackpressureStrategy.BUFFER)
     }
 
+    override fun apiGetRepoCommits(token: String, owner: String, name: String): Flowable<List<RepositoryCommit>> {
+        return Flowable.defer {
+            val commitService: CommitService = CommitService()
+            commitService.client.setOAuth2Token(token)
+            Flowable.just(commitService.getCommits(RepositoryId(owner, name)))
+        }
+    }
+
 }

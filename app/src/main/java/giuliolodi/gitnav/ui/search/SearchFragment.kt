@@ -108,7 +108,7 @@ class SearchFragment : BaseFragment(), SearchContract.View {
                         search_fragment_no.visibility = View.GONE
                         search_fragment_rv.adapter = SearchUserAdapter()
                         onUserSearch()
-                        (search_fragment_rv.adapter as SearchUserAdapter).getPositionClicks()
+                        (search_fragment_rv.adapter as SearchUserAdapter).getUserClicks()
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe { username ->

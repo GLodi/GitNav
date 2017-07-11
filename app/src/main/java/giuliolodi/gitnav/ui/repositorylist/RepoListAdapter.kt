@@ -35,10 +35,10 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
     private var mFilter: HashMap<String,String> = HashMap()
-    private val onClickSubject: PublishSubject<Repository> = PublishSubject.create()
+    private val onRepoClick: PublishSubject<Repository> = PublishSubject.create()
 
     fun getPositionClicks(): Observable<Repository> {
-        return onClickSubject
+        return onRepoClick
     }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -86,7 +86,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime, mFilter)
-            holder.itemView.setOnClickListener { onClickSubject.onNext(mRepoList[position]) }
+            holder.itemView.setOnClickListener { onRepoClick.onNext(repo) }
         }
     }
 

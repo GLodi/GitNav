@@ -17,19 +17,35 @@
 package giuliolodi.gitnav.ui.repository
 
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.user.UserActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.repo_commits_fragment.*
+import org.eclipse.egit.github.core.RepositoryCommit
+import javax.inject.Inject
 
 /**
  * Created by giulio on 11/07/2017.
  */
-class RepoCommitsFragment : BaseFragment() {
+class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
 
+    @Inject lateinit var mPresenter: RepoCommitsContract.Presenter<RepoCommitsContract.View>
+
+    private var mRepoCommitList: MutableList<RepositoryCommit> = mutableListOf()
     private var mOwner: String? = null
     private var mName: String? = null
+    private var LOADING: Boolean = false
+    private var NO_COMMITS: Boolean = false
 
     companion object {
         fun newInstance(owner: String, name: String): RepoCommitsFragment {
@@ -45,6 +61,7 @@ class RepoCommitsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+        getActivityComponent()?.inject(this)
         mOwner = arguments.getString("owner")
         mName = arguments.getString("name")
     }
@@ -54,6 +71,66 @@ class RepoCommitsFragment : BaseFragment() {
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+        mPresenter.onAttach(this)
+
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        repo_commits_fragment_rv.layoutManager = llm
+        repo_commits_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
+        repo_commits_fragment_rv.itemAnimator = DefaultItemAnimator()
+        repo_commits_fragment_rv.adapter = RepoCommitAdapter()
+        (repo_commits_fragment_rv.adapter as RepoCommitAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
+                    activity.overridePendingTransition(0,0)
+                }
+
+        if (!mRepoCommitList.isEmpty()) showRepoCommitList(mRepoCommitList)
+        else if (LOADING) showLoading()
+        else if (NO_COMMITS) showNoCommits()
+        else {
+            if (isNetworkAvailable()) {
+                if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!)
+            }
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    override fun showRepoCommitList(repoCommitList: List<RepositoryCommit>) {
+        mRepoCommitList = repoCommitList.toMutableList()
+        (repo_commits_fragment_rv.adapter as RepoCommitAdapter).addRepoCommits(repoCommitList)
+    }
+
+    override fun showLoading() {
+        repo_commits_fragment_progressbar.visibility = View.VISIBLE
+        LOADING = true
+    }
+
+    override fun hideLoading() {
+        if (repo_commits_fragment_progressbar.visibility == View.VISIBLE)
+            repo_commits_fragment_progressbar.visibility = View.GONE
+        LOADING = false
+    }
+
+    override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoCommits() {
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }
