@@ -34,6 +34,7 @@ class RepoReadmeFragment : BaseFragment(), RepoReadmeContract.View {
 
     @Inject lateinit var mPresenter: RepoReadmeContract.Presenter<RepoReadmeContract.View>
 
+    private var mMarkdown: String? = null
     private var mOwner: String? = null
     private var mName: String? = null
     private var LOADING: Boolean = false
@@ -65,7 +66,8 @@ class RepoReadmeFragment : BaseFragment(), RepoReadmeContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
 
-        if (LOADING) showLoading()
+        if (mMarkdown != null) showReadme(mMarkdown!!)
+        else if (LOADING) showLoading()
         else if (NO_README) showNoReadme()
         else {
             if (isNetworkAvailable()) {
@@ -78,6 +80,8 @@ class RepoReadmeFragment : BaseFragment(), RepoReadmeContract.View {
     }
 
     override fun showReadme(markdown: String) {
+        mMarkdown = markdown
+        repo_readme_fragment_markedview.visibility = View.VISIBLE
         repo_readme_fragment_markedview.setMarkDownText(markdown)
         repo_readme_fragment_markedview.isOpenUrlInBrowser = true
     }
@@ -89,7 +93,7 @@ class RepoReadmeFragment : BaseFragment(), RepoReadmeContract.View {
 
     override fun hideLoading() {
         if (repo_readme_fragment_progressbar.visibility == View.VISIBLE)
-            repo_readme_fragment_progressbar.visibility = View.VISIBLE
+            repo_readme_fragment_progressbar.visibility = View.GONE
         LOADING = false
     }
 

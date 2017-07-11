@@ -26,13 +26,14 @@
         android:layout_height="60dp"
         style="@style/Widget.AppCompat.ProgressBar"
         android:indeterminate="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerInParent="true"/>
 
     <com.mukesh.MarkdownView
         android:id="@+id/repo_readme_fragment_markedview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
     </com.mukesh.MarkdownView>
 
@@ -43,6 +44,6 @@
         android:text="@string/no_readme"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"/>
+        android:visibility="gone"/>
 
 </RelativeLayout>

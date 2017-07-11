@@ -21,6 +21,7 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.client.RequestException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -45,9 +46,13 @@ class RepoReadmePresenter<V: RepoReadmeContract.View> : BasePresenter<V>, RepoRe
                             getView().hideLoading()
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            if ((throwable as RequestException).status == 404)
+                                getView().showNoReadme()
+                            else {
+                                getView().showError(throwable.localizedMessage)
+                                Timber.e(throwable)
+                            }
                             getView().hideLoading()
-                            Timber.e(throwable)
                         }
                 ))
     }
