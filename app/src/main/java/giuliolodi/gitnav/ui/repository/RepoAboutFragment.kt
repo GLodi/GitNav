@@ -17,26 +17,44 @@
 package giuliolodi.gitnav.ui.repository
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 
 /**
  * Created by giulio on 11/07/2017.
  */
-class RepoFragmentContent: BaseFragment() {
+class RepoAboutFragment : BaseFragment() {
+
+    private var mOwner: String? = null
+    private var mName: String? = null
 
     companion object {
-        fun newInstance(owner: String, name: String): RepoFragmentContent {
-            val repoFragmentContent: RepoFragmentContent = RepoFragmentContent()
+        fun newInstance(owner: String, name: String): RepoAboutFragment {
+            val repoAboutFragment: RepoAboutFragment = RepoAboutFragment()
             val bundle: Bundle = Bundle()
             bundle.putString("owner", owner)
             bundle.putString("name", name)
-            repoFragmentContent.arguments = bundle
-            return repoFragmentContent
+            repoAboutFragment.arguments = bundle
+            return repoAboutFragment
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        mOwner = arguments.getString("owner")
+        mName = arguments.getString("name")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.repo_about_fragment, container, false)
+    }
+
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+
     }
 
 }

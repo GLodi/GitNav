@@ -19,6 +19,7 @@ package giuliolodi.gitnav.data.api
 import android.content.Context
 import android.os.Build
 import android.os.StrictMode
+import android.util.Base64
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.UrlInfo
 import io.reactivex.BackpressureStrategy
@@ -31,6 +32,7 @@ import javax.inject.Inject
 import java.io.IOException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import java.io.UnsupportedEncodingException
 
 /**
  * Created by giulio on 12/05/2017.
@@ -362,6 +364,20 @@ class ApiHelperImpl : ApiHelper {
                 subscriber.onError(e)
             }
         }
+    }
+
+    override fun apiGetReadme(token: String, owner: String, name: String): Flowable<String> {
+        return Flowable.create({ emitter ->
+            val contentsService: ContentsService = ContentsService()
+            contentsService.client.setOAuth2Token(token)
+            val markdown64: String = contentsService.getReadme(RepositoryId(owner, name)).content
+            try {
+                val markdown: String = String(Base64.decode(markdown64, Base64.DEFAULT))
+                emitter.onNext(markdown)
+            } catch (e: UnsupportedEncodingException) {
+                emitter.onError(e)
+            }
+        }, BackpressureStrategy.BUFFER)
     }
 
 }

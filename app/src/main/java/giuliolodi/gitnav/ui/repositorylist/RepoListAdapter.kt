@@ -21,6 +21,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_repo.view.*
 import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
@@ -33,6 +35,11 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
     private var mFilter: HashMap<String,String> = HashMap()
+    private val onClickSubject: PublishSubject<Repository> = PublishSubject.create()
+
+    fun getPositionClicks(): Observable<Repository> {
+        return onClickSubject
+    }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (repo: Repository, p: PrettyTime, filter: HashMap<String, String>) = with(itemView) {
@@ -79,6 +86,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime, mFilter)
+            holder.itemView.setOnClickListener { onClickSubject.onNext(mRepoList[position]) }
         }
     }
 

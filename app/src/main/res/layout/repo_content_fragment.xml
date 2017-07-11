@@ -18,10 +18,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/repo_fragment_content_ll">
+    android:id="@+id/repo_content_fragment_ll">
 
     <ProgressBar
-        android:id="@+id/repo_fragment_content_progressbar"
+        android:id="@+id/repo_content_fragment_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -29,22 +29,22 @@
         android:visibility="gone" />
 
     <RelativeLayout
-        android:id="@+id/repo_fragment_content_rl"
+        android:id="@+id/repo_content_fragment_rl"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/back_tint"
         android:visibility="gone"
-        android:layout_below="@id/repo_fragment_content_progressbar">
+        android:layout_below="@id/repo_content_fragment_progressbar">
 
         <HorizontalScrollView
-            android:id="@+id/repo_fragment_content_scrollview"
+            android:id="@+id/repo_content_fragment_scrollview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:scrollbars="none">
 
             <TextView
-                android:id="@+id/repo_fragment_content_tree"
+                android:id="@+id/repo_content_fragment_tree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
@@ -60,15 +60,15 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/repo_fragment_content_rv"
+        android:id="@+id/repo_content_fragment_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/repo_fragment_content_rl">
+        android:layout_below="@id/repo_content_fragment_rl">
 
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar
-        android:id="@+id/repo_fragment_content_progressbar_bottom"
+        android:id="@+id/repo_content_fragment_progressbar_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"

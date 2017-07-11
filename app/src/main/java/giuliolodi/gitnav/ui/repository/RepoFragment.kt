@@ -71,12 +71,12 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         repo_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
 
-
         repo_fragment_tab_layout.visibility = View.VISIBLE
         repo_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         repo_fragment_tab_layout.setupWithViewPager(repo_fragment_viewpager)
         repo_fragment_viewpager.offscreenPageLimit = 4
         if (mOwner != null && mName != null) { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!) }
+        repo_fragment_viewpager.currentItem = 1
 
         if (isNetworkAvailable()) {
             if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!)
@@ -88,7 +88,10 @@ class RepoFragment : BaseFragment(), RepoContract.View {
 
     override fun showRepo(mapRepoStarred: Map<Repository, Boolean>) {
         mRepo = mapRepoStarred.keys.first()
-        mRepo?.let { IS_REPO_STARRED = mapRepoStarred[it]!! }
+        mRepo?.let {
+            IS_REPO_STARRED = mapRepoStarred[it]!!
+            (activity as AppCompatActivity).supportActionBar?.title = it.name
+        }
 
         createOptionsMenu()
 
@@ -171,10 +174,10 @@ class RepoFragment : BaseFragment(), RepoContract.View {
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-                0 -> RepoFragmentAbout.newInstance(mOwner, mName)
-                1 -> RepoFragmentReadme.newInstance(mOwner, mName)
-                2 -> RepoFragmentContent.newInstance(mOwner, mName)
-                else -> RepoFragmentCommits.newInstance(mOwner, mName)
+                0 -> RepoAboutFragment.newInstance(mOwner, mName)
+                1 -> RepoReadmeFragment.newInstance(mOwner, mName)
+                2 -> RepoContentFragment.newInstance(mOwner, mName)
+                else -> RepoCommitsFragment.newInstance(mOwner, mName)
             }
         }
 
@@ -182,8 +185,8 @@ class RepoFragment : BaseFragment(), RepoContract.View {
             when (position) {
                 0 -> return mContext.getString(R.string.about)
                 1 -> return mContext.getString(R.string.readme)
-                3 -> return mContext.getString(R.string.content)
-                4 -> return mContext.getString(R.string.commits)
+                2 -> return mContext.getString(R.string.content)
+                3 -> return mContext.getString(R.string.commits)
             }
             return super.getPageTitle(position)
         }

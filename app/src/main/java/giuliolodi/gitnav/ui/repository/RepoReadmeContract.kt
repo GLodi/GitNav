@@ -16,27 +16,33 @@
 
 package giuliolodi.gitnav.ui.repository
 
-import android.os.Bundle
-import android.view.View
-import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
 
 /**
  * Created by giulio on 11/07/2017.
  */
-class RepoFragmentAbout: BaseFragment() {
+interface RepoReadmeContract {
 
-    companion object {
-        fun newInstance(owner: String, name: String): RepoFragmentAbout {
-            val repoFragmentAbout: RepoFragmentAbout = RepoFragmentAbout()
-            val bundle: Bundle = Bundle()
-            bundle.putString("owner", owner)
-            bundle.putString("name", name)
-            repoFragmentAbout.arguments = bundle
-            return repoFragmentAbout
-        }
+    interface View : BaseContract.View {
+
+        fun showReadme(markdown: String)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
+
+        fun showNoReadme()
+
     }
 
-    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+
+    @PerActivity
+    interface Presenter<V: RepoReadmeContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(owner: String, name: String)
 
     }
 

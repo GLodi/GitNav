@@ -29,6 +29,9 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.repository.RepoActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.repo_list_fragment.*
 import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject
@@ -73,6 +76,13 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         repo_list_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
         repo_list_fragment_rv.itemAnimator = DefaultItemAnimator()
         repo_list_fragment_rv.adapter = RepoListAdapter()
+        (repo_list_fragment_rv.adapter as RepoListAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { repo ->
+                    startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
+                    activity.overridePendingTransition(0,0)
+                }
 
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {

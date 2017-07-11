@@ -247,4 +247,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun unstarRepo(owner: String, name: String): Completable
 
+    /**
+     * Get repo's README
+     * @param owner
+     * @param name
+     * @return Flowable<String>
+     */
+    fun getReadme(owner: String, name: String): Flowable<String>
+
 }

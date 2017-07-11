@@ -46,15 +46,12 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, boolean -> return@BiFunction mapOf(repo to boolean) })
-                .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { map ->
-                            getView().hideLoading()
                             getView().showRepo(map)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
                             Timber.e(throwable)
                         }
                 ))

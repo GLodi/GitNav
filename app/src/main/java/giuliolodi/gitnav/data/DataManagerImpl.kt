@@ -231,6 +231,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiUnstarRepo(mPrefsHelper.getToken(), owner, name)
     }
 
+    override fun getReadme(owner: String, name: String): Flowable<String> {
+        return mApiHelper.apiGetReadme(mPrefsHelper.getToken(), owner, name)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -333,6 +337,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiUnstarRepo(token: String, owner: String, name: String): Completable {
         return mApiHelper.apiUnstarRepo(token, owner, name)
+    }
+
+    override fun apiGetReadme(token: String, owner: String, name: String): Flowable<String> {
+        return mApiHelper.apiGetReadme(token, owner, name)
     }
 
 }

@@ -262,4 +262,13 @@ interface ApiHelper {
      */
     fun apiUnstarRepo(token: String, owner: String, name: String): Completable
 
+    /**
+     * Get repo's README
+     * @param token
+     * @param owner
+     * @param name
+     * @return Flowable<String>
+     */
+    fun apiGetReadme(token: String, owner: String, name: String): Flowable<String>
+
 }

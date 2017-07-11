@@ -29,8 +29,7 @@ import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
-import giuliolodi.gitnav.ui.repository.RepoContract
-import giuliolodi.gitnav.ui.repository.RepoPresenter
+import giuliolodi.gitnav.ui.repository.*
 import giuliolodi.gitnav.ui.repositorylist.RepoListContract
 import giuliolodi.gitnav.ui.repositorylist.RepoListPresenter
 import giuliolodi.gitnav.ui.search.SearchContract
@@ -134,6 +133,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideRepoPresenter(presenter: RepoPresenter<RepoContract.View>): RepoContract.Presenter<RepoContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideRepoReadmePresenter(presenter: RepoReadmePresenter<RepoReadmeContract.View>): RepoReadmeContract.Presenter<RepoReadmeContract.View> {
         return presenter
     }
 
