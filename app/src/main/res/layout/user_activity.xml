@@ -106,12 +106,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/grey"
         app:itemBackground="@color/grey"
         app:itemIconTint="@color/colorPrimary"
         app:itemTextColor="@color/colorPrimary"
-        app:menu="@menu/user_activity_bottom_menu">
-
-    </android.support.design.widget.BottomNavigationView>
+        app:menu="@menu/user_activity_bottom_menu"
+        android:elevation="8dp"
+        app:elevation="8dp"/>
 
 </RelativeLayout>
 

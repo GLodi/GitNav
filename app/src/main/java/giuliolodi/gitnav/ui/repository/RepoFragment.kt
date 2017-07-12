@@ -91,6 +91,7 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         mRepo?.let {
             IS_REPO_STARRED = mapRepoStarred[it]!!
             (activity as AppCompatActivity).supportActionBar?.title = it.name
+            (activity as AppCompatActivity).supportActionBar?.subtitle= it.owner.login
         }
 
         createOptionsMenu()
