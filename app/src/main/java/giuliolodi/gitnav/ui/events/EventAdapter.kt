@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.events
 
+import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
@@ -23,6 +24,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.repository.RepoActivity
+import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_event.view.*
@@ -48,7 +51,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class EventHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind (event: Event, p: PrettyTime, onUserClick: PublishSubject<String>) = with (itemView) {
+        fun bind (event: Event, p: PrettyTime) = with (itemView) {
             row_event_name.text = event.actor.login
             row_event_date.text = p.format(event.createdAt)
             Picasso.with(context).load(event.actor.avatarUrl).resize(100,100).centerCrop().into(row_event_image)
@@ -59,64 +62,69 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             if (event.payload != null) {
                 when (event.type) {
-                    "CommitCommentEvent" -> { // #1 NEED TEST
+                    "CommitCommentEvent" -> { // #1
                         val commitCommentPayload: CommitCommentPayload = event.payload as CommitCommentPayload
                         row_event_description.text = Html.fromHtml("Commented <b>" + commitCommentPayload.comment.path.substringAfterLast('/') + "</b> in <font color='#326fba'>" + event.repo.name + "</font>: <b>"+ commitCommentPayload.comment.body + "</b>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "CreateEvent" -> { // #2
                         row_event_description.text = Html.fromHtml("Created <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "DeleteEvent" -> { // #3
                         val deletePayload: DeletePayload = event.payload as DeletePayload
                         row_event_description.text = Html.fromHtml("Deleted " + deletePayload.refType + " <b>" + deletePayload.ref + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
-                        }
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)                        }
                     }
                     "DeploymentEvent" -> { // #4 DEFAULT
                         row_event_description.text = Html.fromHtml("Deployed in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
-                        }
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)                        }
                     }
                     "DeploymentStatus" -> { // #5 DEFAULT
                         row_event_description.text = Html.fromHtml("DeploymentStatus in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
-                        }
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)                        }
                     }
                     "DownloadEvent" -> { // #6 NEED TEST
                         val downloadPayload: DownloadPayload = event.payload as DownloadPayload
                         row_event_description.text = Html.fromHtml("Downloaded <font color='#326fba'>" + downloadPayload.download.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
-                        }
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)                        }
                     }
                     "FollowEvent" -> { // #7 DEPRECATED
                         val followPayload: FollowPayload = event.payload as FollowPayload
                         row_event_description.text = Html.fromHtml("Followed <font color='#326fba'>" + followPayload.target.login + "</font>")
                         row_event_ll.setOnClickListener {
-                            onUserClick.onNext(followPayload.target.login)
+                            context.startActivity(UserActivity.getIntent(context).putExtra("username", followPayload.target.login))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "ForkEvent" -> { // #8
                         val forkPayload: ForkPayload = event.payload as ForkPayload
                         row_event_description.text = Html.fromHtml("Forked <font color='#326fba'>" + event.repo.name + "</font> to <font color='#326fba'>" + forkPayload.forkee.owner.login + "/" + forkPayload.forkee.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "ForkApplyEvent" -> { // #9
                         val forkApplyPayload: ForkApplyPayload = event.payload as ForkApplyPayload
                         row_event_description.text = Html.fromHtml("Fork applied <b>" + forkApplyPayload.head + "</b>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "GistEvent" -> { // #10
@@ -127,9 +135,10 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         }
                     }
                     "GollumEvent" -> { // #11 NEED TEST
-                        row_event_description.text = "Updated wiki in <font color='#326fba'>" + event.repo.name + "</font>"
+                        row_event_description.text = Html.fromHtml("Updated wiki in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "IssueCommentEvent" -> { // #12
@@ -149,75 +158,87 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     "LabelEvent" -> { // #14 DEFAULT
                         row_event_description.text = Html.fromHtml("Labeled <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "MemberEvent" -> { // #15
                         val memberPayload: MemberPayload = event.payload as MemberPayload
                         row_event_description.text = Html.fromHtml(memberPayload.action.substring(0,1).toUpperCase() + memberPayload.action.substring(1) + " <b>" + memberPayload.member.login + "</b> to <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "MembershipEvent" -> { // #16 DEFAULT
                         row_event_description.text = "Added or removed from team"
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "MilestoneEvent" -> { // #17 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed milestone in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "OrganizationEvent" -> { // #18 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed event in org <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "PageBuildEvent" -> { // #19 DEFAULT
                         row_event_description.text = Html.fromHtml("Built page in: <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "ProjectCardEvent" -> { // #20 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed project card event in: <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "ProjectColumnEvent" -> { // #21 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed column card event in: <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "Projectevent" -> { // #22 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed project event in: <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "PublicEvent" -> { // #23 DEFAULT
                         row_event_description.text = Html.fromHtml("Made <font color='#326fba'>" + event.repo.name + "</font> open source")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "PullRequestEvent" -> { // #24
                         val pullRequestPayload: PullRequestPayload = event.payload as PullRequestPayload
                         row_event_description.text = Html.fromHtml(pullRequestPayload.action.substring(0,1).toUpperCase() + pullRequestPayload.action.substring(1) + " pull request <b>#" + pullRequestPayload.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "PullRequestReviewEvent" -> { // #25 NEED TEST
                         row_event_description.text = Html.fromHtml("Submitted a pull request review in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "PullRequestReviewCommentEvent" -> { // #26
@@ -231,45 +252,52 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         else
                             row_event_description.text = Html.fromHtml("Pushed " + pushPayload.commits.size.toString() + " commits to <b>" + pushPayload.ref + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "ReleaseEvent" -> { // #28 NEED TEST
                         val releasePayload: ReleasePayload = event.payload as ReleasePayload
                         row_event_description.text = Html.fromHtml("Published <b>" + releasePayload.release.name + "</>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "RepositoryEvent" -> { // #29 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed a repository event in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "StatusEvent" -> { // #30 DEFAULT
                         row_event_description.text = Html.fromHtml("Changed status of a git commit")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "TeamEvent" -> { // #31 DEFAULT
                         row_event_description.text = Html.fromHtml("Performed team event")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "TeamAddEvent" -> { // #32 NEED TEST
                         val teamAddPayload: TeamAddPayload = event.payload as TeamAddPayload
                         row_event_description.text = Html.fromHtml("Added <b>" + teamAddPayload.repo.name + "</b> to <b>" + teamAddPayload.team.name + "</b>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "WatchEvent" -> { // #33
                         row_event_description.text = Html.fromHtml("Starred <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // repo
+                            context.startActivity(RepoActivity.getIntent(context).putExtra("owner", s[0][0]).putExtra("name", s[0][1]))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
 
@@ -295,7 +323,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is EventHolder) {
             val event = mEventList[position]!!
-            holder.bind(event, mPrettyTime, onUserClick)
+            holder.bind(event, mPrettyTime)
             holder.itemView.row_event_image.setOnClickListener { onImageClick.onNext(event.actor?.login) }
             holder.itemView.row_event_name.setOnClickListener { onImageClick.onNext(event.actor?.login) }
         }
