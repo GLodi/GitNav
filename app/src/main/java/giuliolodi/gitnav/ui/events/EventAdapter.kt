@@ -61,7 +61,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 when (event.type) {
                     "CommitCommentEvent" -> { // #1 NEED TEST
                         val commitCommentPayload: CommitCommentPayload = event.payload as CommitCommentPayload
-                        row_event_description.text = commitCommentPayload.comment.body
+                        row_event_description.text = Html.fromHtml("Commented <b>" + commitCommentPayload.comment.path.substringAfterLast('/') + "</b> in <font color='#326fba'>" + event.repo.name + "</font>: <b>"+ commitCommentPayload.comment.body + "</b>")
                         row_event_ll.setOnClickListener {
                             // repo
                         }
