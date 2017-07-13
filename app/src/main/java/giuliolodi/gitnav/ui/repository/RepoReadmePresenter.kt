@@ -46,7 +46,7 @@ class RepoReadmePresenter<V: RepoReadmeContract.View> : BasePresenter<V>, RepoRe
                             getView().hideLoading()
                         },
                         { throwable ->
-                            if ((throwable as RequestException).status == 404)
+                            if ((throwable as? RequestException)?.status == 404)
                                 getView().showNoReadme()
                             else {
                                 getView().showError(throwable.localizedMessage)

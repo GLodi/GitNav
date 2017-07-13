@@ -24,6 +24,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.Repository
+import org.eclipse.egit.github.core.client.RequestException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -52,7 +53,10 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
-                            Timber.e(throwable)
+                            if ((throwable as? RequestException)?.status == 404)
+                                getView().onRepoNotFound()
+                            else
+                                Timber.e(throwable)
                         }
                 ))
     }

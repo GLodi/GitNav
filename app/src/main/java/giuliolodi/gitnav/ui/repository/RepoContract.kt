@@ -39,6 +39,8 @@ interface RepoContract {
 
         fun onRepoUnstarred()
 
+        fun onRepoNotFound()
+
     }
 
     @PerActivity

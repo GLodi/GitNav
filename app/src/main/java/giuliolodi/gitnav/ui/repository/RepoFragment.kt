@@ -125,8 +125,12 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         Toasty.success(context, getString(R.string.repo_unstarred), Toast.LENGTH_LONG).show()
     }
 
+    override fun onRepoNotFound() {
+        activity.finish()
+    }
+
     private fun createOptionsMenu() {
-        activity.menuInflater.inflate(R.menu.repo_fragment_menu, mMenu)
+        activity?.menuInflater?.inflate(R.menu.repo_fragment_menu, mMenu)
         if (IS_REPO_STARRED)
             mMenu?.findItem(R.id.star_icon)?.isVisible = true
         else
