@@ -18,7 +18,8 @@ package giuliolodi.gitnav.ui.repository
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
-import giuliolodi.gitnav.ui.base.BasePresenter
+import org.eclipse.egit.github.core.Contributor
+import org.eclipse.egit.github.core.Repository
 
 /**
  * Created by giulio on 15/07/2017.
@@ -26,6 +27,14 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 interface RepoAboutContract {
 
     interface View : BaseContract.View {
+
+        fun showRepoNContributors(repo: Repository, contributorList: List<Contributor>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
 
     }
 
