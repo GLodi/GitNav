@@ -103,6 +103,8 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
     override fun showRepoCommitList(repoCommitList: List<RepositoryCommit>) {
         mRepoCommitList = repoCommitList.toMutableList()
         (repo_commits_fragment_rv.adapter as RepoCommitAdapter).addRepoCommits(repoCommitList)
+        if (mRepoCommitList.size == 0)
+            showNoCommits()
     }
 
     override fun showLoading() {
@@ -121,6 +123,8 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
     }
 
     override fun showNoCommits() {
+        repo_commits_fragment_nocommits.visibility = View.VISIBLE
+        NO_COMMITS = true
     }
 
     override fun onDestroyView() {

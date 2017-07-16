@@ -28,7 +28,7 @@ interface RepoAboutContract {
 
     interface View : BaseContract.View {
 
-        fun showRepoNContributors(repo: Repository, contributorList: List<Contributor>)
+        fun showRepoNContributors(repoContributors: Map<Repository, List<Contributor>>)
 
         fun showLoading()
 

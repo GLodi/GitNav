@@ -388,4 +388,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiGetContributors(token: String, owner: String, name: String): Flowable<List<Contributor>> {
+        return Flowable.defer {
+            val repoService: RepositoryService = RepositoryService()
+            repoService.client.setOAuth2Token(token)
+            Flowable.just(repoService.getContributors(RepositoryId(owner, name), true))
+        }
+    }
+
 }

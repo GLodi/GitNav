@@ -25,6 +25,7 @@ import giuliolodi.gitnav.ui.gist.GistFragmentComments
 import giuliolodi.gitnav.ui.gist.GistFragmentFiles
 import giuliolodi.gitnav.ui.gistlist.GistListFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
+import giuliolodi.gitnav.ui.repository.RepoAboutFragment
 import giuliolodi.gitnav.ui.repository.RepoCommitsFragment
 import giuliolodi.gitnav.ui.repository.RepoFragment
 import giuliolodi.gitnav.ui.repository.RepoReadmeFragment
@@ -67,6 +68,8 @@ interface ActivityComponent {
 
     fun inject(repoReadmeFragment: RepoReadmeFragment)
 
-    fun inject (repoCommitsFragment: RepoCommitsFragment)
+    fun inject(repoCommitsFragment: RepoCommitsFragment)
+
+    fun inject(repoAboutFragment: RepoAboutFragment)
 
 }

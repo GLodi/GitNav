@@ -280,4 +280,13 @@ interface ApiHelper {
      */
     fun apiGetRepoCommits(token: String, owner: String, name: String): Flowable<List<RepositoryCommit>>
 
+    /**
+     * Returns repo's contributors
+     * @param token
+     * @param owner
+     * @param name
+     * @return Flowable<List<Contributor>>
+     */
+    fun apiGetContributors(token: String, owner: String, name: String): Flowable<List<Contributor>>
+
 }

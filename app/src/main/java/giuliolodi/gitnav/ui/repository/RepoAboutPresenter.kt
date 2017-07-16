@@ -16,8 +16,49 @@
 
 package giuliolodi.gitnav.ui.repository
 
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Contributor
+import org.eclipse.egit.github.core.Repository
+import timber.log.Timber
+import javax.inject.Inject
+
 /**
  * Created by giulio on 15/07/2017.
  */
-class RepoAboutPresenter {
+class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAboutContract.Presenter<V> {
+
+    val TAG = "RepoPresenter"
+
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe(owner: String, name: String) {
+        getCompositeDisposable().add(Flowable.zip<Repository, List<Contributor>, Map<Repository, List<Contributor>>>(
+                getDataManager().getRepo(owner, name)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getDataManager().getContributors(owner, name)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                BiFunction { repo, contributorList -> return@BiFunction mapOf(repo to contributorList) })
+                .doOnSubscribe { getView().showLoading() }
+                .subscribe(
+                        { map ->
+                            getView().showRepoNContributors(map)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
 }
