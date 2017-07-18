@@ -32,6 +32,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(owner: String, name: String) {
+
     }
 
 }

@@ -289,4 +289,13 @@ interface ApiHelper {
      */
     fun apiGetContributors(token: String, owner: String, name: String): Flowable<List<Contributor>>
 
+    /**
+     * Return repo's content
+     * @param token
+     * @param owner
+     * @param name
+     * @return Flowable<List<RepositoryContents>>
+     */
+    fun apiGetContent(token: String, owner: String, name: String): Flowable<List<RepositoryContents>>
+
 }

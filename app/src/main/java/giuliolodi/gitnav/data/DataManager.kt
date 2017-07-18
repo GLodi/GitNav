@@ -271,4 +271,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getContributors(owner: String, name: String): Flowable<List<Contributor>>
 
+    /**
+     * Return repo's content
+     * @param owner
+     * @param name
+     * @return Flowable<List<RepositoryContents>>
+     */
+    fun getContent(owner: String, name: String): Flowable<List<RepositoryContents>>
+
 }
