@@ -22,11 +22,15 @@ import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import org.eclipse.egit.github.core.RepositoryContents
+import javax.inject.Inject
 
 /**
  * Created by giulio on 11/07/2017.
  */
-class RepoContentFragment : BaseFragment() {
+class RepoContentFragment : BaseFragment(), RepoContentContract.View {
+
+    @Inject lateinit var mPresenter: RepoContentContract.Presenter<RepoContentContract.View>
 
     private var mOwner: String? = null
     private var mName: String? = null
@@ -54,6 +58,28 @@ class RepoContentFragment : BaseFragment() {
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+    }
+
+    override fun showContent(repoContentList: List<RepositoryContents>) {
+    }
+
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
+
+    override fun showError(error: String) {
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }
