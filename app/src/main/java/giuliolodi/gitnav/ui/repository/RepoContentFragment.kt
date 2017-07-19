@@ -17,11 +17,19 @@
 package giuliolodi.gitnav.ui.repository
 
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.repo_content_fragment.*
 import org.eclipse.egit.github.core.RepositoryContents
 import javax.inject.Inject
 
@@ -34,6 +42,11 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     private var mOwner: String? = null
     private var mName: String? = null
+    private var mRepoContentList: List<RepositoryContents>? = null
+    private var pathTree: MutableList<String> = mutableListOf()
+    private var LOADING: Boolean = false
+    private var LOADING_CONTENT: Boolean = false
+    private var TREE_DEPTH: Int = 1
 
     companion object {
         fun newInstance(owner: String, name: String): RepoContentFragment {
@@ -51,6 +64,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         retainInstance = true
         mOwner = arguments.getString("owner")
         mName = arguments.getString("name")
+        pathTree.add("")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,18 +72,50 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+        mPresenter.onAttach(this)
+
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        repo_content_fragment_rv.layoutManager = llm
+        repo_content_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
+        repo_content_fragment_rv.itemAnimator = DefaultItemAnimator()
+        repo_content_fragment_rv.adapter = FileAdapter()
+
+        (repo_content_fragment_rv.adapter as FileAdapter).getRepositoryContentsClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { repositoryContents ->
+                    when(repositoryContents.type) {
+                        "dir" -> {
+                            if (!LOADING_CONTENT) {
+                                LOADING_CONTENT = true
+                                pathTree.add(repositoryContents.path)
+                                TREE_DEPTH += 1
+                            }
+                        }
+                        "file" -> {}
+                    }
+                }
     }
 
     override fun showContent(repoContentList: List<RepositoryContents>) {
+        mRepoContentList = repoContentList
+        mRepoContentList?.let { (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(it) }
     }
 
     override fun showLoading() {
+        repo_content_fragment_progressbar.visibility = View.VISIBLE
+        LOADING = true
     }
 
     override fun hideLoading() {
+        if (repo_content_fragment_progressbar.visibility == View.VISIBLE)
+            repo_content_fragment_progressbar.visibility = View.GONE
+        LOADING = false
     }
 
     override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {

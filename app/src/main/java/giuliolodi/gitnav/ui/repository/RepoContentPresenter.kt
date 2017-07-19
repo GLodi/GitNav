@@ -18,7 +18,10 @@ package giuliolodi.gitnav.ui.repository
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -26,13 +29,27 @@ import javax.inject.Inject
  */
 class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, RepoContentContract.Presenter<V> {
 
-    val TAG = "RepoPresenter"
+    val TAG = "RepoContentPresenter"
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(owner: String, name: String) {
-
+        getCompositeDisposable().add(getDataManager().getContent(owner, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoading() }
+                .subscribe(
+                        { repoContentList ->
+                            getView().showContent(repoContentList)
+                            getView().hideLoading()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
     }
 
 }
