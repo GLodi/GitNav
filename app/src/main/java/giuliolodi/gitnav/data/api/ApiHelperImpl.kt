@@ -396,11 +396,11 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
-    override fun apiGetContent(token: String, owner: String, name: String): Flowable<List<RepositoryContents>> {
+    override fun apiGetContent(token: String, owner: String, name: String, path: String): Flowable<List<RepositoryContents>> {
         return Flowable.defer {
             val contentsService: ContentsService = ContentsService()
             contentsService.client.setOAuth2Token(token)
-            Flowable.just(contentsService.getContents(RepositoryId(owner, name)))
+            Flowable.just(contentsService.getContents(RepositoryId(owner, name), path))
         }
     }
 

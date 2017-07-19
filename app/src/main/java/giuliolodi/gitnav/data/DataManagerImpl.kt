@@ -243,8 +243,8 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetContributors(mPrefsHelper.getToken(), owner, name)
     }
 
-    override fun getContent(owner: String, name: String): Flowable<List<RepositoryContents>> {
-        return mApiHelper.apiGetContent(mPrefsHelper.getToken(), owner, name)
+    override fun getContent(owner: String, name: String, path: String): Flowable<List<RepositoryContents>> {
+        return mApiHelper.apiGetContent(mPrefsHelper.getToken(), owner, name, path)
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {
@@ -363,8 +363,8 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetContributors(token, owner, name)
     }
 
-    override fun apiGetContent(token: String, owner: String, name: String): Flowable<List<RepositoryContents>> {
-        return mApiHelper.apiGetContent(token, owner, name)
+    override fun apiGetContent(token: String, owner: String, name: String, path: String): Flowable<List<RepositoryContents>> {
+        return mApiHelper.apiGetContent(token, owner, name, path)
     }
 
 }

@@ -294,8 +294,9 @@ interface ApiHelper {
      * @param token
      * @param owner
      * @param name
+     * @param path
      * @return Flowable<List<RepositoryContents>>
      */
-    fun apiGetContent(token: String, owner: String, name: String): Flowable<List<RepositoryContents>>
+    fun apiGetContent(token: String, owner: String, name: String, path: String): Flowable<List<RepositoryContents>>
 
 }
