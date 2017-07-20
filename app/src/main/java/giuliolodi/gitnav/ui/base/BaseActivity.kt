@@ -58,6 +58,11 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.C
         super.onDestroy()
     }
 
+    /*
+     * This is supposed to update the activity on its fragment's status.
+     * I'm not currently taking advantage of it, as the dispose of Flowables are handled by fragments
+      * themselves.
+     */
     override fun onFragmentAttached() {
     }
 

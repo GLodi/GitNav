@@ -44,6 +44,10 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
         return mDataManager
     }
 
+    /*
+     * Weather the view from which the presenter is created is BaseActivityDrawer or a fragment attached
+     * to the same activity, onAttach initialize the content of the drawer by calling initDrawer.
+     */
     override fun onAttach(view: V) {
         mBaseView = view
         if (mBaseView is BaseDrawerActivity) {
@@ -54,11 +58,13 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
         }
     }
 
+    // Called in the onDestroy of both activities and fragments/
     override fun onDetach() {
         mCompositeDisposable.dispose()
         mBaseView = null
     }
 
+    // Called in onDestroyView of fragments.
     override fun onDetachView() {
         mBaseView = null
     }

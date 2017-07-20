@@ -31,6 +31,10 @@ abstract class BaseFragment : Fragment(), BaseContract.View {
     private var mBaseActivity: BaseActivity? = null
     private var mBaseDrawerActivity: BaseDrawerActivity? = null
 
+    /*
+     * Each fragment will initialize its view inside initLayout, which is called
+     * at the end of onViewCreated.
+     */
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLayout(view, savedInstanceState)
@@ -38,6 +42,7 @@ abstract class BaseFragment : Fragment(), BaseContract.View {
 
     protected abstract fun initLayout(view: View?, savedInstanceState: Bundle?)
 
+    // Attach fragment and inform its activity.
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is BaseActivity) {

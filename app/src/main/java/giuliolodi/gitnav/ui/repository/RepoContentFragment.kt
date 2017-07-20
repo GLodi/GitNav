@@ -44,6 +44,8 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     private var mName: String? = null
     private var mRepoContentList: List<RepositoryContents>? = null
     private var pathTree: MutableList<String> = mutableListOf()
+    private var path: String = ""
+    private var treeText: String = ""
     private var LOADING: Boolean = false
     private var LOADING_CONTENT: Boolean = false
     private var TREE_DEPTH: Int = 1
@@ -96,9 +98,21 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                         "file" -> {}
                     }
                 }
+
+        if (LOADING) showLoading()
+        // Check if content has already been downloaded
+        else {
+            if (isNetworkAvailable()) {
+                if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!, path)
+            }
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun showContent(repoContentList: List<RepositoryContents>) {
+        if (mRepoContentList == null) mRepoContentList = repoContentList
         mRepoContentList = repoContentList
         mRepoContentList?.let { (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(it) }
     }

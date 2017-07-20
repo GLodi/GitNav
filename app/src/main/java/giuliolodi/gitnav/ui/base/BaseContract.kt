@@ -31,6 +31,11 @@ interface BaseContract {
 
     }
 
+    /*
+     * The difference between onDetach() and onDetachView() is that the former handles the
+     * dispose of any flowable and gets rid off the view reference, the latter doesn't dispose,
+     * but still deletes the view reference.
+     */
     interface Presenter<V: View> {
 
         fun onAttach(view: V)

@@ -40,7 +40,7 @@ interface RepoContentContract {
     @PerActivity
     interface Presenter<V: RepoContentContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(owner: String, name: String)
+        fun subscribe(owner: String, name: String, path: String)
 
     }
 

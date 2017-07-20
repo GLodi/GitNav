@@ -34,8 +34,8 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(owner: String, name: String) {
-        getCompositeDisposable().add(getDataManager().getContent(owner, name)
+    override fun subscribe(owner: String, name: String, path: String) {
+        getCompositeDisposable().add(getDataManager().getContent(owner, name, path)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { getView().showLoading() }
