@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.repository
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -95,7 +96,9 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                                 TREE_DEPTH += 1
                             }
                         }
-                        "file" -> {}
+                        "file" -> {
+
+                        }
                     }
                 }
 
@@ -140,6 +143,20 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    private fun setTree() {
+        repo_content_fragment_tree.text = ""
+        treeText = "/"
+        treeText += pathTree[pathTree.size - 1]
+        repo_content_fragment_tree.text = treeText
+        Handler().postDelayed({ repo_content_fragment_scrollview.smoothScrollBy(repo_content_fragment_scrollview.maxScrollAmount, 0) }, 100)
+    }
+
+    private fun handleBackPressed() {
+        if (isNetworkAvailable()) {
+
+        }
     }
 
 }
