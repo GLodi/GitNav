@@ -16,8 +16,36 @@
 
 package giuliolodi.gitnav.ui.fileviewer
 
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import javax.inject.Inject
+
 /**
  * Created by giulio on 22/07/2017.
  */
-class FileViewerPresenter {
+class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileViewerContract.Presenter<V> {
+
+    val TAG = "FileViewerPresenter"
+
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe(owner: String, name: String, path: String) {
+        getCompositeDisposable().add(getDataManager().getContent(owner, name, path)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {},
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                ))
+    }
+
 }

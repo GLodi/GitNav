@@ -16,7 +16,9 @@
 
 package giuliolodi.gitnav.ui.fileviewer
 
+import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.RepositoryContents
 
 /**
  * Created by giulio on 22/07/2017.
@@ -25,7 +27,21 @@ interface FileViewerContract {
 
     interface View : BaseContract.View {
 
-        fun showContent()
+        fun showContent(repoContent: RepositoryContents)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showError(error: String)
 
     }
+
+    @PerActivity
+    interface Presenter<V: FileViewerContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(owner: String, name: String, path: String)
+
+    }
+
 }
