@@ -16,8 +16,42 @@
 
 package giuliolodi.gitnav.ui.fileviewer
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.base.BaseActivity
+
 /**
  * Created by giulio on 22/07/2017.
  */
-class FileViewerActivity {
+class FileViewerActivity : BaseActivity() {
+
+    private val FILE_VIEWER_FRAGMENT_TAG = "FILE_VIEWER_FRAGMENT_TAG"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.file_viewer_activity)
+
+        var fileViewerFragment: FileViewerFragment? = supportFragmentManager.findFragmentByTag(FILE_VIEWER_FRAGMENT_TAG) as FileViewerFragment?
+        if (fileViewerFragment == null) {
+            fileViewerFragment = FileViewerFragment()
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.repo_activity_frame, fileViewerFragment, FILE_VIEWER_FRAGMENT_TAG)
+                    .commit()
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
+    }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, FileViewerActivity::class.java)
+        }
+    }
+
 }

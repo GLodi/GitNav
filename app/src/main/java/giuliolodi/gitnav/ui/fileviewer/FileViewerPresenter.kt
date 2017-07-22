@@ -39,7 +39,9 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {},
+                        { repoContent ->
+                            getView().showContent(repoContent[0])
+                        },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()

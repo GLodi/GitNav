@@ -16,8 +16,39 @@
 
 package giuliolodi.gitnav.ui.fileviewer
 
+import android.os.Bundle
+import android.view.View
+import giuliolodi.gitnav.ui.base.BaseFragment
+import org.eclipse.egit.github.core.RepositoryContents
+
 /**
  * Created by giulio on 22/07/2017.
  */
-class FileViewerFragment {
+class FileViewerFragment : BaseFragment(), FileViewerContract.View {
+
+    companion object {
+        fun newInstance(owner: String, name: String): FileViewerFragment {
+            val fileViewerFragment: FileViewerFragment = FileViewerFragment()
+            val bundle: Bundle = Bundle()
+            bundle.putString("owner", owner)
+            bundle.putString("name", name)
+            fileViewerFragment.arguments = bundle
+            return fileViewerFragment
+        }
+    }
+
+    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+    }
+
+    override fun showContent(repoContent: RepositoryContents) {
+    }
+
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
+
+    override fun showError(error: String) {
+    }
 }
