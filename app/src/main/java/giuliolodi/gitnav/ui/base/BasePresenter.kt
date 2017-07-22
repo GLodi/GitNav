@@ -58,7 +58,7 @@ open class BasePresenter<V: BaseContract.View> : BaseContract.Presenter<V> {
         }
     }
 
-    // Called in the onDestroy of both activities and fragments/
+    // Called in the onDestroy of both activities and fragments
     override fun onDetach() {
         mCompositeDisposable.dispose()
         mBaseView = null

@@ -43,7 +43,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     private var mOwner: String? = null
     private var mName: String? = null
-    private var mRepoContentList: List<RepositoryContents>? = null
+    private var mRepoContentList: MutableList<RepositoryContents> = mutableListOf()
     private var pathTree: MutableList<String> = mutableListOf()
     private var path: String = ""
     private var treeText: String = ""
@@ -115,8 +115,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     }
 
     override fun showContent(repoContentList: List<RepositoryContents>) {
-        if (mRepoContentList == null) mRepoContentList = repoContentList
-        mRepoContentList = repoContentList
+        mRepoContentList = repoContentList.toMutableList()
         mRepoContentList?.let { (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(it) }
     }
 
@@ -155,7 +154,18 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     private fun handleBackPressed() {
         if (isNetworkAvailable()) {
-
+            if (!LOADING_CONTENT) {
+                LOADING_CONTENT = true
+                path = pathTree[pathTree.size - 2]
+                pathTree.removeAt(pathTree.size - 1)
+                TREE_DEPTH -= 1
+                mRepoContentList.clear()
+                repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
+                mPresenter.subscribe(mOwner!!, mName!!, path)
+            }
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
