@@ -116,7 +116,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     override fun showContent(repoContentList: List<RepositoryContents>) {
         mRepoContentList = repoContentList.toMutableList()
-        mRepoContentList?.let { (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(it) }
+        if (!mRepoContentList.isEmpty()) (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(mRepoContentList)
     }
 
     override fun showLoading() {
@@ -163,9 +163,9 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                 repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
                 mPresenter.subscribe(mOwner!!, mName!!, path)
             }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
+        }
+        else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
         }
     }
 

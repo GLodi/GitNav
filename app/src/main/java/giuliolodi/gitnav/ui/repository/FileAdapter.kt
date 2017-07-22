@@ -31,7 +31,7 @@ import org.eclipse.egit.github.core.RepositoryContents
  */
 class FileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mRepoContentList: MutableList<RepositoryContents?> = arrayListOf()
+    private var mRepoContentList: MutableList<RepositoryContents?> = mutableListOf()
     private val onClickSubject: PublishSubject<RepositoryContents> = PublishSubject.create()
 
     fun getRepositoryContentsClicks(): Observable<RepositoryContents> {
