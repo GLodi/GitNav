@@ -15,35 +15,10 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#282b2e">
-
-    <ProgressBar
-        android:id="@+id/file_viewer_activity_progressbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"
-        android:visibility="gone"/>
-
-    <com.pddstudio.highlightjs.HighlightJsView
-        android:id="@+id/file_viewer_activity_highlightview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/file_viewer_activity_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/download_file_error"
-        android:visibility="gone"/>
-
-</RelativeLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/file_viewer_activity_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
 
 

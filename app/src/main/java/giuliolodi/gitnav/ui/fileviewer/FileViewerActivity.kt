@@ -38,7 +38,7 @@ class FileViewerActivity : BaseActivity() {
             fileViewerFragment = FileViewerFragment()
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.repo_activity_frame, fileViewerFragment, FILE_VIEWER_FRAGMENT_TAG)
+                    .replace(R.id.file_viewer_activity_frame, fileViewerFragment, FILE_VIEWER_FRAGMENT_TAG)
                     .commit()
         }
     }
