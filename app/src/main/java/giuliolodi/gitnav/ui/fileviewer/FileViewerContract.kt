@@ -27,7 +27,9 @@ interface FileViewerContract {
 
     interface View : BaseContract.View {
 
-        fun showContent(repoContent: RepositoryContents)
+        fun showRepoFile(repoContent: RepositoryContents)
+
+        fun showGistFile(contentGist: String, filenameGist: String)
 
         fun showLoading()
 

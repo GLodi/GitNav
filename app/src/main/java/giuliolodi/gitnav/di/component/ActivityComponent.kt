@@ -20,6 +20,7 @@ import dagger.Component
 import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventFragment
+import giuliolodi.gitnav.ui.fileviewer.FileViewerFragment
 import giuliolodi.gitnav.ui.gist.GistFragment
 import giuliolodi.gitnav.ui.gist.GistFragmentComments
 import giuliolodi.gitnav.ui.gist.GistFragmentFiles
@@ -71,5 +72,7 @@ interface ActivityComponent {
     fun inject(repoCommitsFragment: RepoCommitsFragment)
 
     fun inject(repoAboutFragment: RepoAboutFragment)
+
+    fun inject(fileViewerFragment: FileViewerFragment)
 
 }
