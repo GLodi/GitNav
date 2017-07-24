@@ -29,8 +29,6 @@ interface FileViewerContract {
 
         fun showRepoFile(repoContent: RepositoryContents)
 
-        fun showGistFile(contentGist: String, filenameGist: String)
-
         fun showLoading()
 
         fun hideLoading()

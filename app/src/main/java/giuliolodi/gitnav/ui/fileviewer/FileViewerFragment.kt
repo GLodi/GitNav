@@ -17,10 +17,13 @@
 package giuliolodi.gitnav.ui.fileviewer
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.pddstudio.highlightjs.models.Language
+import com.pddstudio.highlightjs.models.Theme
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
@@ -38,26 +41,29 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     private var mOwner: String? = null
     private var mName: String? = null
     private var mPath: String? = null
+    private var mFilename: String? = null
     private var mFileUrl: String? = null
     private var mFilenameGist: String? = null
     private var mContentGist: String? = null
     private var LOADING: Boolean = false
 
     companion object {
-        fun newInstanceRepoFile(fileNameGist: String, fileUrl: String): FileViewerFragment {
+        fun newInstanceRepoFile(fileNameGist: String, contentGist: String, fileUrl: String): FileViewerFragment {
             val fileViewerFragment: FileViewerFragment = FileViewerFragment()
             val bundle: Bundle = Bundle()
             bundle.putString("filename_gist", fileNameGist)
+            bundle.putString("content_gist", contentGist)
             bundle.putString("file_url", fileUrl)
             fileViewerFragment.arguments = bundle
             return fileViewerFragment
         }
-        fun newInstanceGistFile(owner: String, name: String, path: String, fileUrl: String): FileViewerFragment {
+        fun newInstanceGistFile(owner: String, name: String, path: String, filename: String, fileUrl: String): FileViewerFragment {
             val fileViewerFragment: FileViewerFragment = FileViewerFragment()
             val bundle: Bundle = Bundle()
             bundle.putString("owner", owner)
             bundle.putString("name", name)
             bundle.putString("path", path)
+            bundle.putString("filename", filename)
             bundle.putString("file_url", fileUrl)
             fileViewerFragment.arguments = bundle
             return fileViewerFragment
@@ -71,10 +77,10 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         mOwner = arguments.getString("owner")
         mName = arguments.getString("name")
         mPath = arguments.getString("path")
+        mFilename = arguments.getString("filename")
         mFileUrl = arguments.getString("file_url")
         mFilenameGist = arguments.getString("filename_gist")
         mContentGist = arguments.getString("content_gist")
-
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -83,12 +89,13 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
+        setHasOptionsMenu(true)
 
         if (LOADING) showLoading()
         else {
             if (isNetworkAvailable()) {
-                if (mOwner != null && mName != null && mPath != null) mPresenter.subscribe(mOwner!!, mName!!, mPath!!)
-                else if (mFilenameGist != null && mContentGist != null) showGistFile(mContentGist!!, mFilenameGist!!)
+                if (mOwner != null && mName != null && mPath != null && mFilename != null) initRepoFile()
+                else if (mFilenameGist != null && mContentGist != null) initGistFile()
             }
             else {
                 Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -96,10 +103,30 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         }
     }
 
-    override fun showRepoFile(repoContent: RepositoryContents) {
+    private fun initRepoFile() {
+        mPresenter.subscribe(mOwner!!, mName!!, mPath!!)
+
+        (activity as AppCompatActivity).supportActionBar?.title = mFilename
+        (activity as AppCompatActivity).supportActionBar?.subtitle = mOwner + "/" + mName
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
-    override fun showGistFile(contentGist: String, filenameGist: String) {
+    private fun initGistFile() {
+        (activity as AppCompatActivity).supportActionBar?.title = mFilenameGist
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
+        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
+        file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
+        file_viewer_fragment_highlightview.setSource(mContentGist)
+        file_viewer_fragment_highlightview.visibility = View.VISIBLE
+
+        hideLoading()
+    }
+
+    override fun showRepoFile(repoContent: RepositoryContents) {
     }
 
     override fun showLoading() {
