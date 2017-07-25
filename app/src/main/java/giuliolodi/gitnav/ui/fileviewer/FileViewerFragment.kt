@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.fileviewer
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.file_viewer_fragment.*
 import org.eclipse.egit.github.core.RepositoryContents
+import java.io.UnsupportedEncodingException
 import javax.inject.Inject
 
 /**
@@ -127,6 +129,16 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     }
 
     override fun showRepoFile(repoContent: RepositoryContents) {
+        var fileDecoded: String = ""
+        try {
+            fileDecoded = Base64.decode(repoContent.content, Base64.DEFAULT).toString()
+        } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
+        file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
+        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
+        file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
+        file_viewer_fragment_highlightview.setSource(fileDecoded)
+        file_viewer_fragment_highlightview.visibility = View.VISIBLE
+        hideLoading()
     }
 
     override fun showLoading() {
