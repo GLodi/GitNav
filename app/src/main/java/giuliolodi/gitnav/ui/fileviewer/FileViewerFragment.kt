@@ -133,11 +133,13 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         try {
             fileDecoded = Base64.decode(repoContent.content, Base64.DEFAULT).toString()
         } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
+
         file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
         file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
         file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
         file_viewer_fragment_highlightview.setSource(fileDecoded)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
+
         hideLoading()
     }
 
@@ -154,6 +156,16 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }

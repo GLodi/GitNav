@@ -24,6 +24,8 @@ import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
+import giuliolodi.gitnav.ui.fileviewer.FileViewerContract
+import giuliolodi.gitnav.ui.fileviewer.FileViewerPresenter
 import giuliolodi.gitnav.ui.gist.*
 import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
@@ -151,6 +153,18 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideRepoAboutPresenter(presenter: RepoAboutPresenter<RepoAboutContract.View>): RepoAboutContract.Presenter<RepoAboutContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideRepoContentPresenter(presenter: RepoContentPresenter<RepoContentContract.View>): RepoContentContract.Presenter<RepoContentContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideFileViewerPresenter(presenter: FileViewerPresenter<FileViewerContract.View>): FileViewerContract.Presenter<FileViewerContract.View> {
         return presenter
     }
 

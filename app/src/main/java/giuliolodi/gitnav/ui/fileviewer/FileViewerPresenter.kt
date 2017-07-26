@@ -38,9 +38,11 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
         getCompositeDisposable().add(getDataManager().getContent(owner, name, path)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { repoContent ->
                             getView().showRepoFile(repoContent[0])
+                            getView().hideLoading()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)

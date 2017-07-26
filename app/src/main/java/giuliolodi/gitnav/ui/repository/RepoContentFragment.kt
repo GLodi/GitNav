@@ -65,6 +65,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+        getActivityComponent()?.inject(this)
         mOwner = arguments.getString("owner")
         mName = arguments.getString("name")
         pathTree.add("")
