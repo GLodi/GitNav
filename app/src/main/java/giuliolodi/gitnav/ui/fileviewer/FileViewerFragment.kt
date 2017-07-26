@@ -49,29 +49,6 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     private var mContentGist: String? = null
     private var LOADING: Boolean = false
 
-    companion object {
-        fun newInstanceRepoFile(fileNameGist: String, contentGist: String, fileUrl: String): FileViewerFragment {
-            val fileViewerFragment: FileViewerFragment = FileViewerFragment()
-            val bundle: Bundle = Bundle()
-            bundle.putString("filename_gist", fileNameGist)
-            bundle.putString("content_gist", contentGist)
-            bundle.putString("file_url", fileUrl)
-            fileViewerFragment.arguments = bundle
-            return fileViewerFragment
-        }
-        fun newInstanceGistFile(owner: String, name: String, path: String, filename: String, fileUrl: String): FileViewerFragment {
-            val fileViewerFragment: FileViewerFragment = FileViewerFragment()
-            val bundle: Bundle = Bundle()
-            bundle.putString("owner", owner)
-            bundle.putString("name", name)
-            bundle.putString("path", path)
-            bundle.putString("filename", filename)
-            bundle.putString("file_url", fileUrl)
-            fileViewerFragment.arguments = bundle
-            return fileViewerFragment
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
