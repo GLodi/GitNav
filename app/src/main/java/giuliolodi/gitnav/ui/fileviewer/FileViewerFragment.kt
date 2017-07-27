@@ -53,13 +53,13 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
-        mOwner = arguments.getString("owner")
-        mName = arguments.getString("name")
-        mPath = arguments.getString("path")
-        mFilename = arguments.getString("filename")
-        mFileUrl = arguments.getString("file_url")
-        mFilenameGist = arguments.getString("filename_gist")
-        mContentGist = arguments.getString("content_gist")
+        mOwner = activity.intent.getStringExtra("owner")
+        mName = activity.intent.getStringExtra("name")
+        mPath = activity.intent.getStringExtra("path")
+        mFilename = activity.intent.getStringExtra("filename")
+        mFileUrl = activity.intent.getStringExtra("file_url")
+        mFilenameGist = activity.intent.getStringExtra("filename_gist")
+        mContentGist = activity.intent.getStringExtra("content_gist")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
