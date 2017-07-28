@@ -71,6 +71,7 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         setHasOptionsMenu(true)
 
         if (LOADING) showLoading()
+        // Check if file has already been downloaded
         else {
             if (isNetworkAvailable()) {
                 if (mOwner != null && mName != null && mPath != null && mFilename != null) initRepoFile()
