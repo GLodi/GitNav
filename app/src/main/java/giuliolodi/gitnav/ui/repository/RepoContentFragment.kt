@@ -45,7 +45,6 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     private var mOwner: String? = null
     private var mName: String? = null
-    private var mRepo: Repository? = null
     private var mRepoContentList: MutableList<RepositoryContents> = mutableListOf()
     private var pathTree: MutableList<String> = mutableListOf()
     private var path: String = ""
@@ -103,10 +102,10 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                         "file" -> {
                             startActivity(FileViewerActivity.getIntent(context)
                                     .putExtra("owner", mOwner)
-                                    .putExtra("repo", mName)
+                                    .putExtra("name", mName)
                                     .putExtra("path", repoContents.path)
                                     .putExtra("filename", repoContents.name)
-                                    .putExtra("file_url", mRepo?.url))
+                                    .putExtra("file_url", ))
                             activity.overridePendingTransition(0,0)
                         }
                     }

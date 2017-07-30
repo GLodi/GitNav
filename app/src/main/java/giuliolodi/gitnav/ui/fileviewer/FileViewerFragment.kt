@@ -86,6 +86,7 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     private fun initRepoFile() {
         mPresenter.subscribe(mOwner!!, mName!!, mPath!!)
 
+        (activity as AppCompatActivity).setSupportActionBar(file_viewer_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = mFilename
         (activity as AppCompatActivity).supportActionBar?.subtitle = mOwner + "/" + mName
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
