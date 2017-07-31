@@ -18,9 +18,14 @@ package giuliolodi.gitnav.ui.repository
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Repository
+import org.eclipse.egit.github.core.RepositoryContents
+import org.eclipse.egit.github.core.client.RequestException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,14 +40,17 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(owner: String, name: String, path: String) {
-        getCompositeDisposable().add(getDataManager().getContent(owner, name, path)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { getView().showLoading() }
+        getCompositeDisposable().add(Flowable.zip<Repository, List<RepositoryContents>, Map<Repository, List<RepositoryContents>>>(
+                getDataManager().getRepo(owner, name)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getDataManager().getContent(owner, name, path)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                BiFunction { repo, repoContentList -> return@BiFunction mapOf(repo to repoContentList) })
                 .subscribe(
-                        { repoContentList ->
-                            getView().showContent(repoContentList)
-                            getView().hideLoading()
+                        { map ->
+                            getView().showContent(map)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)

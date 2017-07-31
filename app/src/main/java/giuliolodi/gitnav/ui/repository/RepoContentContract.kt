@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.repository
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.RepositoryContents
 
 /**
@@ -27,7 +28,7 @@ interface RepoContentContract {
 
     interface View : BaseContract.View {
 
-        fun showContent(repoContentList: List<RepositoryContents>)
+        fun showContent(map: Map<Repository, List<RepositoryContents>>)
 
         fun showLoading()
 

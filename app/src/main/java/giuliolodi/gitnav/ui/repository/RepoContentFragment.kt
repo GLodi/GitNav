@@ -45,6 +45,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     private var mOwner: String? = null
     private var mName: String? = null
+    private var mRepo: Repository? = null
     private var mRepoContentList: MutableList<RepositoryContents> = mutableListOf()
     private var pathTree: MutableList<String> = mutableListOf()
     private var path: String = ""
@@ -105,7 +106,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                                     .putExtra("name", mName)
                                     .putExtra("path", repoContents.path)
                                     .putExtra("filename", repoContents.name)
-                                    .putExtra("file_url", ))
+                                    .putExtra("file_url", mRepo?.url))
                             activity.overridePendingTransition(0,0)
                         }
                     }
@@ -123,8 +124,9 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         }
     }
 
-    override fun showContent(repoContentList: List<RepositoryContents>) {
-        mRepoContentList = repoContentList.toMutableList()
+    override fun showContent(map: Map<Repository, List<RepositoryContents>>) {
+        mRepo = map.keys.first()
+        mRepo?.let { mRepoContentList = map[it]?.toMutableList()!! }
         if (!mRepoContentList.isEmpty()) (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(mRepoContentList)
     }
 
