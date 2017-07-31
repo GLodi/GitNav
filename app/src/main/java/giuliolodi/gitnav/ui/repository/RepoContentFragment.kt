@@ -106,7 +106,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                                     .putExtra("name", mName)
                                     .putExtra("path", repoContents.path)
                                     .putExtra("filename", repoContents.name)
-                                    .putExtra("file_url", mRepo?.url))
+                                    .putExtra("file_url", mRepo?.htmlUrl))
                             activity.overridePendingTransition(0,0)
                         }
                     }

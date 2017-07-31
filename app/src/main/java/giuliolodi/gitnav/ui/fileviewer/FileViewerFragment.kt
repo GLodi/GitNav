@@ -16,12 +16,12 @@
 
 package giuliolodi.gitnav.ui.fileviewer
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Base64
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.pddstudio.highlightjs.models.Language
 import com.pddstudio.highlightjs.models.Theme
@@ -70,6 +70,11 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
 
+        (activity as AppCompatActivity).setSupportActionBar(file_viewer_fragment_toolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        file_viewer_fragment_toolbar.setNavigationOnClickListener{ activity.onBackPressed() }
+
         if (LOADING) showLoading()
         // Check if file has already been downloaded
         else {
@@ -86,25 +91,18 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     private fun initRepoFile() {
         mPresenter.subscribe(mOwner!!, mName!!, mPath!!)
 
-        (activity as AppCompatActivity).setSupportActionBar(file_viewer_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = mFilename
         (activity as AppCompatActivity).supportActionBar?.subtitle = mOwner + "/" + mName
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     private fun initGistFile() {
         (activity as AppCompatActivity).supportActionBar?.title = mFilenameGist
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
 
         file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
         file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
         file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
         file_viewer_fragment_highlightview.setSource(mContentGist)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
-
-        hideLoading()
     }
 
     override fun showRepoFile(repoContent: RepositoryContents) {
@@ -118,8 +116,6 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
         file_viewer_fragment_highlightview.setSource(fileDecoded)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
-
-        hideLoading()
     }
 
     override fun showLoading() {
@@ -145,6 +141,26 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        activity.menuInflater.inflate(R.menu.file_viewer_fragment_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        if (isNetworkAvailable()) {
+            when (item?.itemId) {
+                R.id.open_in_browser -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mFileUrl)))
+            }
+        }
+        else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
