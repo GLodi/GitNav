@@ -74,6 +74,9 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         file_viewer_fragment_toolbar.setNavigationOnClickListener{ activity.onBackPressed() }
+        file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
+        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
+        file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
 
         if (LOADING) showLoading()
         // Check if file has already been downloaded
@@ -98,9 +101,6 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     private fun initGistFile() {
         (activity as AppCompatActivity).supportActionBar?.title = mFilenameGist
 
-        file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
-        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
-        file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
         file_viewer_fragment_highlightview.setSource(mContentGist)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
     }
@@ -111,9 +111,6 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
             fileDecoded = Base64.decode(repoContent.content, Base64.DEFAULT).toString(charset("UTF-8"))
         } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
 
-        file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
-        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
-        file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
         file_viewer_fragment_highlightview.setSource(fileDecoded)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
     }
