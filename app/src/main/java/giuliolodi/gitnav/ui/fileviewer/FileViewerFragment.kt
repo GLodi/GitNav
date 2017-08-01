@@ -108,7 +108,7 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     override fun showRepoFile(repoContent: RepositoryContents) {
         var fileDecoded: String = ""
         try {
-            fileDecoded = Base64.decode(repoContent.content, Base64.DEFAULT).toString()
+            fileDecoded = Base64.decode(repoContent.content, Base64.DEFAULT).toString(charset("UTF-8"))
         } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
 
         file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
