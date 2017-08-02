@@ -27,7 +27,11 @@ interface FileViewerContract {
 
     interface View : BaseContract.View {
 
-        fun showRepoFile(repoContent: RepositoryContents)
+        fun showRepoFile(fileContent: String)
+
+        fun initRepoFileTitle(title: String, subtitle: String)
+
+        fun initGistFileTitleContent(title: String, gistContent: String)
 
         fun showLoading()
 
@@ -35,12 +39,20 @@ interface FileViewerContract {
 
         fun showError(error: String)
 
+        fun showNoConnectionError()
+
     }
 
     @PerActivity
     interface Presenter<V: FileViewerContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(owner: String, name: String, path: String)
+        fun subscribe(repoOwner: String?,
+                      repoName: String?,
+                      filepath: String?,
+                      filename: String?,
+                      gistFilename: String?,
+                      gistContent: String?,
+                      isNetworkAvailable: Boolean)
 
     }
 

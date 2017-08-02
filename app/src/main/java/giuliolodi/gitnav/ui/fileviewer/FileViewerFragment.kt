@@ -20,7 +20,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Base64
 import android.view.*
 import android.widget.Toast
 import com.pddstudio.highlightjs.models.Language
@@ -29,8 +28,6 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.file_viewer_fragment.*
-import org.eclipse.egit.github.core.RepositoryContents
-import java.io.UnsupportedEncodingException
 import javax.inject.Inject
 
 /**
@@ -40,26 +37,13 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
 
     @Inject lateinit var mPresenter: FileViewerContract.Presenter<FileViewerContract.View>
 
-    private var mOwner: String? = null
-    private var mName: String? = null
-    private var mPath: String? = null
-    private var mFilename: String? = null
     private var mFileUrl: String? = null
-    private var mFilenameGist: String? = null
-    private var mContentGist: String? = null
-    private var LOADING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
-        mOwner = activity.intent.getStringExtra("owner")
-        mName = activity.intent.getStringExtra("name")
-        mPath = activity.intent.getStringExtra("path")
-        mFilename = activity.intent.getStringExtra("filename")
         mFileUrl = activity.intent.getStringExtra("file_url")
-        mFilenameGist = activity.intent.getStringExtra("filename_gist")
-        mContentGist = activity.intent.getStringExtra("content_gist")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,6 +54,14 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
 
+        mPresenter.subscribe(activity.intent.getStringExtra("owner"),
+                activity.intent.getStringExtra("name"),
+                activity.intent.getStringExtra("path"),
+                activity.intent.getStringExtra("filename"),
+                activity.intent.getStringExtra("gist_filename"),
+                activity.intent.getStringExtra("gist_content"),
+                isNetworkAvailable())
+
         (activity as AppCompatActivity).setSupportActionBar(file_viewer_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -77,57 +69,38 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
         file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
         file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
-
-        if (LOADING) showLoading()
-        // Check if file has already been downloaded
-        else {
-            if (isNetworkAvailable()) {
-                if (mOwner != null && mName != null && mPath != null && mFilename != null) initRepoFile()
-                else if (mFilenameGist != null && mContentGist != null) initGistFile()
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
-    private fun initRepoFile() {
-        mPresenter.subscribe(mOwner!!, mName!!, mPath!!)
-
-        (activity as AppCompatActivity).supportActionBar?.title = mFilename
-        (activity as AppCompatActivity).supportActionBar?.subtitle = mOwner + "/" + mName
+    override fun initRepoFileTitle(title: String, subtitle: String) {
+        file_viewer_fragment_toolbar.title = title
+        file_viewer_fragment_toolbar.subtitle = subtitle
     }
 
-    private fun initGistFile() {
-        (activity as AppCompatActivity).supportActionBar?.title = mFilenameGist
-
-        file_viewer_fragment_highlightview.setSource(mContentGist)
+    override fun initGistFileTitleContent(title: String, gistContent: String) {
+        file_viewer_fragment_toolbar.title = title
+        file_viewer_fragment_highlightview.setSource(gistContent)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
     }
 
-    override fun showRepoFile(repoContent: RepositoryContents) {
-        var fileDecoded: String = ""
-        try {
-            fileDecoded = Base64.decode(repoContent.content, Base64.DEFAULT).toString(charset("UTF-8"))
-        } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
-
-        file_viewer_fragment_highlightview.setSource(fileDecoded)
+    override fun showRepoFile(fileContent: String) {
+        file_viewer_fragment_highlightview.setSource(fileContent)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
     }
 
     override fun showLoading() {
         file_viewer_fragment_progressbar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (file_viewer_fragment_progressbar.visibility == View.VISIBLE)
-            file_viewer_fragment_progressbar.visibility = View.GONE
-        LOADING = false
+        file_viewer_fragment_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
