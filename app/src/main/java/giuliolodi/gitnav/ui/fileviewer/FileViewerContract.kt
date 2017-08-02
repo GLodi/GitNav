@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.fileviewer
 
+import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.RepositoryContents
@@ -46,13 +47,7 @@ interface FileViewerContract {
     @PerActivity
     interface Presenter<V: FileViewerContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(repoOwner: String?,
-                      repoName: String?,
-                      filepath: String?,
-                      filename: String?,
-                      gistFilename: String?,
-                      gistContent: String?,
-                      isNetworkAvailable: Boolean)
+        fun subscribe(fileViewerIntent: FileViewerIntent, isNetworkAvailable: Boolean)
 
     }
 

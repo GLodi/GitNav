@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.fileviewer
 
 import android.util.Base64
 import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -39,17 +40,20 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(repoOwner: String?, repoName: String?, filepath: String?, filename: String?, gistFilename: String?, gistContent: String?, isNetworkAvailable: Boolean) {
-        if (repoOwner != null && repoName != null && filename != null) getView().initRepoFileTitle(filename, repoOwner + "/" + repoName)
-        else if (gistFilename != null && gistContent != null) getView().initGistFileTitleContent(gistFilename, gistContent)
+    override fun subscribe(fileViewerIntent: FileViewerIntent, isNetworkAvailable: Boolean) {
+        if (fileViewerIntent.repoOwner != null && fileViewerIntent.repoName != null && fileViewerIntent.fileName != null)
+            getView().initRepoFileTitle(fileViewerIntent.fileName!!, fileViewerIntent.repoOwner + "/" + fileViewerIntent.repoName)
+
+        else if (fileViewerIntent.gistFileName != null && fileViewerIntent.gistContent != null)
+            getView().initGistFileTitleContent(fileViewerIntent.gistFileName!!, fileViewerIntent.gistContent!!)
 
         if (LOADING) getView().showLoading()
         else if (mFileContent != null) getView().showRepoFile(mFileContent!!)
         // check if gist content has already been downloaded
         else {
             if (isNetworkAvailable) {
-                if (repoOwner != null && repoName != null && filepath != null) {
-                    getCompositeDisposable().add(getDataManager().getContent(repoOwner, repoName, filepath)
+                if (fileViewerIntent.repoOwner != null && fileViewerIntent.repoName != null && fileViewerIntent.filePath != null) {
+                    getCompositeDisposable().add(getDataManager().getContent(fileViewerIntent.repoOwner!!, fileViewerIntent.repoName!!, fileViewerIntent.filePath!!)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnSubscribe {

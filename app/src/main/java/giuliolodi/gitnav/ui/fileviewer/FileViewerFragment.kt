@@ -26,6 +26,7 @@ import com.pddstudio.highlightjs.models.Language
 import com.pddstudio.highlightjs.models.Theme
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.file_viewer_fragment.*
 import javax.inject.Inject
@@ -54,13 +55,14 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
 
-        mPresenter.subscribe(activity.intent.getStringExtra("owner"),
+        val fileViewerIntent: FileViewerIntent = FileViewerIntent(activity.intent.getStringExtra("owner"),
                 activity.intent.getStringExtra("name"),
                 activity.intent.getStringExtra("path"),
                 activity.intent.getStringExtra("filename"),
                 activity.intent.getStringExtra("gist_filename"),
-                activity.intent.getStringExtra("gist_content"),
-                isNetworkAvailable())
+                activity.intent.getStringExtra("gist_content"))
+
+        mPresenter.subscribe(fileViewerIntent, isNetworkAvailable())
 
         (activity as AppCompatActivity).setSupportActionBar(file_viewer_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
