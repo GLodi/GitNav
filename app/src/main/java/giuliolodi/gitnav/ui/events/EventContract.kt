@@ -33,7 +33,13 @@ interface EventContract {
 
         fun hideLoading()
 
+        fun showNoEvents()
+
+        fun hideNoEvents()
+
         fun showError(error: String)
+
+        fun intentToUserActivity(username: String)
 
     }
 
@@ -41,6 +47,8 @@ interface EventContract {
     interface Presenter<V: EventContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(pageN: Int, itemsPerPage: Int)
+
+        fun onImageClick(username: String)
 
     }
 

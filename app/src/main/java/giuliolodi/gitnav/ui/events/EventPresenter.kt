@@ -29,7 +29,9 @@ import javax.inject.Inject
  */
 class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Presenter<V> {
 
-    val TAG = "EventPresenter"
+    private val TAG = "EventPresenter"
+
+
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
@@ -49,6 +51,10 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    override fun onImageClick(username: String) {
+        getView().intentToUserActivity(username)
     }
 
 }

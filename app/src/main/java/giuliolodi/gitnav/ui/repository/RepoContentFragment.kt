@@ -126,7 +126,10 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     override fun showContent(map: Map<Repository, List<RepositoryContents>>) {
         mRepo = map.keys.first()
-        mRepo?.let { mRepoContentList = map[it]?.toMutableList()!! }
+        mRepo?.let {
+            mRepoContentList = map[it]?.toMutableList()!!
+            mRepoContentList.sortBy { it.type }
+        }
         if (!mRepoContentList.isEmpty()) (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(mRepoContentList)
     }
 

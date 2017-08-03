@@ -76,10 +76,7 @@ class EventFragment : BaseFragment(), EventContract.View {
         (event_fragment_rv.adapter as EventAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
-                    activity.overridePendingTransition(0,0)
-                }
+                .subscribe { username -> mPresenter.onImageClick(username) }
 
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -148,10 +145,8 @@ class EventFragment : BaseFragment(), EventContract.View {
     }
 
     override fun hideLoading() {
-        if (event_fragment_progress_bar.isShown)
-            event_fragment_progress_bar.visibility = View.GONE
-        if (event_fragment_swipe.isRefreshing)
-            event_fragment_swipe.isRefreshing = false
+        event_fragment_progress_bar.visibility = View.GONE
+        event_fragment_swipe.isRefreshing = false
         LOADING_MAIN = false
     }
 
@@ -159,15 +154,19 @@ class EventFragment : BaseFragment(), EventContract.View {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    private fun showNoEvents() {
+    override fun showNoEvents() {
         event_fragment_no_events.visibility = View.VISIBLE
         NO_SHOWING = true
     }
 
-    private fun hideNoEvents() {
-        if (event_fragment_no_events.visibility == View.VISIBLE)
-            event_fragment_no_events.visibility = View.VISIBLE
+    override fun hideNoEvents() {
+        event_fragment_no_events.visibility = View.VISIBLE
         NO_SHOWING = false
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
