@@ -360,6 +360,14 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemInserted(mEventList.size - 1)
     }
 
+    fun hideLoading() {
+        if (mEventList.lastIndexOf(null) != -1) {
+            val lastNull = mEventList.lastIndexOf(null)
+            mEventList.removeAt(lastNull)
+            notifyItemRemoved(lastNull)
+        }
+    }
+
     fun clear() {
         mEventList.clear()
         notifyDataSetChanged()

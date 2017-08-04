@@ -36,6 +36,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
     private var PAGE_N: Int = 1
     private val ITEMS_PER_PAGE: Int = 10
     private var LOADING: Boolean = false
+    private var LOADING_LIST: Boolean = false
     private var NO_SHOWING: Boolean = false
 
     @Inject
@@ -58,33 +59,14 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
         }
     }
 
-    override fun loadEvents(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            getCompositeDisposable().add(getDataManager().pageEvents(null, PAGE_N, ITEMS_PER_PAGE)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe { if (!mEventList.isEmpty()) getView().showListLoading() }
-                    .subscribe(
-                            { eventList ->
-                                mEventList.addAll(eventList)
-                                getView().showEvents(eventList)
-                                getView().hideLoading()
-                                LOADING = false
-                                if (PAGE_N == 1 && eventList.isEmpty()) {
-                                    getView().showNoEvents()
-                                    NO_SHOWING = true
-                                }
-                                PAGE_N += 1
-                            },
-                            { throwable ->
-                                getView().showError(throwable.localizedMessage)
-                                getView().hideLoading()
-                                Timber.e(throwable)
-                                PAGE_N -= 1
-                            }
-                    ))
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST) return
+        else if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            loadEvents(isNetworkAvailable)
         }
-        else {
+        else if (dy > 0) {
             getView().showNoConnectionError()
             getView().hideLoading()
         }
@@ -103,6 +85,41 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
             getView().clearAdapter()
             LOADING = true
             loadEvents(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    fun loadEvents(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getCompositeDisposable().add(getDataManager().pageEvents(null, PAGE_N, ITEMS_PER_PAGE)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { eventList ->
+                                mEventList.addAll(eventList)
+                                getView().showEvents(eventList)
+                                getView().hideLoading()
+                                if (PAGE_N == 1 && eventList.isEmpty()) {
+                                    getView().showNoEvents()
+                                    NO_SHOWING = true
+                                }
+                                PAGE_N += 1
+                                LOADING = false
+                                LOADING_LIST = false
+                            },
+                            { throwable ->
+                                getView().showError(throwable.localizedMessage)
+                                getView().hideLoading()
+                                getView().hideListLoading()
+                                Timber.e(throwable)
+                                LOADING = false
+                                LOADING_LIST = false
+                            }
+                    ))
         }
         else {
             getView().showNoConnectionError()

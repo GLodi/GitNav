@@ -18,8 +18,6 @@ package giuliolodi.gitnav.ui.events
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -30,7 +28,6 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.user.UserActivity
-import giuliolodi.gitnav.utils.EndlessRecyclerViewScrollListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.event_fragment.*
@@ -72,9 +69,14 @@ class EventFragment : BaseFragment(), EventContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username -> mPresenter.onImageClick(username) }
 
-        val mScrollListener = object : EndlessRecyclerViewScrollListener(llm) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                mPresenter.loadEvents(isNetworkAvailable())
+        val mScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (event_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (event_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (event_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    mPresenter.onLastItemVisible(isNetworkAvailable(), dy)
+                }
             }
         }
         event_fragment_rv.setOnScrollListener(mScrollListener)
@@ -82,7 +84,7 @@ class EventFragment : BaseFragment(), EventContract.View {
         event_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
         event_fragment_swipe.setOnRefreshListener { mPresenter.onSwipeToRefresh(isNetworkAvailable()) }
 
-       mPresenter.subscribe(isNetworkAvailable())
+        mPresenter.subscribe(isNetworkAvailable())
     }
 
     override fun showEvents(eventList: List<Event>) {
@@ -102,6 +104,10 @@ class EventFragment : BaseFragment(), EventContract.View {
         (event_fragment_rv.adapter as EventAdapter).addLoading()
     }
 
+    override fun hideListLoading() {
+        (event_fragment_rv.adapter as EventAdapter).hideLoading()
+    }
+
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
@@ -111,7 +117,7 @@ class EventFragment : BaseFragment(), EventContract.View {
     }
 
     override fun hideNoEvents() {
-        event_fragment_no_events.visibility = View.VISIBLE
+        event_fragment_no_events.visibility = View.GONE
     }
 
     override fun showNoConnectionError() {

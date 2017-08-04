@@ -33,6 +33,8 @@ interface EventContract {
 
         fun showListLoading()
 
+        fun hideListLoading()
+
         fun hideLoading()
 
         fun showNoEvents()
@@ -54,7 +56,7 @@ interface EventContract {
 
         fun subscribe(isNetworkAvailable: Boolean)
 
-        fun loadEvents(isNetworkAvailable: Boolean)
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 
         fun onSwipeToRefresh(isNetworkAvailable: Boolean)
 
