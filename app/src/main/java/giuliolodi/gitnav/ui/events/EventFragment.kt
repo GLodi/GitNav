@@ -30,6 +30,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.utils.EndlessRecyclerViewScrollListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.event_fragment.*
@@ -42,13 +43,6 @@ import javax.inject.Inject
 class EventFragment : BaseFragment(), EventContract.View {
 
     @Inject lateinit var mPresenter: EventContract.Presenter<EventContract.View>
-
-    private var mEventList: MutableList<Event> = mutableListOf()
-    private var PAGE_N = 1
-    private val ITEMS_PER_PAGE = 10
-    private var LOADING = false
-    private var LOADING_MAIN = false
-    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,76 +72,34 @@ class EventFragment : BaseFragment(), EventContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username -> mPresenter.onImageClick(username) }
 
-        val mScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING)
-                    return
-                val visibleItemCount = (event_fragment_rv.layoutManager as LinearLayoutManager).childCount
-                val totalItemCount = (event_fragment_rv.layoutManager as LinearLayoutManager).itemCount
-                val pastVisibleItems = (event_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        LOADING = true
-                        PAGE_N += 1
-                        (event_fragment_rv.adapter as EventAdapter).addLoading()
-                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
-                    }
-                    else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
-                    }
-                }
+        val mScrollListener = object : EndlessRecyclerViewScrollListener(llm) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                mPresenter.loadEvents(isNetworkAvailable())
             }
         }
         event_fragment_rv.setOnScrollListener(mScrollListener)
 
         event_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
-        event_fragment_swipe.setOnRefreshListener {
-            if (isNetworkAvailable()) {
-                hideNoEvents()
-                PAGE_N = 1
-                (event_fragment_rv.adapter as EventAdapter).clear()
-                mEventList.clear()
-                LOADING_MAIN = true
-                mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+        event_fragment_swipe.setOnRefreshListener { mPresenter.onSwipeToRefresh(isNetworkAvailable()) }
 
-        if (!mEventList.isEmpty()) (event_fragment_rv.adapter as EventAdapter).addEvents(mEventList)
-        else if (NO_SHOWING) showNoEvents()
-        else if (LOADING_MAIN) showLoading()
-        else {
-            if (isNetworkAvailable()) {
-                showLoading()
-                mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+       mPresenter.subscribe(isNetworkAvailable())
     }
 
     override fun showEvents(eventList: List<Event>) {
-        mEventList.addAll(eventList)
         (event_fragment_rv.adapter as EventAdapter).addEvents(eventList)
-        if (PAGE_N == 1 && eventList.isEmpty()) showNoEvents()
-        LOADING = false
     }
 
     override fun showLoading() {
         event_fragment_progress_bar.visibility = View.VISIBLE
-        LOADING_MAIN = true
     }
 
     override fun hideLoading() {
         event_fragment_progress_bar.visibility = View.GONE
         event_fragment_swipe.isRefreshing = false
-        LOADING_MAIN = false
+    }
+
+    override fun showListLoading() {
+        (event_fragment_rv.adapter as EventAdapter).addLoading()
     }
 
     override fun showError(error: String) {
@@ -156,12 +108,18 @@ class EventFragment : BaseFragment(), EventContract.View {
 
     override fun showNoEvents() {
         event_fragment_no_events.visibility = View.VISIBLE
-        NO_SHOWING = true
     }
 
     override fun hideNoEvents() {
         event_fragment_no_events.visibility = View.VISIBLE
-        NO_SHOWING = false
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun clearAdapter() {
+        (event_fragment_rv.adapter as EventAdapter).clear()
     }
 
     override fun intentToUserActivity(username: String) {

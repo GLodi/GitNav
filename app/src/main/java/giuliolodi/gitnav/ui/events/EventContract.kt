@@ -31,6 +31,8 @@ interface EventContract {
 
         fun showLoading()
 
+        fun showListLoading()
+
         fun hideLoading()
 
         fun showNoEvents()
@@ -39,6 +41,10 @@ interface EventContract {
 
         fun showError(error: String)
 
+        fun showNoConnectionError()
+
+        fun clearAdapter()
+
         fun intentToUserActivity(username: String)
 
     }
@@ -46,7 +52,11 @@ interface EventContract {
     @PerActivity
     interface Presenter<V: EventContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(pageN: Int, itemsPerPage: Int)
+        fun subscribe(isNetworkAvailable: Boolean)
+
+        fun loadEvents(isNetworkAvailable: Boolean)
+
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
 
         fun onImageClick(username: String)
 
