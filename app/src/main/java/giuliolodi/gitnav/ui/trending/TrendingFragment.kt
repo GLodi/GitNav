@@ -42,11 +42,6 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
 
     @Inject lateinit var mPresenter: TrendingContract.Presenter<TrendingContract.View>
 
-    private var mRepoList: MutableList<Repository> = mutableListOf()
-    private var mPeriod: String = "daily"
-    private var LOADING: Boolean = false
-    private var NO_SHOWING: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
@@ -71,117 +66,72 @@ class TrendingFragment : BaseFragment(), TrendingContract.View {
         (trending_fragment_rv.adapter as StarredAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
-                    activity.overridePendingTransition(0, 0)
-                }
+                .subscribe { username -> mPresenter.onImageClick(username) }
         (trending_fragment_rv.adapter as StarredAdapter).getRepoClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { repo ->
-                    startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
-                    activity.overridePendingTransition(0,0)
-                }
+                .subscribe { repo -> mPresenter.onRepoClick(repo.owner.login, repo.name) }
 
         trending_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
-        trending_fragment_swipe.setOnRefreshListener {
-            if (isNetworkAvailable()) {
-                hideNoRepo()
-                (trending_fragment_rv.adapter as StarredAdapter).clear()
-                mRepoList.clear()
-                mPresenter.unsubscribe()
-                LOADING = true
-                mPresenter.subscribe(mPeriod)
-            } else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+        trending_fragment_swipe.setOnRefreshListener { mPresenter.onSwipeToRefresh(isNetworkAvailable()) }
 
         trending_fragment_bottomview.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.trending_fragment_bottom_menu_daily -> {
-                    showLoading()
-                    hideNoRepo()
-                    (trending_fragment_rv.adapter as StarredAdapter).clear()
-                    mRepoList.clear()
-                    mPresenter.unsubscribe()
-                    mPeriod = "daily"
-                    mPresenter.subscribe(mPeriod)
-                }
-                R.id.trending_fragment_bottom_menu_weekly -> {
-                    showLoading()
-                    hideNoRepo()
-                    (trending_fragment_rv.adapter as StarredAdapter).clear()
-                    mRepoList.clear()
-                    mPresenter.unsubscribe()
-                    mPeriod = "weekly"
-                    mPresenter.subscribe(mPeriod)
-                }
-
-                R.id.trending_fragment_bottom_menu_monthly -> {
-                    showLoading()
-                    hideNoRepo()
-                    (trending_fragment_rv.adapter as StarredAdapter).clear()
-                    mRepoList.clear()
-                    mPresenter.unsubscribe()
-                    mPeriod = "monthly"
-                    mPresenter.subscribe(mPeriod)
-                }
+                R.id.trending_fragment_bottom_menu_daily -> { mPresenter.onBottomViewDailyClick() }
+                R.id.trending_fragment_bottom_menu_weekly -> { mPresenter.onBottomViewWeeklyClick() }
+                R.id.trending_fragment_bottom_menu_monthly -> { mPresenter.onBottomViewMonthlyClick() }
             }
             true
         }
 
-        if (!mRepoList.isEmpty()) (trending_fragment_rv.adapter as StarredAdapter).addRepos(mRepoList)
-        else if (LOADING) showLoading()
-        else if (NO_SHOWING) showNoRepo()
-        else {
-            if (isNetworkAvailable()) {
-                showLoading()
-                mPresenter.subscribe(mPeriod)
-            } else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+        mPresenter.subscribe(isNetworkAvailable())
     }
 
     override fun addRepo(repo: Repository) {
-        mRepoList.add(repo)
         (trending_fragment_rv.adapter as StarredAdapter).addRepo(repo)
+    }
+
+    override fun addRepoList(repoList: List<Repository>) {
+        (trending_fragment_rv.adapter as StarredAdapter).addRepos(repoList)
     }
 
     override fun showLoading() {
         trending_fragment_progress_bar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (trending_fragment_progress_bar.visibility == View.VISIBLE)
-            trending_fragment_progress_bar.visibility = View.GONE
-        if (trending_fragment_swipe.isRefreshing)
-            trending_fragment_swipe.isRefreshing = false
-        LOADING = false
+        trending_fragment_progress_bar.visibility = View.GONE
+        trending_fragment_swipe.isRefreshing = false
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    override fun onComplete() {
-        if ((trending_fragment_rv.adapter as StarredAdapter).itemCount == 0)
-            trending_fragment_no_repo.visibility = View.VISIBLE
-    }
-
     override fun showNoRepo() {
         trending_fragment_no_repo.visibility = View.VISIBLE
-        NO_SHOWING = true
     }
 
-    private fun hideNoRepo() {
-        if (trending_fragment_no_repo.visibility == View.VISIBLE)
-            trending_fragment_no_repo.visibility = View.GONE
-        NO_SHOWING = false
+    override fun hideNoRepo() {
+        trending_fragment_no_repo.visibility = View.GONE
+    }
+
+    override fun clearAdapter() {
+        (trending_fragment_rv.adapter as StarredAdapter).clear()
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0, 0)
+    }
+
+    override fun intentToRepoActivity(repoOwner: String, repoName: String) {
+        startActivity(RepoActivity.getIntent(context).putExtra("owner", repoOwner).putExtra("name", repoName))
+        activity.overridePendingTransition(0,0)
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

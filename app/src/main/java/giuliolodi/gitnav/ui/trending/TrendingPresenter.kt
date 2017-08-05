@@ -21,6 +21,7 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Repository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,33 +30,111 @@ import javax.inject.Inject
  */
 class TrendingPresenter<V: TrendingContract.View> : BasePresenter<V>, TrendingContract.Presenter<V> {
 
-    val TAG = "TrendingPresenter"
+    private val TAG = "TrendingPresenter"
+
+    private var mRepoList: MutableList<Repository> = mutableListOf()
+    private var mPeriod: String = "daily"
+    private var LOADING: Boolean = false
+    private var NO_SHOWING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(period: String) {
+    override fun subscribe(isNetworkAvailable: Boolean) {
+        if (!mRepoList.isEmpty()) getView().addRepoList(mRepoList)
+        else if (LOADING) getView().showLoading()
+        else if (NO_SHOWING) getView().showNoRepo()
+        else {
+            if (isNetworkAvailable) {
+                getView().showLoading()
+                loadTrendingRepos(mPeriod)
+                LOADING = true
+            } else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
+            }
+        }
+    }
+
+    fun loadTrendingRepos(period: String) {
         getCompositeDisposable().add(getDataManager().getTrending(period)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repo ->
-                            getView().hideLoading()
+                            mRepoList.add(repo)
                             getView().addRepo(repo)
+                            getView().hideLoading()
                         },
                         { throwable ->
-                            getView().hideLoading()
                             if (throwable is IndexOutOfBoundsException)
                                 getView().showNoRepo()
                             else
                                 getView().showError(throwable.localizedMessage)
                             Timber.e(throwable)
+                            getView().hideLoading()
                         },
                         {
+                            if (mRepoList.isEmpty()) {
+                                getView().showNoRepo()
+                                NO_SHOWING = true
+                            }
                             getView().hideLoading()
-                            getView().onComplete()
                         }
                 ))
+    }
+
+    override fun onImageClick(username: String) {
+        getView().intentToUserActivity(username)
+    }
+
+    override fun onRepoClick(repoOwner: String, repoName: String) {
+        getView().intentToRepoActivity(repoOwner, repoName)
+    }
+
+    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getView().hideNoRepo()
+            getView().clearAdapter()
+            mRepoList.clear()
+            unsubscribe()
+            LOADING = true
+            loadTrendingRepos(mPeriod)
+        } else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onBottomViewDailyClick() {
+        getView().showLoading()
+        getView().hideNoRepo()
+        getView().clearAdapter()
+        mRepoList.clear()
+        unsubscribe()
+        mPeriod = "daily"
+        loadTrendingRepos(mPeriod)
+    }
+
+    override fun onBottomViewWeeklyClick() {
+        getView().showLoading()
+        getView().hideNoRepo()
+        getView().clearAdapter()
+        mRepoList.clear()
+        unsubscribe()
+        mPeriod = "weekly"
+        loadTrendingRepos(mPeriod)
+    }
+
+    override fun onBottomViewMonthlyClick() {
+        getView().showLoading()
+        getView().hideNoRepo()
+        getView().clearAdapter()
+        mRepoList.clear()
+        unsubscribe()
+        mPeriod = "monthly"
+        loadTrendingRepos(mPeriod)
     }
 
     override fun unsubscribe() {

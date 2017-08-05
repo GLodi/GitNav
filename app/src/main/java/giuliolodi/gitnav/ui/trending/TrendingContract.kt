@@ -29,22 +29,44 @@ interface TrendingContract {
 
         fun addRepo(repo: Repository)
 
+        fun addRepoList(repoList: List<Repository>)
+
         fun showLoading()
 
         fun hideLoading()
 
         fun showError(error: String)
 
-        fun onComplete()
-
         fun showNoRepo()
+
+        fun hideNoRepo()
+
+        fun clearAdapter()
+
+        fun intentToUserActivity(username: String)
+
+        fun intentToRepoActivity(repoOwner: String, repoName: String)
+
+        fun showNoConnectionError()
 
     }
 
     @PerActivity
     interface Presenter<V: TrendingContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(period: String)
+        fun subscribe(isNetworkAvailable: Boolean)
+
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
+
+        fun onImageClick(username: String)
+
+        fun onRepoClick(repoOwner: String, repoName: String)
+
+        fun onBottomViewDailyClick()
+
+        fun onBottomViewWeeklyClick()
+
+        fun onBottomViewMonthlyClick()
 
         fun unsubscribe()
 
