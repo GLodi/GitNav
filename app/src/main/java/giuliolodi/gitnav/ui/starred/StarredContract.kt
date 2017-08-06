@@ -33,14 +33,51 @@ interface StarredContract {
 
         fun hideLoading()
 
+        fun showNoRepo()
+
+        fun hideNoRepo()
+
+        fun showListLoading()
+
+        fun hideListLoading()
+
+        fun clearAdapter()
+
+        fun setFilter(filter: HashMap<String,String>)
+
         fun showError(error: String)
+
+        fun showNoConnectionError()
+
+        fun intentToUserActivity(username: String)
+
+        fun intentToRepoActivity(repoOwner: String, repoName: String)
 
     }
 
     @PerActivity
     interface Presenter<V: StarredContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+        fun subscribe(isNetworkAvailable: Boolean)
+
+        fun onImageClick(username: String)
+
+        fun onRepoClick(repoOwner: String, repoName: String)
+
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onSortStarredClick(isNetworkAvailable: Boolean)
+
+        fun onSortUpdatedClick(isNetworkAvailable: Boolean)
+
+        fun onSortPushedClick(isNetworkAvailable: Boolean)
+
+        fun onSortAlphabeticalClick(isNetworkAvailable: Boolean)
+
+        fun onSortStarsClick(isNetworkAvailable: Boolean)
 
     }
+
 }

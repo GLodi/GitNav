@@ -101,7 +101,7 @@ class EventFragment : BaseFragment(), EventContract.View {
     }
 
     override fun showListLoading() {
-        (event_fragment_rv.adapter as EventAdapter).addLoading()
+        (event_fragment_rv.adapter as EventAdapter).showLoading()
     }
 
     override fun hideListLoading() {

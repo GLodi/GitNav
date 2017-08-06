@@ -33,14 +33,46 @@ interface RepoListContract {
 
         fun hideLoading()
 
+        fun showListLoading()
+
+        fun hideListLoading()
+
+        fun showNoRepo()
+
+        fun hideNoRepo()
+
+        fun setFilter(filter: HashMap<String,String>)
+
+        fun clearAdapter()
+
         fun showError(error: String)
+
+        fun intentToRepoActivity(repoOwner: String, repoName: String)
+
+        fun showNoConnectionError()
 
     }
 
     @PerActivity
     interface Presenter<V: RepoListContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+        fun subscribe(isNetworkAvailable: Boolean)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
+
+        fun onRepoClick(repoOwner: String, repoName: String)
+
+        fun onSortCreatedClick(isNetworkAvailable: Boolean)
+
+        fun onSortUpdatedClick(isNetworkAvailable: Boolean)
+
+        fun onSortPushedClick(isNetworkAvailable: Boolean)
+
+        fun onSortAlphabeticalClick(isNetworkAvailable: Boolean)
+
+        fun onSortStarsClick(isNetworkAvailable: Boolean)
 
     }
 

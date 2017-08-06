@@ -355,7 +355,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    fun addLoading() {
+    fun showLoading() {
         mEventList.add(null)
         notifyItemInserted(mEventList.size - 1)
     }

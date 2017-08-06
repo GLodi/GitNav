@@ -121,9 +121,17 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemInserted(mRepoList.size - 1)
     }
 
-    fun addLoading() {
+    fun showLoading() {
         mRepoList.add(null)
         notifyItemInserted(mRepoList.size - 1)
+    }
+
+    fun hideLoading() {
+        if (mRepoList.lastIndexOf(null) != -1) {
+            val lastNull = mRepoList.lastIndexOf(null)
+            mRepoList.removeAt(lastNull)
+            notifyItemRemoved(lastNull)
+        }
     }
 
     fun clear() {

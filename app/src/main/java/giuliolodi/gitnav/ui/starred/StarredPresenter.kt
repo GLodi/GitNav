@@ -21,6 +21,7 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Repository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,26 +30,193 @@ import javax.inject.Inject
  */
 class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContract.Presenter<V> {
 
-    val TAG = "StarredPresenter"
+    private val TAG = "StarredPresenter"
+
+    private var mRepoList: MutableList<Repository> = mutableListOf()
+    private var mFilter: HashMap<String,String> = HashMap()
+    private var PAGE_N = 1
+    private val ITEMS_PER_PAGE = 10
+    private var LOADING = false
+    private var LOADING_LIST = false
+    private var NO_SHOWING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>) {
-        getCompositeDisposable().add(getDataManager().pageStarred(pageN, itemsPerPage, filter)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { repoList ->
-                            getView().showRepos(repoList)
-                            getView().hideLoading()
-                        },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
-                            Timber.e(throwable)
-                        }
-                ))
+    override fun subscribe(isNetworkAvailable: Boolean) {
+        if (mFilter.get("sort") == null)
+            mFilter.put("sort", "starred")
+        if (!mRepoList.isEmpty()) {
+            getView().showRepos(mRepoList)
+            getView().setFilter(mFilter)
+        }
+        else if (NO_SHOWING) getView().showNoRepo()
+        else if (LOADING) getView().showLoading()
+        else {
+            if (isNetworkAvailable) {
+                LOADING = true
+                getView().showLoading()
+                loadStarredRepos(isNetworkAvailable)
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+            }
+        }
+    }
+
+    private fun loadStarredRepos(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getCompositeDisposable().add(getDataManager().pageStarred(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { repoList ->
+                                mRepoList.addAll(repoList)
+                                getView().showRepos(repoList)
+                                getView().setFilter(mFilter)
+                                getView().hideLoading()
+                                getView().hideListLoading()
+                                if (PAGE_N == 1 && repoList.isEmpty()) {
+                                    getView().showNoRepo()
+                                    NO_SHOWING = true
+                                }
+                                PAGE_N += 1
+                                LOADING = false
+                                LOADING_LIST = false
+                            },
+                            { throwable ->
+                                getView().showError(throwable.localizedMessage)
+                                getView().hideLoading()
+                                getView().hideListLoading()
+                                Timber.e(throwable)
+                                LOADING = false
+                                LOADING_LIST = false
+                            }
+                    ))
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getView().hideNoRepo()
+            NO_SHOWING = false
+            PAGE_N = 1
+            mRepoList.clear()
+            getView().clearAdapter()
+            LOADING = true
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST || mFilter["sort"] == "stars" || mFilter["sort"] == "pushed" || mFilter["sort"] == "alphabetical" || mFilter["sort"] == "updated" )
+            return
+        if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onSortStarredClick(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            mFilter.put("sort", "starred")
+            PAGE_N = 1
+            getView().clearAdapter()
+            mRepoList.clear()
+            getView().showLoading()
+            getView().hideNoRepo()
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onSortUpdatedClick(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            mFilter.put("sort", "updated")
+            PAGE_N = 1
+            getView().clearAdapter()
+            mRepoList.clear()
+            getView().showLoading()
+            getView().hideNoRepo()
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onSortPushedClick(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            mFilter.put("sort", "pushed")
+            PAGE_N = 1
+            getView().clearAdapter()
+            mRepoList.clear()
+            getView().showLoading()
+            getView().hideNoRepo()
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onSortAlphabeticalClick(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            mFilter.put("sort", "alphabetical")
+            PAGE_N = 1
+            getView().clearAdapter()
+            mRepoList.clear()
+            getView().showLoading()
+            getView().hideNoRepo()
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onSortStarsClick(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            mFilter.put("sort", "stars")
+            PAGE_N = 1
+            getView().clearAdapter()
+            mRepoList.clear()
+            getView().showLoading()
+            getView().hideNoRepo()
+            loadStarredRepos(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onImageClick(username: String) {
+        getView().intentToUserActivity(username)
+    }
+
+    override fun onRepoClick(repoOwner: String, repoName: String) {
+        getView().intentToRepoActivity(repoOwner, repoName)
     }
 
 }

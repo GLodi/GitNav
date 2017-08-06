@@ -49,7 +49,6 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
     private var LOADING_MAIN = false
-    private var SORT_OPTION: String = "created"
     private var mMenuItem: Int? = null
     private var NO_SHOWING: Boolean = false
 
@@ -57,8 +56,6 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
-
-        mFilter.put("sort", "created")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,103 +76,74 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         (repo_list_fragment_rv.adapter as RepoListAdapter).getPositionClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { repo ->
-                    startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
-                    activity.overridePendingTransition(0,0)
-                }
+                .subscribe { repo -> mPresenter.onRepoClick(repo.owner.login, repo.name) }
 
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING || mFilter["sort"] == "stars")
-                    return
                 val visibleItemCount = (repo_list_fragment_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (repo_list_fragment_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (repo_list_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        LOADING = true
-                        PAGE_N += 1
-                        (repo_list_fragment_rv.adapter as RepoListAdapter).addLoading()
-                        mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-                    }
-                    else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
-                    }
+                    mPresenter.onLastItemVisible(isNetworkAvailable(), dy)
                 }
             }
         }
         repo_list_fragment_rv.setOnScrollListener(mScrollListener)
 
         repo_list_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
-        repo_list_fragment_swipe.setOnRefreshListener {
-            if (isNetworkAvailable()) {
-                hideNoRepo()
-                PAGE_N = 1
-                (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
-                mRepoList.clear()
-                LOADING_MAIN = true
-                mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+        repo_list_fragment_swipe.setOnRefreshListener { mPresenter.onSwipeToRefresh(isNetworkAvailable()) }
 
-        if (!mRepoList.isEmpty()) {
-            (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(mRepoList)
-            (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
-        }
-        else if (LOADING_MAIN) showLoading()
-        else if (NO_SHOWING) showNoRepo()
-        else {
-            if (isNetworkAvailable()) {
-                showLoading()
-                mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
-
+        mPresenter.subscribe(isNetworkAvailable())
     }
 
     override fun showRepos(repoList: List<Repository>) {
-        mRepoList.addAll(repoList)
         (repo_list_fragment_rv.adapter as RepoListAdapter).addRepos(repoList)
-        (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(mFilter)
-        if (PAGE_N == 1 && repoList.isEmpty()) showNoRepo()
-        LOADING = false
     }
 
     override fun showLoading() {
         repo_list_fragment_progress_bar.visibility = View.VISIBLE
-        LOADING_MAIN = true
     }
 
     override fun hideLoading() {
-        if (repo_list_fragment_progress_bar.visibility == View.VISIBLE)
-            repo_list_fragment_progress_bar.visibility = View.GONE
-        if (repo_list_fragment_swipe.isRefreshing)
-            repo_list_fragment_swipe.isRefreshing = false
-        LOADING_MAIN = false
+        repo_list_fragment_progress_bar.visibility = View.GONE
+        repo_list_fragment_swipe.isRefreshing = false
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    private fun showNoRepo() {
+    override fun showNoRepo() {
         repo_list_fragment_no_repo.visibility = View.VISIBLE
-        NO_SHOWING = true
     }
 
-    private fun hideNoRepo() {
-        if (repo_list_fragment_no_repo.visibility == View.VISIBLE)
-            repo_list_fragment_no_repo.visibility = View.GONE
-        NO_SHOWING = false
+    override fun hideNoRepo() {
+        repo_list_fragment_no_repo.visibility = View.GONE
+    }
+
+    override fun showListLoading() {
+        (repo_list_fragment_rv.adapter as RepoListAdapter).showLoading()
+    }
+
+    override fun hideListLoading() {
+        (repo_list_fragment_rv.adapter as RepoListAdapter).hideLoading()
+    }
+
+    override fun setFilter(filter: HashMap<String, String>) {
+        (repo_list_fragment_rv.adapter as RepoListAdapter).setFilter(filter)
+    }
+
+    override fun clearAdapter() {
+        (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToRepoActivity(repoOwner: String, repoName: String) {
+        startActivity(RepoActivity.getIntent(context).putExtra("owner", repoOwner).putExtra("name", repoName))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -192,58 +160,23 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
             when (item?.itemId) {
                 R.id.repo_sort_created -> {
                     item.isChecked = true
-                    mFilter.put("sort", "created")
-                    PAGE_N = 1
-                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
-                    mRepoList.clear()
-                    SORT_OPTION = "created"
-                    showLoading()
-                    hideNoRepo()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    mPresenter.onSortCreatedClick(isNetworkAvailable())
                 }
                 R.id.repo_sort_updated -> {
                     item.isChecked = true
-                    mFilter.put("sort", "updated")
-                    PAGE_N = 1
-                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
-                    mRepoList.clear()
-                    SORT_OPTION = "updated"
-                    showLoading()
-                    hideNoRepo()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    mPresenter.onSortUpdatedClick(isNetworkAvailable())
                 }
                 R.id.repo_sort_pushed -> {
                     item.isChecked = true
-                    mFilter.put("sort", "pushed")
-                    PAGE_N = 1
-                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
-                    mRepoList.clear()
-                    SORT_OPTION = "pushed"
-                    showLoading()
-                    hideNoRepo()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    mPresenter.onSortPushedClick(isNetworkAvailable())
                 }
                 R.id.repo_sort_alphabetical -> {
                     item.isChecked = true
-                    mFilter.put("sort", "full_name")
-                    PAGE_N = 1
-                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
-                    mRepoList.clear()
-                    SORT_OPTION = "full_name"
-                    showLoading()
-                    hideNoRepo()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    mPresenter.onSortAlphabeticalClick(isNetworkAvailable())
                 }
                 R.id.repo_sort_stars -> {
                     item.isChecked = true
-                    mFilter.put("sort", "stars")
-                    PAGE_N = 1
-                    (repo_list_fragment_rv.adapter as RepoListAdapter).clear()
-                    mRepoList.clear()
-                    SORT_OPTION = "stars"
-                    showLoading()
-                    hideNoRepo()
-                    mPresenter.subscribe(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                    mPresenter.onSortStarsClick(isNetworkAvailable())
                 }
             }
         }

@@ -59,42 +59,8 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
         }
     }
 
-    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING_LIST) return
-        else if (isNetworkAvailable) {
-            LOADING_LIST = true
-            getView().showListLoading()
-            loadEvents(isNetworkAvailable)
-        }
-        else if (dy > 0) {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
-    }
-
-    override fun onImageClick(username: String) {
-        getView().intentToUserActivity(username)
-    }
-
-    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+    private fun loadEvents(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
-            getView().hideNoEvents()
-            NO_SHOWING = false
-            PAGE_N = 1
-            mEventList.clear()
-            getView().clearAdapter()
-            LOADING = true
-            loadEvents(isNetworkAvailable)
-        }
-        else {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
-    }
-
-    fun loadEvents(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            LOADING_LIST = true
             getCompositeDisposable().add(getDataManager().pageEvents(null, PAGE_N, ITEMS_PER_PAGE)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -103,6 +69,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
                                 mEventList.addAll(eventList)
                                 getView().showEvents(eventList)
                                 getView().hideLoading()
+                                getView().hideListLoading()
                                 if (PAGE_N == 1 && eventList.isEmpty()) {
                                     getView().showNoEvents()
                                     NO_SHOWING = true
@@ -125,6 +92,40 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
             getView().showNoConnectionError()
             getView().hideLoading()
         }
+    }
+
+    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getView().hideNoEvents()
+            NO_SHOWING = false
+            PAGE_N = 1
+            mEventList.clear()
+            getView().clearAdapter()
+            LOADING = true
+            loadEvents(isNetworkAvailable)
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST)
+            return
+        else if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            loadEvents(isNetworkAvailable)
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onImageClick(username: String) {
+        getView().intentToUserActivity(username)
     }
 
 }
