@@ -118,10 +118,6 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
         }
     }
 
-    override fun onRepoClick(repoOwner: String, repoName: String) {
-        getView().intentToRepoActivity(repoOwner, repoName)
-    }
-
     override fun onSortCreatedClick(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
             mFilter.put("sort", "created")
@@ -200,6 +196,10 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             getView().showNoConnectionError()
             getView().hideLoading()
         }
+    }
+
+    override fun onRepoClick(repoOwner: String, repoName: String) {
+        getView().intentToRepoActivity(repoOwner, repoName)
     }
 
 }

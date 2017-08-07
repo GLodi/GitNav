@@ -43,14 +43,7 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
 
     @Inject lateinit var mPresenter: RepoListContract.Presenter<RepoListContract.View>
 
-    private var mRepoList: MutableList<Repository> = mutableListOf()
-    private var mFilter: HashMap<String,String> = HashMap()
-    private var PAGE_N = 1
-    private val ITEMS_PER_PAGE = 10
-    private var LOADING = false
-    private var LOADING_MAIN = false
     private var mMenuItem: Int? = null
-    private var NO_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
