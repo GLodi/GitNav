@@ -37,14 +37,14 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
     private var PAGE_N = 1
     private val ITEMS_PER_PAGE = 10
     private var LOADING = false
-    private var LOADING_MAIN = false
+    private var LOADING_LIST = false
     private var NO_SHOWING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean) {
-        if (mFilter.get("sort") == null)
+        if (mFilter["sort"] == null)
             mFilter.put("sort", "created")
         if (!mRepoList.isEmpty()) {
             getView().showRepos(mRepoList)
@@ -56,7 +56,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             if (isNetworkAvailable) {
                 LOADING = true
                 getView().showLoading()
-                loadRepos(isNetworkAvailable)
+                loadRepos()
             }
             else {
                 getView().showNoConnectionError()
@@ -65,37 +65,44 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
         }
     }
 
-    private fun loadRepos(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            getCompositeDisposable().add(getDataManager().pageRepos(null, PAGE_N, ITEMS_PER_PAGE, mFilter)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { repoList ->
-                                getView().showRepos(repoList)
-                                getView().hideLoading()
-                            },
-                            { throwable ->
-                                getView().showError(throwable.localizedMessage)
-                                getView().hideLoading()
-                                Timber.e(throwable)
+    private fun loadRepos() {
+        getCompositeDisposable().add(getDataManager().pageRepos(null, PAGE_N, ITEMS_PER_PAGE, mFilter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoList ->
+                            mRepoList.addAll(repoList)
+                            getView().showRepos(repoList)
+                            getView().setFilter(mFilter)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && repoList.isEmpty()) {
+                                getView().showNoRepo()
+                                NO_SHOWING = true
                             }
-                    ))
-        }
-        else {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
     }
 
     override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING || mFilter["sort"] == "stars")
+        if (LOADING_LIST || mFilter["sort"] == "stars")
             return
         if (isNetworkAvailable) {
-            LOADING = true
+            LOADING_LIST = true
             PAGE_N += 1
             getView().showLoading()
-            loadRepos(isNetworkAvailable)
+            loadRepos()
         }
         else if (dy > 0) {
             getView().showNoConnectionError()
@@ -109,8 +116,8 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             PAGE_N = 1
             getView().clearAdapter()
             mRepoList.clear()
-            LOADING_MAIN = true
-            loadRepos(isNetworkAvailable)
+            LOADING = true
+            loadRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -126,7 +133,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadRepos(isNetworkAvailable)
+            loadRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -142,7 +149,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadRepos(isNetworkAvailable)
+            loadRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -158,7 +165,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadRepos(isNetworkAvailable)
+            loadRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -174,7 +181,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadRepos(isNetworkAvailable)
+            loadRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -190,7 +197,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadRepos(isNetworkAvailable)
+            loadRepos()
         }
         else {
             getView().showNoConnectionError()

@@ -44,7 +44,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean) {
-        if (mFilter.get("sort") == null)
+        if (mFilter["sort"] == null)
             mFilter.put("sort", "starred")
         if (!mRepoList.isEmpty()) {
             getView().showRepos(mRepoList)
@@ -56,7 +56,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             if (isNetworkAvailable) {
                 LOADING = true
                 getView().showLoading()
-                loadStarredRepos(isNetworkAvailable)
+                loadStarredRepos()
             }
             else {
                 getView().showNoConnectionError()
@@ -65,40 +65,34 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
         }
     }
 
-    private fun loadStarredRepos(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            getCompositeDisposable().add(getDataManager().pageStarred(PAGE_N, ITEMS_PER_PAGE, mFilter)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { repoList ->
-                                mRepoList.addAll(repoList)
-                                getView().showRepos(repoList)
-                                getView().setFilter(mFilter)
-                                getView().hideLoading()
-                                getView().hideListLoading()
-                                if (PAGE_N == 1 && repoList.isEmpty()) {
-                                    getView().showNoRepo()
-                                    NO_SHOWING = true
-                                }
-                                PAGE_N += 1
-                                LOADING = false
-                                LOADING_LIST = false
-                            },
-                            { throwable ->
-                                getView().showError(throwable.localizedMessage)
-                                getView().hideLoading()
-                                getView().hideListLoading()
-                                Timber.e(throwable)
-                                LOADING = false
-                                LOADING_LIST = false
+    private fun loadStarredRepos() {
+        getCompositeDisposable().add(getDataManager().pageStarred(PAGE_N, ITEMS_PER_PAGE, mFilter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoList ->
+                            mRepoList.addAll(repoList)
+                            getView().showRepos(repoList)
+                            getView().setFilter(mFilter)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && repoList.isEmpty()) {
+                                getView().showNoRepo()
+                                NO_SHOWING = true
                             }
-                    ))
-        }
-        else {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
     }
 
     override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
@@ -109,7 +103,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             mRepoList.clear()
             getView().clearAdapter()
             LOADING = true
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -123,7 +117,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
         if (isNetworkAvailable) {
             LOADING_LIST = true
             getView().showListLoading()
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else if (dy > 0) {
             getView().showNoConnectionError()
@@ -139,7 +133,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -155,7 +149,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -171,7 +165,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -187,7 +181,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else {
             getView().showNoConnectionError()
@@ -203,7 +197,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
             mRepoList.clear()
             getView().showLoading()
             getView().hideNoRepo()
-            loadStarredRepos(isNetworkAvailable)
+            loadStarredRepos()
         }
         else {
             getView().showNoConnectionError()

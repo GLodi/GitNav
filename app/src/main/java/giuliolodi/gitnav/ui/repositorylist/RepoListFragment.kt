@@ -149,7 +149,8 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
         if (item?.itemId == R.id.action_options) {
 
         }
-        if (isNetworkAvailable()) {
+        else if (isNetworkAvailable()) {
+            item?.let { mMenuItem = it.itemId }
             when (item?.itemId) {
                 R.id.repo_sort_created -> {
                     item.isChecked = true
