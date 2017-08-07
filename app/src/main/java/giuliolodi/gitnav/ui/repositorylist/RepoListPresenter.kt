@@ -95,31 +95,31 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
                 ))
     }
 
-    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING_LIST || mFilter["sort"] == "stars")
-            return
+    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
-            LOADING_LIST = true
-            PAGE_N += 1
-            getView().showLoading()
+            getView().hideNoRepo()
+            NO_SHOWING = false
+            PAGE_N = 1
+            mRepoList.clear()
+            getView().clearAdapter()
+            LOADING = true
             loadRepos()
         }
-        else if (dy > 0) {
+        else {
             getView().showNoConnectionError()
             getView().hideLoading()
         }
     }
 
-    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST || mFilter["sort"] == "stars")
+            return
         if (isNetworkAvailable) {
-            getView().hideNoRepo()
-            PAGE_N = 1
-            getView().clearAdapter()
-            mRepoList.clear()
-            LOADING = true
+            LOADING_LIST = true
+            getView().showLoading()
             loadRepos()
         }
-        else {
+        else if (dy > 0) {
             getView().showNoConnectionError()
             getView().hideLoading()
         }
