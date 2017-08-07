@@ -392,7 +392,7 @@ class UserActivity : BaseActivity(), UserContract.View {
                     if (isNetworkAvailable()) {
                         LOADING_REPOS = true
                         PAGE_N_REPOS += 1
-                        (user_activity_rv.adapter as RepoListAdapter).addLoading()
+                        (user_activity_rv.adapter as RepoListAdapter).showLoading()
                         mPresenter.getRepos(username, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
@@ -447,7 +447,7 @@ class UserActivity : BaseActivity(), UserContract.View {
                     if (isNetworkAvailable()) {
                         LOADING_EVENTS = true
                         PAGE_N_EVENTS += 1
-                        (user_activity_rv.adapter as EventAdapter).addLoading()
+                        (user_activity_rv.adapter as EventAdapter).showLoading()
                         mPresenter.getEvents(username, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
                     } else if (dy > 0) {
                         Handler(Looper.getMainLooper()).post({ Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
