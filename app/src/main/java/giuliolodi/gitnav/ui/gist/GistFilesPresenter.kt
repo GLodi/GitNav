@@ -27,9 +27,9 @@ import javax.inject.Inject
 /**
  * Created by giulio on 04/07/2017.
  */
-class GistPresenterFiles<V: GistContractFiles.View> : BasePresenter<V>, GistContractFiles.Presenter<V> {
+class GistFilesPresenter<V: GistFilesContract.View> : BasePresenter<V>, GistFilesContract.Presenter<V> {
 
-    val TAG = "GistPresenterFiles"
+    val TAG = "GistFilesPresenter"
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)

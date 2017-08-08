@@ -36,9 +36,9 @@ import javax.inject.Inject
 /**
  * Created by giulio on 03/07/2017.
  */
-class GistFragmentComments : BaseFragment(), GistContractComments.View {
+class GistCommentsFragment : BaseFragment(), GistCommentsContract.View {
 
-    @Inject lateinit var mPresenter: GistContractComments.Presenter<GistContractComments.View>
+    @Inject lateinit var mPresenter: GistCommentsContract.Presenter<GistCommentsContract.View>
 
     private val mGistCommentList: MutableList<Comment> = mutableListOf()
     private var mGistId: String? = null
@@ -46,12 +46,12 @@ class GistFragmentComments : BaseFragment(), GistContractComments.View {
     private var NO_COMMENTS: Boolean = false
 
     companion object {
-        fun newInstance(gistId: String): GistFragmentComments {
-            val gistFragmentComments: GistFragmentComments = GistFragmentComments()
+        fun newInstance(gistId: String): GistCommentsFragment {
+            val gistCommentsFragment: GistCommentsFragment = GistCommentsFragment()
             val bundle: Bundle = Bundle()
             bundle.putString("gistId", gistId)
-            gistFragmentComments.arguments = bundle
-            return gistFragmentComments
+            gistCommentsFragment.arguments = bundle
+            return gistCommentsFragment
         }
     }
 

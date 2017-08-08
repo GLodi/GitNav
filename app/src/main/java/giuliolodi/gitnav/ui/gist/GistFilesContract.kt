@@ -23,7 +23,7 @@ import org.eclipse.egit.github.core.Gist
 /**
  * Created by giulio on 03/07/2017.
  */
-interface GistContractFiles {
+interface GistFilesContract {
 
     interface View : BaseContract.View {
 
@@ -38,7 +38,7 @@ interface GistContractFiles {
     }
 
     @PerActivity
-    interface Presenter<V: GistContractFiles.View> : BaseContract.Presenter<V> {
+    interface Presenter<V: GistFilesContract.View> : BaseContract.Presenter<V> {
 
         fun getGist(gistId: String)
 

@@ -23,7 +23,7 @@ import org.eclipse.egit.github.core.Comment
 /**
  * Created by giulio on 03/07/2017.
  */
-interface GistContractComments {
+interface GistCommentsContract {
 
     interface View : BaseContract.View {
 
@@ -38,7 +38,7 @@ interface GistContractComments {
     }
 
     @PerActivity
-    interface Presenter<V: GistContractComments.View> : BaseContract.Presenter<V> {
+    interface Presenter<V: GistCommentsContract.View> : BaseContract.Presenter<V> {
 
         fun getComments(gistId: String)
 

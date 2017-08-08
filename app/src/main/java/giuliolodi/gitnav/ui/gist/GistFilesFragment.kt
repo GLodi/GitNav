@@ -30,16 +30,15 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.gist_fragment_files.*
 import org.eclipse.egit.github.core.Gist
-import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
 import javax.inject.Inject
 
 /**
  * Created by giulio on 03/07/2017.
  */
-class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
+class GistFilesFragment : BaseFragment(), GistFilesContract.View {
     
-    @Inject lateinit var mPresenter: GistContractFiles.Presenter<GistContractFiles.View>
+    @Inject lateinit var mPresenter: GistFilesContract.Presenter<GistFilesContract.View>
 
     private val mPrettyTime: PrettyTime = PrettyTime()
     private var mGistId: String? = null
@@ -47,12 +46,12 @@ class GistFragmentFiles: BaseFragment(), GistContractFiles.View {
     private var LOADING: Boolean = false
 
     companion object {
-        fun newInstance(gistId: String): GistFragmentFiles {
-            val gistFragmentFiles: GistFragmentFiles = GistFragmentFiles()
+        fun newInstance(gistId: String): GistFilesFragment {
+            val gistFilesFragment: GistFilesFragment = GistFilesFragment()
             val bundle: Bundle = Bundle()
             bundle.putString("gistId", gistId)
-            gistFragmentFiles.arguments = bundle
-            return gistFragmentFiles
+            gistFilesFragment.arguments = bundle
+            return gistFilesFragment
         }
     }
 

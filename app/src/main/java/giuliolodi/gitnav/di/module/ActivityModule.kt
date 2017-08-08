@@ -110,13 +110,13 @@ class ActivityModule(val activity: Activity) {
 
     @Provides
     @PerActivity
-    fun provideGistFilesPresenter(presenter: GistPresenterFiles<GistContractFiles.View>): GistContractFiles.Presenter<GistContractFiles.View> {
+    fun provideGistFilesPresenter(presenter: GistFilesPresenter<GistFilesContract.View>): GistFilesContract.Presenter<GistFilesContract.View> {
         return presenter
     }
 
     @Provides
     @PerActivity
-    fun provideGistCommentsPresenter(presenter: GistPresenterComments<GistContractComments.View>): GistContractComments.Presenter<GistContractComments.View> {
+    fun provideGistCommentsPresenter(presenter: GistCommentsPresenter<GistCommentsContract.View>): GistCommentsContract.Presenter<GistCommentsContract.View> {
         return presenter
     }
 

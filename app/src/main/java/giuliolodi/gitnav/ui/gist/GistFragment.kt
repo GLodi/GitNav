@@ -150,8 +150,8 @@ class GistFragment : BaseFragment(), GistContract.View {
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-                0 -> GistFragmentFiles.newInstance(mGistId)
-                else -> GistFragmentComments.newInstance(mGistId)
+                0 -> GistFilesFragment.newInstance(mGistId)
+                else -> GistCommentsFragment.newInstance(mGistId)
             }
         }
 

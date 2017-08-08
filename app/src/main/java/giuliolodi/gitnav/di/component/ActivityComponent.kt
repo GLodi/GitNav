@@ -22,8 +22,8 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.events.EventFragment
 import giuliolodi.gitnav.ui.fileviewer.FileViewerFragment
 import giuliolodi.gitnav.ui.gist.GistFragment
-import giuliolodi.gitnav.ui.gist.GistFragmentComments
-import giuliolodi.gitnav.ui.gist.GistFragmentFiles
+import giuliolodi.gitnav.ui.gist.GistCommentsFragment
+import giuliolodi.gitnav.ui.gist.GistFilesFragment
 import giuliolodi.gitnav.ui.gistlist.GistListFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repository.*
@@ -54,9 +54,9 @@ interface ActivityComponent {
 
     fun inject(gistFragment: GistFragment)
 
-    fun inject(gistFragmentFiles: GistFragmentFiles)
+    fun inject(gistFilesFragment: GistFilesFragment)
 
-    fun inject(gistFragmentComments: GistFragmentComments)
+    fun inject(gistCommentsFragment: GistCommentsFragment)
 
     fun inject(searchFragment: SearchFragment)
 
