@@ -104,9 +104,17 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemInserted(mGistList.size - 1)
     }
 
-    fun addLoading() {
+    fun showLoading() {
         mGistList.add(null)
         notifyItemInserted(mGistList.size - 1)
+    }
+
+    fun hideLoading() {
+        if (mGistList.lastIndexOf(null) != -1) {
+            val lastNull = mGistList.lastIndexOf(null)
+            mGistList.removeAt(lastNull)
+            notifyItemRemoved(lastNull)
+        }
     }
 
     fun clear() {

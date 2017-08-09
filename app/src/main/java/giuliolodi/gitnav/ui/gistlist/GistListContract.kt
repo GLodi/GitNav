@@ -33,16 +33,44 @@ interface GistListContract {
 
         fun hideLoading()
 
+        fun showListLoading()
+
+        fun hideListLoading()
+
+        fun showNoGists(mineOrStarred: String)
+
+        fun hideNoGists()
+
+        fun clearAdapter()
+
+        fun setAdapterAndClickListener()
+
+        fun showNoConnectionError()
+
         fun showError(error: String)
+
+        fun intentToGistActivitiy(gistId: String)
 
     }
 
     @PerActivity
     interface Presenter<V: GistListContract.View> : BaseContract.Presenter<V> {
 
-        fun getMineGists(pageN: Int, itemsPerPage: Int)
+        fun subscribe(isNetworkAvailable: Boolean)
 
-        fun getStarredGists(pageN: Int, itemsPerPage: Int)
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun getMineGists()
+
+        fun getStarredGists()
+
+        fun onGistClick(gistId: String)
+
+        fun onBottomViewMineGistClick(isNetworkAvailable: Boolean)
+
+        fun onBottomViewStarredGistClick(isNetworkAvailable: Boolean)
 
         fun unsubscribe()
 

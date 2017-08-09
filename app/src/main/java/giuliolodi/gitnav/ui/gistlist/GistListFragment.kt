@@ -43,14 +43,6 @@ class GistListFragment : BaseFragment(), GistListContract.View {
 
     @Inject lateinit var mPresenter: GistListContract.Presenter<GistListContract.View>
 
-    private var mGistList: MutableList<Gist> = mutableListOf()
-    private var PAGE_N = 1
-    private var ITEMS_PER_PAGE = 20
-    private var LOADING: Boolean = false
-    private var LOADING_MAIN: Boolean = false
-    private var MINE_STARRED: String = "mine"
-    private var NO_SHOWING: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
@@ -75,149 +67,90 @@ class GistListFragment : BaseFragment(), GistListContract.View {
         (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { gistId ->
-                    startActivity(GistActivity.getIntent(context).putExtra("gistId", gistId))
-                    activity.overridePendingTransition(0,0)
-                }
+                .subscribe { gistId -> mPresenter.onGistClick(gistId) }
 
         val mScrollListenerStarred = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (LOADING)
-                    return
                 val visibleItemCount = (gist_list_fragment_rv.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (gist_list_fragment_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (gist_list_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        LOADING = true
-                        PAGE_N += 1
-                        (gist_list_fragment_rv.adapter as GistListAdapter).addLoading()
-                        when (MINE_STARRED) {
-                            "mine" -> mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
-                            "starred" -> mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
-                        }
-                    }
-                    else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                        hideLoading()
-                    }
+                    mPresenter.onLastItemVisible(isNetworkAvailable(), dy)
                 }
             }
         }
         gist_list_fragment_rv.setOnScrollListener(mScrollListenerStarred)
 
         gist_list_fragment_swipe.setColorSchemeColors(Color.parseColor("#448AFF"))
-        gist_list_fragment_swipe.setOnRefreshListener {
-            if (isNetworkAvailable()) {
-                hideNoGists()
-                PAGE_N = 1
-                (gist_list_fragment_rv.adapter as GistListAdapter).clear()
-                mGistList.clear()
-                LOADING_MAIN = true
-                when (MINE_STARRED) {
-                    "mine" -> mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
-                    "starred" -> mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
-                }
-            } else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+        gist_list_fragment_swipe.setOnRefreshListener { mPresenter.onSwipeToRefresh(isNetworkAvailable()) }
 
         gist_list_fragment_bottomview.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.gist_list_fragment_bottom_menu_mine -> {
-                    showLoading()
-                    hideNoGists()
-                    PAGE_N = 1
-                    gist_list_fragment_rv.adapter = GistListAdapter()
-                    (gist_list_fragment_rv.adapter as GistListAdapter).clear()
-                    mGistList.clear()
-                    MINE_STARRED = "mine"
-                    (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { gistId ->
-                                startActivity(GistActivity.getIntent(context).putExtra("gistId", gistId))
-                                activity.overridePendingTransition(0,0)
-                            }
-                    mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
-                }
-                R.id.gist_list_fragment_bottom_menu_starred -> {
-                    showLoading()
-                    hideNoGists()
-                    PAGE_N = 1
-                    gist_list_fragment_rv.adapter = GistListAdapter()
-                    (gist_list_fragment_rv.adapter as GistListAdapter).clear()
-                    mGistList.clear()
-                    MINE_STARRED = "starred"
-                    (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { gistId ->
-                                startActivity(GistActivity.getIntent(context).putExtra("gistId", gistId))
-                                activity.overridePendingTransition(0,0)
-                            }
-                    mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
-                }
+                R.id.gist_list_fragment_bottom_menu_mine -> { mPresenter.onBottomViewMineGistClick(isNetworkAvailable()) }
+                R.id.gist_list_fragment_bottom_menu_starred -> { mPresenter.onBottomViewStarredGistClick(isNetworkAvailable()) }
             }
             true
         }
 
-        if (!mGistList.isEmpty()) (gist_list_fragment_rv.adapter as GistListAdapter).addGists(mGistList)
-        else if (LOADING_MAIN) showLoading()
-        else if (NO_SHOWING) showNoGists()
-        else {
-            if (isNetworkAvailable()) {
-                showLoading()
-                when (MINE_STARRED) {
-                    "mine" -> mPresenter.getMineGists(PAGE_N, ITEMS_PER_PAGE)
-                    "starred" -> mPresenter.getStarredGists(PAGE_N, ITEMS_PER_PAGE)
-                }
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-                hideLoading()
-            }
-        }
+        mPresenter.subscribe(isNetworkAvailable())
     }
 
     override fun showGists(gistList: List<Gist>) {
-        mGistList.addAll(gistList)
         (gist_list_fragment_rv.adapter as GistListAdapter).addGists(gistList)
-        if (PAGE_N == 1 && gistList.isEmpty()) showNoGists()
-        LOADING = false
     }
 
     override fun showLoading() {
         gist_list_fragment_progress_bar.visibility = View.VISIBLE
-        LOADING_MAIN = true
     }
 
     override fun hideLoading() {
-        if (gist_list_fragment_progress_bar.visibility == View.VISIBLE)
-            gist_list_fragment_progress_bar.visibility = View.GONE
-        if (gist_list_fragment_swipe.isRefreshing)
-            gist_list_fragment_swipe.isRefreshing = false
-        LOADING_MAIN = false
+        gist_list_fragment_progress_bar.visibility = View.GONE
+        gist_list_fragment_swipe.isRefreshing = false
+    }
+
+    override fun showListLoading() {
+        (gist_list_fragment_rv.adapter as GistListAdapter).showLoading()
+    }
+
+    override fun hideListLoading() {
+        (gist_list_fragment_rv.adapter as GistListAdapter).hideLoading()
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    private fun showNoGists() {
+    override fun setAdapterAndClickListener() {
+        gist_list_fragment_rv.adapter = GistListAdapter()
+        (gist_list_fragment_rv.adapter as GistListAdapter).getGistClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { gistId -> mPresenter.onGistClick(gistId) }
+    }
+
+    override fun clearAdapter() {
+        (gist_list_fragment_rv.adapter as GistListAdapter).clear()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoGists(mineOrStarred: String) {
         gist_list_fragment_no.visibility = View.VISIBLE
-        when(MINE_STARRED) {
+        when(mineOrStarred) {
             "mine" -> gist_list_fragment_no.text = getString(R.string.no_gists_mine)
             "starred" -> gist_list_fragment_no.text = getString(R.string.no_gists_starred)
         }
-        NO_SHOWING = true
     }
 
-    private fun hideNoGists() {
+    override fun hideNoGists() {
         gist_list_fragment_no.visibility = View.GONE
-        NO_SHOWING = false
+    }
+
+    override fun intentToGistActivitiy(gistId: String) {
+        startActivity(GistActivity.getIntent(context).putExtra("gistId", gistId))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
