@@ -33,12 +33,16 @@ interface GistFilesContract {
 
         fun hideLoading()
 
+        fun showNoConnectionError()
+
         fun showError(error: String)
 
     }
 
     @PerActivity
     interface Presenter<V: GistFilesContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(isNetworkAvailable: Boolean, gistId: String)
 
         fun getGist(gistId: String)
 

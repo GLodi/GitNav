@@ -42,8 +42,6 @@ class GistFilesFragment : BaseFragment(), GistFilesContract.View {
 
     private val mPrettyTime: PrettyTime = PrettyTime()
     private var mGistId: String? = null
-    private var mGist: Gist? = null
-    private var LOADING: Boolean = false
 
     companion object {
         fun newInstance(gistId: String): GistFilesFragment {
@@ -76,21 +74,10 @@ class GistFilesFragment : BaseFragment(), GistFilesContract.View {
         gist_fragment_files_rv.itemAnimator = DefaultItemAnimator()
         gist_fragment_files_rv.adapter = GistFileAdapter()
 
-        if (mGist != null) mGist?.let { showGist(it) }
-        else if (LOADING) showLoading()
-        else {
-            if (isNetworkAvailable()) {
-                mGistId?.let { mPresenter.getGist(it) }
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
-        }
+        mGistId?.let { mPresenter.subscribe(isNetworkAvailable(), it) }
     }
 
     override fun showGist(gist: Gist) {
-        mGist = gist
-
         gist_fragment_files_nested.visibility = View.VISIBLE
         gist_fragment_files_username.text = gist.owner.login
         gist_fragment_files_title.text = gist.description
@@ -105,13 +92,13 @@ class GistFilesFragment : BaseFragment(), GistFilesContract.View {
 
     override fun showLoading() {
         gist_fragment_files_progress_bar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (gist_fragment_files_progress_bar.visibility == View.VISIBLE)
-            gist_fragment_files_progress_bar.visibility = View.GONE
-        LOADING = false
+        gist_fragment_files_progress_bar.visibility = View.GONE
+    }
+
+    override fun showNoConnectionError() {
     }
 
     override fun showError(error: String) {

@@ -21,6 +21,7 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Gist
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,10 +30,30 @@ import javax.inject.Inject
  */
 class GistFilesPresenter<V: GistFilesContract.View> : BasePresenter<V>, GistFilesContract.Presenter<V> {
 
-    val TAG = "GistFilesPresenter"
+    private val TAG = "GistFilesPresenter"
+
+    private var mGistId: String? = null
+    private var mGist: Gist? = null
+    private var LOADING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe(isNetworkAvailable: Boolean, gistId: String) {
+        mGistId = gistId
+        if (mGist != null) mGist?.let { getView().showGist(it) }
+        else if (LOADING) getView().showLoading()
+        else {
+            if (isNetworkAvailable) {
+                LOADING = true
+                mGistId?.let { getGist(it) }
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+            }
+        }
+    }
 
     override fun getGist(gistId: String) {
         getCompositeDisposable().add(getDataManager().getGist(gistId)

@@ -75,7 +75,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                             getView().hideListLoading()
                             if (PAGE_N == 1 && gistList.isEmpty()) {
                                 getView().showNoGists(MINE_STARRED)
-                                NO_SHOWING
+                                NO_SHOWING = true
                             }
                             PAGE_N += 1
                             LOADING = false
@@ -104,7 +104,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                             getView().hideListLoading()
                             if (PAGE_N == 1 && gistList.isEmpty()) {
                                 getView().showNoGists(MINE_STARRED)
-                                NO_SHOWING
+                                NO_SHOWING = true
                             }
                             PAGE_N += 1
                             LOADING = false
@@ -124,6 +124,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
     override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
             getView().hideNoGists()
+            NO_SHOWING = false
             PAGE_N = 1
             getView().clearAdapter()
             mGistList.clear()
@@ -159,10 +160,11 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
     override fun onBottomViewMineGistClick(isNetworkAvailable: Boolean) {
         getView().showLoading()
         getView().hideNoGists()
+        NO_SHOWING = false
         getView().clearAdapter()
+        mGistList.clear()
         getView().setAdapterAndClickListener()
         PAGE_N = 1
-        mGistList.clear()
         MINE_STARRED = "mine"
         getMineGists()
     }
@@ -170,10 +172,11 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
     override fun onBottomViewStarredGistClick(isNetworkAvailable: Boolean) {
         getView().showLoading()
         getView().hideNoGists()
+        NO_SHOWING = false
         getView().clearAdapter()
+        mGistList.clear()
         getView().setAdapterAndClickListener()
         PAGE_N = 1
-        mGistList.clear()
         MINE_STARRED = "starred"
         getStarredGists()
     }
