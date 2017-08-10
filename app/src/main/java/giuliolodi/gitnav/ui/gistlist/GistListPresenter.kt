@@ -62,6 +62,64 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         }
     }
 
+    override fun getMineGists() {
+        getCompositeDisposable().add(getDataManager().pageGists(null, PAGE_N, ITEMS_PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { gistList ->
+                            mGistList.addAll(gistList)
+                            getView().showGists(gistList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && gistList.isEmpty()) {
+                                getView().showNoGists(MINE_STARRED)
+                                NO_SHOWING
+                            }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
+    }
+
+    override fun getStarredGists() {
+        getCompositeDisposable().add(getDataManager().pageStarredGists(PAGE_N, ITEMS_PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { gistList ->
+                            mGistList.addAll(gistList)
+                            getView().showGists(gistList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && gistList.isEmpty()) {
+                                getView().showNoGists(MINE_STARRED)
+                                NO_SHOWING
+                            }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
+    }
+
     override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
             getView().hideNoGists()
@@ -116,41 +174,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         PAGE_N = 1
         mGistList.clear()
         MINE_STARRED = "starred"
-        getMineGists()
-    }
-
-    override fun getMineGists() {
-        getCompositeDisposable().add(getDataManager().pageGists(null, PAGE_N, ITEMS_PER_PAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { gistList ->
-                            getView().showGists(gistList)
-                            getView().hideLoading()
-                        },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
-                            Timber.e(throwable)
-                        }
-                ))
-    }
-
-    override fun getStarredGists() {
-        getCompositeDisposable().add(getDataManager().pageStarredGists(PAGE_N, ITEMS_PER_PAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { gistList ->
-                            getView().showGists(gistList)
-                            getView().hideLoading()
-                        },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
-                            Timber.e(throwable)
-                        }
-                ))
+        getStarredGists()
     }
 
     override fun onGistClick(gistId: String) {

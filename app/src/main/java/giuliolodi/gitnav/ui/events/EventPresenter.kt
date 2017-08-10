@@ -50,7 +50,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
             if (isNetworkAvailable) {
                 LOADING = true
                 getView().showLoading()
-                loadEvents(isNetworkAvailable)
+                loadEvents()
             }
             else {
                 getView().showNoConnectionError()
@@ -59,39 +59,33 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
         }
     }
 
-    private fun loadEvents(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            getCompositeDisposable().add(getDataManager().pageEvents(null, PAGE_N, ITEMS_PER_PAGE)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { eventList ->
-                                mEventList.addAll(eventList)
-                                getView().showEvents(eventList)
-                                getView().hideLoading()
-                                getView().hideListLoading()
-                                if (PAGE_N == 1 && eventList.isEmpty()) {
-                                    getView().showNoEvents()
-                                    NO_SHOWING = true
-                                }
-                                PAGE_N += 1
-                                LOADING = false
-                                LOADING_LIST = false
-                            },
-                            { throwable ->
-                                getView().showError(throwable.localizedMessage)
-                                getView().hideLoading()
-                                getView().hideListLoading()
-                                Timber.e(throwable)
-                                LOADING = false
-                                LOADING_LIST = false
+    private fun loadEvents() {
+        getCompositeDisposable().add(getDataManager().pageEvents(null, PAGE_N, ITEMS_PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { eventList ->
+                            mEventList.addAll(eventList)
+                            getView().showEvents(eventList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && eventList.isEmpty()) {
+                                getView().showNoEvents()
+                                NO_SHOWING = true
                             }
-                    ))
-        }
-        else {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
     }
 
     override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
@@ -102,7 +96,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
             mEventList.clear()
             getView().clearAdapter()
             LOADING = true
-            loadEvents(isNetworkAvailable)
+            loadEvents()
         }
         else {
             getView().showNoConnectionError()
@@ -116,7 +110,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
         else if (isNetworkAvailable) {
             LOADING_LIST = true
             getView().showListLoading()
-            loadEvents(isNetworkAvailable)
+            loadEvents()
         }
         else if (dy > 0) {
             getView().showNoConnectionError()
