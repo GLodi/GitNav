@@ -33,6 +33,12 @@ interface GistCommentsContract {
 
         fun hideLoading()
 
+        fun showNoComments()
+
+        fun intentToUserActivity(username: String)
+
+        fun showNoConnectionError()
+
         fun showError(error: String)
 
     }
@@ -40,7 +46,11 @@ interface GistCommentsContract {
     @PerActivity
     interface Presenter<V: GistCommentsContract.View> : BaseContract.Presenter<V> {
 
+        fun subscribe(isNetworkAvailable: Boolean, gistId: String)
+
         fun getComments(gistId: String)
+
+        fun onUserClick(username: String)
 
     }
 

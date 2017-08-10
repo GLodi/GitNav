@@ -60,7 +60,7 @@ interface EventContract {
 
         fun onSwipeToRefresh(isNetworkAvailable: Boolean)
 
-        fun onImageClick(username: String)
+        fun onUserClick(username: String)
 
     }
 

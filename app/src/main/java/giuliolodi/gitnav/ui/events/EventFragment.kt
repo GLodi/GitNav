@@ -67,7 +67,7 @@ class EventFragment : BaseFragment(), EventContract.View {
         (event_fragment_rv.adapter as EventAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username -> mPresenter.onImageClick(username) }
+                .subscribe { username -> mPresenter.onUserClick(username) }
 
         val mScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {

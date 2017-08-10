@@ -21,6 +21,7 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Comment
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,10 +30,32 @@ import javax.inject.Inject
  */
 class GistCommentsPresenter<V: GistCommentsContract.View> : BasePresenter<V>, GistCommentsContract.Presenter<V> {
 
-    val TAG = "GistCommentsPresenter"
+    private val TAG = "GistCommentsPresenter"
+
+    private val mGistCommentList: MutableList<Comment> = mutableListOf()
+    private var mGistId: String? = null
+    private var LOADING: Boolean = false
+    private var NO_COMMENTS: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe(isNetworkAvailable: Boolean, gistId: String) {
+        mGistId = gistId
+        if (!mGistCommentList.isEmpty()) getView().showComments(mGistCommentList)
+        else if (LOADING) getView().showLoading()
+        else if (NO_COMMENTS) getView().showNoComments()
+        else {
+            if (isNetworkAvailable) {
+                LOADING = true
+                mGistId?.let { getComments(it) }
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+            }
+        }
+    }
 
     override fun getComments(gistId: String) {
         getCompositeDisposable().add(getDataManager().getGistComments(gistId)
@@ -41,15 +64,26 @@ class GistCommentsPresenter<V: GistCommentsContract.View> : BasePresenter<V>, Gi
                 .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { gistCommentList ->
+                            mGistCommentList.addAll(gistCommentList)
                             getView().showComments(gistCommentList)
                             getView().hideLoading()
+                            if (mGistCommentList.isEmpty()) {
+                                getView().showNoComments()
+                                NO_COMMENTS = true
+                            }
+                            LOADING = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
                             Timber.e(throwable)
+                            LOADING = false
                         }
                 ))
+    }
+
+    override fun onUserClick(username: String) {
+        getView().intentToUserActivity(username)
     }
 
 }

@@ -49,6 +49,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
         else if (NO_SHOWING) getView().showNoGists(MINE_STARRED)
         else {
             if (isNetworkAvailable) {
+                LOADING = true
                 getView().showLoading()
                 when (MINE_STARRED) {
                     "mine" -> getMineGists()

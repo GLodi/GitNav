@@ -205,7 +205,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
         }
     }
 
-    override fun onImageClick(username: String) {
+    override fun onUserClick(username: String) {
         getView().intentToUserActivity(username)
     }
 

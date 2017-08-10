@@ -40,10 +40,7 @@ class GistCommentsFragment : BaseFragment(), GistCommentsContract.View {
 
     @Inject lateinit var mPresenter: GistCommentsContract.Presenter<GistCommentsContract.View>
 
-    private val mGistCommentList: MutableList<Comment> = mutableListOf()
     private var mGistId: String? = null
-    private var LOADING: Boolean = false
-    private var NO_COMMENTS: Boolean = false
 
     companion object {
         fun newInstance(gistId: String): GistCommentsFragment {
@@ -78,50 +75,38 @@ class GistCommentsFragment : BaseFragment(), GistCommentsContract.View {
         (gist_fragment_comments_rv.adapter as GistCommentAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
-                    activity.overridePendingTransition(0,0)
-                }
+                .subscribe { username -> mPresenter.onUserClick(username) }
 
-        if (!mGistCommentList.isEmpty()) (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
-        else if (LOADING) showLoading()
-        else if (NO_COMMENTS) showNoComments()
-        else {
-            if (isNetworkAvailable()) {
-                mGistId?.let { mPresenter.getComments(it) }
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
-        }
+        mGistId?.let { mPresenter.subscribe(isNetworkAvailable(), it) }
     }
 
     override fun showComments(gistCommentList: List<Comment>) {
-        mGistCommentList.clear()
-        mGistCommentList.addAll(gistCommentList.toMutableList())
-        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(mGistCommentList)
-
-        if (mGistCommentList.isEmpty()) showNoComments()
+        (gist_fragment_comments_rv.adapter as GistCommentAdapter).addGistCommentList(gistCommentList)
     }
 
     override fun showLoading() {
         gist_fragment_comments_progressbar.visibility = View.VISIBLE
-        LOADING = true
     }
 
-    private fun showNoComments() {
+    override fun showNoComments() {
         gist_fragment_comments_nocomments.visibility = View.VISIBLE
-        NO_COMMENTS = true
     }
 
     override fun hideLoading() {
-        if (gist_fragment_comments_progressbar.visibility == View.VISIBLE)
-            gist_fragment_comments_progressbar.visibility = View.GONE
-        LOADING = false
+        gist_fragment_comments_progressbar.visibility = View.GONE
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onDestroyView() {

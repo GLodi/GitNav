@@ -60,7 +60,7 @@ interface StarredContract {
 
         fun subscribe(isNetworkAvailable: Boolean)
 
-        fun onImageClick(username: String)
+        fun onUserClick(username: String)
 
         fun onRepoClick(repoOwner: String, repoName: String)
 

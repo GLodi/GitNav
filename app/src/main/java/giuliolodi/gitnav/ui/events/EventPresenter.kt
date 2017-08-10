@@ -118,7 +118,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
         }
     }
 
-    override fun onImageClick(username: String) {
+    override fun onUserClick(username: String) {
         getView().intentToUserActivity(username)
     }
 

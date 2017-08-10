@@ -18,8 +18,6 @@ package giuliolodi.gitnav.ui.starred
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -70,7 +68,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
         (starred_fragment_rv.adapter as StarredAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username -> mPresenter.onImageClick(username) }
+                .subscribe { username -> mPresenter.onUserClick(username) }
         (starred_fragment_rv.adapter as StarredAdapter).getRepoClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
