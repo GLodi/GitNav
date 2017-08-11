@@ -22,6 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.Gist
+import org.eclipse.egit.github.core.GistFile
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,16 +62,23 @@ class GistFilesPresenter<V: GistFilesContract.View> : BasePresenter<V>, GistFile
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { getView().showLoading() }
                 .subscribe(
-                        { map ->
-                            getView().showGist(map)
+                        { gist ->
+                            mGist = gist
+                            getView().showGist(gist)
                             getView().hideLoading()
+                            LOADING = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
                             Timber.e(throwable)
+                            LOADING = false
                         }
                 ))
+    }
+
+    override fun onGistFileClick(gistFile: GistFile) {
+        getView().intentToFileViewerActivity(gistFile)
     }
 
 }

@@ -62,8 +62,6 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
                 activity.intent.getStringExtra("gist_filename"),
                 activity.intent.getStringExtra("gist_content"))
 
-        mPresenter.subscribe(fileViewerIntent, isNetworkAvailable())
-
         (activity as AppCompatActivity).setSupportActionBar(file_viewer_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -71,16 +69,20 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
         file_viewer_fragment_highlightview.setZoomSupportEnabled(true)
         file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
         file_viewer_fragment_highlightview.highlightLanguage = Language.AUTO_DETECT
+
+        mPresenter.subscribe(fileViewerIntent, isNetworkAvailable())
     }
 
     override fun initRepoFileTitle(title: String, subtitle: String) {
-        file_viewer_fragment_toolbar.title = title
-        file_viewer_fragment_toolbar.subtitle = subtitle
+        (activity as AppCompatActivity).supportActionBar?.title = title
+        (activity as AppCompatActivity).supportActionBar?.subtitle = subtitle
+        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
     }
 
     override fun initGistFileTitleContent(title: String, gistContent: String) {
-        file_viewer_fragment_toolbar.title = title
+        (activity as AppCompatActivity).supportActionBar?.title = title
         file_viewer_fragment_highlightview.setSource(gistContent)
+        file_viewer_fragment_highlightview.theme = Theme.ANDROID_STUDIO
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
     }
 

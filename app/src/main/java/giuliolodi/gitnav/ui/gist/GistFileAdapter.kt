@@ -21,8 +21,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_gist_file.view.*
 import org.eclipse.egit.github.core.GistFile
+import org.eclipse.egit.github.core.Repository
 
 /**
  * Created by giulio on 28/05/2017.
@@ -30,6 +33,11 @@ import org.eclipse.egit.github.core.GistFile
 class GistFileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mGistFileList: MutableList<GistFile?> = arrayListOf()
+    private val onFileClick: PublishSubject<GistFile> = PublishSubject.create()
+
+    fun getPositionClicks(): Observable<GistFile> {
+        return onFileClick
+    }
 
     class GistFileHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (file: GistFile) = with(itemView) {
@@ -56,6 +64,7 @@ class GistFileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is GistFileHolder) {
             val file = mGistFileList[position]!!
             holder.bind(file)
+            holder.itemView.setOnClickListener { onFileClick.onNext(file) }
         }
     }
 

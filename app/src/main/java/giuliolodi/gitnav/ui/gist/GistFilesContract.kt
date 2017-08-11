@@ -19,6 +19,7 @@ package giuliolodi.gitnav.ui.gist
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Gist
+import org.eclipse.egit.github.core.GistFile
 
 /**
  * Created by giulio on 03/07/2017.
@@ -37,6 +38,8 @@ interface GistFilesContract {
 
         fun showError(error: String)
 
+        fun intentToFileViewerActivity(gistFile: GistFile)
+
     }
 
     @PerActivity
@@ -45,6 +48,8 @@ interface GistFilesContract {
         fun subscribe(isNetworkAvailable: Boolean, gistId: String)
 
         fun getGist(gistId: String)
+
+        fun onGistFileClick(gistFile: GistFile)
 
     }
 

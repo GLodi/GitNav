@@ -28,8 +28,12 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.fileviewer.FileViewerActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.gist_fragment_files.*
 import org.eclipse.egit.github.core.Gist
+import org.eclipse.egit.github.core.GistFile
 import org.ocpsoft.prettytime.PrettyTime
 import javax.inject.Inject
 
@@ -88,6 +92,10 @@ class GistFilesFragment : BaseFragment(), GistFilesContract.View {
         Picasso.with(context).load(gist.owner.avatarUrl).centerCrop().resize(75, 75).into(gist_fragment_files_image)
 
         (gist_fragment_files_rv.adapter as GistFileAdapter).addGistFileList(gist.files.values.toMutableList())
+        (gist_fragment_files_rv.adapter as GistFileAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { gistFile -> mPresenter.onGistFileClick(gistFile) }
     }
 
     override fun showLoading() {
@@ -99,10 +107,18 @@ class GistFilesFragment : BaseFragment(), GistFilesContract.View {
     }
 
     override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToFileViewerActivity(gistFile: GistFile) {
+        startActivity(FileViewerActivity.getIntent(context)
+                .putExtra("gist_filename", gistFile.filename)
+                .putExtra("gist_content", gistFile.content))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onDestroyView() {
