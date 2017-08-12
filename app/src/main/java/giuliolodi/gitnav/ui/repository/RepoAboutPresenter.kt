@@ -33,7 +33,14 @@ import javax.inject.Inject
  */
 class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAboutContract.Presenter<V> {
 
-    val TAG = "RepoPresenter"
+    private val TAG = "RepoPresenter"
+
+    private var mOwner: String? = null
+    private var mName: String? = null
+    private var mRepoContributor: Map<Repository, List<Contributor>>? = null
+    private var mRepo: Repository? = null
+    private var mContributorList: List<Contributor>? = null
+    private var LOADING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)

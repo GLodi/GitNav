@@ -41,10 +41,8 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     @Inject lateinit var mPresenter: GistContract.Presenter<GistContract.View>
 
-    private var mGist: Gist? = null
     private var mGistId: String? = null
     private var mMenu: Menu? = null
-    private var IS_GIST_STARRED: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,18 +71,11 @@ class GistFragment : BaseFragment(), GistContract.View {
         gist_fragment_viewpager.offscreenPageLimit = 2
         mGistId?.let { gist_fragment_viewpager.adapter = MyAdapter(context, it, fragmentManager) }
 
-        if (isNetworkAvailable()) {
-            mGistId?.let { mPresenter.subscribe(it) }
-        }
-        else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-        }
-
+        mGistId?.let { mPresenter.subscribe(isNetworkAvailable(), it) }
     }
 
     override fun onGistDownloaded(isGistStarred: Boolean) {
-        IS_GIST_STARRED = isGistStarred
-        createOptionsMenu()
+        createOptionsMenu(isGistStarred)
     }
 
     override fun onGistStarred() {
@@ -103,9 +94,18 @@ class GistFragment : BaseFragment(), GistContract.View {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    private fun createOptionsMenu() {
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToBrowser(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
+    private fun createOptionsMenu(isGistStarred: Boolean) {
         activity.menuInflater.inflate(R.menu.gist_fragment_menu, mMenu)
-        if (IS_GIST_STARRED)
+        if (isGistStarred)
             mMenu?.findItem(R.id.follow_icon)?.isVisible = true
         else
             mMenu?.findItem(R.id.unfollow_icon)?.isVisible = true
@@ -113,6 +113,7 @@ class GistFragment : BaseFragment(), GistContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
         menu?.let { mMenu = it }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -123,10 +124,7 @@ class GistFragment : BaseFragment(), GistContract.View {
             when (item?.itemId) {
                 R.id.follow_icon -> mGistId?.let { mPresenter.unstarGist(it) }
                 R.id.unfollow_icon -> mGistId?.let { mPresenter.starGist(it) }
-                R.id.open_in_browser -> {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mGist?.htmlUrl))
-                    startActivity(browserIntent)
-                }
+                R.id.open_in_browser -> mPresenter.onOpenInBrowser()
             }
         } else
             Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()

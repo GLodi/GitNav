@@ -18,8 +18,6 @@ package giuliolodi.gitnav.ui.gist
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
-import org.eclipse.egit.github.core.Comment
-import org.eclipse.egit.github.core.Gist
 
 /**
  * Created by giulio on 26/05/2017.
@@ -36,16 +34,22 @@ interface GistContract {
 
         fun onGistUnstarred()
 
+        fun showNoConnectionError()
+
+        fun intentToBrowser(url: String)
+
     }
 
     @PerActivity
     interface Presenter<V: GistContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(gistId: String)
+        fun subscribe(isNetworkAvailable: Boolean, gistId: String)
 
         fun starGist(gistId: String)
 
         fun unstarGist(gistId: String)
+
+        fun onOpenInBrowser()
 
     }
 

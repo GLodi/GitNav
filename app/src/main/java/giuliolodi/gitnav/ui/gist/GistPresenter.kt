@@ -32,18 +32,40 @@ import javax.inject.Inject
  */
 class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Presenter<V> {
 
-    val TAG = "GistPresenter"
+    private val TAG = "GistPresenter"
+
+    private var mGist: Gist? = null
+    private var mGistId: String? = null
+    private var IS_GIST_STARRED: Boolean? = null
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(gistId: String) {
-        getCompositeDisposable().add(getDataManager().isGistStarred(gistId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    override fun subscribe(isNetworkAvailable: Boolean, gistId: String) {
+        mGistId = gistId
+        if (IS_GIST_STARRED != null) getView().onGistDownloaded(IS_GIST_STARRED!!)
+        else if (isNetworkAvailable) {
+            mGistId?.let { isGistStarred(it) }
+        }
+        else {
+            getView().showNoConnectionError()
+        }
+    }
+
+    private fun isGistStarred(gistId: String) {
+        getCompositeDisposable().add(Flowable.zip<Gist, Boolean, Map<Gist, Boolean>>(
+                getDataManager().getGist(gistId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getDataManager().isGistStarred(gistId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                BiFunction { gist, boolean -> return@BiFunction mapOf(gist to boolean) })
                 .subscribe(
-                        { isGistStarred ->
-                            getView().onGistDownloaded(isGistStarred)
+                        { map ->
+                            IS_GIST_STARRED = map.entries.first().value
+                            mGist = map.keys.first()
+                            if (IS_GIST_STARRED != null) getView().onGistDownloaded(IS_GIST_STARRED!!)
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -76,6 +98,10 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    override fun onOpenInBrowser() {
+        mGist?.htmlUrl?.let { getView().intentToBrowser(it) }
     }
 
 }
