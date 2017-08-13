@@ -37,13 +37,16 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
     private var mGist: Gist? = null
     private var mGistId: String? = null
     private var IS_GIST_STARRED: Boolean? = null
+    private var IS_MENU_CREATED: Boolean? = null
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean, gistId: String) {
         mGistId = gistId
-        if (IS_GIST_STARRED != null) getView().onGistDownloaded(IS_GIST_STARRED!!)
+        if (IS_GIST_STARRED != null) {
+            tryToCreateMenu()
+        }
         else if (isNetworkAvailable) {
             mGistId?.let { isGistStarred(it) }
         }
@@ -65,7 +68,7 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                         { map ->
                             IS_GIST_STARRED = map.entries.first().value
                             mGist = map.keys.first()
-                            if (IS_GIST_STARRED != null) getView().onGistDownloaded(IS_GIST_STARRED!!)
+                            tryToCreateMenu()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -74,12 +77,28 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                 ))
     }
 
+    private fun tryToCreateMenu() {
+        if (IS_MENU_CREATED != null &&
+                IS_MENU_CREATED == true &&
+                IS_GIST_STARRED != null) {
+            getView().createOptionsMenu(IS_GIST_STARRED!!)
+        }
+    }
+
+    override fun onMenuCreated() {
+        IS_MENU_CREATED = true
+        tryToCreateMenu()
+    }
+
     override fun starGist(gistId: String) {
         getCompositeDisposable().add(getDataManager().starGist(gistId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { getView().onGistStarred() },
+                        {
+                            getView().onGistStarred()
+                            IS_GIST_STARRED = true
+                        },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             Timber.e(throwable)
@@ -92,7 +111,10 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { getView().onGistUnstarred() },
+                        {
+                            getView().onGistUnstarred()
+                            IS_GIST_STARRED = false
+                        },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             Timber.e(throwable)

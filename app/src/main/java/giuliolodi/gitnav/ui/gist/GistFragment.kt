@@ -74,10 +74,6 @@ class GistFragment : BaseFragment(), GistContract.View {
         mGistId?.let { mPresenter.subscribe(isNetworkAvailable(), it) }
     }
 
-    override fun onGistDownloaded(isGistStarred: Boolean) {
-        createOptionsMenu(isGistStarred)
-    }
-
     override fun onGistStarred() {
         mMenu?.findItem(R.id.follow_icon)?.isVisible = true
         mMenu?.findItem(R.id.unfollow_icon)?.isVisible = false
@@ -103,17 +99,17 @@ class GistFragment : BaseFragment(), GistContract.View {
         startActivity(browserIntent)
     }
 
-    private fun createOptionsMenu(isGistStarred: Boolean) {
-        activity.menuInflater.inflate(R.menu.gist_fragment_menu, mMenu)
-        if (isGistStarred)
-            mMenu?.findItem(R.id.follow_icon)?.isVisible = true
-        else
-            mMenu?.findItem(R.id.unfollow_icon)?.isVisible = true
+    override fun createOptionsMenu(isGistStarred: Boolean) {
+        when (isGistStarred) {
+            true -> mMenu?.findItem(R.id.follow_icon)?.isVisible = true
+            false -> mMenu?.findItem(R.id.unfollow_icon)?.isVisible = true
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
+        menuInflater?.inflate(R.menu.gist_fragment_menu, menu)
         menu?.let { mMenu = it }
-
+        mPresenter.onMenuCreated()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -126,8 +122,9 @@ class GistFragment : BaseFragment(), GistContract.View {
                 R.id.unfollow_icon -> mGistId?.let { mPresenter.starGist(it) }
                 R.id.open_in_browser -> mPresenter.onOpenInBrowser()
             }
-        } else
+        } else {
             Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
         return super.onOptionsItemSelected(item)
     }
 

@@ -26,8 +26,6 @@ interface GistContract {
 
     interface View : BaseContract.View {
 
-        fun onGistDownloaded(isGistStarred: Boolean)
-
         fun showError(error: String)
 
         fun onGistStarred()
@@ -37,6 +35,8 @@ interface GistContract {
         fun showNoConnectionError()
 
         fun intentToBrowser(url: String)
+
+        fun createOptionsMenu(isGistStarred: Boolean)
 
     }
 
@@ -50,6 +50,8 @@ interface GistContract {
         fun unstarGist(gistId: String)
 
         fun onOpenInBrowser()
+
+        fun onMenuCreated()
 
     }
 
