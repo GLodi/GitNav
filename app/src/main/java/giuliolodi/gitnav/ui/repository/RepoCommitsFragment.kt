@@ -41,11 +41,8 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
 
     @Inject lateinit var mPresenter: RepoCommitsContract.Presenter<RepoCommitsContract.View>
 
-    private var mRepoCommitList: MutableList<RepositoryCommit> = mutableListOf()
     private var mOwner: String? = null
     private var mName: String? = null
-    private var LOADING: Boolean = false
-    private var NO_COMMITS: Boolean = false
 
     companion object {
         fun newInstance(owner: String, name: String): RepoCommitsFragment {
@@ -82,49 +79,38 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
         (repo_commits_fragment_rv.adapter as RepoCommitAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { username ->
-                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
-                    activity.overridePendingTransition(0,0)
-                }
+                .subscribe { username -> mPresenter.onUserClick(username) }
 
-        if (!mRepoCommitList.isEmpty()) showRepoCommitList(mRepoCommitList)
-        else if (LOADING) showLoading()
-        else if (NO_COMMITS) showNoCommits()
-        else {
-            if (isNetworkAvailable()) {
-                if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
-        }
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
     override fun showRepoCommitList(repoCommitList: List<RepositoryCommit>) {
-        mRepoCommitList = repoCommitList.toMutableList()
         (repo_commits_fragment_rv.adapter as RepoCommitAdapter).addRepoCommits(repoCommitList)
-        if (mRepoCommitList.size == 0)
-            showNoCommits()
     }
 
     override fun showLoading() {
         repo_commits_fragment_progressbar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (repo_commits_fragment_progressbar.visibility == View.VISIBLE)
-            repo_commits_fragment_progressbar.visibility = View.GONE
-        LOADING = false
+        repo_commits_fragment_progressbar.visibility = View.GONE
+    }
+
+    override fun showNoCommits() {
+        repo_commits_fragment_nocommits.visibility = View.VISIBLE
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
-    override fun showNoCommits() {
-        repo_commits_fragment_nocommits.visibility = View.VISIBLE
-        NO_COMMITS = true
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onDestroyView() {

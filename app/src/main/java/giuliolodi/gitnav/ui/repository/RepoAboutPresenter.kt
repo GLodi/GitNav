@@ -89,8 +89,8 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
-                            LOADING = false
                             Timber.e(throwable)
+                            LOADING = false
                         }
                 ))
     }

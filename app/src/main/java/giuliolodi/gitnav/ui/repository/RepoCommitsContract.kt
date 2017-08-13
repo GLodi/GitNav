@@ -33,16 +33,22 @@ interface RepoCommitsContract {
 
         fun hideLoading()
 
+        fun showNoCommits()
+
         fun showError(error: String)
 
-        fun showNoCommits()
+        fun showNoConnectionError()
+
+        fun intentToUserActivity(username: String)
 
     }
 
     @PerActivity
     interface Presenter<V: RepoCommitsContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(owner: String, name: String)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onUserClick(username: String)
 
     }
 
