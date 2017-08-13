@@ -45,24 +45,51 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(owner: String, name: String) {
+
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+        owner?.let { mOwner = it }
+        name?.let { mName = it }
+
+        if (mRepo != null) getView().showRepoAbout(mRepo?.name!!, mRepo?.owner?.login!!, mRepo?.description!!, mRepo?.owner?.avatarUrl!!)
+        else if (LOADING) getView().showLoading()
+        else {
+            if (isNetworkAvailable) {
+                if (mOwner != null && mName != null) loadRepoAbout()
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
+            }
+        }
+    }
+
+    private fun loadRepoAbout() {
         getCompositeDisposable().add(Flowable.zip<Repository, List<Contributor>, Map<Repository, List<Contributor>>>(
-                getDataManager().getRepo(owner, name)
+                getDataManager().getRepo(mOwner!!, mName!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
-                getDataManager().getContributors(owner, name)
+                getDataManager().getContributors(mOwner!!, mName!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, contributorList -> return@BiFunction mapOf(repo to contributorList) })
-                .doOnSubscribe { getView().showLoading() }
+                .doOnSubscribe {
+                    getView().showLoading()
+                    LOADING = true
+                }
                 .subscribe(
-                        { map ->
-                            getView().showRepoNContributors(map)
+                        { repoContributors ->
+                            mRepoContributor = repoContributors
+                            mRepo = repoContributors.keys.first()
+                            mRepo?.let { mContributorList = repoContributors[it] }
+                            mRepo?.let { getView().showRepoAbout(mRepo?.name!!, mRepo?.owner?.login!!, mRepo?.description!!, mRepo?.owner?.avatarUrl!!) }
                             getView().hideLoading()
+                            LOADING = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
+                            LOADING = false
                             Timber.e(throwable)
                         }
                 ))

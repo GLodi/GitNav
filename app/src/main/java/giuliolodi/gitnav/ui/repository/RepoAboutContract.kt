@@ -28,7 +28,7 @@ interface RepoAboutContract {
 
     interface View : BaseContract.View {
 
-        fun showRepoNContributors(repoContributors: Map<Repository, List<Contributor>>)
+        fun showRepoAbout(repoOwner: String, repoName: String, repoDescription: String, avatarUrl: String)
 
         fun showLoading()
 
@@ -36,12 +36,14 @@ interface RepoAboutContract {
 
         fun showError(error: String)
 
+        fun showNoConnectionError()
+
     }
 
     @PerActivity
     interface Presenter<V: RepoAboutContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(owner: String, name: String)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
 
     }
 

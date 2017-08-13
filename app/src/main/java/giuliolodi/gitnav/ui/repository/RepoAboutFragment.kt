@@ -39,10 +39,6 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
 
     private var mOwner: String? = null
     private var mName: String? = null
-    private var mRepoContributor: Map<Repository, List<Contributor>>? = null
-    private var mRepo: Repository? = null
-    private var mContributorList: List<Contributor>? = null
-    private var LOADING: Boolean = false
 
     companion object {
         fun newInstance(owner: String, name: String): RepoAboutFragment {
@@ -69,44 +65,31 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
-
-        if (mRepoContributor != null) showRepoNContributors(mRepoContributor!!)
-        else if (LOADING) showLoading()
-        else {
-            if (isNetworkAvailable()) {
-                if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
-        }
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
-    override fun showRepoNContributors(repoContributors: Map<Repository, List<Contributor>>) {
-        mRepoContributor = repoContributors
-        mRepo = repoContributors.keys.first()
-        mRepo?.let { mContributorList = repoContributors[it] }
-
+    override fun showRepoAbout(repoOwner: String, repoName: String, repoDescription: String, avatarUrl: String) {
         repo_about_fragment_rl2.visibility = View.VISIBLE
-        repo_about_fragment_reponame.text = mRepo?.name
-        repo_about_fragment_username.text = mRepo?.owner?.login
-        repo_about_fragment_description.text = mRepo?.description
-        Picasso.with(context).load(mRepo?.owner?.avatarUrl).resize(75, 75).centerCrop().into(repo_about_fragment_image)
+        repo_about_fragment_reponame.text = repoName
+        repo_about_fragment_username.text = repoOwner
+        repo_about_fragment_description.text = repoDescription
+        Picasso.with(context).load(avatarUrl).resize(75, 75).centerCrop().into(repo_about_fragment_image)
     }
 
     override fun showLoading() {
         repo_about_fragment_progressbar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (repo_about_fragment_progressbar.visibility == View.VISIBLE)
-            repo_about_fragment_progressbar.visibility = View.GONE
-        LOADING = false
+        repo_about_fragment_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
