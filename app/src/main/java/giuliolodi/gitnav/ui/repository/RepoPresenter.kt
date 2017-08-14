@@ -33,23 +33,52 @@ import javax.inject.Inject
  */
 class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Presenter<V> {
 
-    val TAG = "RepoPresenter"
+    private val TAG = "RepoPresenter"
+
+    private var mOwner: String? = null
+    private var mName: String? = null
+    private var mRepo: Repository? = null
+    private var LOADING: Boolean = false
+    private var IS_REPO_STARRED: Boolean? = null
+    private var IS_OPTIONS_MENU_CREATED: Boolean? = null
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(owner: String, name: String) {
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+        owner?.let { mOwner = it }
+        name?.let { mName = it }
+        if (isNetworkAvailable) {
+            if (mOwner != null && mName != null) loadRepoAndStarred()
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+            LOADING = false
+        }
+    }
+
+    private fun loadRepoAndStarred() {
         getCompositeDisposable().add(Flowable.zip<Repository, Boolean, Map<Repository, Boolean>>(
-                getDataManager().getRepo(owner, name)
+                getDataManager().getRepo(mOwner!!, mName!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
-                getDataManager().isRepoStarred(owner, name)
+                getDataManager().isRepoStarred(mOwner!!, mName!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, boolean -> return@BiFunction mapOf(repo to boolean) })
+                .doOnSubscribe {
+                    getView().showLoading()
+                    LOADING = true
+                }
                 .subscribe(
                         { map ->
-                            getView().showRepo(map)
+                            mRepo = map.keys.first()
+                            mRepo?.let {
+                                IS_REPO_STARRED = map[it]!!
+                                getView().showTitleAndSubtitle(it.name, it.owner.login)
+                            }
+                            getView().createOptionsMenu()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -61,30 +90,49 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                 ))
     }
 
-    override fun starRepo(owner: String, name: String) {
-        getCompositeDisposable().add(getDataManager().starRepo(owner, name)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { getView().onRepoStarred() },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            Timber.e(throwable)
-                        }
-                ))
+    override fun onOptionsMenuCreated() {
+
     }
 
-    override fun unstarRepo(owner: String, name: String) {
-        getCompositeDisposable().add(getDataManager().unstarRepo(owner, name)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { getView().onRepoUnstarred() },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            Timber.e(throwable)
-                        }
-                ))
+    override fun onStarRepo(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getCompositeDisposable().add(getDataManager().starRepo(mOwner!!, mName!!)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { getView().onRepoStarred() },
+                            { throwable ->
+                                getView().showError(throwable.localizedMessage)
+                                Timber.e(throwable)
+                            }
+                    ))
+
+        }
+        else {
+            getView().showNoConnectionError()
+        }
+    }
+
+    override fun onUnstarRepo(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getCompositeDisposable().add(getDataManager().unstarRepo(mOwner!!, mName!!)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { getView().onRepoUnstarred() },
+                            { throwable ->
+                                getView().showError(throwable.localizedMessage)
+                                Timber.e(throwable)
+                            }
+                    ))
+        }
+        else {
+            getView().showNoConnectionError()
+        }
+    }
+
+    override fun onOpenInBrowser() {
+        mRepo?.let { getView().intentToBrowser(it.htmlUrl) }
     }
 
 }

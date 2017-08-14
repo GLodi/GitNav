@@ -42,11 +42,8 @@ class RepoFragment : BaseFragment(), RepoContract.View {
 
     @Inject lateinit var mPresenter : RepoContract.Presenter<RepoContract.View>
 
-    private var mRepo: Repository? = null
     private var mOwner: String? = null
     private var mName: String? = null
-    private var IS_REPO_STARRED: Boolean? = null
-    private var LOADING: Boolean = false
     private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,39 +75,28 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         if (mOwner != null && mName != null) { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!) }
         repo_fragment_viewpager.currentItem = 1
 
-        if (isNetworkAvailable()) {
-            if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!)
-        }
-        else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-        }
+
     }
 
-    override fun showRepo(mapRepoStarred: Map<Repository, Boolean>) {
-        mRepo = mapRepoStarred.keys.first()
-        mRepo?.let {
-            IS_REPO_STARRED = mapRepoStarred[it]!!
-            (activity as AppCompatActivity).supportActionBar?.title = it.name
-            (activity as AppCompatActivity).supportActionBar?.subtitle= it.owner.login
-        }
-
-        createOptionsMenu()
-
+    override fun showTitleAndSubtitle(title: String, subtitle: String) {
+        (activity as AppCompatActivity).supportActionBar?.title = title
+        (activity as AppCompatActivity).supportActionBar?.subtitle= subtitle
     }
 
     override fun showLoading() {
         repo_fragment_progressbar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (repo_fragment_progressbar.visibility == View.VISIBLE)
-            repo_fragment_progressbar.visibility = View.GONE
-        LOADING = false
+        repo_fragment_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onRepoStarred() {
@@ -129,7 +115,12 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         activity.finish()
     }
 
-    private fun createOptionsMenu() {
+    override fun intentToBrowser(url: String) {
+        val browserIntent = Intent(ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
+    override fun createOptionsMenu() {
         if (IS_REPO_STARRED != null && mMenu != null) {
             activity?.menuInflater?.inflate(R.menu.repo_fragment_menu, mMenu)
             if (IS_REPO_STARRED!!)
@@ -152,17 +143,13 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         }
         if (isNetworkAvailable()) {
             when (item?.itemId) {
-                R.id.star_icon -> if (mOwner != null && mName != null) mPresenter.unstarRepo(mOwner!!, mName!!)
-                R.id.unstar_icon -> if (mOwner != null && mName != null) mPresenter.starRepo(mOwner!!, mName!!)
-                R.id.open_in_browser -> {
-                    mRepo?.let {
-                        val browserIntent = Intent(ACTION_VIEW, Uri.parse(it.htmlUrl))
-                        startActivity(browserIntent)
-                    }
-                }
+                R.id.star_icon -> mPresenter.onUnstarRepo(isNetworkAvailable())
+                R.id.unstar_icon -> mPresenter.onStarRepo(isNetworkAvailable())
+                R.id.open_in_browser -> mPresenter.onOpenInBrowser()
             }
-        } else
+        } else {
             Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
         return super.onOptionsItemSelected(item)
     }
 
