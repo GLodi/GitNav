@@ -120,21 +120,17 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         startActivity(browserIntent)
     }
 
-    override fun createOptionsMenu() {
-        if (IS_REPO_STARRED != null && mMenu != null) {
-            activity?.menuInflater?.inflate(R.menu.repo_fragment_menu, mMenu)
-            if (IS_REPO_STARRED!!)
-                mMenu?.findItem(R.id.star_icon)?.isVisible = true
-            else
-                mMenu?.findItem(R.id.unstar_icon)?.isVisible = true
+    override fun createOptionsMenu(isRepoStarred: Boolean) {
+        when (isRepoStarred) {
+            true -> mMenu?.findItem(R.id.star_icon)?.isVisible = true
+            false -> mMenu?.findItem(R.id.unstar_icon)?.isVisible = true
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu?.let {
-            mMenu = it
-            createOptionsMenu()
-        }
+        inflater?.inflate(R.menu.repo_fragment_menu, mMenu)
+        menu?.let { mMenu = it }
+        mPresenter.onOptionsMenuCreated()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

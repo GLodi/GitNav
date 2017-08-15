@@ -44,7 +44,7 @@ interface RepoContract {
 
         fun intentToBrowser(url: String)
 
-        fun createOptionsMenu()
+        fun createOptionsMenu(isRepoStarred: Boolean)
 
     }
 

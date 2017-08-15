@@ -77,8 +77,8 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                             mRepo?.let {
                                 IS_REPO_STARRED = map[it]!!
                                 getView().showTitleAndSubtitle(it.name, it.owner.login)
+                                IS_REPO_STARRED?.let { getView().createOptionsMenu(it) }
                             }
-                            getView().createOptionsMenu()
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -91,6 +91,7 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
     }
 
     override fun onOptionsMenuCreated() {
+
 
     }
 
