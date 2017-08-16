@@ -91,12 +91,16 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
     }
 
     private fun tryToCreateMenu() {
-
+        if (IS_OPTIONS_MENU_CREATED != null &&
+                IS_OPTIONS_MENU_CREATED == true &&
+                IS_REPO_STARRED != null) {
+            getView().createOptionsMenu(IS_REPO_STARRED!!)
+        }
     }
 
     override fun onOptionsMenuCreated() {
-
-
+        IS_OPTIONS_MENU_CREATED = true
+        tryToCreateMenu()
     }
 
     override fun onStarRepo(isNetworkAvailable: Boolean) {
