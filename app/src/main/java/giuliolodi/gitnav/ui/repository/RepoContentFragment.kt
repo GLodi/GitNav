@@ -112,16 +112,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                     }
                 }
 
-        if (LOADING) showLoading()
-        // Check if content has already been downloaded
-        else {
-            if (isNetworkAvailable()) {
-                if (mOwner != null && mName != null) mPresenter.subscribe(mOwner!!, mName!!, path)
-            }
-            else {
-                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-            }
-        }
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
     override fun showContent(map: Map<Repository, List<RepositoryContents>>) {
@@ -135,17 +126,32 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     override fun showLoading() {
         repo_content_fragment_progressbar.visibility = View.VISIBLE
-        LOADING = true
     }
 
     override fun hideLoading() {
-        if (repo_content_fragment_progressbar.visibility == View.VISIBLE)
-            repo_content_fragment_progressbar.visibility = View.GONE
-        LOADING = false
+        repo_content_fragment_progressbar.visibility = View.GONE
+    }
+
+    override fun showBottomLoading() {
+        repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
+    }
+
+    override fun hideBottomLoading() {
+        repo_content_fragment_progressbar_bottom.visibility = View.GONE
+    }
+
+    override fun onTreeSet(treeText: String) {
+        repo_content_fragment_tree.text = ""
+        repo_content_fragment_tree.text = treeText
+        Handler().postDelayed({ repo_content_fragment_scrollview.smoothScrollBy(repo_content_fragment_scrollview.maxScrollAmount, 0) }, 100)
     }
 
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
@@ -156,31 +162,6 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
-    }
-
-    private fun setTree() {
-        repo_content_fragment_tree.text = ""
-        treeText = "/"
-        treeText += pathTree[pathTree.size - 1]
-        repo_content_fragment_tree.text = treeText
-        Handler().postDelayed({ repo_content_fragment_scrollview.smoothScrollBy(repo_content_fragment_scrollview.maxScrollAmount, 0) }, 100)
-    }
-
-    private fun handleBackPressed() {
-        if (isNetworkAvailable()) {
-            if (!LOADING_CONTENT) {
-                LOADING_CONTENT = true
-                path = pathTree[pathTree.size - 2]
-                pathTree.removeAt(pathTree.size - 1)
-                TREE_DEPTH -= 1
-                mRepoContentList.clear()
-                repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
-                mPresenter.subscribe(mOwner!!, mName!!, path)
-            }
-        }
-        else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-        }
     }
 
 }

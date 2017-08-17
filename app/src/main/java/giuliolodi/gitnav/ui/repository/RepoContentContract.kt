@@ -34,14 +34,24 @@ interface RepoContentContract {
 
         fun hideLoading()
 
+        fun showBottomLoading()
+
+        fun hideBottomLoading()
+
+        fun onTreeSet(treeText: String)
+
         fun showError(error: String)
+
+        fun showNoConnectionError()
 
     }
 
     @PerActivity
     interface Presenter<V: RepoContentContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(owner: String, name: String, path: String)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onBackPressed(isNetworkAvailable: Boolean)
 
     }
 

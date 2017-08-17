@@ -34,23 +34,58 @@ import javax.inject.Inject
  */
 class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, RepoContentContract.Presenter<V> {
 
-    val TAG = "RepoContentPresenter"
+    private val TAG = "RepoContentPresenter"
+
+    private var mOwner: String? = null
+    private var mName: String? = null
+    private var mRepo: Repository? = null
+    private var mRepoContentList: MutableList<RepositoryContents> = mutableListOf()
+    private var pathTree: MutableList<String> = mutableListOf()
+    private var path: String = ""
+    private var treeText: String = ""
+    private var LOADING: Boolean = false
+    private var LOADING_CONTENT: Boolean = false
+    private var TREE_DEPTH: Int = 1
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(owner: String, name: String, path: String) {
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+        owner?.let { mOwner = it }
+        name?.let { mName = it }
+        if (LOADING) getView().showLoading()
+        // Check if content has already been downloaded
+        else {
+            if (isNetworkAvailable) {
+                if (mOwner != null && mName != null) loadRepoContent()
+            }
+            else {
+                getView().showNoConnectionError()
+                LOADING = false
+            }
+        }
+    }
+
+    private fun loadRepoContent() {
         getCompositeDisposable().add(Flowable.zip<Repository, List<RepositoryContents>, Map<Repository, List<RepositoryContents>>>(
-                getDataManager().getRepo(owner, name)
+                getDataManager().getRepo(mOwner!!, mName!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
-                getDataManager().getContent(owner, name, path)
+                getDataManager().getContent(mOwner!!, mName!!, path)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, repoContentList -> return@BiFunction mapOf(repo to repoContentList) })
+                .doOnSubscribe {
+                    getView().showLoading()
+                    LOADING = true
+                }
                 .subscribe(
                         { map ->
                             getView().showContent(map)
+                            getView().hideLoading()
+                            getView().hideBottomLoading()
+                            LOADING = false
+                            LOADING_CONTENT = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -58,6 +93,29 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    private fun setTree() {
+        treeText = "/"
+        treeText += pathTree[pathTree.size - 1]
+        getView().onTreeSet(treeText)
+    }
+
+    override fun onBackPressed(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            if (!LOADING_CONTENT) {
+                LOADING_CONTENT = true
+                path = pathTree[pathTree.size - 2]
+                pathTree.removeAt(pathTree.size - 1)
+                TREE_DEPTH -= 1
+                mRepoContentList.clear()
+                repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
+                loadRepoContent()
+            }
+        }
+        else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
     }
 
 }
