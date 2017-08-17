@@ -38,7 +38,6 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
     private var mOwner: String? = null
     private var mName: String? = null
     private var mRepo: Repository? = null
-    private var LOADING: Boolean = false
     private var IS_REPO_STARRED: Boolean? = null
     private var IS_OPTIONS_MENU_CREATED: Boolean? = null
 
@@ -48,13 +47,14 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
         owner?.let { mOwner = it }
         name?.let { mName = it }
-        if (isNetworkAvailable) {
+        if (IS_REPO_STARRED != null) {
+            tryToCreateMenu()
+        }
+        else if (isNetworkAvailable) {
             if (mOwner != null && mName != null) loadRepoAndStarred()
         }
         else {
             getView().showNoConnectionError()
-            getView().hideLoading()
-            LOADING = false
         }
     }
 
@@ -67,10 +67,6 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, boolean -> return@BiFunction mapOf(repo to boolean) })
-                .doOnSubscribe {
-                    getView().showLoading()
-                    LOADING = true
-                }
                 .subscribe(
                         { map ->
                             mRepo = map.keys.first()
@@ -95,6 +91,7 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                 IS_OPTIONS_MENU_CREATED == true &&
                 IS_REPO_STARRED != null) {
             getView().createOptionsMenu(IS_REPO_STARRED!!)
+            mRepo?.let { getView().showTitleAndSubtitle(it.name, it.owner.login) }
         }
     }
 
@@ -109,7 +106,10 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { getView().onRepoStarred() },
+                            {
+                                getView().onRepoStarred()
+                                IS_REPO_STARRED = true
+                            },
                             { throwable ->
                                 getView().showError(throwable.localizedMessage)
                                 Timber.e(throwable)
@@ -128,7 +128,10 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            { getView().onRepoUnstarred() },
+                            {
+                                getView().onRepoUnstarred()
+                                IS_REPO_STARRED = false
+                            },
                             { throwable ->
                                 getView().showError(throwable.localizedMessage)
                                 Timber.e(throwable)

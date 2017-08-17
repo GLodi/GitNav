@@ -28,10 +28,6 @@ interface RepoContract {
 
         fun showTitleAndSubtitle(title: String, subtitle: String)
 
-        fun showLoading()
-
-        fun hideLoading()
-
         fun showError(error: String)
 
         fun showNoConnectionError()

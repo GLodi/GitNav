@@ -33,7 +33,6 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import kotlinx.android.synthetic.main.repo_fragment.*
-import org.eclipse.egit.github.core.Repository
 
 /**
  * Created by giulio on 10/07/2017.
@@ -75,20 +74,12 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         if (mOwner != null && mName != null) { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!) }
         repo_fragment_viewpager.currentItem = 1
 
-
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
     override fun showTitleAndSubtitle(title: String, subtitle: String) {
         (activity as AppCompatActivity).supportActionBar?.title = title
         (activity as AppCompatActivity).supportActionBar?.subtitle= subtitle
-    }
-
-    override fun showLoading() {
-        repo_fragment_progressbar.visibility = View.VISIBLE
-    }
-
-    override fun hideLoading() {
-        repo_fragment_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
@@ -127,8 +118,8 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.repo_fragment_menu, mMenu)
+    override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
+        menuInflater?.inflate(R.menu.repo_fragment_menu, menu)
         menu?.let { mMenu = it }
         mPresenter.onOptionsMenuCreated()
     }
