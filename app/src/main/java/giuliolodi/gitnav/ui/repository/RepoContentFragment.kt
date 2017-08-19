@@ -27,12 +27,12 @@ import android.widget.Toast
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.fileviewer.FileViewerActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.repo_content_fragment.*
-import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.RepositoryContents
 import javax.inject.Inject
 
@@ -45,14 +45,6 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     private var mOwner: String? = null
     private var mName: String? = null
-    private var mRepo: Repository? = null
-    private var mRepoContentList: MutableList<RepositoryContents> = mutableListOf()
-    private var pathTree: MutableList<String> = mutableListOf()
-    private var path: String = ""
-    private var treeText: String = ""
-    private var LOADING: Boolean = false
-    private var LOADING_CONTENT: Boolean = false
-    private var TREE_DEPTH: Int = 1
 
     companion object {
         fun newInstance(owner: String, name: String): RepoContentFragment {
@@ -71,7 +63,6 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         getActivityComponent()?.inject(this)
         mOwner = arguments.getString("owner")
         mName = arguments.getString("name")
-        pathTree.add("")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,35 +84,16 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { repoContents ->
                     when(repoContents.type) {
-                        "dir" -> {
-                            if (!LOADING_CONTENT) {
-                                LOADING_CONTENT = true
-                                pathTree.add(repoContents.path)
-                                TREE_DEPTH += 1
-                            }
-                        }
-                        "file" -> {
-                            startActivity(FileViewerActivity.getIntent(context)
-                                    .putExtra("owner", mOwner)
-                                    .putExtra("name", mName)
-                                    .putExtra("path", repoContents.path)
-                                    .putExtra("filename", repoContents.name)
-                                    .putExtra("file_url", mRepo?.htmlUrl))
-                            activity.overridePendingTransition(0,0)
-                        }
+                        "dir" -> mPresenter.onDirClick(repoContents.path)
+                        "file" -> mPresenter.onFileClick(repoContents.path, repoContents.name)
                     }
                 }
 
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
-    override fun showContent(map: Map<Repository, List<RepositoryContents>>) {
-        mRepo = map.keys.first()
-        mRepo?.let {
-            mRepoContentList = map[it]?.toMutableList()!!
-            mRepoContentList.sortBy { it.type }
-        }
-        if (!mRepoContentList.isEmpty()) (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(mRepoContentList)
+    override fun showContent(repoContentList: List<RepositoryContents>) {
+        (repo_content_fragment_rv.adapter as FileAdapter).addRepositoryContentList(repoContentList)
     }
 
     override fun showLoading() {
@@ -156,6 +128,16 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
 
     override fun pressBack() {
         activity.onBackPressed()
+        activity.overridePendingTransition(0,0)
+    }
+
+    override fun intentToViewerActivity(fileViewerIntent: FileViewerIntent, repoUrl: String) {
+        startActivity(FileViewerActivity.getIntent(context)
+                .putExtra("owner", fileViewerIntent.repoOwner)
+                .putExtra("name", fileViewerIntent.repoName)
+                .putExtra("path", fileViewerIntent.filePath)
+                .putExtra("filename", fileViewerIntent.fileName)
+                .putExtra("file_url", repoUrl))
         activity.overridePendingTransition(0,0)
     }
 

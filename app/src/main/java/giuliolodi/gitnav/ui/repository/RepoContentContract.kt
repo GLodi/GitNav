@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.repository
 
+import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Repository
@@ -28,7 +29,7 @@ interface RepoContentContract {
 
     interface View : BaseContract.View {
 
-        fun showContent(map: Map<Repository, List<RepositoryContents>>)
+        fun showContent(repoContentList: List<RepositoryContents>)
 
         fun showLoading()
 
@@ -46,12 +47,18 @@ interface RepoContentContract {
 
         fun pressBack()
 
+        fun intentToViewerActivity(fileViewerIntent: FileViewerIntent, repoUrl: String)
+
     }
 
     @PerActivity
     interface Presenter<V: RepoContentContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onFileClick(path: String, name: String)
+
+        fun onDirClick(path: String)
 
         fun onBackPressed(isNetworkAvailable: Boolean)
 

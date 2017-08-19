@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.repository
 
 import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -80,7 +81,12 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                 }
                 .subscribe(
                         { map ->
-                            getView().showContent(map)
+                            mRepo = map.keys.first()
+                            mRepo?.let {
+                                mRepoContentList = map[it]?.toMutableList()!!
+                                mRepoContentList.sortBy { it.type }
+                            }
+                            if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
                             getView().hideLoading()
                             getView().hideBottomLoading()
                             LOADING = false
@@ -119,6 +125,18 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
         }
         else {
             getView().pressBack()
+        }
+    }
+
+    override fun onFileClick(path: String, name: String) {
+        getView().intentToViewerActivity(FileViewerIntent(mRepo?.owner?.login, mRepo?.name, path, name, null, null), mRepo?.htmlUrl!!)
+    }
+
+    override fun onDirClick(path: String) {
+        if (!LOADING_CONTENT) {
+            LOADING_CONTENT = true
+            pathTree.add(path)
+            TREE_DEPTH += 1
         }
     }
 
