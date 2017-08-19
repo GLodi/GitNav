@@ -154,6 +154,11 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
+    override fun pressBack() {
+        activity.onBackPressed()
+        activity.overridePendingTransition(0,0)
+    }
+
     override fun onDestroyView() {
         mPresenter.onDetachView()
         super.onDestroyView()

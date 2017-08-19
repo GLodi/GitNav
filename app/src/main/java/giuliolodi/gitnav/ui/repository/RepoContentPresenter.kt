@@ -44,7 +44,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     private var treeText: String = ""
     private var LOADING: Boolean = false
     private var LOADING_CONTENT: Boolean = false
-    private var TREE_DEPTH: Int = 1
+    private var TREE_DEPTH: Int = 0
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
@@ -101,19 +101,24 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     }
 
     override fun onBackPressed(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            if (!LOADING_CONTENT) {
-                LOADING_CONTENT = true
-                path = pathTree[pathTree.size - 2]
-                pathTree.removeAt(pathTree.size - 1)
-                TREE_DEPTH -= 1
-                mRepoContentList.clear()
-                repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
-                loadRepoContent()
+        if (TREE_DEPTH != 0) {
+            if (isNetworkAvailable) {
+                if (!LOADING_CONTENT) {
+                    LOADING_CONTENT = true
+                    path = pathTree[pathTree.size - 2]
+                    pathTree.removeAt(pathTree.size - 1)
+                    TREE_DEPTH -= 1
+                    mRepoContentList.clear()
+                    getView().showBottomLoading()
+                    loadRepoContent()
+                }
+            }
+            else {
+                getView().showNoConnectionError()
             }
         }
         else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            getView().pressBack()
         }
     }
 

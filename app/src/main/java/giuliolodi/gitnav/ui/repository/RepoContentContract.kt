@@ -44,6 +44,8 @@ interface RepoContentContract {
 
         fun showNoConnectionError()
 
+        fun pressBack()
+
     }
 
     @PerActivity
