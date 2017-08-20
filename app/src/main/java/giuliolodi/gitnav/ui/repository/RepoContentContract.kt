@@ -58,7 +58,7 @@ interface RepoContentContract {
 
         fun onFileClick(path: String, name: String)
 
-        fun onDirClick(path: String)
+        fun onDirClick(isNetworkAvailable: Boolean, path: String)
 
         fun onBackPressed(isNetworkAvailable: Boolean)
 

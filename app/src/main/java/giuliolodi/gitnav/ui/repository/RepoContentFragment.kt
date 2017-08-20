@@ -84,7 +84,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { repoContents ->
                     when(repoContents.type) {
-                        "dir" -> mPresenter.onDirClick(repoContents.path)
+                        "dir" -> mPresenter.onDirClick(isNetworkAvailable(), repoContents.path)
                         "file" -> mPresenter.onFileClick(repoContents.path, repoContents.name)
                     }
                 }

@@ -40,8 +40,8 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     private var mName: String? = null
     private var mRepo: Repository? = null
     private var mRepoContentList: MutableList<RepositoryContents> = mutableListOf()
+    private var mPath: String = ""
     private var pathTree: MutableList<String> = mutableListOf()
-    private var path: String = ""
     private var treeText: String = ""
     private var LOADING: Boolean = false
     private var LOADING_CONTENT: Boolean = false
@@ -71,7 +71,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                 getDataManager().getRepo(mOwner!!, mName!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
-                getDataManager().getContent(mOwner!!, mName!!, path)
+                getDataManager().getContent(mOwner!!, mName!!, mPath)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, repoContentList -> return@BiFunction mapOf(repo to repoContentList) })
@@ -111,7 +111,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
             if (isNetworkAvailable) {
                 if (!LOADING_CONTENT) {
                     LOADING_CONTENT = true
-                    path = pathTree[pathTree.size - 2]
+                    mPath = pathTree[pathTree.size - 2]
                     pathTree.removeAt(pathTree.size - 1)
                     TREE_DEPTH -= 1
                     mRepoContentList.clear()
@@ -132,11 +132,20 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
         getView().intentToViewerActivity(FileViewerIntent(mRepo?.owner?.login, mRepo?.name, path, name, null, null), mRepo?.htmlUrl!!)
     }
 
-    override fun onDirClick(path: String) {
+    override fun onDirClick(isNetworkAvailable: Boolean, path: String) {
         if (!LOADING_CONTENT) {
-            LOADING_CONTENT = true
-            pathTree.add(path)
-            TREE_DEPTH += 1
+            if (isNetworkAvailable) {
+                LOADING_CONTENT = true
+                mPath = path
+                pathTree.add(path)
+                TREE_DEPTH += 1
+                mRepoContentList.clear()
+                getView().showBottomLoading()
+                loadRepoContent()
+            }
+            else {
+                getView().showNoConnectionError()
+            }
         }
     }
 
