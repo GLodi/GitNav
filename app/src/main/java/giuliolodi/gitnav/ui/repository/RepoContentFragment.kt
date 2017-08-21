@@ -112,6 +112,10 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         repo_content_fragment_progressbar_bottom.visibility = View.GONE
     }
 
+    override fun clearContent() {
+        (repo_content_fragment_rv.adapter as FileAdapter).clear()
+    }
+
     override fun onTreeSet(treeText: String) {
         repo_content_fragment_tree.text = ""
         repo_content_fragment_tree.text = treeText

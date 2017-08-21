@@ -115,6 +115,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                     pathTree.removeAt(pathTree.size - 1)
                     TREE_DEPTH -= 1
                     mRepoContentList.clear()
+                    getView().clearContent()
                     getView().showBottomLoading()
                     loadRepoContent()
                 }
@@ -140,6 +141,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                 pathTree.add(path)
                 TREE_DEPTH += 1
                 mRepoContentList.clear()
+                getView().clearContent()
                 getView().showBottomLoading()
                 loadRepoContent()
             }

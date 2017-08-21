@@ -49,6 +49,8 @@ interface RepoContentContract {
 
         fun intentToViewerActivity(fileViewerIntent: FileViewerIntent, repoUrl: String)
 
+        fun clearContent()
+
     }
 
     @PerActivity
