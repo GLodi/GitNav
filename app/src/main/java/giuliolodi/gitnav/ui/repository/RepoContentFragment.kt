@@ -104,14 +104,6 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         repo_content_fragment_progressbar.visibility = View.GONE
     }
 
-    override fun showBottomLoading() {
-        repo_content_fragment_progressbar_bottom.visibility = View.VISIBLE
-    }
-
-    override fun hideBottomLoading() {
-        repo_content_fragment_progressbar_bottom.visibility = View.GONE
-    }
-
     override fun clearContent() {
         (repo_content_fragment_rv.adapter as FileAdapter).clear()
     }

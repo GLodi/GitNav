@@ -68,13 +68,4 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <ProgressBar
-        android:id="@+id/repo_content_fragment_progressbar_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"/>
-
 </RelativeLayout>

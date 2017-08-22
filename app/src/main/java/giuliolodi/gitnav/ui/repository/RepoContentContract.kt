@@ -35,10 +35,6 @@ interface RepoContentContract {
 
         fun hideLoading()
 
-        fun showBottomLoading()
-
-        fun hideBottomLoading()
-
         fun onTreeSet(treeText: String)
 
         fun showError(error: String)

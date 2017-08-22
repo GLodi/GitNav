@@ -90,13 +90,14 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                             }
                             if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
                             getView().hideLoading()
-                            getView().hideBottomLoading()
+                            TREE_DEPTH += 1
                             LOADING = false
                             LOADING_CONTENT = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
+                            TREE_DEPTH -= 1
                             Timber.e(throwable)
                         }
                 ))
@@ -118,7 +119,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                     TREE_DEPTH -= 1
                     mRepoContentList.clear()
                     getView().clearContent()
-                    getView().showBottomLoading()
+                    getView().showLoading()
                     loadRepoContent()
                 }
             }
@@ -141,10 +142,9 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                 LOADING_CONTENT = true
                 mPath = path
                 pathTree.add(path)
-                TREE_DEPTH += 1
                 mRepoContentList.clear()
                 getView().clearContent()
-                getView().showBottomLoading()
+                getView().showLoading()
                 loadRepoContent()
             }
             else {
