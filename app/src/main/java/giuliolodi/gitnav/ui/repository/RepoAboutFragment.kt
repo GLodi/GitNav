@@ -17,9 +17,11 @@
 package giuliolodi.gitnav.ui.repository
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
@@ -65,6 +67,10 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
+
+        repo_about_fragment_gridview.layoutManager = LinearLayoutManager(context)
+        repo_about_fragment_gridview.isNestedScrollingEnabled = false
+
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
