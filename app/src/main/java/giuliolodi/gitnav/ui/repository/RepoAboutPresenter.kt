@@ -82,7 +82,10 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
                             mRepoContributor = repoContributors
                             mRepo = repoContributors.keys.first()
                             mRepo?.let { mContributorList = repoContributors[it] }
-                            mRepo?.let { getView().showRepoAbout(mRepo?.name!!, mRepo?.owner?.login!!, mRepo?.description!!, mRepo?.owner?.avatarUrl!!) }
+                            mRepo?.let {
+                                getView().showRepoAbout(it.name!!, it.owner?.login!!, it.description!!, it.owner?.avatarUrl!!)
+                                getView().populateGridView(it.forks.toString(), it.openIssues.toString(), mContributorList?.size.toString())
+                            }
                             getView().hideLoading()
                             LOADING = false
                         },
