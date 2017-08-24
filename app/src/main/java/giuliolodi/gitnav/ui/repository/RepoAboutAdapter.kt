@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
+import kotlinx.android.synthetic.main.row_repo_about.view.*
 
 /**
  * Created by giulio on 23/08/2017.
@@ -31,13 +32,14 @@ class RepoAboutAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mNumberList: MutableList<String> = mutableListOf()
 
     class MyViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind(name: String, number: String) {
-
+        fun bind(name: String, number: String) = with(itemView) {
+            row_repo_about_text.text = name
+            row_repo_about_n.text = number
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
-        return MyViewHolder((LayoutInflater.from(parent?.context).inflate(R.layout.row_repo, parent, false)))
+        return MyViewHolder((LayoutInflater.from(parent?.context).inflate(R.layout.row_repo_about, parent, false)))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {

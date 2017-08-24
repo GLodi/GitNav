@@ -82,7 +82,7 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
         Picasso.with(context).load(avatarUrl).resize(75, 75).centerCrop().into(repo_about_fragment_image)
     }
 
-    override fun populateGridView(forksString: String, openIssuesString: String, contributorListSize: String) {
+    override fun populateGridView(forksString: String, openIssuesString: String, contributorListSize: String, stargazersString: String) {
         val nameList: MutableList<String> = mutableListOf()
         nameList.add(getString(R.string.stargazers))
         nameList.add(getString(R.string.forks))
@@ -90,7 +90,7 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
         nameList.add(getString(R.string.contributors))
 
         val numberList: MutableList<String> = mutableListOf()
-        // TODO Add number of stargazers
+        numberList.add(stargazersString)
         numberList.add(forksString)
         numberList.add(openIssuesString)
         numberList.add(contributorListSize)

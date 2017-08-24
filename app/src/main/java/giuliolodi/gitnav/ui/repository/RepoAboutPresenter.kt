@@ -40,6 +40,7 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
     private var mRepoContributor: Map<Repository, List<Contributor>>? = null
     private var mRepo: Repository? = null
     private var mContributorList: List<Contributor>? = null
+    private var mStargazers: Int? = null
     private var LOADING: Boolean = false
 
     @Inject
@@ -50,7 +51,10 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
         owner?.let { mOwner = it }
         name?.let { mName = it }
 
-        if (mRepo != null) getView().showRepoAbout(mRepo?.name!!, mRepo?.owner?.login!!, mRepo?.description!!, mRepo?.owner?.avatarUrl!!)
+        if (mRepo != null) {
+            getView().showRepoAbout(mRepo?.name!!, mRepo?.owner?.login!!, mRepo?.description!!, mRepo?.owner?.avatarUrl!!)
+            getView().populateGridView(mRepo?.forks.toString(), mRepo?.openIssues.toString(), mContributorList?.size.toString(), mStargazers?.toString()!!)
+        }
         else if (LOADING) getView().showLoading()
         else {
             if (isNetworkAvailable) {
@@ -81,10 +85,11 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
                         { repoContributors ->
                             mRepoContributor = repoContributors
                             mRepo = repoContributors.keys.first()
-                            mRepo?.let { mContributorList = repoContributors[it] }
                             mRepo?.let {
+                                mContributorList = repoContributors[it]
+                                mStargazers = it.watchers
                                 getView().showRepoAbout(it.name!!, it.owner?.login!!, it.description!!, it.owner?.avatarUrl!!)
-                                getView().populateGridView(it.forks.toString(), it.openIssues.toString(), mContributorList?.size.toString())
+                                getView().populateGridView(it.forks.toString(), it.openIssues.toString(), mContributorList?.size.toString(), mStargazers?.toString()!!)
                             }
                             getView().hideLoading()
                             LOADING = false
