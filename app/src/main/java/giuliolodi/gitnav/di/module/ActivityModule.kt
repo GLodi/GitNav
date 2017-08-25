@@ -42,6 +42,8 @@ import giuliolodi.gitnav.ui.trending.TrendingContract
 import giuliolodi.gitnav.ui.trending.TrendingPresenter
 import giuliolodi.gitnav.ui.user.UserContract
 import giuliolodi.gitnav.ui.user.UserPresenter
+import giuliolodi.gitnav.ui.userlist.UserListContract
+import giuliolodi.gitnav.ui.userlist.UserListPresenter
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -165,6 +167,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideFileViewerPresenter(presenter: FileViewerPresenter<FileViewerContract.View>): FileViewerContract.Presenter<FileViewerContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideUserListPresenter(presenter: UserListPresenter<UserListContract.View>): UserListContract.Presenter<UserListContract.View> {
         return presenter
     }
 
