@@ -31,10 +31,15 @@ class StargazerListFragment : BaseFragment() {
 
     @Inject lateinit var mPresenter: StargazerListContract.Presenter<StargazerListContract.View>
 
+    private var mRepoOwner: String? = null
+    private var mRepoName: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
+        mRepoOwner = activity.intent.getStringExtra("repoOwner")
+        mRepoName = activity.intent.getStringExtra("repoName")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
