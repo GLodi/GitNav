@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.userlist
+package giuliolodi.gitnav.ui.stargazerlist
 
 import android.content.Context
 import android.content.Intent
@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.base_activity.*
 /**
  * Created by giulio on 25/08/2017.
  */
-class UserListActivity : BaseActivity() {
+class StargazerListActivity : BaseActivity() {
 
     private val USER_LIST_FRAGMENT_TAG = "USER_LIST_FRAGMENT_TAG"
 
@@ -34,12 +34,12 @@ class UserListActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         layoutInflater.inflate(R.layout.user_list_activity, content_frame)
 
-        var userListFragment: UserListFragment? = supportFragmentManager.findFragmentByTag(USER_LIST_FRAGMENT_TAG) as UserListFragment?
-        if (userListFragment == null) {
-            userListFragment = UserListFragment()
+        var stargazerListFragment: StargazerListFragment? = supportFragmentManager.findFragmentByTag(USER_LIST_FRAGMENT_TAG) as StargazerListFragment?
+        if (stargazerListFragment == null) {
+            stargazerListFragment = StargazerListFragment()
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.user_list_activity_frame, userListFragment, USER_LIST_FRAGMENT_TAG)
+                    .replace(R.id.user_list_activity_frame, stargazerListFragment, USER_LIST_FRAGMENT_TAG)
                     .commit()
         }
     }
@@ -51,7 +51,7 @@ class UserListActivity : BaseActivity() {
 
     companion object {
         fun getIntent(context: Context): Intent {
-            return Intent(context, UserListActivity::class.java)
+            return Intent(context, StargazerListActivity::class.java)
         }
     }
     

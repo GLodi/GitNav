@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.userlist
+package giuliolodi.gitnav.ui.stargazerlist
 
-import giuliolodi.gitnav.data.DataManager
-import giuliolodi.gitnav.ui.base.BasePresenter
-import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.User
 
 /**
  * Created by giulio on 25/08/2017.
  */
-class UserListPresenter<V: UserListContract.View> : BasePresenter<V>, UserListContract.Presenter<V> {
+interface StargazerListContract {
 
-    private val TAG = "UserListPresenter"
+    interface View : BaseContract.View {
 
-    @Inject
-    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+        fun showUserList(userList: List<User>)
 
-    override fun subscribe() {
+    }
+
+    @PerActivity
+    interface Presenter<V: StargazerListContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe()
 
     }
 

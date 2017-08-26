@@ -42,8 +42,8 @@ import giuliolodi.gitnav.ui.trending.TrendingContract
 import giuliolodi.gitnav.ui.trending.TrendingPresenter
 import giuliolodi.gitnav.ui.user.UserContract
 import giuliolodi.gitnav.ui.user.UserPresenter
-import giuliolodi.gitnav.ui.userlist.UserListContract
-import giuliolodi.gitnav.ui.userlist.UserListPresenter
+import giuliolodi.gitnav.ui.stargazerlist.StargazerListContract
+import giuliolodi.gitnav.ui.stargazerlist.StargazerListPresenter
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -172,7 +172,7 @@ class ActivityModule(val activity: Activity) {
 
     @Provides
     @PerActivity
-    fun provideUserListPresenter(presenter: UserListPresenter<UserListContract.View>): UserListContract.Presenter<UserListContract.View> {
+    fun provideUserListPresenter(presenter: StargazerListPresenter<StargazerListContract.View>): StargazerListContract.Presenter<StargazerListContract.View> {
         return presenter
     }
 

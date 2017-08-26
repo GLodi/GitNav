@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.userlist
+package giuliolodi.gitnav.ui.stargazerlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,9 +27,9 @@ import javax.inject.Inject
 /**
  * Created by giulio on 25/08/2017.
  */
-class UserListFragment : BaseFragment() {
+class StargazerListFragment : BaseFragment() {
 
-    @Inject lateinit var mPresenter: UserListContract.Presenter<UserListContract.View>
+    @Inject lateinit var mPresenter: StargazerListContract.Presenter<StargazerListContract.View>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

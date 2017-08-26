@@ -32,7 +32,7 @@ import giuliolodi.gitnav.ui.search.SearchFragment
 import giuliolodi.gitnav.ui.starred.StarredFragment
 import giuliolodi.gitnav.ui.trending.TrendingFragment
 import giuliolodi.gitnav.ui.user.UserActivity
-import giuliolodi.gitnav.ui.userlist.UserListFragment
+import giuliolodi.gitnav.ui.stargazerlist.StargazerListFragment
 
 /**
  * Created by giulio on 12/05/2017.
@@ -75,6 +75,6 @@ interface ActivityComponent {
 
     fun inject(fileViewerFragment: FileViewerFragment)
 
-    fun inject(userListFragment: UserListFragment)
+    fun inject(stargazerListFragment: StargazerListFragment)
 
 }
