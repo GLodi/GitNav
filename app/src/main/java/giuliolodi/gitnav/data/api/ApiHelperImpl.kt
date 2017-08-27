@@ -404,4 +404,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiPageStargazers(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
+        return Flowable.defer {
+            val stargazerService: StargazerService = StargazerService()
+            stargazerService.client.setOAuth2Token(token)
+            Flowable.just(stargazerService.pageStargazers(RepositoryId(owner, name), pageN, itemsPerPage).next().toMutableList())
+        }
+    }
+
 }

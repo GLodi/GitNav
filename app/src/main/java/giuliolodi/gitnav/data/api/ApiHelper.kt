@@ -299,4 +299,13 @@ interface ApiHelper {
      */
     fun apiGetContent(token: String, owner: String, name: String, path: String): Flowable<List<RepositoryContents>>
 
+    /**
+     * Returns list of repo's stargazers
+     * @param token
+     * @param owner
+     * @param name
+     * @return Flowable<List<User>>
+     */
+    fun apiPageStargazers(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<User>>
+
 }

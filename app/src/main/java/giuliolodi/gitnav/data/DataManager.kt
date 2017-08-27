@@ -280,4 +280,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getContent(owner: String, name: String, path: String): Flowable<List<RepositoryContents>>
 
+    /**
+     * Returns list of repo's stargazers
+     * @param owner
+     * @param name
+     * @return Flowable<List<User>>
+     */
+    fun pageStargazers(owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<User>>
+
 }
