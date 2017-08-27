@@ -22,12 +22,13 @@ import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import org.eclipse.egit.github.core.User
 import javax.inject.Inject
 
 /**
  * Created by giulio on 25/08/2017.
  */
-class StargazerListFragment : BaseFragment() {
+class StargazerListFragment : BaseFragment(), StargazerListContract.View {
 
     @Inject lateinit var mPresenter: StargazerListContract.Presenter<StargazerListContract.View>
 
@@ -47,6 +48,12 @@ class StargazerListFragment : BaseFragment() {
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+        mPresenter.onAttach(this)
+
+        mPresenter.subscribe(mRepoOwner, mRepoName, isNetworkAvailable())
+    }
+
+    override fun showUserList(userList: List<User>) {
     }
 
 }

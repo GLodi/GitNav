@@ -34,7 +34,7 @@ interface StargazerListContract {
     @PerActivity
     interface Presenter<V: StargazerListContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe()
+        fun subscribe(repoOwner: String?, repoName: String?, isNetworkAvailable: Boolean)
 
     }
 

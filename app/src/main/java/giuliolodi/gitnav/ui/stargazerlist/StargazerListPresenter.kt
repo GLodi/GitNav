@@ -28,10 +28,13 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
 
     private val TAG = "StargazerListPresenter"
 
+    private var mRepoOwner: String? = null
+    private var mRepoName: String? = null
+
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe() {
+    override fun subscribe(repoOwner: String?, repoName: String?, isNetworkAvailable: Boolean) {
 
     }
 
