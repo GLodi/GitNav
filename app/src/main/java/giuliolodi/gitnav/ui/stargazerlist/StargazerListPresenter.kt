@@ -30,6 +30,11 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
 
     private var mRepoOwner: String? = null
     private var mRepoName: String? = null
+    private var PAGE_N: Int = 1
+    private var ITEMS_PER_PAGE: Int = 20
+    private var LOADING: Boolean = false
+    private var LOADING_LIST: Boolean = false
+    private var NO_SHOWING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
