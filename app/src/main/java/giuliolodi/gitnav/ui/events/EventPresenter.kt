@@ -55,6 +55,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
             else {
                 getView().showNoConnectionError()
                 getView().hideLoading()
+                LOADING = false
             }
         }
     }

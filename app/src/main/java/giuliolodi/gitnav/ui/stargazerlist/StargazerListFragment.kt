@@ -53,7 +53,31 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
         mPresenter.subscribe(mRepoOwner, mRepoName, isNetworkAvailable())
     }
 
-    override fun showUserList(userList: List<User>) {
+    override fun showStargazerList(stargazerList: List<User>) {
+    }
+
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
+
+    override fun showListLoading() {
+    }
+
+    override fun hideListLoading() {
+    }
+
+    override fun showNoStargazers() {
+    }
+
+    override fun hideNoStargazers() {
+    }
+
+    override fun showError(error: String) {
+    }
+
+    override fun showNoConnectionError() {
     }
 
 }

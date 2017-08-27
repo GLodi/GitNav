@@ -27,7 +27,23 @@ interface StargazerListContract {
 
     interface View : BaseContract.View {
 
-        fun showUserList(userList: List<User>)
+        fun showStargazerList(stargazerList: List<User>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showListLoading()
+
+        fun hideListLoading()
+
+        fun showNoStargazers()
+
+        fun hideNoStargazers()
+
+        fun showError(error: String)
+
+        fun showNoConnectionError()
 
     }
 

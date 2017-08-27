@@ -31,11 +31,11 @@ interface EventContract {
 
         fun showLoading()
 
+        fun hideLoading()
+
         fun showListLoading()
 
         fun hideListLoading()
-
-        fun hideLoading()
 
         fun showNoEvents()
 

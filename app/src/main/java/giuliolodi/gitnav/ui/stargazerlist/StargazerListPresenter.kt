@@ -18,7 +18,10 @@ package giuliolodi.gitnav.ui.stargazerlist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.User
 import javax.inject.Inject
 
 /**
@@ -28,6 +31,7 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
 
     private val TAG = "StargazerListPresenter"
 
+    private var mStargazerList: MutableList<User> = mutableListOf()
     private var mRepoOwner: String? = null
     private var mRepoName: String? = null
     private var PAGE_N: Int = 1
@@ -40,7 +44,50 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(repoOwner: String?, repoName: String?, isNetworkAvailable: Boolean) {
+        mRepoOwner = repoOwner
+        mRepoName = repoName
+        if (!mStargazerList.isEmpty()) getView().showStargazerList(mStargazerList)
+        else if (NO_SHOWING) getView().showNoStargazers()
+        else if (LOADING) getView().showLoading()
+        else {
+            if (isNetworkAvailable) {
+                LOADING = true
+                getView().showLoading()
+                if (mRepoOwner != null && mRepoName != null) loadStargazerList()
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
+            }
+        }
+    }
 
+    private fun loadStargazerList() {
+        getCompositeDisposable().add(getDataManager().pageStargazers(mRepoOwner!!, mRepoName!!, PAGE_N, ITEMS_PER_PAGE)
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { stargazerList ->
+                            mStargazerList.addAll(stargazerList)
+                            getView().showStargazerList(mStargazerList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && stargazerList.isEmpty()) {
+                                getView().showNoStargazers()
+                                NO_SHOWING = true
+                            }
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
     }
 
 }
