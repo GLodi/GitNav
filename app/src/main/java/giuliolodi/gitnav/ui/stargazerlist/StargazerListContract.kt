@@ -41,6 +41,8 @@ interface StargazerListContract {
 
         fun hideNoStargazers()
 
+        fun clearAdapter()
+
         fun showError(error: String)
 
         fun showNoConnectionError()
@@ -50,7 +52,11 @@ interface StargazerListContract {
     @PerActivity
     interface Presenter<V: StargazerListContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(repoOwner: String?, repoName: String?, isNetworkAvailable: Boolean)
+        fun subscribe(isNetworkAvailable: Boolean, repoOwner: String?, repoName: String?)
+
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 
     }
 

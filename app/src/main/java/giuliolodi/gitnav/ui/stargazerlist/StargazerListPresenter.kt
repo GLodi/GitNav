@@ -43,7 +43,7 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(repoOwner: String?, repoName: String?, isNetworkAvailable: Boolean) {
+    override fun subscribe(isNetworkAvailable: Boolean, repoOwner: String?, repoName: String?) {
         mRepoOwner = repoOwner
         mRepoName = repoName
         if (!mStargazerList.isEmpty()) getView().showStargazerList(mStargazerList)
@@ -88,6 +88,36 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
                             LOADING_LIST = false
                         }
                 ))
+    }
+
+    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getView().hideNoStargazers()
+            NO_SHOWING = false
+            PAGE_N = 1
+            mStargazerList.clear()
+            getView().clearAdapter()
+            LOADING = true
+            if (mRepoOwner != null && mRepoName != null) loadStargazerList()
+        }
+        else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST)
+            return
+        else if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            if (mRepoOwner != null && mRepoName != null) loadStargazerList()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
     }
 
 }

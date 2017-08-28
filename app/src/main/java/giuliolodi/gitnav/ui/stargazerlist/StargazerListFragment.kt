@@ -74,6 +74,9 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
     override fun hideNoStargazers() {
     }
 
+    override fun clearAdapter() {
+    }
+
     override fun showError(error: String) {
     }
 
