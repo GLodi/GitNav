@@ -20,7 +20,7 @@
     android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/user_list_fragment_progress_bar"
+        android:id="@+id/stargazer_list_fragment_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -28,13 +28,13 @@
         android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/user_list_fragment_rv"
+        android:id="@+id/stargazer_list_fragment_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/user_list_no_users"
-        android:text="@string/no_users"
+        android:id="@+id/stargazer_list_no_stargazers"
+        android:text="@string/no_stargazers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

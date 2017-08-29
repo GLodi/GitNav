@@ -47,6 +47,8 @@ interface StargazerListContract {
 
         fun showNoConnectionError()
 
+        fun intentToUserActivity(username: String)
+
     }
 
     @PerActivity
@@ -57,6 +59,8 @@ interface StargazerListContract {
         fun onSwipeToRefresh(isNetworkAvailable: Boolean)
 
         fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onUserClick(username: String)
 
     }
 

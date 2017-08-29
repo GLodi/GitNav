@@ -120,4 +120,8 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
         }
     }
 
+    override fun onUserClick(username: String) {
+        getView().intentToUserActivity(username)
+    }
+
 }

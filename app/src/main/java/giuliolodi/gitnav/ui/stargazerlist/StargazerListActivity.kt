@@ -32,14 +32,14 @@ class StargazerListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        layoutInflater.inflate(R.layout.user_list_activity, content_frame)
+        layoutInflater.inflate(R.layout.stargazer_list_activity, content_frame)
 
         var stargazerListFragment: StargazerListFragment? = supportFragmentManager.findFragmentByTag(USER_LIST_FRAGMENT_TAG) as StargazerListFragment?
         if (stargazerListFragment == null) {
             stargazerListFragment = StargazerListFragment()
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.user_list_activity_frame, stargazerListFragment, USER_LIST_FRAGMENT_TAG)
+                    .replace(R.id.stargazer_list_activity_frame, stargazerListFragment, USER_LIST_FRAGMENT_TAG)
                     .commit()
         }
     }
