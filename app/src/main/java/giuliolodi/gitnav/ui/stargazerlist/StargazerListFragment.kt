@@ -91,28 +91,35 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
     }
 
     override fun showStargazerList(stargazerList: List<User>) {
+        (stargazer_list_fragment_rv.adapter as UserAdapter).addUserList(stargazerList)
     }
 
     override fun showLoading() {
+        stargazer_list_fragment_progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
+        stargazer_list_fragment_progress_bar.visibility = View.GONE
     }
 
     override fun showListLoading() {
+        (stargazer_list_fragment_rv.adapter as UserAdapter).addLoading()
     }
 
     override fun hideListLoading() {
+        (stargazer_list_fragment_rv.adapter as UserAdapter).hideLoading()
     }
 
     override fun showNoStargazers() {
+        stargazer_list_no_stargazers.visibility = View.VISIBLE
     }
 
     override fun hideNoStargazers() {
+        stargazer_list_no_stargazers.visibility = View.GONE
     }
 
     override fun clearAdapter() {
-
+        (stargazer_list_fragment_rv.adapter as UserAdapter).clear()
     }
 
     override fun showError(error: String) {

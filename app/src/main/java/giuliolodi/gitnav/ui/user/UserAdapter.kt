@@ -106,6 +106,14 @@ class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemInserted(mUserList.size - 1)
     }
 
+    fun hideLoading() {
+        if (mUserList.lastIndexOf(null) != -1) {
+            val lastNull = mUserList.lastIndexOf(null)
+            mUserList.removeAt(lastNull)
+            notifyItemRemoved(lastNull)
+        }
+    }
+
     fun clear() {
         mUserList.clear()
         notifyDataSetChanged()
