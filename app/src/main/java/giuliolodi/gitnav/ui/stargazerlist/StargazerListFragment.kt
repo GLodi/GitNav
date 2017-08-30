@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.stargazerlist
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -43,15 +44,15 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
 
     @Inject lateinit var mPresenter: StargazerListContract.Presenter<StargazerListContract.View>
 
-    private var mRepoOwner: String? = null
-    private var mRepoName: String? = null
+    private var mOwner: String? = null
+    private var mName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
-        mRepoOwner = activity.intent.getStringExtra("repoOwner")
-        mRepoName = activity.intent.getStringExtra("repoName")
+        mOwner = activity.intent.getStringExtra("owner")
+        mName = activity.intent.getStringExtra("name")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,7 +61,12 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
-        activity?.title = getString(R.string.stargazers)
+
+        (activity as AppCompatActivity).setSupportActionBar(stargazer_list_fragment_toolbar)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.stargazers)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        stargazer_list_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
 
         val llm = LinearLayoutManager(context)
         llm.orientation = LinearLayoutManager.VERTICAL
@@ -87,7 +93,7 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
         }
         stargazer_list_fragment_rv.setOnScrollListener(mScrollListener)
 
-        mPresenter.subscribe(isNetworkAvailable(), mRepoOwner, mRepoName)
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
     override fun showStargazerList(stargazerList: List<User>) {

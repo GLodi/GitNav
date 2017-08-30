@@ -28,18 +28,18 @@ import kotlinx.android.synthetic.main.base_activity.*
  */
 class StargazerListActivity : BaseActivity() {
 
-    private val USER_LIST_FRAGMENT_TAG = "USER_LIST_FRAGMENT_TAG"
+    private val STARGAZER_LIST_FRAGMENT_TAG = "STARGAZER_LIST_FRAGMENT_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        layoutInflater.inflate(R.layout.stargazer_list_activity, content_frame)
+        setContentView(R.layout.stargazer_list_activity)
 
-        var stargazerListFragment: StargazerListFragment? = supportFragmentManager.findFragmentByTag(USER_LIST_FRAGMENT_TAG) as StargazerListFragment?
+        var stargazerListFragment: StargazerListFragment? = supportFragmentManager.findFragmentByTag(STARGAZER_LIST_FRAGMENT_TAG) as StargazerListFragment?
         if (stargazerListFragment == null) {
             stargazerListFragment = StargazerListFragment()
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.stargazer_list_activity_frame, stargazerListFragment, USER_LIST_FRAGMENT_TAG)
+                    .replace(R.id.stargazer_list_activity_frame, stargazerListFragment, STARGAZER_LIST_FRAGMENT_TAG)
                     .commit()
         }
     }

@@ -65,18 +65,19 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
 
     private fun loadStargazerList() {
         getCompositeDisposable().add(getDataManager().pageStargazers(mRepoOwner!!, mRepoName!!, PAGE_N, ITEMS_PER_PAGE)
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { stargazerList ->
                             mStargazerList.addAll(stargazerList)
-                            getView().showStargazerList(mStargazerList)
+                            getView().showStargazerList(stargazerList)
                             getView().hideLoading()
                             getView().hideListLoading()
                             if (PAGE_N == 1 && stargazerList.isEmpty()) {
                                 getView().showNoStargazers()
                                 NO_SHOWING = true
                             }
+                            PAGE_N += 1
                             LOADING = false
                             LOADING_LIST = false
                         },

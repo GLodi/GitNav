@@ -21,6 +21,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_repo_about.view.*
 
 /**
@@ -30,6 +32,12 @@ class RepoAboutAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mNameList: MutableList<String> = mutableListOf()
     private var mNumberList: MutableList<String> = mutableListOf()
+
+    private val onStargazersClick: PublishSubject<String> = PublishSubject.create()
+
+    fun getStargazersClicks(): Observable<String> {
+        return onStargazersClick
+    }
 
     class MyViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind(name: String, number: String) = with(itemView) {
@@ -45,6 +53,7 @@ class RepoAboutAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (holder is MyViewHolder) {
             holder.bind(mNameList[position], mNumberList[position])
+            if (position == 0) holder.itemView.row_repo_about_rl.setOnClickListener { onStargazersClick.onNext("0") }
         }
     }
 

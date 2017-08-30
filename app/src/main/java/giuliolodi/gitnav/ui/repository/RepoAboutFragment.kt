@@ -27,6 +27,9 @@ import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.stargazerlist.StargazerListActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.repo_about_fragment.*
 import org.eclipse.egit.github.core.Contributor
 import org.eclipse.egit.github.core.Repository
@@ -97,6 +100,14 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
 
         repo_about_fragment_gridview.adapter = RepoAboutAdapter()
         (repo_about_fragment_gridview.adapter as RepoAboutAdapter).set(nameList, numberList)
+
+        (repo_about_fragment_gridview.adapter as RepoAboutAdapter).getStargazersClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { _ ->
+                    startActivity(StargazerListActivity.getIntent(context).putExtra("owner", mOwner).putExtra("name", mName))
+                    activity.overridePendingTransition(0,0)
+                }
     }
 
     override fun showLoading() {

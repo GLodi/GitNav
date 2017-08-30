@@ -172,7 +172,7 @@ class ActivityModule(val activity: Activity) {
 
     @Provides
     @PerActivity
-    fun provideUserListPresenter(presenter: StargazerListPresenter<StargazerListContract.View>): StargazerListContract.Presenter<StargazerListContract.View> {
+    fun provideStargazerListPresenter(presenter: StargazerListPresenter<StargazerListContract.View>): StargazerListContract.Presenter<StargazerListContract.View> {
         return presenter
     }
 
