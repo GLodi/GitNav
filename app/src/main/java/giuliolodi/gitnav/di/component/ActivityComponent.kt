@@ -19,6 +19,7 @@ package giuliolodi.gitnav.di.component
 import dagger.Component
 import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.contributorlist.ContributorListFragment
 import giuliolodi.gitnav.ui.events.EventFragment
 import giuliolodi.gitnav.ui.fileviewer.FileViewerFragment
 import giuliolodi.gitnav.ui.gist.GistFragment
@@ -76,5 +77,7 @@ interface ActivityComponent {
     fun inject(fileViewerFragment: FileViewerFragment)
 
     fun inject(stargazerListFragment: StargazerListFragment)
+
+    fun inject(contributorListFragment: ContributorListFragment)
 
 }

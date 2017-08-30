@@ -22,6 +22,8 @@ import dagger.Module
 import dagger.Provides
 import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.contributorlist.ContributorListContract
+import giuliolodi.gitnav.ui.contributorlist.ContributorListPresenter
 import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
 import giuliolodi.gitnav.ui.fileviewer.FileViewerContract
@@ -173,6 +175,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideStargazerListPresenter(presenter: StargazerListPresenter<StargazerListContract.View>): StargazerListContract.Presenter<StargazerListContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideContributorListPresenter(presenter: ContributorListPresenter<ContributorListContract.View>): ContributorListContract.Presenter<ContributorListContract.View> {
         return presenter
     }
 
