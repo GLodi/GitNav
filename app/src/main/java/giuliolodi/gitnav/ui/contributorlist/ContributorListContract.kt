@@ -41,6 +41,8 @@ interface ContributorListContract {
 
         fun showNoConnectionError()
 
+        fun intentToUserActivity(username: String)
+
     }
 
     @PerActivity

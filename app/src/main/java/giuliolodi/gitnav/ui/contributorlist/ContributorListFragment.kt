@@ -20,8 +20,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.user.UserActivity
+import kotlinx.android.synthetic.main.contributor_list_fragment.*
+import org.eclipse.egit.github.core.Contributor
 import javax.inject.Inject
 
 /**
@@ -50,6 +55,46 @@ class ContributorListFragment: BaseFragment(), ContributorListContract.View {
         mPresenter.onAttach(this)
 
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
+    }
+
+    override fun showContributorList(contributorList: List<Contributor>) {
+    }
+
+    override fun showLoading() {
+        contributor_list_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        contributor_list_progress_bar.visibility = View.GONE
+    }
+
+    override fun showListLoading() {
+    }
+
+    override fun hideListLoading() {
+    }
+
+    override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }

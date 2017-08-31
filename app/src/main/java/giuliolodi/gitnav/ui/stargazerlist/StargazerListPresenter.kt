@@ -91,22 +91,6 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
                 ))
     }
 
-    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            getView().hideNoStargazers()
-            NO_SHOWING = false
-            PAGE_N = 1
-            mStargazerList.clear()
-            getView().clearAdapter()
-            LOADING = true
-            if (mRepoOwner != null && mRepoName != null) loadStargazerList()
-        }
-        else {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
-    }
-
     override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
         if (LOADING_LIST)
             return

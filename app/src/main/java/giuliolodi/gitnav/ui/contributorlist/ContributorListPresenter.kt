@@ -31,7 +31,7 @@ class ContributorListPresenter<V: ContributorListContract.View> : BasePresenter<
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(isNetworkAvailable: Boolean, repoOwner: String, repoName: String) {
+    override fun subscribe(isNetworkAvailable: Boolean, repoOwner: String?, repoName: String?) {
     }
 
 }

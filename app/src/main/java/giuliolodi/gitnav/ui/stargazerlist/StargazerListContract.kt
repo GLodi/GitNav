@@ -56,8 +56,6 @@ interface StargazerListContract {
 
         fun subscribe(isNetworkAvailable: Boolean, repoOwner: String?, repoName: String?)
 
-        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
-
         fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 
         fun onUserClick(username: String)
