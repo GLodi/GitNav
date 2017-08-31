@@ -33,9 +33,9 @@ interface ContributorListContract {
 
         fun hideLoading()
 
-        fun showListLoading()
+        fun showNoContributor()
 
-        fun hideListLoading()
+        fun hideNoContributor()
 
         fun showError(error: String)
 
@@ -49,6 +49,8 @@ interface ContributorListContract {
     interface Presenter<V: ContributorListContract.View>: BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, repoOwner: String?, repoName: String?)
+
+        fun onUserClick(username: String)
 
     }
 

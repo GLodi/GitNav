@@ -17,14 +17,21 @@
 package giuliolodi.gitnav.ui.contributorlist
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.user.UserActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.contributor_list_fragment.*
 import org.eclipse.egit.github.core.Contributor
 import javax.inject.Inject
@@ -54,10 +61,30 @@ class ContributorListFragment: BaseFragment(), ContributorListContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
 
+        (activity as AppCompatActivity).setSupportActionBar(contributor_list_fragment_toolbar)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.stargazers)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        contributor_list_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
+
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+
+        contributor_list_fragment_rv.layoutManager = llm
+        contributor_list_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
+        contributor_list_fragment_rv.itemAnimator = DefaultItemAnimator()
+        contributor_list_fragment_rv.adapter = ContributorAdapter()
+
+        (contributor_list_fragment_rv.adapter as ContributorAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username -> mPresenter.onUserClick(username) }
+
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
     override fun showContributorList(contributorList: List<Contributor>) {
+        (contributor_list_fragment_rv.adapter as ContributorAdapter).addContributorList(contributorList)
     }
 
     override fun showLoading() {
@@ -68,10 +95,12 @@ class ContributorListFragment: BaseFragment(), ContributorListContract.View {
         contributor_list_progress_bar.visibility = View.GONE
     }
 
-    override fun showListLoading() {
+    override fun showNoContributor() {
+        contributor_list_no_contributors.visibility = View.VISIBLE
     }
 
-    override fun hideListLoading() {
+    override fun hideNoContributor() {
+        contributor_list_no_contributors.visibility = View.GONE
     }
 
     override fun showError(error: String) {
