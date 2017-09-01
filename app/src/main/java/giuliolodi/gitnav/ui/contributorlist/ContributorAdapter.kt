@@ -42,7 +42,7 @@ class ContributorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class ContributorHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (contributor: Contributor) = with(itemView) {
             row_contributor_login.text = contributor.login
-            row_contributor_contributions.visibility = contributor.contributions
+            row_contributor_contributions.text = "Contributions: " + contributor.contributions.toString()
             Picasso.with(context).load(contributor.avatarUrl).resize(100,100).centerCrop().into(row_contributor_image)
         }
     }

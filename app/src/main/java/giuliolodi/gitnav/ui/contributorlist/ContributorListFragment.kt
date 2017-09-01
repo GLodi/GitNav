@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +54,7 @@ class ContributorListFragment: BaseFragment(), ContributorListContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.stargazer_list_fragment, container, false)
+        return inflater?.inflate(R.layout.contributor_list_fragment, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {

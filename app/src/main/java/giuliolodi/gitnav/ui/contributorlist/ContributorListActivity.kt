@@ -38,7 +38,7 @@ class ContributorListActivity : BaseActivity() {
             contributorListFragment = ContributorListFragment()
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.stargazer_list_activity_frame, contributorListFragment, CONTRIBUTOR_LIST_FRAGMENT_TAG)
+                    .replace(R.id.contributor_list_activity_frame, contributorListFragment, CONTRIBUTOR_LIST_FRAGMENT_TAG)
                     .commit()
         }
     }
