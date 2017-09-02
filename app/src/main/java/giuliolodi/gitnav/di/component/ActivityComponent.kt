@@ -26,6 +26,7 @@ import giuliolodi.gitnav.ui.gist.GistFragment
 import giuliolodi.gitnav.ui.gist.GistCommentsFragment
 import giuliolodi.gitnav.ui.gist.GistFilesFragment
 import giuliolodi.gitnav.ui.gistlist.GistListFragment
+import giuliolodi.gitnav.ui.issuelist.IssueListFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repository.*
 import giuliolodi.gitnav.ui.repositorylist.RepoListFragment
@@ -79,5 +80,7 @@ interface ActivityComponent {
     fun inject(stargazerListFragment: StargazerListFragment)
 
     fun inject(contributorListFragment: ContributorListFragment)
+
+    fun inject(issueListFragment: IssueListFragment)
 
 }
