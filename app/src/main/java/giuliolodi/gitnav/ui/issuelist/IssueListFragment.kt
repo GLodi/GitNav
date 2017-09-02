@@ -16,7 +16,12 @@
 
 package giuliolodi.gitnav.ui.issuelist
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
@@ -24,7 +29,6 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.issue_list_fragment.*
-import org.eclipse.egit.github.core.Issue
 import javax.inject.Inject
 
 /**
@@ -58,6 +62,11 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         issue_list_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
+
+        issue_list_fragment_tab_layout.visibility = View.VISIBLE
+        issue_list_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
+        issue_list_fragment_tab_layout.setupWithViewPager(issue_list_fragment_viewpager)
+        issue_list_fragment_viewpager.offscreenPageLimit = 2
     }
 
     override fun showError(error: String) {
@@ -87,6 +96,30 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    private class MyAdapter(context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+
+        private val mContext: Context = context
+
+        override fun getItem(position: Int): Fragment {
+            return when(position) {
+
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+            when (position) {
+                0 -> return mContext.getString(R.string.open)
+                1 -> return mContext.getString(R.string.closed)
+            }
+            return super.getPageTitle(position)
+        }
+
+        override fun getCount(): Int {
+            return 2
+        }
+
     }
 
 }
