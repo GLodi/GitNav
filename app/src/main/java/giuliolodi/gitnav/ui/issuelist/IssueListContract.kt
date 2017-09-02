@@ -27,12 +27,6 @@ interface IssueListContract {
 
     interface View : BaseContract.View {
 
-        fun showIssueList(issueList: List<Issue>)
-
-        fun showLoading()
-
-        fun hideLoading()
-
         fun showError(error: String)
 
         fun showNoConnectionError()

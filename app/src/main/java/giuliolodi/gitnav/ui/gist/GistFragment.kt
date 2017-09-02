@@ -31,7 +31,6 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.gist_fragment.*
-import org.eclipse.egit.github.core.Gist
 import javax.inject.Inject
 
 /**

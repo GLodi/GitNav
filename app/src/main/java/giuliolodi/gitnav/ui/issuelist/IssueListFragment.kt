@@ -19,6 +19,8 @@ package giuliolodi.gitnav.ui.issuelist
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.issue_list_fragment.*
@@ -52,27 +54,18 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
         setHasOptionsMenu(true)
 
         (activity as AppCompatActivity).setSupportActionBar(issue_list_fragment_toolbar)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.gist)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.issues)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         issue_list_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
     }
 
-    override fun showIssueList(issueList: List<Issue>) {
-
-    }
-
-    override fun showLoading() {
-
-    }
-
-    override fun hideLoading() {
-    }
-
     override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
     override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
