@@ -16,8 +16,23 @@
 
 package giuliolodi.gitnav.ui.issuelist
 
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+
 /**
  * Created by giulio on 02/09/2017.
  */
 interface IssueClosedContract {
+
+    interface View : BaseContract.View {
+
+    }
+
+    @PerActivity
+    interface Presenter<V: IssueClosedContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(isNetworkAvailable: Boolean)
+
+    }
+
 }

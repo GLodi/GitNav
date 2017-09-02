@@ -33,6 +33,8 @@ import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
 import giuliolodi.gitnav.ui.issuelist.IssueListContract
 import giuliolodi.gitnav.ui.issuelist.IssueListPresenter
+import giuliolodi.gitnav.ui.issuelist.IssueOpenContract
+import giuliolodi.gitnav.ui.issuelist.IssueOpenPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
 import giuliolodi.gitnav.ui.login.LoginPresenter
 import giuliolodi.gitnav.ui.repository.*
@@ -189,6 +191,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideIssueListPresenter(presenter: IssueListPresenter<IssueListContract.View>): IssueListContract.Presenter<IssueListContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideIssueOpenPresenter(presenter: IssueOpenPresenter<IssueOpenContract.View>): IssueOpenContract.Presenter<IssueOpenContract.View> {
         return presenter
     }
 

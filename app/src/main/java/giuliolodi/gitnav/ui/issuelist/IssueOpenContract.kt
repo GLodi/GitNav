@@ -16,8 +16,36 @@
 
 package giuliolodi.gitnav.ui.issuelist
 
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Issue
+
 /**
  * Created by giulio on 02/09/2017.
  */
 interface IssueOpenContract {
+
+    interface View : BaseContract.View {
+
+        fun showOpenIssues(issueList: List<Issue>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showNoOpenIssues()
+
+        fun showError(error: String)
+
+        fun showNoConnectionError()
+
+    }
+
+    @PerActivity
+    interface Presenter<V: IssueOpenContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+    }
+
 }

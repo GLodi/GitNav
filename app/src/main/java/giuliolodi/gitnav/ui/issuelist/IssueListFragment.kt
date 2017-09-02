@@ -98,13 +98,16 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
         super.onDestroy()
     }
 
-    private class MyAdapter(context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+    private class MyAdapter(owner: String, name: String, context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
         private val mContext: Context = context
+        private val mOwner: String = owner
+        private val mName: String = name
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-
+                0 -> IssueOpenFragment.newInstance(mOwner, mName)
+                else -> IssueClosedFragment()
             }
         }
 

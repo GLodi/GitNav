@@ -16,8 +16,16 @@
 
 package giuliolodi.gitnav.ui.issuelist
 
+import android.os.Bundle
+import android.view.View
+import giuliolodi.gitnav.ui.base.BaseFragment
+
 /**
  * Created by giulio on 02/09/2017.
  */
-class IssueClosedFragment {
+class IssueClosedFragment : BaseFragment() {
+
+    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+    }
+
 }

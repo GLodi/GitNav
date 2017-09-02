@@ -18,10 +18,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/issuelist_open_rl">
+    android:id="@+id/issue_list_open_rl">
 
     <ProgressBar
-        android:id="@+id/issuelist_open_progressbar"
+        android:id="@+id/issue_list_open_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -29,15 +29,15 @@
         android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/issuelist_open_rv"
+        android:id="@+id/issue_list_open_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/issuelist_open_progressbar">
+        android:layout_below="@id/issue_list_open_progressbar">
 
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/issuelist_open_noissues"
+        android:id="@+id/issue_list_open_noissues"
         android:text="@string/no_open_issues"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

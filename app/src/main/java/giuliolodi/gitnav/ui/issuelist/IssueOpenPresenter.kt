@@ -16,8 +16,22 @@
 
 package giuliolodi.gitnav.ui.issuelist
 
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
+
 /**
  * Created by giulio on 02/09/2017.
  */
-class IssueOpenPresenter {
+class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpenContract.Presenter<V> {
+
+    private val TAG = "IssueOpenPresenter"
+
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+    }
+
 }
