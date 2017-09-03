@@ -412,4 +412,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiPageIssues(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>> {
+        return Flowable.defer {
+            val issueService: IssueService = IssueService()
+            issueService.client.setOAuth2Token(token)
+            Flowable.just(issueService.pageIssues(RepositoryId(owner, name), hashMap, pageN, itemsPerPage).next().toMutableList())
+        }
+    }
+
 }

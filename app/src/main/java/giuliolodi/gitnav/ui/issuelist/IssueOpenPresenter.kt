@@ -18,7 +18,9 @@ package giuliolodi.gitnav.ui.issuelist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -28,10 +30,36 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
 
     private val TAG = "IssueOpenPresenter"
 
+    private var mOwner: String? = null
+    private var mName: String? = null
+    private var PAGE_N: Int = 1
+    private var ITEMS_PER_PAGE: Int = 10
+    private var mHashMap: HashMap<String,String> = hashMapOf()
+
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+        mOwner = owner
+        mName = name
+        mHashMap.put("state", "open")
+
+    }
+
+    private fun loadOpenIssues() {
+        getCompositeDisposable().add(getDataManager().pageIssues(mOwner!!, mName!!, PAGE_N, ITEMS_PER_PAGE, mHashMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { openIssueList ->
+
+
+                        },
+                        {
+
+                        }
+                ))
+
     }
 
 }

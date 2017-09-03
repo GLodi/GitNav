@@ -308,4 +308,15 @@ interface ApiHelper {
      */
     fun apiPageStargazers(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<User>>
 
+    /**
+     * Pages issues
+     * @param token
+     * @param owner
+     * @param name
+     * @param pageN
+     * @param itemsPerPage
+     * @return Flowable<List<Issue>>
+     */
+    fun apiPageIssues(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>>
+
 }

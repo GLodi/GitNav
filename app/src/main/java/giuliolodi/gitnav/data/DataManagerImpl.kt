@@ -251,6 +251,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageStargazers(mPrefsHelper.getToken(), owner, name, pageN, itemsPerPage)
     }
 
+    override fun pageIssues(owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>> {
+        return mApiHelper.apiPageIssues(mPrefsHelper.getToken(), owner, name, pageN, itemsPerPage, hashMap)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -373,6 +377,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiPageStargazers(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<User>> {
         return mApiHelper.apiPageStargazers(token, owner, name, pageN, itemsPerPage)
+    }
+
+    override fun apiPageIssues(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>> {
+        return mApiHelper.apiPageIssues(token, owner, name, pageN, itemsPerPage, hashMap)
     }
 
 }

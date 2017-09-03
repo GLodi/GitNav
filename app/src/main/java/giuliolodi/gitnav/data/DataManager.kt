@@ -288,4 +288,15 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun pageStargazers(owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<User>>
 
+    /**
+     * Pages issues
+     * @param owner
+     * @param name
+     * @param pageN
+     * @param itemsPerPage
+     * @param hashMap
+     * @return Flowable<List<Issue>>
+     */
+    fun pageIssues(owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>>
+
 }
