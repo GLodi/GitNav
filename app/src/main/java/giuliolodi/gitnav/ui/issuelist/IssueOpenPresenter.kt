@@ -21,6 +21,8 @@ import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Issue
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -34,7 +36,11 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
     private var mName: String? = null
     private var PAGE_N: Int = 1
     private var ITEMS_PER_PAGE: Int = 10
+    private var LOADING: Boolean = false
+    private var LOADING_LIST: Boolean = false
     private var mHashMap: HashMap<String,String> = hashMapOf()
+    private var mIssueList: MutableList<Issue> = mutableListOf()
+    private var NO_SHOWING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
@@ -43,7 +49,21 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
         mOwner = owner
         mName = name
         mHashMap.put("state", "open")
-
+        if (!mIssueList.isEmpty()) getView().showOpenIssues(mIssueList)
+        else if (LOADING) getView().showLoading()
+        else if (NO_SHOWING) getView().showNoOpenIssues()
+        else {
+            if (isNetworkAvailable) {
+                getView().showLoading()
+                LOADING = true
+                loadOpenIssues()
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
+            }
+        }
     }
 
     private fun loadOpenIssues() {
@@ -52,14 +72,57 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { openIssueList ->
-
-
+                            mIssueList.addAll(openIssueList)
+                            getView().showOpenIssues(openIssueList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && openIssueList.isEmpty()) {
+                                getView().showNoOpenIssues()
+                                NO_SHOWING = true
+                            }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
                         },
-                        {
-
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
                         }
                 ))
+    }
 
+    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            getView().hideNoOpenIssues()
+            NO_SHOWING = false
+            PAGE_N = 1
+            getView().clearAdapter()
+            mIssueList.clear()
+            LOADING = true
+            getView().showLoading()
+            loadOpenIssues()
+        } else {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST)
+            return
+        if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            loadOpenIssues()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
     }
 
 }

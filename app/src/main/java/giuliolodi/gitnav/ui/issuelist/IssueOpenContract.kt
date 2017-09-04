@@ -33,11 +33,19 @@ interface IssueOpenContract {
 
         fun hideLoading()
 
+        fun showListLoading()
+
+        fun hideListLoading()
+
         fun showNoOpenIssues()
+
+        fun hideNoOpenIssues()
 
         fun showError(error: String)
 
         fun showNoConnectionError()
+
+        fun clearAdapter()
 
     }
 
@@ -45,6 +53,10 @@ interface IssueOpenContract {
     interface Presenter<V: IssueOpenContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 
     }
 

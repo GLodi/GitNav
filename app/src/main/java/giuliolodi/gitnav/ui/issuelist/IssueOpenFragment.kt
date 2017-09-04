@@ -79,8 +79,17 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
         issue_list_open_progressbar.visibility = View.GONE
     }
 
+    override fun showListLoading() {
+    }
+
+    override fun hideListLoading() {
+    }
+
     override fun showNoOpenIssues() {
         issue_list_open_noissues.visibility = View.VISIBLE
+    }
+
+    override fun hideNoOpenIssues() {
     }
 
     override fun showError(error: String) {
@@ -89,6 +98,9 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
 
     override fun showNoConnectionError() {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun clearAdapter() {
     }
 
     override fun onDestroyView() {

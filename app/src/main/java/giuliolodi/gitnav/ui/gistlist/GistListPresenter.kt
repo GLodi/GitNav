@@ -59,6 +59,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
             else {
                 getView().showNoConnectionError()
                 getView().hideLoading()
+                LOADING = false
             }
         }
     }
@@ -129,6 +130,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
             getView().clearAdapter()
             mGistList.clear()
             LOADING = true
+            getView().showLoading()
             when (MINE_STARRED) {
                 "mine" -> getMineGists()
                 "starred" -> getStarredGists()
@@ -144,7 +146,6 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
             return
         if (isNetworkAvailable) {
             LOADING_LIST = true
-            PAGE_N += 1
             getView().showListLoading()
             when (MINE_STARRED) {
                 "mine" -> getMineGists()
