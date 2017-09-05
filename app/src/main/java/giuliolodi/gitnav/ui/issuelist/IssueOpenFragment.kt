@@ -64,11 +64,13 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
 
+
+
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
     override fun showOpenIssues(issueList: List<Issue>) {
-
+        (issue_list_open_rv.adapter as IssueAdapter).addIssueList(issueList)
     }
 
     override fun showLoading() {
@@ -80,9 +82,11 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
     }
 
     override fun showListLoading() {
+        (issue_list_open_rv.adapter as IssueAdapter).addLoading()
     }
 
     override fun hideListLoading() {
+        (issue_list_open_rv.adapter as IssueAdapter).hideLoading()
     }
 
     override fun showNoOpenIssues() {
@@ -90,6 +94,7 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
     }
 
     override fun hideNoOpenIssues() {
+        issue_list_open_noissues.visibility = View.GONE
     }
 
     override fun showError(error: String) {
@@ -98,9 +103,6 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
 
     override fun showNoConnectionError() {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-    }
-
-    override fun clearAdapter() {
     }
 
     override fun onDestroyView() {

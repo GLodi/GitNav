@@ -45,16 +45,12 @@ interface IssueOpenContract {
 
         fun showNoConnectionError()
 
-        fun clearAdapter()
-
     }
 
     @PerActivity
     interface Presenter<V: IssueOpenContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
-
-        fun onSwipeToRefresh(isNetworkAvailable: Boolean)
 
         fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 

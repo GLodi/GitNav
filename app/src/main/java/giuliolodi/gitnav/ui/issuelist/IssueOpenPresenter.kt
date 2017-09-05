@@ -95,22 +95,6 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
                 ))
     }
 
-    override fun onSwipeToRefresh(isNetworkAvailable: Boolean) {
-        if (isNetworkAvailable) {
-            getView().hideNoOpenIssues()
-            NO_SHOWING = false
-            PAGE_N = 1
-            getView().clearAdapter()
-            mIssueList.clear()
-            LOADING = true
-            getView().showLoading()
-            loadOpenIssues()
-        } else {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
-    }
-
     override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
         if (LOADING_LIST)
             return
