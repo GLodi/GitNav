@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.issuelist
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Issue
 
 /**
  * Created by giulio on 02/09/2017.
@@ -26,12 +27,36 @@ interface IssueClosedContract {
 
     interface View : BaseContract.View {
 
+        fun showClosedIssues(issueList: List<Issue>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showListLoading()
+
+        fun hideListLoading()
+
+        fun showNoClosedIssues()
+
+        fun hideNoClosedIssues()
+
+        fun showError(error: String)
+
+        fun showNoConnectionError()
+
+        fun intentToUserActivity(username: String)
+
     }
 
     @PerActivity
     interface Presenter<V: IssueClosedContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onUserClick(username: String)
 
     }
 
