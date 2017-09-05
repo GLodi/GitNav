@@ -17,13 +17,20 @@
 package giuliolodi.gitnav.ui.issuelist
 
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.user.UserActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.issue_list_open.*
 import org.eclipse.egit.github.core.Issue
 import javax.inject.Inject
@@ -64,6 +71,28 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
 
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        issue_list_open_rv.layoutManager = llm
+        issue_list_open_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
+        issue_list_open_rv.itemAnimator = DefaultItemAnimator()
+        issue_list_open_rv.adapter = IssueAdapter()
+        (issue_list_open_rv.adapter as IssueAdapter).getUserClick()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username -> mPresenter.onUserClick(username) }
+
+        val mScrollListenerStarred = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (issue_list_open_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (issue_list_open_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (issue_list_open_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    mPresenter.onLastItemVisible(isNetworkAvailable(), dy)
+                }
+            }
+        }
+        issue_list_open_rv.setOnScrollListener(mScrollListenerStarred)
 
 
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
@@ -103,6 +132,11 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
 
     override fun showNoConnectionError() {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onDestroyView() {

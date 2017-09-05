@@ -45,6 +45,8 @@ interface IssueOpenContract {
 
         fun showNoConnectionError()
 
+        fun intentToUserActivity(username: String)
+
     }
 
     @PerActivity
@@ -53,6 +55,8 @@ interface IssueOpenContract {
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
 
         fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onUserClick(username: String)
 
     }
 
