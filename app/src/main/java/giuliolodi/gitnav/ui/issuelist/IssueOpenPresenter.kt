@@ -109,4 +109,8 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
         }
     }
 
+    override fun onUserClick(username: String) {
+        getView().intentToUserActivity(username)
+    }
+
 }

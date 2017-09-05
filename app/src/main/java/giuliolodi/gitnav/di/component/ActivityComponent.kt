@@ -82,8 +82,6 @@ interface ActivityComponent {
 
     fun inject(contributorListFragment: ContributorListFragment)
 
-    fun inject(issueListFragment: IssueListFragment)
-
     fun inject(issueOpenFragment: IssueOpenFragment)
 
 }

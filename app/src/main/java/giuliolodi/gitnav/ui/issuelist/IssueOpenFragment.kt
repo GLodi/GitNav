@@ -50,7 +50,7 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
             val issueOpenFragment: IssueOpenFragment = IssueOpenFragment()
             val bundle: Bundle = Bundle()
             bundle.putString("owner", owner)
-            bundle.putString("name", owner)
+            bundle.putString("name", name)
             issueOpenFragment.arguments = bundle
             return issueOpenFragment
         }

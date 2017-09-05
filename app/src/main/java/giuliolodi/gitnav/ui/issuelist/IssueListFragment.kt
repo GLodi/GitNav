@@ -24,19 +24,14 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.Toast
-import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.issue_list_fragment.*
-import javax.inject.Inject
 
 /**
  * Created by giulio on 01/09/2017.
  */
-class IssueListFragment : BaseFragment(), IssueListContract.View {
-
-    @Inject lateinit var mPresenter: IssueListContract.Presenter<IssueListContract.View>
+class IssueListFragment : BaseFragment() {
 
     private var mOwner: String? = null
     private var mName: String? = null
@@ -44,7 +39,6 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        getActivityComponent()?.inject(this)
         mOwner = activity.intent.getStringExtra("owner")
         mName = activity.intent.getStringExtra("name")
     }
@@ -54,11 +48,11 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
-        mPresenter.onAttach(this)
         setHasOptionsMenu(true)
 
         (activity as AppCompatActivity).setSupportActionBar(issue_list_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.issues)
+        (activity as AppCompatActivity).supportActionBar?.subtitle = mOwner + "/" + mName
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         issue_list_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
@@ -67,18 +61,12 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
         issue_list_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         issue_list_fragment_tab_layout.setupWithViewPager(issue_list_fragment_viewpager)
         issue_list_fragment_viewpager.offscreenPageLimit = 2
+        if (mOwner != null && mName != null) issue_list_fragment_viewpager.adapter = MyAdapter(mOwner!!, mName!!, context, fragmentManager)
     }
 
-    override fun showError(error: String) {
-        Toasty.error(context, error, Toast.LENGTH_LONG).show()
-    }
-
-    override fun showNoConnectionError() {
-        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
-        menuInflater?.inflate(R.menu.main, menu)
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -86,16 +74,6 @@ class IssueListFragment : BaseFragment(), IssueListContract.View {
 
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroyView() {
-        mPresenter.onDetachView()
-        super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        mPresenter.onDetach()
-        super.onDestroy()
     }
 
     private class MyAdapter(owner: String, name: String, context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
