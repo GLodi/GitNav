@@ -17,7 +17,9 @@
 package giuliolodi.gitnav.ui.issuelist
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
@@ -34,7 +36,34 @@ class IssueClosedFragment : BaseFragment(), IssueClosedContract.View {
 
     @Inject lateinit var mPresenter: IssueClosedContract.Presenter<IssueClosedContract.View>
 
+    private var mOwner: String? = null
+    private var mName: String? = null
+
+    companion object {
+        fun newInstance(owner: String, name: String): IssueClosedFragment {
+            val issueClosedFragment: IssueClosedFragment = IssueClosedFragment()
+            val bundle: Bundle = Bundle()
+            bundle.putString("owner", owner)
+            bundle.putString("name", name)
+            issueClosedFragment.arguments = bundle
+            return issueClosedFragment
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        getActivityComponent()?.inject(this)
+        mOwner = arguments.getString("owner")
+        mName = arguments.getString("name")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.issue_list_closed, container, false)
+    }
+
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+        mPresenter.onAttach(this)
     }
 
     override fun showClosedIssues(issueList: List<Issue>) {

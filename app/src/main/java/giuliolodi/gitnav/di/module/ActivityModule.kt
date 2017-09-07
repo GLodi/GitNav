@@ -31,6 +31,8 @@ import giuliolodi.gitnav.ui.fileviewer.FileViewerPresenter
 import giuliolodi.gitnav.ui.gist.*
 import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
+import giuliolodi.gitnav.ui.issuelist.IssueClosedContract
+import giuliolodi.gitnav.ui.issuelist.IssueClosedPresenter
 import giuliolodi.gitnav.ui.issuelist.IssueOpenContract
 import giuliolodi.gitnav.ui.issuelist.IssueOpenPresenter
 import giuliolodi.gitnav.ui.login.LoginContract
@@ -189,6 +191,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideIssueOpenPresenter(presenter: IssueOpenPresenter<IssueOpenContract.View>): IssueOpenContract.Presenter<IssueOpenContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideIssueClosedPresenter(presenter: IssueClosedPresenter<IssueClosedContract.View>): IssueClosedContract.Presenter<IssueClosedContract.View> {
         return presenter
     }
 

@@ -26,7 +26,7 @@ import giuliolodi.gitnav.ui.gist.GistFragment
 import giuliolodi.gitnav.ui.gist.GistCommentsFragment
 import giuliolodi.gitnav.ui.gist.GistFilesFragment
 import giuliolodi.gitnav.ui.gistlist.GistListFragment
-import giuliolodi.gitnav.ui.issuelist.IssueListFragment
+import giuliolodi.gitnav.ui.issuelist.IssueClosedFragment
 import giuliolodi.gitnav.ui.issuelist.IssueOpenFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.repository.*
@@ -83,5 +83,7 @@ interface ActivityComponent {
     fun inject(contributorListFragment: ContributorListFragment)
 
     fun inject(issueOpenFragment: IssueOpenFragment)
+
+    fun inject(issueClosedFragment: IssueClosedFragment)
 
 }
