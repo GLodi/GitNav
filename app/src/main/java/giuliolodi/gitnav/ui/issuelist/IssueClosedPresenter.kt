@@ -18,8 +18,11 @@ package giuliolodi.gitnav.ui.issuelist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.Issue
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -43,11 +46,71 @@ class IssueClosedPresenter<V: IssueClosedContract.View> : BasePresenter<V>, Issu
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+        mOwner = owner
+        mName = name
+        mHashMap.put("state", "closed")
+        if (!mIssueList.isEmpty()) getView().showClosedIssues(mIssueList)
+        else if (LOADING) getView().showLoading()
+        else if (NO_SHOWING) getView().showNoClosedIssues()
+        else {
+            if (isNetworkAvailable) {
+                getView().showLoading()
+                LOADING = true
+                loadClosedIssues()
+            }
+            else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
+            }
+        }
+    }
+
+    private fun loadClosedIssues() {
+        getCompositeDisposable().add(getDataManager().pageIssues(mOwner!!, mName!!, PAGE_N, ITEMS_PER_PAGE, mHashMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { openIssueList ->
+                            mIssueList.addAll(openIssueList)
+                            getView().showClosedIssues(openIssueList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && openIssueList.isEmpty()) {
+                                getView().showNoClosedIssues()
+                                NO_SHOWING = true
+                            }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
+
     }
 
     override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST)
+            return
+        if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            loadClosedIssues()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
     }
 
     override fun onUserClick(username: String) {
+        getView().intentToUserActivity(username)
     }
 }

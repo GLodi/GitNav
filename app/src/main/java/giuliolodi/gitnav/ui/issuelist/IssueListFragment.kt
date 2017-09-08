@@ -85,7 +85,7 @@ class IssueListFragment : BaseFragment() {
         override fun getItem(position: Int): Fragment {
             return when(position) {
                 0 -> IssueOpenFragment.newInstance(mOwner, mName)
-                else -> IssueClosedFragment()
+                else -> IssueClosedFragment.newInstance(mOwner, mName)
             }
         }
 
