@@ -20,9 +20,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
@@ -59,6 +57,7 @@ class ContributorListFragment: BaseFragment(), ContributorListContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
+        setHasOptionsMenu(true)
 
         (activity as AppCompatActivity).setSupportActionBar(contributor_list_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.contributors)
@@ -123,6 +122,18 @@ class ContributorListFragment: BaseFragment(), ContributorListContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
