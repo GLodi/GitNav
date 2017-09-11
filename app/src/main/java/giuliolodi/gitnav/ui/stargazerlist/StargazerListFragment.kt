@@ -63,6 +63,7 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
 
         (activity as AppCompatActivity).setSupportActionBar(stargazer_list_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.stargazers)
+        (activity as AppCompatActivity).supportActionBar?.subtitle = mOwner + mName
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
         stargazer_list_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
