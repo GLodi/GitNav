@@ -22,6 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.User
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -85,6 +86,7 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
                             getView().hideListLoading()
+                            Timber.e(throwable)
                             LOADING = false
                             LOADING_LIST = false
                         }

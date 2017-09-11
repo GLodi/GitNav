@@ -96,6 +96,12 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
         repo_commits_fragment_progressbar.visibility = View.GONE
     }
 
+    override fun showListLoading() {
+    }
+
+    override fun hideListLoading() {
+    }
+
     override fun showNoCommits() {
         repo_commits_fragment_nocommits.visibility = View.VISIBLE
     }

@@ -33,6 +33,10 @@ interface RepoCommitsContract {
 
         fun hideLoading()
 
+        fun showListLoading()
+
+        fun hideListLoading()
+
         fun showNoCommits()
 
         fun showError(error: String)
@@ -47,6 +51,8 @@ interface RepoCommitsContract {
     interface Presenter<V: RepoCommitsContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 
         fun onUserClick(username: String)
 
