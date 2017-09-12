@@ -19,6 +19,7 @@ package giuliolodi.gitnav.ui.repository
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,10 +77,23 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
         repo_commits_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
         repo_commits_fragment_rv.itemAnimator = DefaultItemAnimator()
         repo_commits_fragment_rv.adapter = RepoCommitAdapter()
+
         (repo_commits_fragment_rv.adapter as RepoCommitAdapter).getImageClicks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username -> mPresenter.onUserClick(username) }
+
+        val mScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (repo_commits_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (repo_commits_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (repo_commits_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    mPresenter.onLastItemVisible(isNetworkAvailable(), dy)
+                }
+            }
+        }
+        repo_commits_fragment_rv.setOnScrollListener(mScrollListener)
 
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
@@ -97,9 +111,11 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
     }
 
     override fun showListLoading() {
+        (repo_commits_fragment_rv.adapter as RepoCommitAdapter).addLoading()
     }
 
     override fun hideListLoading() {
+        (repo_commits_fragment_rv.adapter as RepoCommitAdapter).hideLoading()
     }
 
     override fun showNoCommits() {

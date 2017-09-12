@@ -126,6 +126,14 @@ class RepoCommitAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemInserted(mRepoCommitList.size - 1)
     }
 
+    fun hideLoading() {
+        if (mRepoCommitList.lastIndexOf(null) != -1) {
+            val lastNull = mRepoCommitList.lastIndexOf(null)
+            mRepoCommitList.removeAt(lastNull)
+            notifyItemRemoved(lastNull)
+        }
+    }
+
     fun clear() {
         mRepoCommitList.clear()
         notifyDataSetChanged()
