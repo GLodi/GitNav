@@ -35,10 +35,7 @@ class RepoCommitsPresenter<V: RepoCommitsContract.View> : BasePresenter<V>, Repo
     private var mRepoCommitList: MutableList<RepositoryCommit> = mutableListOf()
     private var mOwner: String? = null
     private var mName: String? = null
-    private var PAGE_N: Int = 1
-    private var ITEMS_PER_PAGE: Int = 20
     private var LOADING: Boolean = false
-    private var LOADING_LIST: Boolean = false
     private var NO_COMMITS: Boolean = false
 
     @Inject
@@ -47,19 +44,16 @@ class RepoCommitsPresenter<V: RepoCommitsContract.View> : BasePresenter<V>, Repo
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
         mOwner = owner
         mName = name
+
         if (!mRepoCommitList.isEmpty()) getView().showRepoCommitList(mRepoCommitList)
         else if (LOADING) getView().showLoading()
         else if (NO_COMMITS) getView().showNoCommits()
         else {
             if (isNetworkAvailable) {
-                LOADING = true
-                getView().showLoading()
                 if (mOwner != null && mName != null) loadRepoCommits()
             }
             else {
                 getView().showNoConnectionError()
-                getView().hideLoading()
-                LOADING = false
             }
         }
     }
@@ -68,43 +62,29 @@ class RepoCommitsPresenter<V: RepoCommitsContract.View> : BasePresenter<V>, Repo
         getCompositeDisposable().add(getDataManager().getRepoCommits(mOwner!!, mName!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    getView().showLoading()
+                    LOADING = true
+                }
                 .subscribe(
                         { repoCommitList ->
                             mRepoCommitList.addAll(repoCommitList)
                             getView().showRepoCommitList(repoCommitList)
-                            getView().hideLoading()
-                            if (PAGE_N == 1 && repoCommitList.isEmpty()) {
+                            if (mRepoCommitList.size == 0) {
                                 getView().showNoCommits()
                                 NO_COMMITS = true
                             }
-                            PAGE_N += 1
+                            getView().hideLoading()
                             LOADING = false
-                            LOADING_LIST = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
-                            getView().hideListLoading()
                             Timber.e(throwable)
                             LOADING = false
-                            LOADING_LIST = false
                         }
                 ))
 
-    }
-
-    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING_LIST)
-            return
-        else if (isNetworkAvailable) {
-            LOADING_LIST = true
-            getView().showListLoading()
-            if (mOwner != null && mName != null) loadRepoCommits()
-        }
-        else if (dy > 0) {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
     }
 
     override fun onUserClick(username: String) {
