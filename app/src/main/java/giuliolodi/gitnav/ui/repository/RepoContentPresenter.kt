@@ -54,9 +54,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
         owner?.let { mOwner = it }
         name?.let { mName = it }
         if (LOADING) getView().showLoading()
-
-        // Check if content has already been downloaded
-
+        else if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
         else {
             if (isNetworkAvailable) {
                 if (mOwner != null && mName != null) loadRepoContent()
