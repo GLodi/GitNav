@@ -51,16 +51,19 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
-        owner?.let { mOwner = it }
-        name?.let { mName = it }
+        mOwner = owner
+        mName = name
         if (LOADING) getView().showLoading()
         else if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
         else {
             if (isNetworkAvailable) {
+                LOADING = true
+                getView().showLoading()
                 if (mOwner != null && mName != null) loadRepoContent()
             }
             else {
                 getView().showNoConnectionError()
+                getView().hideLoading()
                 LOADING = false
             }
         }
@@ -75,10 +78,6 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { repo, repoContentList -> return@BiFunction mapOf(repo to repoContentList) })
-                .doOnSubscribe {
-                    getView().showLoading()
-                    LOADING = true
-                }
                 .subscribe(
                         { map ->
                             mRepo = map.keys.first()
@@ -86,7 +85,9 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                                 mRepoContentList = map[it]?.toMutableList()!!
                                 mRepoContentList.sortBy { it.type }
                             }
-                            if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
+                            if (!mRepoContentList.isEmpty()) {
+                                getView().showContent(mRepoContentList)
+                            }
                             getView().hideLoading()
                             TREE_DEPTH += 1
                             LOADING = false
