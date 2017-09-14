@@ -89,6 +89,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                                 getView().showContent(mRepoContentList)
                             }
                             getView().hideLoading()
+                            setTree()
                             TREE_DEPTH += 1
                             LOADING = false
                             LOADING_CONTENT = false
