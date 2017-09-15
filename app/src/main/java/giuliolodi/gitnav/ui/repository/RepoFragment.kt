@@ -45,6 +45,8 @@ class RepoFragment : BaseFragment(), RepoContract.View {
     private var mName: String? = null
     private var mMenu: Menu? = null
 
+    private var mRepoContentFragment: RepoContentFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
