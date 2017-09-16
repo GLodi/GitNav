@@ -41,6 +41,8 @@ interface RepoContentContract {
 
         fun showNoConnectionError()
 
+        fun onActivityBackPress()
+
         fun pressBack()
 
         fun intentToViewerActivity(fileViewerIntent: FileViewerIntent, repoUrl: String)

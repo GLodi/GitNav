@@ -29,23 +29,25 @@ class RepoActivity : BaseActivity() {
 
     private val REPO_FRAGMENT_TAG = "REPO_FRAGMENT_TAG"
 
+    private var mRepoFragment: RepoFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_activity)
 
-        var repoFragment: RepoFragment? = supportFragmentManager.findFragmentByTag(REPO_FRAGMENT_TAG) as RepoFragment?
-        if (repoFragment == null) {
-            repoFragment = RepoFragment()
+        mRepoFragment = supportFragmentManager.findFragmentByTag(REPO_FRAGMENT_TAG) as RepoFragment?
+        if (mRepoFragment == null) {
+            mRepoFragment = RepoFragment()
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.repo_activity_frame, repoFragment, REPO_FRAGMENT_TAG)
+                    .replace(R.id.repo_activity_frame, mRepoFragment, REPO_FRAGMENT_TAG)
                     .commit()
         }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(0,0)
+        mRepoFragment?.onActivityBackPress()
     }
 
     companion object {

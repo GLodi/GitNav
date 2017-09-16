@@ -127,6 +127,10 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         activity.overridePendingTransition(0,0)
     }
 
+    override fun onActivityBackPress() {
+        mPresenter.onBackPressed(isNetworkAvailable())
+    }
+
     override fun intentToViewerActivity(fileViewerIntent: FileViewerIntent, repoUrl: String) {
         startActivity(FileViewerActivity.getIntent(context)
                 .putExtra("owner", fileViewerIntent.repoOwner)

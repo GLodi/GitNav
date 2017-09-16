@@ -73,7 +73,10 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         repo_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         repo_fragment_tab_layout.setupWithViewPager(repo_fragment_viewpager)
         repo_fragment_viewpager.offscreenPageLimit = 4
-        if (mOwner != null && mName != null) { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!) }
+        if (mOwner != null && mName != null) {
+            mRepoContentFragment = RepoContentFragment.newInstance(mOwner!!, mName!!)
+            mRepoContentFragment?.let { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!, it) }
+        }
         repo_fragment_viewpager.currentItem = 1
 
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
@@ -111,6 +114,10 @@ class RepoFragment : BaseFragment(), RepoContract.View {
     override fun intentToBrowser(url: String) {
         val browserIntent = Intent(ACTION_VIEW, Uri.parse(url))
         startActivity(browserIntent)
+    }
+
+    fun onActivityBackPress() {
+        mRepoContentFragment?.onActivityBackPress()
     }
 
     override fun createOptionsMenu(isRepoStarred: Boolean) {
@@ -152,17 +159,18 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         super.onDestroy()
     }
 
-    private class MyAdapter(context: Context, fragmentManager: FragmentManager, owner: String, name: String) : FragmentPagerAdapter(fragmentManager) {
+    private class MyAdapter(context: Context, fragmentManager: FragmentManager, owner: String, name: String, repoContentFragment: RepoContentFragment) : FragmentPagerAdapter(fragmentManager) {
 
         private val mContext: Context = context
         private val mOwner: String = owner
         private val mName: String = name
+        private val mRepoContentFragment: RepoContentFragment = repoContentFragment
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
                 0 -> RepoAboutFragment.newInstance(mOwner, mName)
                 1 -> RepoReadmeFragment.newInstance(mOwner, mName)
-                2 -> RepoContentFragment.newInstance(mOwner, mName)
+                2 -> mRepoContentFragment
                 else -> RepoCommitsFragment.newInstance(mOwner, mName)
             }
         }
