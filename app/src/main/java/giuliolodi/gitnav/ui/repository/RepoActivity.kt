@@ -31,6 +31,8 @@ class RepoActivity : BaseActivity() {
 
     private var mRepoFragment: RepoFragment? = null
 
+    private var mBack: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_activity)
@@ -45,9 +47,15 @@ class RepoActivity : BaseActivity() {
         }
     }
 
+    fun needToBack(back: Boolean) {
+        mBack = back
+    }
+
     override fun onBackPressed() {
-        super.onBackPressed()
-        mRepoFragment?.onActivityBackPress()
+        if (mBack)
+            super.onBackPressed()
+        else
+            mRepoFragment?.onActivityBackPress()
     }
 
     companion object {
