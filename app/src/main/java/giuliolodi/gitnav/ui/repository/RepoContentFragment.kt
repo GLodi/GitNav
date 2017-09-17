@@ -123,8 +123,7 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
     }
 
     override fun pressBack() {
-        activity.onBackPressed()
-        activity.overridePendingTransition(0,0)
+        (activity as RepoActivity).needToBack(true)
     }
 
     override fun onActivityBackPress() {

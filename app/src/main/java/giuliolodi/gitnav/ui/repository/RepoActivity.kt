@@ -49,13 +49,17 @@ class RepoActivity : BaseActivity() {
 
     fun needToBack(back: Boolean) {
         mBack = back
+        onBackPressed()
     }
 
     override fun onBackPressed() {
-        if (mBack)
+        if (mBack) {
             super.onBackPressed()
-        else
+            overridePendingTransition(0,0)
+        }
+        else {
             mRepoFragment?.onActivityBackPress()
+        }
     }
 
     companion object {
