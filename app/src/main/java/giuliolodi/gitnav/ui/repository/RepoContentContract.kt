@@ -19,7 +19,6 @@ package giuliolodi.gitnav.ui.repository
 import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
-import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.RepositoryContents
 
 /**
@@ -43,7 +42,7 @@ interface RepoContentContract {
 
         fun onActivityBackPress()
 
-        fun pressBack()
+        fun pressBack(needTo: Boolean)
 
         fun intentToViewerActivity(fileViewerIntent: FileViewerIntent, repoUrl: String)
 

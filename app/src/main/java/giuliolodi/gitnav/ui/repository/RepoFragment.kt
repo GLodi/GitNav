@@ -67,7 +67,7 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.repository)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
-        repo_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
+        repo_fragment_toolbar.setNavigationOnClickListener { (activity as RepoActivity).needToBack(true) }
 
         repo_fragment_tab_layout.visibility = View.VISIBLE
         repo_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)

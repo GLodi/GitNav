@@ -122,8 +122,8 @@ class RepoContentFragment : BaseFragment(), RepoContentContract.View {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
-    override fun pressBack() {
-        (activity as RepoActivity).needToBack(true)
+    override fun pressBack(needTo: Boolean) {
+        (activity as RepoActivity).needToBack(needTo)
     }
 
     override fun onActivityBackPress() {

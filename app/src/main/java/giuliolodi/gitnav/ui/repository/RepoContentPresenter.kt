@@ -46,6 +46,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     private var LOADING: Boolean = false
     private var LOADING_CONTENT: Boolean = false
     private var TREE_DEPTH: Int = 0
+    private var GOING_BACK: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
@@ -53,6 +54,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
         mOwner = owner
         mName = name
+        if (pathTree.isEmpty()) pathTree.add("")
         if (LOADING) getView().showLoading()
         else if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
         else {
@@ -90,14 +92,13 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                             }
                             getView().hideLoading()
                             setTree()
-                            TREE_DEPTH += 1
                             LOADING = false
                             LOADING_CONTENT = false
+                            if (!GOING_BACK) TREE_DEPTH += 1 else TREE_DEPTH -= 1
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
-                            TREE_DEPTH -= 1
                             Timber.e(throwable)
                         }
                 ))
@@ -105,18 +106,18 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
 
     private fun setTree() {
         treeText = "/"
-        treeText += pathTree[pathTree.size - 1]
+        treeText += pathTree.last()
         getView().onTreeSet(treeText)
     }
 
     override fun onBackPressed(isNetworkAvailable: Boolean) {
-        if (TREE_DEPTH != 0) {
+        if (TREE_DEPTH != 1) {
             if (isNetworkAvailable) {
                 if (!LOADING_CONTENT) {
                     LOADING_CONTENT = true
                     mPath = pathTree[pathTree.size - 2]
                     pathTree.removeAt(pathTree.size - 1)
-                    TREE_DEPTH -= 1
+                    GOING_BACK = true
                     mRepoContentList.clear()
                     getView().clearContent()
                     getView().showLoading()
@@ -128,7 +129,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
             }
         }
         else {
-            getView().pressBack()
+            getView().pressBack(true)
         }
     }
 
@@ -139,6 +140,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
     override fun onDirClick(isNetworkAvailable: Boolean, path: String) {
         if (!LOADING_CONTENT) {
             if (isNetworkAvailable) {
+                GOING_BACK = false
                 LOADING_CONTENT = true
                 mPath = path
                 pathTree.add(path)
