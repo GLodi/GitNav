@@ -299,4 +299,14 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun pageIssues(owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>>
 
+    /**
+     * Pages repo's forks
+     * @param owner
+     * @param name
+     * @param pageN
+     * @param itemsPerPage
+     * @return Flowable<List<Repository>>
+     */
+    fun pageForks(owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>>
+
 }

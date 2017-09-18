@@ -420,4 +420,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiPageForks(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>> {
+        return Flowable.defer {
+            val repoService: RepositoryService = RepositoryService()
+            repoService.client.setOAuth2Token(token)
+            Flowable.just(repoService.getForks(RepositoryId(owner, name)))
+        }
+    }
+
 }

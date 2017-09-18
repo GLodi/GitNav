@@ -41,6 +41,8 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
     private var mRepo: Repository? = null
     private var mContributorList: List<Contributor>? = null
     private var mStargazers: Int? = null
+    private var PAGE_N: Int = 1
+    private var ITEMS_PER_PAGE: Int = 10
     private var LOADING: Boolean = false
 
     @Inject
@@ -62,7 +64,10 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
         else if (LOADING) getView().showLoading()
         else {
             if (isNetworkAvailable) {
-                if (mOwner != null && mName != null) loadRepoAbout()
+                if (mOwner != null && mName != null) {
+                    loadRepoAbout()
+                    loadForks()
+                }
             }
             else {
                 getView().showNoConnectionError()
@@ -109,6 +114,18 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
                             Timber.e(throwable)
                             LOADING = false
                         }
+                ))
+    }
+
+    private fun loadForks() {
+        getCompositeDisposable().add(getDataManager().pageForks(mOwner!!, mName!!, PAGE_N, ITEMS_PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { forkList ->
+
+                        },
+                        {}
                 ))
     }
 

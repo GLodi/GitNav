@@ -255,6 +255,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageIssues(mPrefsHelper.getToken(), owner, name, pageN, itemsPerPage, hashMap)
     }
 
+    override fun pageForks(owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>> {
+        return mApiHelper.apiPageForks(mPrefsHelper.getToken(), owner, name, pageN, itemsPerPage)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -381,6 +385,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiPageIssues(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int, hashMap: HashMap<String,String>): Flowable<List<Issue>> {
         return mApiHelper.apiPageIssues(token, owner, name, pageN, itemsPerPage, hashMap)
+    }
+
+    override fun apiPageForks(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>> {
+        return mApiHelper.apiPageForks(token, owner, name, pageN, itemsPerPage)
     }
 
 }
