@@ -28,7 +28,7 @@ interface RepoAboutContract {
 
         fun showRepoAbout(repoOwner: String, repoName: String, repoDescription: String, avatarUrl: String)
 
-        fun populateGridView(forksString: String, openIssuesString: String, contributorListSize: String, stargazersString: String)
+        fun populateGridView(numberList: MutableList<String>)
 
         fun showLoading()
 

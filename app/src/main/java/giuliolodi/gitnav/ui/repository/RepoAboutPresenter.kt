@@ -48,12 +48,16 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
 
 
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
-        owner?.let { mOwner = it }
-        name?.let { mName = it }
-
+        mOwner = owner
+        mName = name
         if (mRepo != null) {
             getView().showRepoAbout(mRepo?.name!!, mRepo?.owner?.login!!, mRepo?.description!!, mRepo?.owner?.avatarUrl!!)
-            getView().populateGridView(mRepo?.forks.toString(), mRepo?.openIssues.toString(), mContributorList?.size.toString(), mStargazers?.toString()!!)
+            val numberList: MutableList<String> = mutableListOf()
+            numberList.add(mStargazers?.toString()!!)
+            numberList.add(mRepo?.forks.toString())
+            numberList.add(mRepo?.openIssues.toString())
+            numberList.add(mContributorList?.size.toString())
+            getView().populateGridView(numberList)
         }
         else if (LOADING) getView().showLoading()
         else {
@@ -89,7 +93,12 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
                                 mContributorList = repoContributors[it]
                                 mStargazers = it.watchers
                                 getView().showRepoAbout(it.name!!, it.owner?.login!!, it.description!!, it.owner?.avatarUrl!!)
-                                getView().populateGridView(it.forks.toString(), it.openIssues.toString(), mContributorList?.size.toString(), mStargazers?.toString()!!)
+                                val numberList: MutableList<String> = mutableListOf()
+                                numberList.add(mStargazers?.toString()!!)
+                                numberList.add(it.forks.toString())
+                                numberList.add(it.openIssues.toString())
+                                numberList.add(mContributorList?.size.toString())
+                                getView().populateGridView(numberList)
                             }
                             getView().hideLoading()
                             LOADING = false
