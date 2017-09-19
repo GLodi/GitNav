@@ -28,6 +28,8 @@ import giuliolodi.gitnav.ui.events.EventContract
 import giuliolodi.gitnav.ui.events.EventPresenter
 import giuliolodi.gitnav.ui.fileviewer.FileViewerContract
 import giuliolodi.gitnav.ui.fileviewer.FileViewerPresenter
+import giuliolodi.gitnav.ui.forklist.ForkListContract
+import giuliolodi.gitnav.ui.forklist.ForkListPresenter
 import giuliolodi.gitnav.ui.gist.*
 import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
@@ -197,6 +199,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideIssueClosedPresenter(presenter: IssueClosedPresenter<IssueClosedContract.View>): IssueClosedContract.Presenter<IssueClosedContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideForkListPresenter(presenter: ForkListPresenter<ForkListContract.View>): ForkListContract.Presenter<ForkListContract.View> {
         return presenter
     }
 

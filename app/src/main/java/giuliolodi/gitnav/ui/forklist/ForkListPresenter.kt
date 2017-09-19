@@ -28,10 +28,16 @@ class ForkListPresenter<V: ForkListContract.View> : BasePresenter<V>, ForkListCo
 
     private val TAG = "ForkListPresenter"
 
+    private var mOwner: String? = null
+    private var mName: String? = null
+
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(isNetworkAvailable: Boolean) {
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
+        mOwner = owner
+        mName = name
+
     }
 
 }

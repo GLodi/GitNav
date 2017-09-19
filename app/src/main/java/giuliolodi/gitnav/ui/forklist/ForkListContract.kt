@@ -34,7 +34,7 @@ interface ForkListContract {
     @PerActivity
     interface Presenter<V: ForkListContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
 
     }
 

@@ -22,6 +22,7 @@ import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.contributorlist.ContributorListFragment
 import giuliolodi.gitnav.ui.events.EventFragment
 import giuliolodi.gitnav.ui.fileviewer.FileViewerFragment
+import giuliolodi.gitnav.ui.forklist.ForkListFragment
 import giuliolodi.gitnav.ui.gist.GistFragment
 import giuliolodi.gitnav.ui.gist.GistCommentsFragment
 import giuliolodi.gitnav.ui.gist.GistFilesFragment
@@ -85,5 +86,7 @@ interface ActivityComponent {
     fun inject(issueOpenFragment: IssueOpenFragment)
 
     fun inject(issueClosedFragment: IssueClosedFragment)
+
+    fun inject(forkListFragment: ForkListFragment)
 
 }
