@@ -21,7 +21,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
@@ -33,8 +32,6 @@ import giuliolodi.gitnav.ui.stargazerlist.StargazerListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.repo_about_fragment.*
-import org.eclipse.egit.github.core.Contributor
-import org.eclipse.egit.github.core.Repository
 import javax.inject.Inject
 
 /**

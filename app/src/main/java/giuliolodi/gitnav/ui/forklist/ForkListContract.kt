@@ -14,37 +14,27 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.repository
+package giuliolodi.gitnav.ui.forklist
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 import org.eclipse.egit.github.core.Repository
 
 /**
- * Created by giulio on 15/07/2017.
+ * Created by giulio on 19/09/2017.
  */
-interface RepoAboutContract {
+interface ForkListContract {
 
     interface View : BaseContract.View {
 
-        fun showRepoAbout(repoOwner: String, repoName: String, repoDescription: String, avatarUrl: String)
-
-        fun populateGridView(numberList: MutableList<String>)
-
-        fun showLoading()
-
-        fun hideLoading()
-
-        fun showError(error: String)
-
-        fun showNoConnectionError()
+        fun showForkList(forkList: List<Repository>)
 
     }
 
     @PerActivity
-    interface Presenter<V: RepoAboutContract.View> : BaseContract.Presenter<V> {
+    interface Presenter<V: ForkListContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+        fun subscribe(isNetworkAvailable: Boolean)
 
     }
 
