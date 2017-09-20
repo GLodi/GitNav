@@ -29,12 +29,34 @@ interface ForkListContract {
 
         fun showForkList(forkList: List<Repository>)
 
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showListLoading()
+
+        fun hideListLoading()
+
+        fun showNoForks()
+
+        fun hideNoForks()
+
+        fun showError(error: String)
+
+        fun showNoConnectionError()
+
+        fun intentToRepoActivity(owner: String, name: String)
+
     }
 
     @PerActivity
     interface Presenter<V: ForkListContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
+
+        fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onRepoClick(owner: String, name: String)
 
     }
 

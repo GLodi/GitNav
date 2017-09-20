@@ -18,7 +18,11 @@ package giuliolodi.gitnav.ui.forklist
 
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import org.eclipse.egit.github.core.Repository
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -28,8 +32,14 @@ class ForkListPresenter<V: ForkListContract.View> : BasePresenter<V>, ForkListCo
 
     private val TAG = "ForkListPresenter"
 
+    private var mForkList: MutableList<Repository> = mutableListOf()
     private var mOwner: String? = null
     private var mName: String? = null
+    private var PAGE_N: Int = 1
+    private var ITEMS_PER_PAGE: Int = 10
+    private var NO_SHOWING: Boolean = false
+    private var LOADING: Boolean = false
+    private var LOADING_LIST: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
@@ -37,7 +47,67 @@ class ForkListPresenter<V: ForkListContract.View> : BasePresenter<V>, ForkListCo
     override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?) {
         mOwner = owner
         mName = name
+        if (!mForkList.isEmpty()) getView().showForkList(mForkList)
+        else if (LOADING) getView().showLoading()
+        else if (NO_SHOWING) getView().showNoForks()
+        else {
+            if (isNetworkAvailable) {
+                LOADING = true
+                getView().showLoading()
+                if (mOwner != null && mName != null) loadForks()
+            } else {
+                getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
+            }
+        }
+    }
 
+    private fun loadForks() {
+        getCompositeDisposable().add(getDataManager().pageForks(mOwner!!, mName!!, PAGE_N, ITEMS_PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { forkList ->
+                            mForkList.addAll(forkList)
+                            getView().showForkList(forkList)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            if (PAGE_N == 1 && forkList.isEmpty()) {
+                                getView().showNoForks()
+                                NO_SHOWING = true
+                            }
+                            PAGE_N += 1
+                            LOADING = false
+                            LOADING_LIST = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            getView().hideListLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                            LOADING_LIST = false
+                        }
+                ))
+    }
+
+    override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_LIST)
+            return
+        else if (isNetworkAvailable) {
+            LOADING_LIST = true
+            getView().showListLoading()
+            loadForks()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onRepoClick(owner: String, name: String) {
+        getView().intentToRepoActivity(owner, name)
     }
 
 }
