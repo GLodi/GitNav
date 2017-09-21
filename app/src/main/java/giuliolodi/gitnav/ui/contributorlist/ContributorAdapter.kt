@@ -41,7 +41,12 @@ class ContributorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class ContributorHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (contributor: Contributor) = with(itemView) {
-            row_contributor_login.text = contributor.login
+            if (contributor.login != null && !contributor.login.isBlank())
+                row_contributor_login.text = contributor.login
+            else if (contributor.name != null && !contributor.name.isBlank())
+                row_contributor_login.text = contributor.name
+            else
+                row_contributor_login.text = context.getString(R.string.anonymous)
             row_contributor_contributions.text = "Contributions: " + contributor.contributions.toString()
             Picasso.with(context).load(contributor.avatarUrl).resize(100,100).centerCrop().into(row_contributor_image)
         }
@@ -65,7 +70,7 @@ class ContributorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is ContributorHolder) {
             val user = mContributorList[position]!!
             holder.bind(user)
-            holder.itemView.setOnClickListener { onClickSubject.onNext(user.login) }
+            holder.itemView.setOnClickListener { user.login?.let { onClickSubject.onNext(user.login) } }
         }
     }
 

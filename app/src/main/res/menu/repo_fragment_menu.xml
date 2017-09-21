@@ -19,6 +19,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/fork_icon"
+        android:title=""
+        android:icon="@drawable/ic_fork_white_24dp"
+        app:showAsAction="always"
+        android:visible="true"/>
+
+    <item
         android:id="@+id/star_icon"
         android:title=""
         android:icon="@drawable/ic_star_full_24dp"

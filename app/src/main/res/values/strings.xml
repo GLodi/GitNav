@@ -106,6 +106,7 @@
     <string name="publics">Public</string>
     <string name="privates">Private</string>
     <string name="content">Content</string>
+    <string name="anonymous">Anonymous</string>
 
     <string name="created">Created</string>
     <string name="alphabetical">Alphabetical</string>
