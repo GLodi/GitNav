@@ -23,7 +23,7 @@
         android:title=""
         android:icon="@drawable/ic_fork_white_24dp"
         app:showAsAction="always"
-        android:visible="true"/>
+        android:visible="false"/>
 
     <item
         android:id="@+id/star_icon"

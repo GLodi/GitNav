@@ -85,6 +85,7 @@ class RepoFragment : BaseFragment(), RepoContract.View {
     override fun showTitleAndSubtitle(title: String, subtitle: String) {
         (activity as AppCompatActivity).supportActionBar?.title = title
         (activity as AppCompatActivity).supportActionBar?.subtitle= subtitle
+        mMenu?.findItem(R.id.fork_icon)?.isVisible = true
     }
 
     override fun showError(error: String) {
