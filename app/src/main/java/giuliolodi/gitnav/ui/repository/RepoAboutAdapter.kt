@@ -36,6 +36,7 @@ class RepoAboutAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val onStargazersClick: PublishSubject<String> = PublishSubject.create()
     private val onContributorsClick: PublishSubject<String> = PublishSubject.create()
     private val onIssuesClick: PublishSubject<String> = PublishSubject.create()
+    private val onForksClick: PublishSubject<String> = PublishSubject.create()
 
     fun getStargazersClicks(): Observable<String> {
         return onStargazersClick
@@ -47,6 +48,10 @@ class RepoAboutAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun getIssuesClick(): Observable<String> {
         return onIssuesClick
+    }
+
+    fun getForksClick(): Observable<String> {
+        return onForksClick
     }
 
     class MyViewHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -65,6 +70,7 @@ class RepoAboutAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             holder.bind(mNameList[position], mNumberList[position])
             when (position) {
                 0 -> holder.itemView.row_repo_about_rl.setOnClickListener { onStargazersClick.onNext("0") }
+                1 -> holder.itemView.row_repo_about_rl.setOnClickListener { onForksClick.onNext("0") }
                 2 -> holder.itemView.row_repo_about_rl.setOnClickListener { onIssuesClick.onNext("0") }
                 3 -> holder.itemView.row_repo_about_rl.setOnClickListener { onContributorsClick.onNext("0") }
                 else -> {}

@@ -27,6 +27,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.contributorlist.ContributorListActivity
+import giuliolodi.gitnav.ui.forklist.ForkListActivity
 import giuliolodi.gitnav.ui.issuelist.IssueListActivity
 import giuliolodi.gitnav.ui.stargazerlist.StargazerListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -99,6 +100,14 @@ class RepoAboutFragment : BaseFragment(), RepoAboutContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { _ ->
                     startActivity(StargazerListActivity.getIntent(context).putExtra("owner", mOwner).putExtra("name", mName))
+                    activity.overridePendingTransition(0,0)
+                }
+
+        (repo_about_fragment_gridview.adapter as RepoAboutAdapter).getForksClick()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { _ ->
+                    startActivity(ForkListActivity.getIntent(context).putExtra("owner", mOwner).putExtra("name", mName))
                     activity.overridePendingTransition(0,0)
                 }
 
