@@ -428,4 +428,17 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiForkRepo(token: String, owner: String, name: String): Completable {
+        return Completable.create { subscriber ->
+            val repoService: RepositoryService = RepositoryService()
+            repoService.client.setOAuth2Token(token)
+            try {
+                repoService.forkRepository(RepositoryId(owner, name))
+                subscriber.onComplete()
+            } catch (e: Throwable) {
+                subscriber.onError(e)
+            }
+        }
+    }
+
 }
