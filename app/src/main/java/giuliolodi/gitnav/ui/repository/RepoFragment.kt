@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.repository
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -30,6 +31,7 @@ import android.net.Uri
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import kotlinx.android.synthetic.main.repo_fragment.*
@@ -117,6 +119,10 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         startActivity(browserIntent)
     }
 
+    override fun onRepoForked() {
+        Toasty.success(context, getString(R.string.repo_forked), Toast.LENGTH_LONG).show()
+    }
+
     fun onActivityBackPress() {
         mRepoContentFragment?.onActivityBackPress()
     }
@@ -132,6 +138,17 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         menuInflater?.inflate(R.menu.repo_fragment_menu, menu)
         menu?.let { mMenu = it }
         mPresenter.onOptionsMenuCreated()
+        menu?.let { it.findItem(R.id.fork_icon).setOnMenuItemClickListener { _ ->
+            AlertDialog.Builder(this.context)
+                    .setTitle(getString(R.string.fork))
+                    .setMessage(getString(R.string.confirm_fork) + mOwner + "/" + mName + "?")
+                    .setPositiveButton(getString(R.string.yes), { dialog, which ->
+                        mPresenter.onForkRepo(isNetworkAvailable())
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show()
+            true
+        } }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

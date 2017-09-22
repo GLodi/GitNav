@@ -259,6 +259,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiPageForks(mPrefsHelper.getToken(), owner, name, pageN, itemsPerPage)
     }
 
+    override fun forkRepo(owner: String, name: String): Completable {
+        return mApiHelper.apiForkRepo(mPrefsHelper.getToken(), owner, name)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -389,6 +393,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiPageForks(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>> {
         return mApiHelper.apiPageForks(token, owner, name, pageN, itemsPerPage)
+    }
+
+    override fun apiForkRepo(token: String, owner: String, name: String): Completable {
+        return mApiHelper.apiForkRepo(token, owner, name)
     }
 
 }

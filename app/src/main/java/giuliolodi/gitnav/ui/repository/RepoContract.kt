@@ -42,6 +42,10 @@ interface RepoContract {
 
         fun createOptionsMenu(isRepoStarred: Boolean)
 
+        fun onRepoForked()
+
+        fun intentToForkedRepo(owner: String, name: String)
+
     }
 
     @PerActivity
@@ -52,6 +56,8 @@ interface RepoContract {
         fun onStarRepo(isNetworkAvailable: Boolean)
 
         fun onUnstarRepo(isNetworkAvailable: Boolean)
+
+        fun onForkRepo(isNetworkAvailable: Boolean)
 
         fun onOpenInBrowser()
 

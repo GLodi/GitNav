@@ -89,6 +89,7 @@
     <string name="users">Users</string>
     <string name="collaborators">Collaborators</string>
     <string name="code">Code</string>
+    <string name="fork">Fork</string>
     <string name="forks">Forks</string>
     <string name="issue">Issue</string>
     <string name="issues">Issues</string>
@@ -107,18 +108,20 @@
     <string name="privates">Private</string>
     <string name="content">Content</string>
     <string name="anonymous">Anonymous</string>
+    <string name="repos_owned">Repos owned</string>
+    <string name="def">Default</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="info">Info</string>
+    <string name="repo_forked">Repo forked</string>
 
     <string name="created">Created</string>
     <string name="alphabetical">Alphabetical</string>
     <string name="pushed">Pushed</string>
     <string name="updated">Updated</string>
     <string name="stars">Stars</string>
-    <string name="followers">Followers</string>
-    <string name="following">Following</string>
     <string name="name">Name</string>
-    <string name="repos_owned">Repos owned</string>
-    <string name="def">Default</string>
-    <string name="info">Info</string>
+
 
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
@@ -126,4 +129,6 @@
     <string name="logged_in">Logged in!</string>
     <string name="sign_up"><u>Sign up for GitHub!</u></string>
     <string name="insert_credentials">Please insert credentials</string>
+    <string name="confirm_fork">Do you want to fork</string>
+
 </resources>

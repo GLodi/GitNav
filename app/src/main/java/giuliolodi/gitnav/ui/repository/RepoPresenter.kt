@@ -102,20 +102,21 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
 
     override fun onStarRepo(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
-            getCompositeDisposable().add(getDataManager().starRepo(mOwner!!, mName!!)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            {
-                                getView().onRepoStarred()
-                                IS_REPO_STARRED = true
-                            },
-                            { throwable ->
-                                getView().showError(throwable.localizedMessage)
-                                Timber.e(throwable)
-                            }
-                    ))
-
+            if (mOwner != null && mName != null) {
+                getCompositeDisposable().add(getDataManager().starRepo(mOwner!!, mName!!)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                {
+                                    getView().onRepoStarred()
+                                    IS_REPO_STARRED = true
+                                },
+                                { throwable ->
+                                    getView().showError(throwable.localizedMessage)
+                                    Timber.e(throwable)
+                                }
+                        ))
+            }
         }
         else {
             getView().showNoConnectionError()
@@ -124,19 +125,21 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
 
     override fun onUnstarRepo(isNetworkAvailable: Boolean) {
         if (isNetworkAvailable) {
-            getCompositeDisposable().add(getDataManager().unstarRepo(mOwner!!, mName!!)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            {
-                                getView().onRepoUnstarred()
-                                IS_REPO_STARRED = false
-                            },
-                            { throwable ->
-                                getView().showError(throwable.localizedMessage)
-                                Timber.e(throwable)
-                            }
-                    ))
+            if (mOwner != null && mName != null) {
+                getCompositeDisposable().add(getDataManager().unstarRepo(mOwner!!, mName!!)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                {
+                                    getView().onRepoUnstarred()
+                                    IS_REPO_STARRED = false
+                                },
+                                { throwable ->
+                                    getView().showError(throwable.localizedMessage)
+                                    Timber.e(throwable)
+                                }
+                        ))
+            }
         }
         else {
             getView().showNoConnectionError()
@@ -145,6 +148,27 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
 
     override fun onOpenInBrowser() {
         mRepo?.let { getView().intentToBrowser(it.htmlUrl) }
+    }
+
+    override fun onForkRepo(isNetworkAvailable: Boolean) {
+        if (isNetworkAvailable) {
+            if (mOwner != null && mName != null) {
+                getCompositeDisposable().add(getDataManager().forkRepo(mOwner!!, mName!!)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { getView().onRepoForked() },
+                                { throwable ->
+                                    getView().showError(throwable.localizedMessage)
+                                    Timber.e(throwable)
+                                }
+                        ))
+
+            }
+        }
+        else {
+            getView().showNoConnectionError()
+        }
     }
 
 }

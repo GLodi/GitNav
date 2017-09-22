@@ -309,4 +309,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun pageForks(owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>>
 
+    /**
+     * Forks repo
+     * @param owner
+     * @param name
+     * @return Completable
+     */
+    fun forkRepo(owner: String, name: String): Completable
+
 }

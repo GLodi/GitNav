@@ -49,7 +49,6 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
 
         if (LOADING) getView().showLoading()
         else if (mFileContent != null) getView().showRepoFile(mFileContent!!)
-        // check if gist content has already been downloaded
         else {
             if (isNetworkAvailable) {
                 if (fileViewerIntent.repoOwner != null && fileViewerIntent.repoName != null && fileViewerIntent.filePath != null) {

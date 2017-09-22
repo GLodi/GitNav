@@ -330,4 +330,13 @@ interface ApiHelper {
      */
     fun apiPageForks(token: String, owner: String, name: String, pageN: Int, itemsPerPage: Int): Flowable<List<Repository>>
 
+    /**
+     * Forks repo
+     * @param token
+     * @param owner
+     * @param name
+     * @return Completable
+     */
+    fun apiForkRepo(token: String, owner: String, name: String): Completable
+
 }
