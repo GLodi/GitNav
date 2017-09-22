@@ -127,6 +127,11 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         mRepoContentFragment?.onActivityBackPress()
     }
 
+    override fun intentToForkedRepo(owner: String, name: String) {
+        startActivity(RepoActivity.getIntent(context).putExtra("owner", owner).putExtra("name", name))
+        activity.overridePendingTransition(0,0)
+    }
+
     override fun createOptionsMenu(isRepoStarred: Boolean) {
         when (isRepoStarred) {
             true -> mMenu?.findItem(R.id.star_icon)?.isVisible = true
@@ -141,7 +146,7 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         menu?.let { it.findItem(R.id.fork_icon).setOnMenuItemClickListener { _ ->
             AlertDialog.Builder(this.context)
                     .setTitle(getString(R.string.fork))
-                    .setMessage(getString(R.string.confirm_fork) + mOwner + "/" + mName + "?")
+                    .setMessage(getString(R.string.confirm_fork) + "\n" + mOwner + "/" + mName + "?")
                     .setPositiveButton(getString(R.string.yes), { dialog, which ->
                         mPresenter.onForkRepo(isNetworkAvailable())
                     })

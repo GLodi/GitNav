@@ -157,7 +157,10 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                { getView().onRepoForked() },
+                                {
+                                    getView().onRepoForked()
+                                    getView().intentToForkedRepo(getDataManager().getUsername(), mName!!)
+                                },
                                 { throwable ->
                                     getView().showError(throwable.localizedMessage)
                                     Timber.e(throwable)
