@@ -75,8 +75,11 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         repo_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         repo_fragment_tab_layout.setupWithViewPager(repo_fragment_viewpager)
         repo_fragment_viewpager.offscreenPageLimit = 4
-        if (mOwner != null && mName != null) {
+        if (mOwner != null && mName != null && mRepoContentFragment == null) {
             mRepoContentFragment = RepoContentFragment.newInstance(mOwner!!, mName!!)
+            mRepoContentFragment?.let { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!, it) }
+        }
+        else if (mOwner != null && mName != null && mRepoContentFragment != null) {
             mRepoContentFragment?.let { repo_fragment_viewpager.adapter = MyAdapter(context, fragmentManager, mOwner!!, mName!!, it) }
         }
         repo_fragment_viewpager.currentItem = 1

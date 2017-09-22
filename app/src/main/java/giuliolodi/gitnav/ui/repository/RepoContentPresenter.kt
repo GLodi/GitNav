@@ -56,7 +56,10 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
         mName = name
         if (pathTree.isEmpty()) pathTree.add("")
         if (LOADING) getView().showLoading()
-        else if (!mRepoContentList.isEmpty()) getView().showContent(mRepoContentList)
+        else if (!mRepoContentList.isEmpty()) {
+            getView().showContent(mRepoContentList)
+            setTree()
+        }
         else {
             if (isNetworkAvailable) {
                 LOADING = true
