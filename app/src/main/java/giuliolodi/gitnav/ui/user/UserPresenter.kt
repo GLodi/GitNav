@@ -32,7 +32,30 @@ import javax.inject.Inject
  */
 class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Presenter<V> {
 
-    val TAG = "UserPresenter"
+    private val TAG = "UserPresenter"
+
+    private var mUser: User? = null
+    private lateinit var mUsername: String
+
+    private var IS_FOLLOWED: Boolean = false
+    private var IS_LOGGED_USER: Boolean = false
+
+    private var PAGE_N_FOLLOWERS = 1
+    private val ITEMS_PER_PAGE_FOLLOWERS = 20
+    private var LOADING_FOLLOWERS = false
+
+    private var PAGE_N_FOLLOWING = 1
+    private val ITEMS_PER_PAGE_FOLLOWING = 20
+    private var LOADING_FOLLOWING = false
+
+    private var mFilterRepos: HashMap<String,String> = HashMap()
+    private var PAGE_N_REPOS = 1
+    private val ITEMS_PER_PAGE_REPOS = 10
+    private var LOADING_REPOS = false
+
+    private var PAGE_N_EVENTS = 1
+    private val ITEMS_PER_PAGE_EVENTS = 10
+    private var LOADING_EVENTS = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)

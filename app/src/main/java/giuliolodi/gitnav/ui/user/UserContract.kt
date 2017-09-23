@@ -52,17 +52,17 @@ interface UserContract {
     }
 
     @PerActivity
-    interface Presenter<V: BaseContract.View> : BaseContract.Presenter<V> {
+    interface Presenter<V: UserContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(username: String)
+        fun subscribe(isNetworkAvailable: Boolean, username: String?)
 
-        fun getRepos(username: String, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+        fun getRepos(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
 
-        fun getEvents(username: String, pageN: Int, itemsPerPage: Int)
+        fun getEvents(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int)
 
-        fun getFollowers(username: String, pageN: Int, itemsPerPage: Int)
+        fun getFollowers(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int)
 
-        fun getFollowing(username: String, pageN: Int, itemsPerPage: Int)
+        fun getFollowing(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int)
 
         fun followUser(username: String)
 

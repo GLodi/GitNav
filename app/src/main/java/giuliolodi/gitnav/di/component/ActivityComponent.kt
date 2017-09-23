@@ -37,6 +37,7 @@ import giuliolodi.gitnav.ui.starred.StarredFragment
 import giuliolodi.gitnav.ui.trending.TrendingFragment
 import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.ui.stargazerlist.StargazerListFragment
+import giuliolodi.gitnav.ui.user.UserFragment
 
 /**
  * Created by giulio on 12/05/2017.
@@ -88,5 +89,7 @@ interface ActivityComponent {
     fun inject(issueClosedFragment: IssueClosedFragment)
 
     fun inject(forkListFragment: ForkListFragment)
+
+    fun inject(userFragment: UserFragment)
 
 }
