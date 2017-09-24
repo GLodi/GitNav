@@ -16,16 +16,21 @@
 
 package giuliolodi.gitnav.ui.user
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
+import com.squareup.picasso.Picasso
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.user_fragment.*
+import kotlinx.android.synthetic.main.user_fragment_content.*
 import org.eclipse.egit.github.core.Repository
 import org.eclipse.egit.github.core.User
 import org.eclipse.egit.github.core.event.Event
@@ -39,6 +44,9 @@ class UserFragment : BaseFragment(), UserContract.View {
     @Inject lateinit var mPresenter: UserContract.Presenter<UserContract.View>
 
     private var mUsername: String? = null
+
+    private var mMenu: Menu? = null
+    private var mMenuInflater: MenuInflater? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,101 +94,98 @@ class UserFragment : BaseFragment(), UserContract.View {
         mPresenter.subscribe(isNetworkAvailable(), mUsername)
     }
 
-    override fun showUser(mapUserFollowed: Map<User, String>) {
-        mUser = mapUserFollowed.keys.first()
-        if (mapUserFollowed[mUser!!] == "f")
-            IS_FOLLOWED = true
-        else if (mapUserFollowed[mUser!!] == "u")
-            IS_LOGGED_USER = true
-
-        mUser?.let { mPresenter.updateLoggedUser(it) }
-
-        createOptionMenu()
-
-        user_activity_collapsing_toolbar.title = mUser?.name ?: mUser?.login
-        Picasso.with(applicationContext).load(mUser?.avatarUrl).into(user_activity_image)
+    override fun showUser(user: User, IS_FOLLOWED: Boolean, IS_LOGGED_USER: Boolean) {
+        user_fragment_collapsing_toolbar.title = user.name ?: user.login
+        Picasso.with(context).load(user.avatarUrl).into(user_fragment_image)
 
         // FAB follow/unfollow
-        user_activity_fab.visibility = View.VISIBLE
+        user_fragment_fab.visibility = View.VISIBLE
         if (IS_FOLLOWED)
-            user_activity_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_full_24dp))
+            user_fragment_fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_full_24dp))
         else
-            user_activity_fab.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_star_empty_24dp))
+            user_fragment_fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_empty_24dp))
         if (IS_LOGGED_USER)
-            user_activity_fab.visibility = View.GONE
-        user_activity_fab.setOnClickListener {
+            user_fragment_fab.visibility = View.GONE
+        user_fragment_fab.setOnClickListener {
             if (isNetworkAvailable()) {
                 if (IS_FOLLOWED)
-                    mPresenter.unFollowUser(username)
+                    mPresenter.unFollowUser(user.login)
                 else
-                    mPresenter.followUser(username)
+                    mPresenter.followUser(user.login)
             }
-            else
-                Toasty.warning(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            else {
+                Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
         }
 
         // Full name
-        if (mUser?.name != null && !mUser?.name?.isEmpty()!!)
-            user_activity_content_fullname.text = mUser?.name
+        if (user.name != null && !user.name?.isEmpty()!!) {
+            user_fragment_content_fullname.text = user.name
+        }
         else {
-            user_activity_content_fullname.visibility = View.GONE
-            user_activity_content_fullname_bottom.visibility = View.GONE
+            user_fragment_content_fullname.visibility = View.GONE
+            user_fragment_content_fullname_bottom.visibility = View.GONE
         }
 
         // Username
-        mUser?.login?.let { user_activity_content_username.text = it }
+        user.login?.let { user_fragment_content_username.text = it }
 
         // Bio
-        if (mUser?.bio != null && !mUser?.bio?.isEmpty()!!)
-            user_activity_content_bio.text = mUser?.bio
+        if (user.bio != null && !user.bio?.isEmpty()!!)
+            user_fragment_content_bio.text = user.bio
         else
-            user_activity_content_bio_rl.visibility = View.GONE
+            user_fragment_content_bio_rl.visibility = View.GONE
 
         // Mail
-        if (mUser?.email != null && !mUser?.email?.isEmpty()!!) {
-            user_activity_content_mail.text = mUser?.email
-            user_activity_content_mail_rl.setOnClickListener {
-                startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + mUser?.email)), "Email"))
+        if (user.email != null && !user.email?.isEmpty()!!) {
+            user_fragment_content_mail.text = user.email
+            user_fragment_content_mail_rl.setOnClickListener {
+                startActivity(Intent.createChooser(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + user.email)), "Email"))
             }
         }
-        else
-            user_activity_content_mail_rl.visibility = View.GONE
+        else {
+            user_fragment_content_mail_rl.visibility = View.GONE
+        }
 
         // Location
-        if (mUser?.location != null && !mUser?.location?.isEmpty()!!) {
-            user_activity_content_location.text = mUser?.location
-            user_activity_content_location_rl.setOnClickListener {
-                val uriIntent = Uri.parse(Uri.encode(mUser?.location))
+        if (user.location != null && !user.location?.isEmpty()!!) {
+            user_fragment_content_location.text = user.location
+            user_fragment_content_location_rl.setOnClickListener {
+                val uriIntent = Uri.parse(Uri.encode(user.location))
                 val mapIntent = Intent(Intent.ACTION_VIEW, uriIntent)
                 mapIntent.`package` = "com.google.android.apps.maps"
+                /*
                 if (mapIntent.resolveActivity(packageManager) != null) {
                     startActivity(mapIntent)
                 }
+                */
             }
         }
-        else
-            user_activity_content_location_rl.visibility = View.GONE
+        else {
+            user_fragment_content_location_rl.visibility = View.GONE
+        }
 
         // Company
-        if (mUser?.company != null && !mUser?.company?.isEmpty()!!)
-            user_activity_content_company.text = mUser?.company
+        if (user.company != null && !user.company?.isEmpty()!!)
+            user_fragment_content_company.text = user.company
         else
-            user_activity_content_company_rl.visibility = View.GONE
+            user_fragment_content_company_rl.visibility = View.GONE
 
         // Blog
-        if (mUser?.blog != null && !mUser?.blog?.isEmpty()!!) {
-            user_activity_content_blog.text = mUser?.blog
-            user_activity_content_blog_rl.setOnClickListener {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(mUser?.blog)))
+        if (user.blog != null && !user.blog?.isEmpty()!!) {
+            user_fragment_content_blog.text = user.blog
+            user_fragment_content_blog_rl.setOnClickListener {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(user.blog)))
             }
         }
-        else
-            user_activity_content_blog_rl.visibility = View.GONE
+        else {
+            user_fragment_content_blog_rl.visibility = View.GONE
+        }
 
-        user_activity_content_contributionsview.loadUserName(mUser?.login)
+        user_fragment_content_contributionsview.loadUserName(user.login)
 
-        if (user_activity_bottomnv.selectedItemId == R.id.user_activity_bottom_menu_info)
-            user_activity_content_rl.visibility = View.VISIBLE
+        if (user_fragment_bottomnv.selectedItemId == R.id.user_activity_bottom_menu_info)
+            user_fragment_content_rl.visibility = View.VISIBLE
     }
 
     private fun onFollowingNavClick() {
@@ -228,5 +233,16 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun showError(error: String) {
+
     }
+
+    override fun createOptionsMenu() {
+        mMenuInflater?.inflate(R.menu.user_menu, mMenu)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        menu?.let { mMenu = it }
+        inflater?.let { mMenuInflater = it }
+    }
+
 }

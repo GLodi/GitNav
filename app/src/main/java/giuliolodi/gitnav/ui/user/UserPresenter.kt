@@ -62,7 +62,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
 
     override fun subscribe(isNetworkAvailable: Boolean, username: String?) {
         mUsername = username
-
+        mUsername?.let { loadUser() }
     }
 
     private fun loadUser() {
@@ -77,6 +77,16 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { map ->
+                            mUser = map.keys.first()
+                            if (map[mUser!!] == "f")
+                                IS_FOLLOWED = true
+                            else if (map[mUser!!] == "u")
+                                IS_LOGGED_USER = true
+
+                            mUser?.let { updateLoggedUser(it) }
+
+                            getView().createOptionsMenu()
+
                             getView().hideLoading()
                             getView().showUser(map)
                         },
