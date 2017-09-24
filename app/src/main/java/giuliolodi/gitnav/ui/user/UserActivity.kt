@@ -531,7 +531,7 @@ class UserActivity : BaseActivity(), UserContract.View {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        mMenu = menu!!
+        menu?.let { mMenu = it }
         return true
     }
 

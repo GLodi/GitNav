@@ -35,7 +35,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     private val TAG = "UserPresenter"
 
     private var mUser: User? = null
-    private lateinit var mUsername: String
+    private var mUsername: String? = null
 
     private var IS_FOLLOWED: Boolean = false
     private var IS_LOGGED_USER: Boolean = false
@@ -60,12 +60,17 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(username: String) {
+    override fun subscribe(isNetworkAvailable: Boolean, username: String?) {
+        mUsername = username
+
+    }
+
+    private fun loadUser() {
         getCompositeDisposable().add(Flowable.zip<User, String, Map<User, String>>(
-                getDataManager().getUser(username)
+                getDataManager().getUser(mUsername!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
-                getDataManager().getFollowed(username)
+                getDataManager().getFollowed(mUsername!!)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()),
                 BiFunction { user, string -> return@BiFunction mapOf(user to string) })
