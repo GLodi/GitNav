@@ -106,9 +106,9 @@ class UserFragment : BaseFragment(), UserContract.View {
         user_fragment_fab.setOnClickListener {
             if (isNetworkAvailable()) {
                 if (IS_FOLLOWED)
-                    mPresenter.unFollowUser(user.login)
+                    mPresenter.unFollowUser()
                 else
-                    mPresenter.followUser(user.login)
+                    mPresenter.followUser()
             }
             else {
                 Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
@@ -227,32 +227,52 @@ class UserFragment : BaseFragment(), UserContract.View {
                 }
     }
 
-    override fun setupFollowers() {
+    override fun setupFollowers(username: String) {
+        user_fragment_appbar.setExpanded(false)
+        user_fragment_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
+
+        user_fragment_content_rl.visibility = View.GONE
+        user_fragment_rv.visibility = View.VISIBLE
+        user_fragment_content_no.visibility = View.GONE
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
+
+        user_fragment_rv.adapter = UserAdapter()
+        val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        mPresenter.onLastFollowerVisible(isNetworkAvailable(), dy)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_fragment_rv.setOnScrollListener(mScrollListenerFollowers)
+
+        (user_fragment_rv.adapter as UserAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
+                    activity.overridePendingTransition(0,0)
+                }
     }
 
-    override fun setupInfo() {
+    override fun setupRepos(username: String) {
     }
 
-    override fun setupRepos() {
-    }
-
-    override fun setupEvents() {
-    }
-
-    private fun onFollowersNavClick() {
-
-    }
-
-    private fun onInfoNavClick() {
-
-    }
-
-    private fun onReposNavClick() {
-
-    }
-
-    private fun onEventsNavClick() {
-
+    override fun setupEvents(username: String) {
     }
 
     override fun showRepos(repoList: List<Repository>) {

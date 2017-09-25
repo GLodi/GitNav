@@ -91,11 +91,11 @@ interface UserContract {
 
         fun onLastFollowingVisible(isNetworkAvailable: Boolean, dy: Int)
 
-        fun onLastFollowersVisible(isNetworkAvailable: Boolean, dy: Int)
+        fun onLastFollowerVisible(isNetworkAvailable: Boolean, dy: Int)
 
-        fun onLastReposVisible(isNetworkAvailable: Boolean, dy: Int)
+        fun onLastRepoVisible(isNetworkAvailable: Boolean, dy: Int)
 
-        fun onLastEventsVisible(isNetworkAvailable: Boolean, dy: Int)
+        fun onLastEventVisible(isNetworkAvailable: Boolean, dy: Int)
 
         fun onFollowingNavClick(isNetworkAvailable: Boolean)
 
@@ -107,11 +107,11 @@ interface UserContract {
 
         fun onEventsNavClick(isNetworkAvailable: Boolean)
 
-        fun followUser(username: String)
+        fun followUser()
 
-        fun unFollowUser(username: String)
+        fun unFollowUser()
 
-        fun updateLoggedUser(user: User)
+        fun updateLoggedUser()
 
         fun unsubscribe()
 

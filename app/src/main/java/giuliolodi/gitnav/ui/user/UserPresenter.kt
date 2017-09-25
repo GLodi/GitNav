@@ -83,10 +83,14 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 "following" -> {}
                 "followers" -> {}
                 "info" -> {
-                    if (mUser != null)
+                    if (mUser != null) {
+                        LOADING = false
+                        getView().hideLoading()
                         getView().showUser(mUser!!, IS_FOLLOWED, IS_LOGGED_USER)
-                    else
+                    }
+                    else {
                         onInfoNavClick(isNetworkAvailable)
+                    }
                 }
                 "repos" -> {}
                 "events" -> {}
@@ -201,72 +205,28 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { userList ->
+                            mFollowersList.addAll(userList)
                             getView().showFollowers(userList)
                             getView().hideLoading()
+                            getView().hideUserLoading()
+                            if (PAGE_N_FOLLOWERS == 1 && userList.isEmpty()) {
+                                getView().showNoUsers()
+                                NO_FOLLOWERS = true
+                            }
+                            PAGE_N_FOLLOWERS += 1
+                            LOADING = false
+                            LOADING_FOLLOWERS = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
                             getView().hideLoading()
                             Timber.e(throwable)
+                            getView().hideLoading()
+                            getView().hideUserLoading()
+                            LOADING = false
+                            LOADING_FOLLOWERS = false
                         }
                 ))
-    }
-
-    private fun loadRepos() {
-        getCompositeDisposable().add(getDataManager().pageRepos(mUsername, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { repoList ->
-                            getView().showRepos(repoList)
-                            getView().hideLoading()
-                        },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
-                            Timber.e(throwable)
-                        }
-                ))
-    }
-
-    private fun loadEvents() {
-        getCompositeDisposable().add(getDataManager().pageUserEvents(mUsername, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { eventList ->
-                            getView().showEvents(eventList)
-                            getView().hideLoading()
-                        },
-                        { throwable ->
-                            getView().showError(throwable.localizedMessage)
-                            getView().hideLoading()
-                            Timber.e(throwable)
-                        }
-                ))
-    }
-
-    override fun onLastFollowingVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING_FOLLOWING)
-            return
-        if (isNetworkAvailable) {
-            LOADING_FOLLOWING = true
-            getView().showUserLoading()
-            loadFollowing()
-        }
-        else if (dy > 0) {
-            getView().showNoConnectionError()
-            getView().hideLoading()
-        }
-    }
-
-    override fun onLastFollowersVisible(isNetworkAvailable: Boolean, dy: Int) {
-    }
-
-    override fun onLastReposVisible(isNetworkAvailable: Boolean, dy: Int) {
-    }
-
-    override fun onLastEventsVisible(isNetworkAvailable: Boolean, dy: Int) {
     }
 
     private fun loadUser() {
@@ -286,7 +246,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                                 IS_FOLLOWED = true
                             else if (map[mUser!!] == "u")
                                 IS_LOGGED_USER = true
-                            mUser?.let { updateLoggedUser(it) }
+                            mUser?.let { updateLoggedUser() }
                             getView().createOptionsMenu()
                             getView().hideLoading()
                             mUser?.let { getView().showUser(it, IS_FOLLOWED, IS_LOGGED_USER) }
@@ -299,8 +259,91 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 ))
     }
 
-    override fun followUser(username: String) {
-        getCompositeDisposable().add(getDataManager().followUser(username)
+    private fun loadRepos() {
+        getCompositeDisposable().add(getDataManager().pageRepos(mUsername, PAGE_N_REPOS, ITEMS_PER_PAGE_REPOS, mFilterRepos)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoList ->
+                            mRepoList.addAll(repoList)
+                            getView().showRepos(repoList)
+                            getView().hideLoading()
+                            getView().hideRepoLoading()
+                            if (PAGE_N_REPOS== 1 && repoList.isEmpty()) {
+                                getView().showNoRepos()
+                                NO_REPOS = true
+                            }
+                            PAGE_N_REPOS+= 1
+                            LOADING = false
+                            LOADING_REPOS = false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                            getView().hideLoading()
+                            getView().hideRepoLoading()
+                            LOADING = false
+                            LOADING_REPOS= false
+                        }
+                ))
+    }
+
+    private fun loadEvents() {
+        getCompositeDisposable().add(getDataManager().pageUserEvents(mUsername, PAGE_N_EVENTS, ITEMS_PER_PAGE_EVENTS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { eventList ->
+                            mEventList.addAll(eventList)
+                            getView().showEvents(eventList)
+                            getView().hideLoading()
+                            getView().hideEventLoading()
+                            if (PAGE_N_EVENTS == 1 && eventList.isEmpty()) {
+                                getView().showNoEvents()
+                                NO_EVENTS= true
+                            }
+                            PAGE_N_EVENTS += 1
+                            LOADING = false
+                            LOADING_EVENTS= false
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                            getView().hideLoading()
+                            getView().hideEventLoading()
+                            LOADING = false
+                            LOADING_EVENTS = false
+                        }
+                ))
+    }
+
+    override fun onLastFollowingVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_FOLLOWING)
+            return
+        if (isNetworkAvailable) {
+            LOADING_FOLLOWING = true
+            getView().showUserLoading()
+            loadFollowing()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
+    }
+
+    override fun onLastFollowerVisible(isNetworkAvailable: Boolean, dy: Int) {
+    }
+
+    override fun onLastRepoVisible(isNetworkAvailable: Boolean, dy: Int) {
+    }
+
+    override fun onLastEventVisible(isNetworkAvailable: Boolean, dy: Int) {
+    }
+
+    override fun followUser() {
+        getCompositeDisposable().add(getDataManager().followUser(mUsername!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -314,8 +357,8 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 ))
     }
 
-    override fun unFollowUser(username: String) {
-        getCompositeDisposable().add(getDataManager().unfollowUser(username)
+    override fun unFollowUser() {
+        getCompositeDisposable().add(getDataManager().unfollowUser(mUsername!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -329,8 +372,8 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 ))
     }
 
-    override fun updateLoggedUser(user: User) {
-        getCompositeDisposable().add(getDataManager().updateUser(user)
+    override fun updateLoggedUser() {
+        getCompositeDisposable().add(getDataManager().updateUser(mUser!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
