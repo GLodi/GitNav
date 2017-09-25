@@ -19,9 +19,14 @@ package giuliolodi.gitnav.ui.user
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
@@ -29,6 +34,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_fragment.*
 import kotlinx.android.synthetic.main.user_fragment_content.*
 import org.eclipse.egit.github.core.Repository
@@ -72,21 +79,11 @@ class UserFragment : BaseFragment(), UserContract.View {
         user_fragment_bottomnv.selectedItemId = R.id.user_activity_bottom_menu_info
         user_fragment_bottomnv.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.user_activity_bottom_menu_following -> {
-                    onFollowingNavClick()
-                }
-                R.id.user_activity_bottom_menu_followers -> {
-                    onFollowersNavClick()
-                }
-                R.id.user_activity_bottom_menu_info -> {
-                    onInfoNavClick()
-                }
-                R.id.user_activity_bottom_menu_repos -> {
-                    onReposNavClick()
-                }
-                R.id.user_activity_bottom_menu_events -> {
-                    onEventsNavClick()
-                }
+                R.id.user_activity_bottom_menu_following -> { mPresenter.onFollowingNavClick(isNetworkAvailable()) }
+                R.id.user_activity_bottom_menu_followers -> { mPresenter.onFollowersNavClick(isNetworkAvailable()) }
+                R.id.user_activity_bottom_menu_info -> { mPresenter.onInfoNavClick(isNetworkAvailable()) }
+                R.id.user_activity_bottom_menu_repos -> { mPresenter.onReposNavClick(isNetworkAvailable()) }
+                R.id.user_activity_bottom_menu_events -> { mPresenter.onEventsNavClick(isNetworkAvailable()) }
             }
             true
         }
@@ -188,8 +185,58 @@ class UserFragment : BaseFragment(), UserContract.View {
             user_fragment_content_rl.visibility = View.VISIBLE
     }
 
-    private fun onFollowingNavClick() {
+    override fun setupFollowing(username: String) {
+        user_fragment_appbar.setExpanded(false)
+        user_fragment_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
 
+        user_fragment_content_rl.visibility = View.GONE
+        user_fragment_rv.visibility = View.VISIBLE
+        user_fragment_content_no.visibility = View.GONE
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
+
+        user_fragment_rv.adapter = UserAdapter()
+        val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        mPresenter.onLastFollowingVisible(isNetworkAvailable(), dy)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_fragment_rv.setOnScrollListener(mScrollListenerFollowing)
+
+        (user_fragment_rv.adapter as UserAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
+                    activity.overridePendingTransition(0,0)
+                }
+    }
+
+    override fun setupFollowers() {
+    }
+
+    override fun setupInfo() {
+    }
+
+    override fun setupRepos() {
+    }
+
+    override fun setupEvents() {
     }
 
     private fun onFollowersNavClick() {
@@ -215,9 +262,11 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun showFollowers(followerList: List<User>) {
+        (user_fragment_rv.adapter as UserAdapter).addUserList(followerList)
     }
 
     override fun showFollowing(followingList: List<User>) {
+        (user_fragment_rv.adapter as UserAdapter).addUserList(followingList)
     }
 
     override fun showLoading() {
@@ -226,14 +275,53 @@ class UserFragment : BaseFragment(), UserContract.View {
     override fun hideLoading() {
     }
 
+    override fun showUserLoading() {
+        (user_fragment_rv.adapter as UserAdapter).addLoading()
+    }
+
+    override fun hideUserLoading() {
+    }
+
+    override fun showRepoLoading() {
+    }
+
+    override fun hideRepoLoading() {
+    }
+
+    override fun showEventLoading() {
+    }
+
+    override fun hideEventLoading() {
+    }
+
     override fun onFollowCompleted() {
     }
 
     override fun onUnfollowCompleted() {
     }
 
-    override fun showError(error: String) {
+    override fun showNoUsers() {
+        user_fragment_content_no.visibility = View.VISIBLE
+        user_fragment_content_no.text = getString(R.string.no_users)
+    }
 
+    override fun showNoRepos() {
+    }
+
+    override fun showNoEvents() {
+    }
+
+    override fun hideNoContent() {
+    }
+
+    override fun showError(error: String) {
+    }
+
+    override fun showNoConnectionError() {
+    }
+
+    override fun pressBack() {
+        activity.onBackPressed()
     }
 
     override fun createOptionsMenu() {

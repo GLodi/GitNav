@@ -37,6 +37,8 @@ interface UserContract {
 
         fun showError(error: String)
 
+        fun showNoConnectionError()
+
         fun showRepos(repoList: List<Repository>)
 
         fun showEvents(eventList: List<Event>)
@@ -51,6 +53,35 @@ interface UserContract {
 
         fun createOptionsMenu()
 
+        fun setupFollowing(username: String)
+
+        fun setupFollowers(username: String)
+
+        fun setupRepos(username: String)
+
+        fun setupEvents(username: String)
+
+        fun showUserLoading()
+
+        fun hideUserLoading()
+
+        fun showRepoLoading()
+
+        fun hideRepoLoading()
+
+        fun showEventLoading()
+
+        fun hideEventLoading()
+
+        fun showNoUsers()
+
+        fun showNoRepos()
+
+        fun showNoEvents()
+
+        fun hideNoContent()
+
+        fun pressBack()
     }
 
     @PerActivity
@@ -58,13 +89,23 @@ interface UserContract {
 
         fun subscribe(isNetworkAvailable: Boolean, username: String?)
 
-        fun getRepos(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int, filter: HashMap<String,String>)
+        fun onLastFollowingVisible(isNetworkAvailable: Boolean, dy: Int)
 
-        fun getEvents(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int)
+        fun onLastFollowersVisible(isNetworkAvailable: Boolean, dy: Int)
 
-        fun getFollowers(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int)
+        fun onLastReposVisible(isNetworkAvailable: Boolean, dy: Int)
 
-        fun getFollowing(isNetworkAvailable: Boolean, pageN: Int, itemsPerPage: Int)
+        fun onLastEventsVisible(isNetworkAvailable: Boolean, dy: Int)
+
+        fun onFollowingNavClick(isNetworkAvailable: Boolean)
+
+        fun onFollowersNavClick(isNetworkAvailable: Boolean)
+
+        fun onInfoNavClick(isNetworkAvailable: Boolean)
+
+        fun onReposNavClick(isNetworkAvailable: Boolean)
+
+        fun onEventsNavClick(isNetworkAvailable: Boolean)
 
         fun followUser(username: String)
 
