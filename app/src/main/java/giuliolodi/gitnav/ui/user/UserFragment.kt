@@ -359,9 +359,11 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun showRepos(repoList: List<Repository>) {
+        (user_fragment_rv.adapter as RepoListAdapter).addRepos(repoList)
     }
 
     override fun showEvents(eventList: List<Event>) {
+        (user_fragment_rv.adapter as EventAdapter).addEvents(eventList)
     }
 
     override fun showFollowers(followerList: List<User>) {
@@ -373,9 +375,11 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun showLoading() {
+        user_fragment_content_progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
+        user_fragment_content_progress_bar.visibility = View.GONE
     }
 
     override fun showUserLoading() {
@@ -383,24 +387,33 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun hideUserLoading() {
+        (user_fragment_rv.adapter as UserAdapter).hideLoading()
     }
 
     override fun showRepoLoading() {
+        (user_fragment_rv.adapter as RepoListAdapter).showLoading()
     }
 
     override fun hideRepoLoading() {
+        (user_fragment_rv.adapter as RepoListAdapter).hideLoading()
     }
 
     override fun showEventLoading() {
+        (user_fragment_rv.adapter as EventAdapter).showLoading()
     }
 
     override fun hideEventLoading() {
+        (user_fragment_rv.adapter as EventAdapter).hideLoading()
     }
 
     override fun onFollowCompleted() {
+        user_fragment_fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_full_24dp))
+        Toasty.success(context, getString(R.string.user_followed), Toast.LENGTH_LONG).show()
     }
 
     override fun onUnfollowCompleted() {
+        user_fragment_fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_empty_24dp))
+        Toasty.success(context, getString(R.string.user_unfollowed), Toast.LENGTH_LONG).show()
     }
 
     override fun showNoUsers() {
@@ -409,18 +422,33 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun showNoRepos() {
+        user_fragment_content_no.visibility = View.VISIBLE
+        user_fragment_content_no.text = getString(R.string.no_repositories)
     }
 
     override fun showNoEvents() {
+        user_fragment_content_no.visibility = View.VISIBLE
+        user_fragment_content_no.text = getString(R.string.no_events)
     }
 
     override fun hideNoContent() {
+        user_fragment_content_no.visibility = View.GONE
+    }
+
+    override fun clearRepoList() {
+        (user_fragment_rv.adapter as RepoListAdapter).clear()
+    }
+
+    override fun intentToBrowser(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
     override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun pressBack() {
@@ -434,6 +462,56 @@ class UserFragment : BaseFragment(), UserContract.View {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.let { mMenu = it }
         inflater?.let { mMenuInflater = it }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        if (item?.itemId == android.R.id.home) {
+            activity.onBackPressed()
+            activity.finish()
+            activity.overridePendingTransition(0,0)
+        }
+        if (isNetworkAvailable()) {
+            when (item?.itemId) {
+                R.id.user_menu_created -> {
+                    item.isChecked = true
+                    mPresenter.onUserMenuCreatedClick()
+                }
+                R.id.user_menu_updated -> {
+                    item.isChecked = true
+                    mPresenter.onUserMenuUpdatedClick()
+                }
+                R.id.user_menu_pushed -> {
+                    item.isChecked = true
+                    mPresenter.onUserMenuPushedClick()
+                }
+                R.id.user_menu_alphabetical -> {
+                    item.isChecked = true
+                    mPresenter.onUserMenuAlphabeticalClick()
+                }
+                R.id.user_menu_stars -> {
+                    item.isChecked = true
+                    mPresenter.onUserMenuStarsClick()
+                }
+                R.id.open_in_browser -> { mPresenter.onOpenInBrowserClick() }
+            }
+        }
+        else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }

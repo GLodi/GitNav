@@ -81,6 +81,10 @@ interface UserContract {
 
         fun hideNoContent()
 
+        fun clearRepoList()
+
+        fun intentToBrowser(url: String)
+
         fun pressBack()
     }
 
@@ -112,6 +116,18 @@ interface UserContract {
         fun unFollowUser()
 
         fun updateLoggedUser()
+
+        fun onUserMenuCreatedClick()
+
+        fun onUserMenuUpdatedClick()
+
+        fun onUserMenuPushedClick()
+
+        fun onUserMenuAlphabeticalClick()
+
+        fun onUserMenuStarsClick()
+
+        fun onOpenInBrowserClick()
 
         fun unsubscribe()
 

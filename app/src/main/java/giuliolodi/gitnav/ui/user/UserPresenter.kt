@@ -437,6 +437,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
+                            IS_FOLLOWED = true
                             getView().onFollowCompleted()
                         },
                         { throwable ->
@@ -452,6 +453,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
+                            IS_FOLLOWED = false
                             getView().onUnfollowCompleted()
                         },
                         { throwable ->
@@ -472,6 +474,50 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    override fun onUserMenuCreatedClick() {
+        mFilterRepos.put("sort", "created")
+        PAGE_N_REPOS = 1
+        getView().clearRepoList()
+        getView().showLoading()
+        loadRepos()
+    }
+
+    override fun onUserMenuUpdatedClick() {
+        mFilterRepos.put("sort", "updated")
+        PAGE_N_REPOS = 1
+        getView().clearRepoList()
+        getView().showLoading()
+        loadRepos()
+    }
+
+    override fun onUserMenuPushedClick() {
+        mFilterRepos.put("sort", "pushed")
+        PAGE_N_REPOS = 1
+        getView().clearRepoList()
+        getView().showLoading()
+        loadRepos()
+    }
+
+    override fun onUserMenuAlphabeticalClick() {
+        mFilterRepos.put("sort", "full_name")
+        PAGE_N_REPOS = 1
+        getView().clearRepoList()
+        getView().showLoading()
+        loadRepos()
+    }
+
+    override fun onUserMenuStarsClick() {
+        mFilterRepos.put("sort", "stars")
+        PAGE_N_REPOS = 1
+        getView().clearRepoList()
+        getView().showLoading()
+        loadRepos()
+    }
+
+    override fun onOpenInBrowserClick() {
+        mUser?.htmlUrl?.let { getView().intentToBrowser(it) }
     }
 
     private fun hideNoContents() {
