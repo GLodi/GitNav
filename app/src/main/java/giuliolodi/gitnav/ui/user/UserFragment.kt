@@ -24,6 +24,7 @@ import android.os.Looper
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -72,6 +73,11 @@ class UserFragment : BaseFragment(), UserContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
+
+        (activity as AppCompatActivity).setSupportActionBar(user_fragment_toolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        user_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
 
         user_fragment_rv.layoutManager = LinearLayoutManager(context)
         user_fragment_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())

@@ -20,19 +20,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import giuliolodi.gitnav.R
-import giuliolodi.gitnav.ui.base.BaseDrawerActivity
-import kotlinx.android.synthetic.main.base_activity.*
+import giuliolodi.gitnav.ui.base.BaseActivity
 
 /**
  * Created by giulio on 03/06/2017.
  */
-class UserActivity : BaseDrawerActivity() {
+class UserActivity : BaseActivity() {
 
     private val USER_FRAGMENT_TAG = "USER_FRAGMENT_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        layoutInflater.inflate(R.layout.user_activity, content_frame)
+        setContentView(R.layout.user_activity)
 
         var userFragment: UserFragment? = supportFragmentManager.findFragmentByTag(USER_FRAGMENT_TAG) as UserFragment?
         if (userFragment == null) {
