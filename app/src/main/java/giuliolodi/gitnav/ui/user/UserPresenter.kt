@@ -80,8 +80,28 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         if (mUsername != null) {
             if (LOADING) getView().showLoading()
             when(MODE) {
-                "following" -> {}
-                "followers" -> {}
+                "following" -> {
+                    if (!mFollowingList.isEmpty()) {
+                        LOADING = false
+                        getView().hideLoading()
+                        getView().setupFollowing(mUsername!!)
+                        getView().showFollowing(mFollowingList)
+                    }
+                    else {
+                        onFollowingNavClick(isNetworkAvailable)
+                    }
+                }
+                "followers" -> {
+                    if (!mFollowersList.isEmpty()) {
+                        LOADING = false
+                        getView().hideLoading()
+                        getView().setupFollowers(mUsername!!)
+                        getView().showFollowers(mFollowersList)
+                    }
+                    else {
+                        onFollowersNavClick(isNetworkAvailable)
+                    }
+                }
                 "info" -> {
                     if (mUser != null) {
                         LOADING = false
@@ -92,8 +112,28 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                         onInfoNavClick(isNetworkAvailable)
                     }
                 }
-                "repos" -> {}
-                "events" -> {}
+                "repos" -> {
+                    if (!mRepoList.isEmpty()) {
+                        LOADING = false
+                        getView().hideLoading()
+                        getView().setupRepos(mUsername!!, mFilterRepos)
+                        getView().showRepos(mRepoList)
+                    }
+                    else {
+                        onReposNavClick(isNetworkAvailable)
+                    }
+                }
+                "events" -> {
+                    if (!mEventList.isEmpty()) {
+                        LOADING = false
+                        getView().hideLoading()
+                        getView().setupEvents(mUsername!!)
+                        getView().showEvents(mEventList)
+                    }
+                    else {
+                        onEventsNavClick(isNetworkAvailable)
+                    }
+                }
                 null -> {
                     if (isNetworkAvailable) {
                         MODE = "info"
@@ -121,6 +161,9 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         PAGE_N_FOLLOWING = 1
         LOADING = true
         setLoadings(false)
+        clearLists()
+        hideNoContents()
+        getView().hideNoContent()
         getView().showLoading()
         getView().setupFollowing(mUsername!!)
         loadFollowing()
@@ -132,6 +175,9 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         PAGE_N_FOLLOWERS = 1
         LOADING = true
         setLoadings(false)
+        clearLists()
+        hideNoContents()
+        getView().hideNoContent()
         getView().showLoading()
         getView().setupFollowers(mUsername!!)
         loadFollowers()
@@ -142,6 +188,9 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         MODE = "info"
         LOADING = true
         setLoadings(false)
+        clearLists()
+        hideNoContents()
+        getView().hideNoContent()
         getView().showLoading()
         loadUser()
     }
@@ -152,8 +201,12 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         PAGE_N_REPOS = 1
         LOADING = true
         setLoadings(false)
+        clearLists()
+        hideNoContents()
+        getView().hideNoContent()
         getView().showLoading()
-        getView().setupRepos(mUsername!!)
+        mFilterRepos.put("sort","created")
+        getView().setupRepos(mUsername!!, mFilterRepos)
         loadRepos()
     }
 
@@ -163,6 +216,9 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         PAGE_N_EVENTS = 1
         LOADING = true
         setLoadings(false)
+        clearLists()
+        hideNoContents()
+        getView().hideNoContent()
         getView().showLoading()
         getView().setupEvents(mUsername!!)
         loadEvents()
@@ -284,7 +340,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             getView().hideLoading()
                             getView().hideRepoLoading()
                             LOADING = false
-                            LOADING_REPOS= false
+                            LOADING_REPOS = false
                         }
                 ))
     }
@@ -305,7 +361,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             }
                             PAGE_N_EVENTS += 1
                             LOADING = false
-                            LOADING_EVENTS= false
+                            LOADING_EVENTS = false
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
@@ -334,12 +390,45 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     }
 
     override fun onLastFollowerVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_FOLLOWERS)
+            return
+        if (isNetworkAvailable) {
+            LOADING_FOLLOWERS = true
+            getView().showUserLoading()
+            loadFollowers()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
     }
 
     override fun onLastRepoVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_REPOS || mFilterRepos["sort"] == "stars")
+            return
+        if (isNetworkAvailable) {
+            LOADING_REPOS = true
+            getView().showRepoLoading()
+            loadRepos()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
     }
 
     override fun onLastEventVisible(isNetworkAvailable: Boolean, dy: Int) {
+        if (LOADING_EVENTS)
+            return
+        if (isNetworkAvailable) {
+            LOADING_EVENTS = true
+            getView().showEventLoading()
+            loadEvents()
+        }
+        else if (dy > 0) {
+            getView().showNoConnectionError()
+            getView().hideLoading()
+        }
     }
 
     override fun followUser() {
@@ -383,6 +472,20 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             Timber.e(throwable)
                         }
                 ))
+    }
+
+    private fun hideNoContents() {
+        NO_FOLLOWING = false
+        NO_FOLLOWERS = false
+        NO_REPOS = false
+        NO_EVENTS = false
+    }
+
+    private fun clearLists() {
+        mFollowingList = mutableListOf()
+        mFollowersList = mutableListOf()
+        mRepoList = mutableListOf()
+        mEventList = mutableListOf()
     }
 
     private fun setLoadings(bool: Boolean) {

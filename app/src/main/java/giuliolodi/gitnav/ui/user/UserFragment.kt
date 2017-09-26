@@ -34,6 +34,9 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.events.EventAdapter
+import giuliolodi.gitnav.ui.repository.RepoActivity
+import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_fragment.*
@@ -198,7 +201,6 @@ class UserFragment : BaseFragment(), UserContract.View {
 
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
-        user_fragment_content_no.visibility = View.GONE
         mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.adapter = UserAdapter()
@@ -240,7 +242,6 @@ class UserFragment : BaseFragment(), UserContract.View {
 
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
-        user_fragment_content_no.visibility = View.GONE
         mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.adapter = UserAdapter()
@@ -269,10 +270,92 @@ class UserFragment : BaseFragment(), UserContract.View {
                 }
     }
 
-    override fun setupRepos(username: String) {
+    override fun setupRepos(username: String, filter: HashMap<String,String>) {
+        user_fragment_appbar.setExpanded(false)
+        user_fragment_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
+
+        user_fragment_content_rl.visibility = View.GONE
+        user_fragment_rv.visibility = View.VISIBLE
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = true }
+        mMenu?.findItem(R.id.user_menu_created)?.let { it.isChecked = true }
+
+        user_fragment_rv.adapter = RepoListAdapter()
+        (user_fragment_rv.adapter as RepoListAdapter).setFilter(filter)
+
+        val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        mPresenter.onLastRepoVisible(isNetworkAvailable(), dy)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_fragment_rv.setOnScrollListener(mScrollListenerRepos)
+
+        (user_fragment_rv.adapter as RepoListAdapter).getPositionClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { repo ->
+                    startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
+                    activity.overridePendingTransition(0,0)
+                }
     }
 
     override fun setupEvents(username: String) {
+        user_fragment_appbar.setExpanded(false)
+        user_fragment_nestedscrollview.isNestedScrollingEnabled = false
+        val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
+
+        mPresenter.unsubscribe()
+
+        user_fragment_content_rl.visibility = View.GONE
+        user_fragment_rv.visibility = View.VISIBLE
+        user_fragment_content_no.visibility = View.GONE
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
+
+        user_fragment_rv.adapter = EventAdapter()
+        val mScrollListenerEvents = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                val visibleItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
+                val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    if (isNetworkAvailable()) {
+                        mPresenter.onLastEventVisible(isNetworkAvailable(), dy)
+                    } else if (dy > 0) {
+                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
+                    }
+                }
+            }
+        }
+        user_fragment_rv.setOnScrollListener(mScrollListenerEvents)
+
+        (user_fragment_rv.adapter as EventAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username ->
+                    startActivity(UserActivity.getIntent(context).putExtra("username", username))
+                    activity.overridePendingTransition(0,0)
+                }
     }
 
     override fun showRepos(repoList: List<Repository>) {

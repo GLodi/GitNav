@@ -57,7 +57,7 @@ interface UserContract {
 
         fun setupFollowers(username: String)
 
-        fun setupRepos(username: String)
+        fun setupRepos(username: String, filter: HashMap<String,String>)
 
         fun setupEvents(username: String)
 
