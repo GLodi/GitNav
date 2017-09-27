@@ -84,7 +84,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                     if (!mFollowingList.isEmpty()) {
                         LOADING = false
                         getView().hideLoading()
-                        getView().setupFollowing(mUsername!!)
+                        getView().setupFollowing(mUsername!!, mUser!!)
                         getView().showFollowing(mFollowingList)
                     }
                     else {
@@ -95,7 +95,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                     if (!mFollowersList.isEmpty()) {
                         LOADING = false
                         getView().hideLoading()
-                        getView().setupFollowers(mUsername!!)
+                        getView().setupFollowers(mUsername!!, mUser!!)
                         getView().showFollowers(mFollowersList)
                     }
                     else {
@@ -116,7 +116,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                     if (!mRepoList.isEmpty()) {
                         LOADING = false
                         getView().hideLoading()
-                        getView().setupRepos(mUsername!!, mFilterRepos)
+                        getView().setupRepos(mUsername!!, mFilterRepos, mUser!!)
                         getView().showRepos(mRepoList)
                     }
                     else {
@@ -127,7 +127,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                     if (!mEventList.isEmpty()) {
                         LOADING = false
                         getView().hideLoading()
-                        getView().setupEvents(mUsername!!)
+                        getView().setupEvents(mUsername!!, mUser!!)
                         getView().showEvents(mEventList)
                     }
                     else {
@@ -165,7 +165,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         hideNoContents()
         getView().hideNoContent()
         getView().showLoading()
-        getView().setupFollowing(mUsername!!)
+        getView().setupFollowing(mUsername!!,mUser!!)
         loadFollowing()
     }
 
@@ -179,7 +179,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         hideNoContents()
         getView().hideNoContent()
         getView().showLoading()
-        getView().setupFollowers(mUsername!!)
+        getView().setupFollowers(mUsername!!, mUser!!)
         loadFollowers()
     }
 
@@ -206,7 +206,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         getView().hideNoContent()
         getView().showLoading()
         mFilterRepos.put("sort","created")
-        getView().setupRepos(mUsername!!, mFilterRepos)
+        getView().setupRepos(mUsername!!, mFilterRepos, mUser!!)
         loadRepos()
     }
 
@@ -220,7 +220,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
         hideNoContents()
         getView().hideNoContent()
         getView().showLoading()
-        getView().setupEvents(mUsername!!)
+        getView().setupEvents(mUsername!!, mUser!!)
         loadEvents()
     }
 

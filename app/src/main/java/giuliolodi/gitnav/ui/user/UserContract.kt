@@ -53,13 +53,13 @@ interface UserContract {
 
         fun createOptionsMenu()
 
-        fun setupFollowing(username: String)
+        fun setupFollowing(username: String, user: User)
 
-        fun setupFollowers(username: String)
+        fun setupFollowers(username: String, user: User)
 
-        fun setupRepos(username: String, filter: HashMap<String,String>)
+        fun setupRepos(username: String, filter: HashMap<String,String>, user: User)
 
-        fun setupEvents(username: String)
+        fun setupEvents(username: String, user: User)
 
         fun showUserLoading()
 

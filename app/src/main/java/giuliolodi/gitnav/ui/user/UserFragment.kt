@@ -103,8 +103,20 @@ class UserFragment : BaseFragment(), UserContract.View {
     }
 
     override fun showUser(user: User, IS_FOLLOWED: Boolean, IS_LOGGED_USER: Boolean) {
+        user_fragment_appbar.setExpanded(true)
+        user_fragment_nestedscrollview.isNestedScrollingEnabled = true
+        val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior as AppBarLayout.Behavior
+        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return true
+            }
+        })
+
         user_fragment_collapsing_toolbar.title = user.name ?: user.login
         Picasso.with(context).load(user.avatarUrl).into(user_fragment_image)
+
+        user_fragment_rv.visibility = View.GONE
 
         // FAB follow/unfollow
         user_fragment_fab.visibility = View.VISIBLE
@@ -196,7 +208,7 @@ class UserFragment : BaseFragment(), UserContract.View {
             user_fragment_content_rl.visibility = View.VISIBLE
     }
 
-    override fun setupFollowing(username: String) {
+    override fun setupFollowing(username: String, user: User) {
         user_fragment_appbar.setExpanded(false)
         user_fragment_nestedscrollview.isNestedScrollingEnabled = false
         val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -206,6 +218,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 return false
             }
         })
+        user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
@@ -237,10 +250,9 @@ class UserFragment : BaseFragment(), UserContract.View {
                 }
     }
 
-    override fun setupFollowers(username: String) {
+    override fun setupFollowers(username: String, user: User) {
         user_fragment_appbar.setExpanded(false)
         user_fragment_nestedscrollview.isNestedScrollingEnabled = false
-
         val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
         val behavior = params.behavior as AppBarLayout.Behavior
         behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
@@ -248,6 +260,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 return false
             }
         })
+        user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
@@ -279,7 +292,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 }
     }
 
-    override fun setupRepos(username: String, filter: HashMap<String,String>) {
+    override fun setupRepos(username: String, filter: HashMap<String,String>, user: User) {
         user_fragment_appbar.setExpanded(false)
         user_fragment_nestedscrollview.isNestedScrollingEnabled = false
         val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -289,6 +302,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 return false
             }
         })
+        user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
@@ -323,7 +337,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 }
     }
 
-    override fun setupEvents(username: String) {
+    override fun setupEvents(username: String, user: User) {
         user_fragment_appbar.setExpanded(false)
         user_fragment_nestedscrollview.isNestedScrollingEnabled = false
         val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -333,6 +347,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 return false
             }
         })
+        user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
         mPresenter.unsubscribe()
 
