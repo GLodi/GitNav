@@ -74,6 +74,8 @@ class UserFragment : BaseFragment(), UserContract.View {
         mPresenter.onAttach(this)
         setHasOptionsMenu(true)
 
+        (user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.Behavior()
+
         (activity as AppCompatActivity).setSupportActionBar(user_fragment_toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -238,6 +240,7 @@ class UserFragment : BaseFragment(), UserContract.View {
     override fun setupFollowers(username: String) {
         user_fragment_appbar.setExpanded(false)
         user_fragment_nestedscrollview.isNestedScrollingEnabled = false
+
         val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
         val behavior = params.behavior as AppBarLayout.Behavior
         behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {
