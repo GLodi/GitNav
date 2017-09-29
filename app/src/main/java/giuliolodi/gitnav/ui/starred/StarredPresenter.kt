@@ -44,6 +44,7 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean) {
+        getDataManager().setTheme("dark")
         if (mFilter["sort"] == null)
             mFilter.put("sort", "starred")
         if (!mRepoList.isEmpty()) {

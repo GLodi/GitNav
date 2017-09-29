@@ -16,9 +16,11 @@
 
 package giuliolodi.gitnav.ui.base
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -40,6 +42,7 @@ import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.utils.Constants
 import kotlinx.android.synthetic.main.base_activity.*
 import kotlinx.android.synthetic.main.base_activity_drawer.*
 
@@ -53,7 +56,11 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
     private val DRAWER_DELAY = 250L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme_NoActionBar_Dark)
+        when(applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).getString("PREF_KEY_THEME", null)) {
+            "light" -> setTheme(R.style.AppTheme_NoActionBar)
+            "dark" -> setTheme(R.style.AppTheme_NoActionBar_Dark)
+            null -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("PREF_KEY_THEME", "light").apply()
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.base_activity_drawer)
 
@@ -158,10 +165,6 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             drawer_layout.closeDrawer(GravityCompat.START)
         else
             super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     /*

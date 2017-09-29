@@ -35,6 +35,7 @@ class PrefsHelperImpl : PrefsHelper {
     private val PREF_KEY_FULLNAME= "PREF_KEY_FULLNAME"
     private val PREF_KEY_USERNAME = "PREF_KEY_USERNAME"
     private val PREF_KEY_EMAIL = "PREF_KEY_EMAIL"
+    private val PREF_KEY_THEME = "PREF_KEY_THEME"
 
     private val mContext: Context
     private val mPrefs: SharedPreferences
@@ -84,6 +85,12 @@ class PrefsHelperImpl : PrefsHelper {
 
     override fun getPic(): Bitmap {
         return ImageSaver(mContext).setFileName("thumbnail.png").setDirectoryName("images").load()
+    }
+
+    override fun setTheme(theme: String) {
+        if (theme == "light" || theme == "dark") {
+            mPrefs.edit().putString(PREF_KEY_THEME, theme).apply()
+        }
     }
 
 }

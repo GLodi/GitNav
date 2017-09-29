@@ -16,13 +16,17 @@
 
 package giuliolodi.gitnav.ui.base
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import giuliolodi.gitnav.App
+import giuliolodi.gitnav.R
 import giuliolodi.gitnav.di.component.ActivityComponent
 import giuliolodi.gitnav.di.component.DaggerActivityComponent
 import giuliolodi.gitnav.di.module.ActivityModule
+import giuliolodi.gitnav.utils.Constants
 import giuliolodi.gitnav.utils.NetworkUtils
 
 /**
@@ -33,6 +37,11 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.C
     private lateinit var mActivityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        when(applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).getString("PREF_KEY_THEME", null)) {
+            "light" -> setTheme(R.style.AppTheme_NoActionBar)
+            "dark" -> setTheme(R.style.AppTheme_NoActionBar_Dark)
+            null -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("PREF_KEY_THEME", "light").apply()
+        }
         super.onCreate(savedInstanceState)
 
         val app: App = application as App
@@ -52,10 +61,6 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.C
 
     override fun isNetworkAvailable(): Boolean {
         return NetworkUtils.isNetworkAvailable(applicationContext)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     /*

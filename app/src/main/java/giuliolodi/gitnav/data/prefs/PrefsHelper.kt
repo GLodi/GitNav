@@ -65,4 +65,11 @@ interface PrefsHelper {
      * @return pic
      */
     fun getPic(): Bitmap
+
+    /**
+     * Set theme to either light or dark
+     * @param String
+     */
+    fun setTheme(theme: String)
+
 }

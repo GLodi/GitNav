@@ -399,4 +399,8 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiForkRepo(token, owner, name)
     }
 
+    override fun setTheme(theme: String) {
+        return mPrefsHelper.setTheme(theme)
+    }
+
 }
