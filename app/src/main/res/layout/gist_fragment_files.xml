@@ -20,7 +20,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/back_tint"
+    android:background="@color/backTint"
     android:id="@+id/gist_fragment_files_rl">
 
     <ProgressBar

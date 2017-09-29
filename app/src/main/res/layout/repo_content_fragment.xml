@@ -34,7 +34,7 @@
         android:id="@+id/repo_content_fragment_rl"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/back_tint"
+        android:background="@color/backTint"
         android:visibility="visible">
 
         <HorizontalScrollView

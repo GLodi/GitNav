@@ -293,7 +293,7 @@
             android:id="@+id/user_fragment_content_contributionsview"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            app:baseEmptyColor="@color/grey_dark"
+            app:baseEmptyColor="@color/greyDark"
             app:displayMonth="true"
             app:lastWeeks="30"
             android:layout_margin="16dp"

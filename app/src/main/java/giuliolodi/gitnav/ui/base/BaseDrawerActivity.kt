@@ -53,6 +53,7 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
     private val DRAWER_DELAY = 250L
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_NoActionBar_Dark)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.base_activity_drawer)
 
