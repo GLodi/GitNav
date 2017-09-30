@@ -128,6 +128,10 @@ class EventFragment : BaseFragment(), EventContract.View {
         (event_fragment_rv.adapter as EventAdapter).clear()
     }
 
+    override fun onColorChanged() {
+        Toasty.success(context, "Color changed", Toast.LENGTH_LONG).show()
+    }
+
     override fun intentToUserActivity(username: String) {
         startActivity(UserActivity.getIntent(context).putExtra("username", username))
         activity.overridePendingTransition(0,0)
@@ -140,7 +144,7 @@ class EventFragment : BaseFragment(), EventContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            mPresenter.changeColor()
         }
         return super.onOptionsItemSelected(item)
     }

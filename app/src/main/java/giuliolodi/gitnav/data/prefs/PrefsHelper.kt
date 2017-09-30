@@ -72,4 +72,10 @@ interface PrefsHelper {
      */
     fun setTheme(theme: String)
 
+    /**
+     * Get current color theme
+     * @param String
+     */
+    fun getTheme(): String
+
 }

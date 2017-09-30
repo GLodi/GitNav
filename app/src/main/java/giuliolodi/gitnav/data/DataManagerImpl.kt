@@ -403,4 +403,7 @@ class DataManagerImpl : DataManager {
         return mPrefsHelper.setTheme(theme)
     }
 
+    override fun getTheme(): String {
+        return mPrefsHelper.getTheme()
+    }
 }

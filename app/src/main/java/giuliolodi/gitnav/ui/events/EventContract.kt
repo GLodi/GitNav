@@ -49,6 +49,8 @@ interface EventContract {
 
         fun intentToUserActivity(username: String)
 
+        fun onColorChanged()
+
     }
 
     @PerActivity
@@ -61,6 +63,8 @@ interface EventContract {
         fun onSwipeToRefresh(isNetworkAvailable: Boolean)
 
         fun onUserClick(username: String)
+
+        fun changeColor()
 
     }
 

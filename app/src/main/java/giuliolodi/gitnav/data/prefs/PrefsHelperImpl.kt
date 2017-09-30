@@ -51,11 +51,9 @@ class PrefsHelperImpl : PrefsHelper {
     }
 
     override fun getToken(): String {
-        val token: String
+        var token = ""
         if (mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null) != null)
             token = mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null)
-        else
-            token = ""
         return token
     }
 
@@ -91,6 +89,10 @@ class PrefsHelperImpl : PrefsHelper {
         if (theme == "light" || theme == "dark") {
             mPrefs.edit().putString(PREF_KEY_THEME, theme).apply()
         }
+    }
+
+    override fun getTheme(): String {
+        return mPrefs.getString(PREF_KEY_THEME, null)
     }
 
 }
