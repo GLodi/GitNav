@@ -18,6 +18,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -35,7 +36,7 @@
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.87"
             android:maxLines="1"/>
 
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="Forked from"
             android:paddingBottom="4dp"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.54"/>
 
         <TextView
@@ -54,7 +55,7 @@
             android:text="Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.54"
             android:maxLines="2"
             android:ellipsize="end"/>
@@ -66,7 +67,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_gold_24dp"
+                app:srcCompat="@drawable/ic_star_gold_24dp"
                 android:id="@+id/star"
                 android:paddingTop="5dp"/>
 
@@ -79,14 +80,14 @@
                 android:textSize="14sp"
                 android:paddingLeft="4dp"
                 android:layout_toRightOf="@id/star"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"/>
 
             <ImageView
                 android:id="@+id/row_repo_language_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_code_black_24dp"
+                app:srcCompat="@drawable/ic_code_black_24dp"
                 android:layout_toRightOf="@id/star"
                 android:paddingLeft="60dp"
                 android:paddingTop="6dp"/>
@@ -99,14 +100,14 @@
                 android:text="Date"
                 android:textSize="14sp"
                 android:paddingTop="4dp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"/>
 
             <ImageView
                 android:id="@+id/row_repo_date_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_schedule_black_24dp"
+                app:srcCompat="@drawable/ic_schedule_black_24dp"
                 android:layout_toLeftOf="@id/row_repo_date"
                 android:paddingRight="4dp"
                 android:paddingTop="7dp"/>
@@ -120,7 +121,7 @@
                 android:textSize="14sp"
                 android:layout_toRightOf="@id/row_repo_language_icon"
                 android:paddingLeft="4dp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"
                 android:maxLines="1"
                 android:ellipsize="end"
