@@ -59,7 +59,7 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
         when(applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).getString("PREF_KEY_THEME", null)) {
             "light" -> setTheme(R.style.AppTheme_NoActionBar)
             "dark" -> setTheme(R.style.AppTheme_NoActionBar_Dark)
-            null -> PreferenceManager.getDefaultSharedPreferences(this).edit().putString("PREF_KEY_THEME", "light").apply()
+            null -> applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_THEME", "light").apply()
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.base_activity_drawer)
