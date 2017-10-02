@@ -21,6 +21,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:colorBackgroundCacheHint">@color/bottomViewBackground</item>
+        <item name="android:textColorTertiary">@color/bottomViewText</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -33,6 +35,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDarkInverse</item>
         <item name="colorAccent">@color/colorAccentInverse</item>
         <item name="android:textColorPrimary">@color/textColorPrimaryInverse</item>
+        <item name="android:colorBackgroundCacheHint">@color/bottomViewBackgroundInverse</item>
+        <item name="android:textColorTertiary">@color/bottomViewTextInverse</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

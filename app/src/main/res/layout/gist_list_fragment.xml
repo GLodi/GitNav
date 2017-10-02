@@ -49,6 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:alpha="0.54"
                 android:visibility="invisible"/>
 
         </RelativeLayout>
@@ -60,10 +62,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
-        android:background="@color/grey"
-        app:itemBackground="@color/grey"
-        app:itemIconTint="@color/colorPrimary"
-        app:itemTextColor="@color/colorPrimary"
+        android:background="?android:colorBackgroundCacheHint"
+        app:itemBackground="?android:colorBackgroundCacheHint"
+        app:itemIconTint="?android:textColorTertiary"
+        app:itemTextColor="?android:textColorTertiary"
         app:menu="@menu/gist_list_fragment_bottom_menu"
         android:elevation="8dp"
         app:elevation="8dp"/>
