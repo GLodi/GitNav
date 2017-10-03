@@ -57,7 +57,9 @@ class UserFragment : BaseFragment(), UserContract.View {
     private var mUsername: String? = null
 
     private var mMenu: Menu? = null
-    private var mMenuInflater: MenuInflater? = null
+    private var mMenuItem: Int? = null
+
+    private var IS_REPOS_SHOWING: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +117,9 @@ class UserFragment : BaseFragment(), UserContract.View {
 
         user_fragment_collapsing_toolbar.title = user.name ?: user.login
         Picasso.with(context).load(user.avatarUrl).into(user_fragment_image)
+
+        IS_REPOS_SHOWING = false
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.visibility = View.GONE
 
@@ -220,9 +225,11 @@ class UserFragment : BaseFragment(), UserContract.View {
         })
         user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
+        IS_REPOS_SHOWING = false
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
+
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
-        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.adapter = UserAdapter()
         val mScrollListenerFollowing = object : RecyclerView.OnScrollListener() {
@@ -262,9 +269,11 @@ class UserFragment : BaseFragment(), UserContract.View {
         })
         user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
+        IS_REPOS_SHOWING = false
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
+
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
-        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.adapter = UserAdapter()
         val mScrollListenerFollowers = object : RecyclerView.OnScrollListener() {
@@ -304,14 +313,18 @@ class UserFragment : BaseFragment(), UserContract.View {
         })
         user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
+        IS_REPOS_SHOWING = true
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = true }
+        if (mMenuItem == null) {
+            mMenu?.findItem(R.id.user_menu_created)?.let { it.isChecked = true }
+            mMenuItem = mMenu?.findItem(R.id.user_menu_created)?.itemId
+        }
+
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
-        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = true }
-        mMenu?.findItem(R.id.user_menu_created)?.let { it.isChecked = true }
 
         user_fragment_rv.adapter = RepoListAdapter()
         (user_fragment_rv.adapter as RepoListAdapter).setFilter(filter)
-
         val mScrollListenerRepos = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 val visibleItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).childCount
@@ -349,12 +362,12 @@ class UserFragment : BaseFragment(), UserContract.View {
         })
         user_fragment_collapsing_toolbar.title = user.name ?: user.login
 
-        mPresenter.unsubscribe()
+        IS_REPOS_SHOWING = false
+        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_content_rl.visibility = View.GONE
         user_fragment_rv.visibility = View.VISIBLE
         user_fragment_content_no.visibility = View.GONE
-        mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.adapter = EventAdapter()
         val mScrollListenerEvents = object : RecyclerView.OnScrollListener() {
@@ -479,13 +492,17 @@ class UserFragment : BaseFragment(), UserContract.View {
         activity.onBackPressed()
     }
 
-    override fun createOptionsMenu() {
-        mMenuInflater?.inflate(R.menu.user_menu, mMenu)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.let { mMenu = it }
-        inflater?.let { mMenuInflater = it }
+        inflater?.inflate(R.menu.user_menu, menu)
+        if (IS_REPOS_SHOWING) {
+            menu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = true }
+        }
+        else {
+            menu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
+        }
+        mMenuItem?.let { menu?.findItem(it)?.isChecked = true }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -498,6 +515,7 @@ class UserFragment : BaseFragment(), UserContract.View {
             activity.overridePendingTransition(0,0)
         }
         if (isNetworkAvailable()) {
+            mMenuItem = item?.itemId
             when (item?.itemId) {
                 R.id.user_menu_created -> {
                     item.isChecked = true

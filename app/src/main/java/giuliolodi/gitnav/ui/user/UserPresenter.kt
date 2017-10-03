@@ -303,7 +303,6 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             else if (map[mUser!!] == "u")
                                 IS_LOGGED_USER = true
                             mUser?.let { updateLoggedUser() }
-                            getView().createOptionsMenu()
                             getView().hideLoading()
                             mUser?.let { getView().showUser(it, IS_FOLLOWED, IS_LOGGED_USER) }
                         },

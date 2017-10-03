@@ -170,7 +170,7 @@ class StarredFragment : BaseFragment(), StarredContract.View {
                 }
                 R.id.starred_sort_pushed -> {
                     item.isChecked = true
-                   mPresenter.onSortPushedClick(isNetworkAvailable())
+                    mPresenter.onSortPushedClick(isNetworkAvailable())
                 }
                 R.id.starred_sort_alphabetical -> {
                     item.isChecked = true

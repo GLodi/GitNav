@@ -51,8 +51,6 @@ interface UserContract {
 
         fun onUnfollowCompleted()
 
-        fun createOptionsMenu()
-
         fun setupFollowing(username: String, user: User)
 
         fun setupFollowers(username: String, user: User)
