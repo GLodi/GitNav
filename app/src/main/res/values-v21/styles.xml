@@ -23,6 +23,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:colorBackgroundCacheHint">@color/bottomViewBackground</item>
         <item name="android:textColorTertiary">@color/bottomViewText</item>
+        <item name="android:weekSeparatorLineColor">@color/separator_line_light</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -37,6 +38,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimaryInverse</item>
         <item name="android:colorBackgroundCacheHint">@color/bottomViewBackgroundInverse</item>
         <item name="android:textColorTertiary">@color/bottomViewTextInverse</item>
+        <item name="android:weekSeparatorLineColor">@color/separator_line_dark</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

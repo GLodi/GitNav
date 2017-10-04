@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="?android:attr/textColorPrimary"
         android:alpha="0.54"
         android:visibility="gone"/>
 
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.87"
             android:maxLines="1"
             android:layout_marginLeft="16dp"
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.54"
             android:maxLines="1"
             android:layout_marginBottom="16dp"
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.87"
             android:maxLines="1"
             android:layout_marginLeft="16dp"
@@ -90,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="#000000"
+            android:textColor="?android:attr/textColorPrimary"
             android:alpha="0.54"
             android:maxLines="1"
             android:layout_marginLeft="16dp"
@@ -100,7 +100,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/separator_line"/>
+            android:background="?android:attr/weekSeparatorLineColor"/>
 
         <LinearLayout
             android:id="@+id/user_fragment_content_bio_rl"
@@ -114,7 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"
                 android:maxLines="1"
                 android:layout_marginLeft="16dp"
@@ -127,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.87"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
@@ -137,7 +137,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/separator_line"/>
+                android:background="?android:attr/weekSeparatorLineColor"/>
 
         </LinearLayout>
 
@@ -159,7 +159,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.87"
                 android:maxLines="1"
                 android:layout_marginLeft="72dp"/>
@@ -170,7 +170,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"
                 android:maxLines="1"
                 android:layout_below="@id/user_fragment_content_mail"
@@ -196,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.87"
                 android:maxLines="1"
                 android:layout_marginLeft="72dp"/>
@@ -207,7 +207,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"
                 android:maxLines="1"
                 android:layout_below="@id/user_fragment_content_location"
@@ -233,7 +233,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.87"
                 android:maxLines="1"
                 android:layout_marginLeft="72dp"/>
@@ -244,7 +244,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"
                 android:maxLines="1"
                 android:layout_below="@id/user_fragment_content_company"
@@ -270,7 +270,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.87"
                 android:maxLines="1"
                 android:layout_marginLeft="72dp"/>
@@ -281,7 +281,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?android:attr/textColorPrimary"
                 android:alpha="0.54"
                 android:maxLines="1"
                 android:layout_below="@id/user_fragment_content_blog"
@@ -297,8 +297,8 @@
             app:displayMonth="true"
             app:lastWeeks="30"
             android:layout_margin="16dp"
-            app:baseColor="@color/colorAccent"
-            app:textColor="@color/colorPrimary" />
+            app:baseColor="?attr/colorAccent"
+            app:textColor="?attr/colorPrimary" />
 
     </LinearLayout>
 

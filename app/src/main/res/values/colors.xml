@@ -37,7 +37,8 @@
     <color name="white">#FFFFFF</color>
     <color name="grey">#F5F5F5</color>
     <color name="greyDark">#EEEEEE</color>
-    <color name="separator_line">#E0E0E0</color>
+    <color name="separator_line_light">#EAEAEA</color>
+    <color name="separator_line_dark">#383838</color>
     <color name="transparent">#00000000</color>
 
 </resources>
