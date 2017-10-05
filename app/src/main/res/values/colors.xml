@@ -41,4 +41,8 @@
     <color name="separator_line_dark">#383838</color>
     <color name="transparent">#00000000</color>
 
+    <color name="contViewBaseEmptyColor">#EEEEEE</color>
+    <color name="contViewBaseColor">#448AFF</color>
+    <color name="contViewTextColor">#3F51B5</color>
+
 </resources>
