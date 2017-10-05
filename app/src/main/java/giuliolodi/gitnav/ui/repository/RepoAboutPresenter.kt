@@ -95,7 +95,7 @@ class RepoAboutPresenter<V: RepoAboutContract.View>: BasePresenter<V>, RepoAbout
                                 if (it.description != null && !it.description.isEmpty())
                                     getView().showRepoAbout(it.name!!, it.owner?.login!!, it.description!!, it.owner?.avatarUrl!!)
                                 else
-                                    getView().showRepoAbout(it.name!!, it.owner?.login!!, "", it.owner?.avatarUrl!!)
+                                    getView().showRepoAbout(it.name!!, it.owner?.login!!, "No description", it.owner?.avatarUrl!!)
                                 val numberList: MutableList<String> = mutableListOf()
                                 numberList.add(mStargazers?.toString()!!)
                                 numberList.add(it.forks.toString())
