@@ -19,7 +19,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/gist_fragment_comments_rl"
-    android:background="@color/backTint">
+    android:background="?android:attr/colorBackground">
 
     <ProgressBar
         android:id="@+id/gist_fragment_comments_progressbar"
