@@ -24,6 +24,7 @@
     <color name="bottomViewBackground">#F5F5F5</color>
     <color name="bottomViewText">#3F51B5</color>
     <color name="itemBackground">#FFFFFF</color>
+    <color name="menuTextColor">#000000</color>
 
     <color name="colorPrimaryInverse">#212121</color>
     <color name="colorPrimaryDarkInverse">#000000</color>
@@ -33,6 +34,7 @@
     <color name="bottomViewBackgroundInverse">#212121</color>
     <color name="bottomViewTextInverse">#FFFFFF</color>
     <color name="itemBackgroundInverse">#424242</color>
+    <color name="menuTextColorInverse">#FFFFFF</color>
 
     <color name="white">#FFFFFF</color>
     <color name="grey">#F5F5F5</color>
@@ -43,6 +45,5 @@
 
     <color name="contViewBaseEmptyColor">#EEEEEE</color>
     <color name="contViewBaseColor">#448AFF</color>
-    <color name="contViewTextColor">#3F51B5</color>
 
 </resources>
