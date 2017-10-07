@@ -16,8 +16,24 @@
 
 package giuliolodi.gitnav.ui.option
 
+import giuliolodi.gitnav.di.scope.PerActivity
+
 /**
  * Created by giulio on 07/10/2017.
  */
 interface OptionContract {
+
+    interface View {
+
+        fun onThemeChanged()
+
+    }
+
+    @PerActivity
+    interface Presenter {
+
+        fun changeTheme()
+
+    }
+
 }

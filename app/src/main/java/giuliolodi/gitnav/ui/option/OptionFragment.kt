@@ -16,8 +16,16 @@
 
 package giuliolodi.gitnav.ui.option
 
+import android.os.Bundle
+import android.view.View
+import giuliolodi.gitnav.ui.base.BaseFragment
+
 /**
  * Created by giulio on 07/10/2017.
  */
-class OptionFragment {
+class OptionFragment : BaseFragment() {
+
+    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+    }
+
 }
