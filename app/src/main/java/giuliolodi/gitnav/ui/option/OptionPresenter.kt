@@ -16,8 +16,17 @@
 
 package giuliolodi.gitnav.ui.option
 
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
+
 /**
  * Created by giulio on 07/10/2017.
  */
-class OptionPresenter {
+class OptionPresenter<V: OptionContract.View> : BasePresenter<V>, OptionContract.Presenter<V> {
+
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
 }

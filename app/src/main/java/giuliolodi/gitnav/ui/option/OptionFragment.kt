@@ -17,15 +17,35 @@
 package giuliolodi.gitnav.ui.option
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import javax.inject.Inject
 
 /**
  * Created by giulio on 07/10/2017.
  */
-class OptionFragment : BaseFragment() {
+class OptionFragment : BaseFragment(), OptionContract.View {
+
+    @Inject lateinit var mPresenter: OptionContract.Presenter<OptionContract.View>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        getActivityComponent()?.inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.event_fragment, container, false)
+    }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+
+    }
+
+    override fun onThemeChanged() {
     }
 
 }
