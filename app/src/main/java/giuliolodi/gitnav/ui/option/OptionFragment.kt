@@ -20,6 +20,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import javax.inject.Inject
@@ -38,14 +40,16 @@ class OptionFragment : BaseFragment(), OptionContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.event_fragment, container, false)
+        return inflater?.inflate(R.layout.option_fragment, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
-
+        mPresenter.onAttach(this)
+        mPresenter.changeTheme()
     }
 
     override fun onThemeChanged() {
+        Toasty.success(context, "Color changed", Toast.LENGTH_LONG).show()
     }
 
 }

@@ -29,4 +29,7 @@ class OptionPresenter<V: OptionContract.View> : BasePresenter<V>, OptionContract
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
+    override fun changeTheme() {
+    }
+
 }

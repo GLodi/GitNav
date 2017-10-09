@@ -30,6 +30,7 @@ import giuliolodi.gitnav.ui.gistlist.GistListFragment
 import giuliolodi.gitnav.ui.issuelist.IssueClosedFragment
 import giuliolodi.gitnav.ui.issuelist.IssueOpenFragment
 import giuliolodi.gitnav.ui.login.LoginActivity
+import giuliolodi.gitnav.ui.option.OptionFragment
 import giuliolodi.gitnav.ui.repository.*
 import giuliolodi.gitnav.ui.repositorylist.RepoListFragment
 import giuliolodi.gitnav.ui.search.SearchFragment
@@ -91,5 +92,7 @@ interface ActivityComponent {
     fun inject(forkListFragment: ForkListFragment)
 
     fun inject(userFragment: UserFragment)
+
+    fun inject(optionFragment: OptionFragment)
 
 }

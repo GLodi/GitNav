@@ -37,6 +37,7 @@ import giuliolodi.gitnav.R
 import de.hdodenhof.circleimageview.CircleImageView
 import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.ui.gistlist.GistListActivity
+import giuliolodi.gitnav.ui.option.OptionActivity
 import giuliolodi.gitnav.ui.repositorylist.RepoListActivity
 import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
@@ -152,6 +153,12 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             R.id.nav_gists ->
                 Handler().postDelayed({
                     startActivity(GistListActivity.getIntent(applicationContext))
+                    finish()
+                    overridePendingTransition(0,0)
+                }, DRAWER_DELAY)
+            R.id.nav_manage ->
+                Handler().postDelayed({
+                    startActivity(OptionActivity.getIntent(applicationContext))
                     finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
