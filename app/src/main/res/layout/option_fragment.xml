@@ -22,16 +22,25 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text=""
-        android:id="@+id/textView" />
+        android:padding="16dp"
+        android:text="Theme: "
+        android:textSize="14sp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:alpha="0.87"
+        android:id="@+id/option_fragment_theme" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/option_fragment_theme_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:padding="16dp"
         android:text="" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/weekSeparatorLineColor"
+        android:layout_below="@id/option_fragment_theme_switch"/>
 
 </RelativeLayout>

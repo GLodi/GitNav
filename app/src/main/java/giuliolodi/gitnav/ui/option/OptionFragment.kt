@@ -24,6 +24,7 @@ import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.option_fragment.*
 import javax.inject.Inject
 
 /**
@@ -45,7 +46,26 @@ class OptionFragment : BaseFragment(), OptionContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
-        mPresenter.changeTheme()
+        if (mPresenter.getTheme() == "light"){
+            option_fragment_theme.text = "Theme: Light"
+            option_fragment_theme_switch.isChecked = false
+        }
+        else {
+            option_fragment_theme.text = "Theme: Dark"
+            option_fragment_theme_switch.isChecked = true
+        }
+        option_fragment_theme.setOnClickListener {
+            if (mPresenter.getTheme() == "light") {
+                mPresenter.changeTheme()
+                option_fragment_theme.text = "Theme: Dark"
+                option_fragment_theme_switch.isChecked = true
+            }
+            else {
+                mPresenter.changeTheme()
+                option_fragment_theme.text = "Theme: Light"
+                option_fragment_theme_switch.isChecked = false
+            }
+        }
     }
 
     override fun onThemeChanged() {

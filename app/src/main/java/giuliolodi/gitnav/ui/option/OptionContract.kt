@@ -35,6 +35,8 @@ interface OptionContract {
 
         fun changeTheme()
 
+        fun getTheme(): String
+
     }
 
 }
