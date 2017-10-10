@@ -33,7 +33,9 @@ class OptionPresenter<V: OptionContract.View> : BasePresenter<V>, OptionContract
         return getDataManager().getTheme()
     }
 
-    override fun changeTheme() {
+    override fun changeTheme(theme: String) {
+        getDataManager().setTheme(theme)
+        getView().onThemeChanged()
     }
 
 }

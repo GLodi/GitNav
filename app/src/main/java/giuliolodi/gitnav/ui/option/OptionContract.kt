@@ -33,7 +33,7 @@ interface OptionContract {
     @PerActivity
     interface Presenter<V: OptionContract.View> : BaseContract.Presenter<V> {
 
-        fun changeTheme()
+        fun changeTheme(theme: String)
 
         fun getTheme(): String
 

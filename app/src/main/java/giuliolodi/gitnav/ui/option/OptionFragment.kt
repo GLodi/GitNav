@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.option
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,8 @@ class OptionFragment : BaseFragment(), OptionContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
+        activity?.title = getString(R.string.options)
+
         if (mPresenter.getTheme() == "light"){
             option_fragment_theme.text = "Theme: Light"
             option_fragment_theme_switch.isChecked = false
@@ -54,16 +57,22 @@ class OptionFragment : BaseFragment(), OptionContract.View {
             option_fragment_theme.text = "Theme: Dark"
             option_fragment_theme_switch.isChecked = true
         }
-        option_fragment_theme.setOnClickListener {
+        option_fragment_theme_switch.setOnClickListener {
             if (mPresenter.getTheme() == "light") {
-                mPresenter.changeTheme()
-                option_fragment_theme.text = "Theme: Dark"
-                option_fragment_theme_switch.isChecked = true
+                mPresenter.changeTheme("dark")
+                Handler().postDelayed({
+                    startActivity(OptionActivity.getIntent(context))
+                    activity.finish()
+                    activity.overridePendingTransition(0,0)
+                }, 150L)
             }
             else {
-                mPresenter.changeTheme()
-                option_fragment_theme.text = "Theme: Light"
-                option_fragment_theme_switch.isChecked = false
+                mPresenter.changeTheme("light")
+                Handler().postDelayed({
+                    startActivity(OptionActivity.getIntent(context))
+                    activity.finish()
+                    activity.overridePendingTransition(0,0)
+                }, 150L)
             }
         }
     }

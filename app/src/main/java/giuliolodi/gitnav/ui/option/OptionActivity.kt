@@ -21,6 +21,8 @@ import android.content.Intent
 import android.os.Bundle
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseDrawerActivity
+import kotlinx.android.synthetic.main.base_activity.*
+import kotlinx.android.synthetic.main.base_activity_drawer.*
 
 /**
  * Created by giulio on 07/10/2017.
@@ -31,7 +33,7 @@ class OptionActivity : BaseDrawerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.option_activity)
+        layoutInflater.inflate(R.layout.option_activity, content_frame)
 
         var optionFragment: OptionFragment? = supportFragmentManager.findFragmentByTag(OPTION_FRAGMENT_TAG) as OptionFragment?
         if (optionFragment == null) {
@@ -41,6 +43,11 @@ class OptionActivity : BaseDrawerActivity() {
                     .replace(R.id.option_activity_frame, optionFragment, OPTION_FRAGMENT_TAG)
                     .commit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        nav_view.menu.getItem(6).subMenu.getItem(0).isChecked = true
     }
 
     override fun onBackPressed() {

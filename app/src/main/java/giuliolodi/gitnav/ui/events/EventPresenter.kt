@@ -123,12 +123,4 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
         getView().intentToUserActivity(username)
     }
 
-    override fun changeColor() {
-        when(getDataManager().getTheme()) {
-            "light" -> getDataManager().setTheme("dark")
-            "dark" -> getDataManager().setTheme("light")
-        }
-        getView().onColorChanged()
-    }
-
 }
