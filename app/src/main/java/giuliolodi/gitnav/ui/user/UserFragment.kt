@@ -104,7 +104,7 @@ class UserFragment : BaseFragment(), UserContract.View {
         mPresenter.subscribe(isNetworkAvailable(), mUsername)
     }
 
-    override fun showUser(user: User, IS_FOLLOWED: Boolean, IS_LOGGED_USER: Boolean) {
+    override fun showUser(user: User, IS_FOLLOWED: Boolean, IS_LOGGED_USER: Boolean, IS_DARK_THEME_ON: Boolean) {
         user_fragment_appbar.setExpanded(true)
         user_fragment_nestedscrollview.isNestedScrollingEnabled = true
         val params = user_fragment_appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -122,6 +122,22 @@ class UserFragment : BaseFragment(), UserContract.View {
         mMenu?.findItem(R.id.user_menu_sort_icon)?.let { it.isVisible = false }
 
         user_fragment_rv.visibility = View.GONE
+
+        // Show theme appropriate icons
+        when (IS_DARK_THEME_ON) {
+            true -> {
+                user_fragment_content_mail_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_email_white_24dp))
+                user_fragment_content_location_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_map_white_24dp))
+                user_fragment_content_company_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_business_center_white_24dp))
+                user_fragment_content_blog_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_web_white_24dp))
+            }
+            false -> {
+                user_fragment_content_mail_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_email_blue_24dp))
+                user_fragment_content_location_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_map_blue_24dp))
+                user_fragment_content_company_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_business_center_blue_24dp))
+                user_fragment_content_blog_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_web_blue_24dp))
+            }
+        }
 
         // FAB follow/unfollow
         user_fragment_fab.visibility = View.VISIBLE

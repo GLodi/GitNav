@@ -29,7 +29,7 @@ interface UserContract {
 
     interface View : BaseContract.View {
 
-        fun showUser(user: User, IS_FOLLOWED: Boolean, IS_LOGGED_USER: Boolean)
+        fun showUser(user: User, IS_FOLLOWED: Boolean, IS_LOGGED_USER: Boolean, IS_DARK_THEME_ON: Boolean)
 
         fun showLoading()
 

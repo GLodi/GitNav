@@ -49,6 +49,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     private var mUser: User? = null
     private var IS_FOLLOWED: Boolean = false
     private var IS_LOGGED_USER: Boolean = false
+    private var IS_DARK_THEME_ON: Boolean = false
 
     private var PAGE_N_FOLLOWING = 1
     private val ITEMS_PER_PAGE_FOLLOWING = 20
@@ -76,6 +77,9 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
 
     override fun subscribe(isNetworkAvailable: Boolean, username: String?) {
         mUsername = username
+
+        if (getDataManager().getTheme() == "dark")
+            IS_DARK_THEME_ON = true
 
         if (mUsername != null) {
             if (LOADING) getView().showLoading()
@@ -106,7 +110,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                     if (mUser != null) {
                         LOADING = false
                         getView().hideLoading()
-                        getView().showUser(mUser!!, IS_FOLLOWED, IS_LOGGED_USER)
+                        getView().showUser(mUser!!, IS_FOLLOWED, IS_LOGGED_USER, IS_DARK_THEME_ON)
                     }
                     else {
                         onInfoNavClick(isNetworkAvailable)
@@ -156,31 +160,35 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     }
 
     override fun onFollowingNavClick(isNetworkAvailable: Boolean) {
-        unsubscribe()
-        MODE = "following"
-        PAGE_N_FOLLOWING = 1
-        LOADING = true
-        setLoadings(false)
-        clearLists()
-        hideNoContents()
-        getView().hideNoContent()
-        getView().showLoading()
-        getView().setupFollowing(mUsername!!,mUser!!)
-        loadFollowing()
+        mUser?.let {
+            unsubscribe()
+            MODE = "following"
+            PAGE_N_FOLLOWING = 1
+            LOADING = true
+            setLoadings(false)
+            clearLists()
+            hideNoContents()
+            getView().hideNoContent()
+            getView().showLoading()
+            getView().setupFollowing(mUsername!!, it)
+            loadFollowing()
+        }
     }
 
     override fun onFollowersNavClick(isNetworkAvailable: Boolean) {
-        unsubscribe()
-        MODE = "followers"
-        PAGE_N_FOLLOWERS = 1
-        LOADING = true
-        setLoadings(false)
-        clearLists()
-        hideNoContents()
-        getView().hideNoContent()
-        getView().showLoading()
-        getView().setupFollowers(mUsername!!, mUser!!)
-        loadFollowers()
+        mUser?.let {
+            unsubscribe()
+            MODE = "followers"
+            PAGE_N_FOLLOWERS = 1
+            LOADING = true
+            setLoadings(false)
+            clearLists()
+            hideNoContents()
+            getView().hideNoContent()
+            getView().showLoading()
+            getView().setupFollowers(mUsername!!, it)
+            loadFollowers()
+        }
     }
 
     override fun onInfoNavClick(isNetworkAvailable: Boolean) {
@@ -196,32 +204,36 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
     }
 
     override fun onReposNavClick(isNetworkAvailable: Boolean) {
-        unsubscribe()
-        MODE = "repos"
-        PAGE_N_REPOS = 1
-        LOADING = true
-        setLoadings(false)
-        clearLists()
-        hideNoContents()
-        getView().hideNoContent()
-        getView().showLoading()
-        mFilterRepos.put("sort","created")
-        getView().setupRepos(mUsername!!, mFilterRepos, mUser!!)
-        loadRepos()
+        mUser?.let {
+            unsubscribe()
+            MODE = "repos"
+            PAGE_N_REPOS = 1
+            LOADING = true
+            setLoadings(false)
+            clearLists()
+            hideNoContents()
+            getView().hideNoContent()
+            getView().showLoading()
+            mFilterRepos.put("sort","created")
+            getView().setupRepos(mUsername!!, mFilterRepos, it)
+            loadRepos()
+        }
     }
 
     override fun onEventsNavClick(isNetworkAvailable: Boolean) {
-        unsubscribe()
-        MODE = "events"
-        PAGE_N_EVENTS = 1
-        LOADING = true
-        setLoadings(false)
-        clearLists()
-        hideNoContents()
-        getView().hideNoContent()
-        getView().showLoading()
-        getView().setupEvents(mUsername!!, mUser!!)
-        loadEvents()
+        mUser?.let {
+            unsubscribe()
+            MODE = "events"
+            PAGE_N_EVENTS = 1
+            LOADING = true
+            setLoadings(false)
+            clearLists()
+            hideNoContents()
+            getView().hideNoContent()
+            getView().showLoading()
+            getView().setupEvents(mUsername!!, it)
+            loadEvents()
+        }
     }
 
     private fun loadFollowing() {
@@ -304,7 +316,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                                 IS_LOGGED_USER = true
                             mUser?.let { updateLoggedUser() }
                             getView().hideLoading()
-                            mUser?.let { getView().showUser(it, IS_FOLLOWED, IS_LOGGED_USER) }
+                            mUser?.let { getView().showUser(it, IS_FOLLOWED, IS_LOGGED_USER, IS_DARK_THEME_ON) }
                         },
                         { throwable ->
                             getView().showError(throwable.localizedMessage)
