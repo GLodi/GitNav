@@ -174,4 +174,8 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
         }
     }
 
+    override fun getTheme(): String {
+        return getDataManager().getTheme()
+    }
+
 }

@@ -146,14 +146,27 @@ class RepoFragment : BaseFragment(), RepoContract.View {
         menu?.let { mMenu = it }
         mPresenter.onOptionsMenuCreated()
         menu?.let { it.findItem(R.id.fork_icon).setOnMenuItemClickListener { _ ->
-            AlertDialog.Builder(this.context)
+            val dialog: AlertDialog = AlertDialog.Builder(this.context)
                     .setTitle(getString(R.string.fork))
                     .setMessage(getString(R.string.confirm_fork) + "\n" + mOwner + "/" + mName + "?")
                     .setPositiveButton(getString(R.string.yes), { dialog, which ->
                         mPresenter.onForkRepo(isNetworkAvailable())
                     })
                     .setNegativeButton(getString(R.string.no), null)
-                    .show()
+                    .create()
+            dialog.setOnShowListener {
+                when (mPresenter.getTheme()) {
+                    "light" -> {
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.textColorPrimary))
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.textColorPrimary))
+                    }
+                    "dark" -> {
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.textColorPrimaryInverse))
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.textColorPrimaryInverse))
+                    }
+                }
+            }
+            dialog.show()
             true
         } }
     }

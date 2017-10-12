@@ -63,6 +63,8 @@ interface RepoContract {
 
         fun onOptionsMenuCreated()
 
+        fun getTheme(): String
+
     }
 
 }
