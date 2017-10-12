@@ -31,12 +31,14 @@ import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.utils.NetworkUtils
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.widget.RelativeLayout
 import android.widget.TextView
 import giuliolodi.gitnav.R
 import de.hdodenhof.circleimageview.CircleImageView
 import giuliolodi.gitnav.ui.events.EventActivity
 import giuliolodi.gitnav.ui.gistlist.GistListActivity
+import giuliolodi.gitnav.ui.login.LoginActivity
 import giuliolodi.gitnav.ui.option.OptionActivity
 import giuliolodi.gitnav.ui.repositorylist.RepoListActivity
 import giuliolodi.gitnav.ui.search.SearchActivity
@@ -46,6 +48,10 @@ import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.Constants
 import kotlinx.android.synthetic.main.base_activity.*
 import kotlinx.android.synthetic.main.base_activity_drawer.*
+import kotlin.reflect.jvm.internal.impl.util.Check.DefaultImpls.invoke
+import java.lang.reflect.AccessibleObject.setAccessible
+
+
 
 /**
  * Created by giulio on 15/05/2017.
@@ -162,9 +168,51 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
                     finish()
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
+            R.id.nav_logout -> {
+                val dialog: AlertDialog = AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.sign_out))
+                        .setMessage(getString(R.string.confirm_logout))
+                        .setPositiveButton(getString(R.string.yes), { dialog, which ->
+                            applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_ACCESS_TOKEN", "").apply()
+                            applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_THEME", "light").apply()
+                            applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_USERNAME", "").apply()
+                            applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_FULLNAME", "").apply()
+                            applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_EMAIL", "").apply()
+                            startActivity(LoginActivity.getIntent(applicationContext))
+                            finish()
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .create()
+                dialog.setOnShowListener {
+                    when (getThemeId()) {
+                         R.style.AppTheme_NoActionBar -> {
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.textColorPrimary))
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.textColorPrimary))
+                        }
+                        R.style.AppTheme_NoActionBar_Dark -> {
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.textColorPrimaryInverse))
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.textColorPrimaryInverse))
+                        }
+                    }
+                }
+                dialog.show()
+            }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun getThemeId(): Int {
+        try {
+            val wrapper = Context::class.java
+            val method = wrapper.getMethod("getThemeResId")
+            method.isAccessible = true
+            return method.invoke(this) as Int
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return 0
     }
 
     override fun onBackPressed() {
