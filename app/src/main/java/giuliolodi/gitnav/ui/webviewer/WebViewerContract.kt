@@ -16,8 +16,26 @@
 
 package giuliolodi.gitnav.ui.webviewer
 
+import android.net.Uri
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+
 /**
  * Created by giulio on 13/10/2017.
  */
 interface WebViewerContract {
+
+    interface View : BaseContract.View {
+
+    }
+
+    @PerActivity
+    interface Presenter<V: WebViewerContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe()
+
+        fun getAuthorizationUrl(): Uri
+
+    }
+
 }

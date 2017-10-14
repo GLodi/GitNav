@@ -16,8 +16,37 @@
 
 package giuliolodi.gitnav.ui.webviewer
 
+import android.net.Uri
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
+import giuliolodi.gitnav.BuildConfig
+
+
 /**
  * Created by giulio on 13/10/2017.
  */
-class WebViewerPresenter {
+class WebViewerPresenter<V: WebViewerContract.View> : BasePresenter<V>, WebViewerContract.Presenter<V> {
+
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe() {
+    }
+
+    override fun getAuthorizationUrl(): Uri {
+        BuildConfig.
+        return Uri.Builder().scheme("https")
+                .authority("github.com")
+                .appendPath("login")
+                .appendPath("oauth")
+                .appendPath("authorize")
+                .appendQueryParameter("client_id", GithubConfigHelper.getClientId())
+                .appendQueryParameter("redirect_uri", GithubConfigHelper.getRedirectUrl())
+                .appendQueryParameter("scope", "user,repo,gist,notifications,read:org")
+                .appendQueryParameter("state", BuildConfig.APPLICATION_ID)
+                .build()
+    }
+
 }

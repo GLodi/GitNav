@@ -16,8 +16,10 @@
 
 package giuliolodi.gitnav.ui.webviewer
 
+import giuliolodi.gitnav.ui.base.BaseActivity
+
 /**
  * Created by giulio on 13/10/2017.
  */
-class WebViewerActivity {
+class WebViewerActivity : BaseActivity(), WebViewerContract.View {
 }

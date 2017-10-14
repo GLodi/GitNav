@@ -30,6 +30,7 @@ class Constants {
         val DAILY_URL = "?since=daily"
         val WEEKLY_URL = "?since=weekly"
         val MONTHLY_URL = "?since=monthly"
+        val REDIRECT_URL = "gitnav://login"
     }
 
 }
