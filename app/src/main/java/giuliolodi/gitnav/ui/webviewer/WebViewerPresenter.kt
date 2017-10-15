@@ -36,15 +36,14 @@ class WebViewerPresenter<V: WebViewerContract.View> : BasePresenter<V>, WebViewe
     }
 
     override fun getAuthorizationUrl(): Uri {
-        BuildConfig.
         return Uri.Builder().scheme("https")
                 .authority("github.com")
                 .appendPath("login")
                 .appendPath("oauth")
                 .appendPath("authorize")
-                .appendQueryParameter("client_id", GithubConfigHelper.getClientId())
-                .appendQueryParameter("redirect_uri", GithubConfigHelper.getRedirectUrl())
-                .appendQueryParameter("scope", "user,repo,gist,notifications,read:org")
+                .appendQueryParameter("client_id", "")
+                .appendQueryParameter("redirect_uri", "")
+                .appendQueryParameter("scope", "user,repo,gist")
                 .appendQueryParameter("state", BuildConfig.APPLICATION_ID)
                 .build()
     }

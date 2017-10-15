@@ -27,6 +27,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
 import giuliolodi.gitnav.ui.events.EventActivity
+import giuliolodi.gitnav.ui.webviewer.WebViewerActivity
 import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.login_activity.*
 import javax.inject.Inject
@@ -81,6 +82,10 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         login_activity_signup.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/"))
             startActivity(browserIntent)
+        }
+        login_activity_web.setOnClickListener {
+            startActivity(WebViewerActivity.getIntent(this))
+            overridePendingTransition(0,0)
         }
     }
 

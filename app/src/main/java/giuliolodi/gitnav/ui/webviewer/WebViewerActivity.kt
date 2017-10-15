@@ -16,10 +16,42 @@
 
 package giuliolodi.gitnav.ui.webviewer
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
 
 /**
  * Created by giulio on 13/10/2017.
  */
-class WebViewerActivity : BaseActivity(), WebViewerContract.View {
+class WebViewerActivity : BaseActivity() {
+
+    private val WEB_VIEWER_FRAGMENT_TAG = "WEB_VIEWER_FRAGMENT_TAG"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.web_viewer_activity)
+
+        var webViewerFragment: WebViewerFragment? = supportFragmentManager.findFragmentByTag(WEB_VIEWER_FRAGMENT_TAG) as WebViewerFragment?
+        if (webViewerFragment == null) {
+            webViewerFragment = WebViewerFragment()
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.web_viewer_activity_frame, webViewerFragment, WEB_VIEWER_FRAGMENT_TAG)
+                    .commit()
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
+    }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, WebViewerActivity::class.java)
+        }
+    }
+    
 }

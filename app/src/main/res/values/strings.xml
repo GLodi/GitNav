@@ -130,5 +130,6 @@
     <string name="sign_up"><u>Sign up for GitHub!</u></string>
     <string name="insert_credentials">Please insert credentials</string>
     <string name="confirm_fork">Do you want to fork</string>
+    <string name="web_authentication">Web Authentication</string>
 
 </resources>
