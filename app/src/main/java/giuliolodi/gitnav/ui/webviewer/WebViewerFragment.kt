@@ -38,7 +38,7 @@ class WebViewerFragment : BaseFragment(), WebViewerContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.gist_fragment, container, false)
+        return inflater?.inflate(R.layout.web_viewer_fragment, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
