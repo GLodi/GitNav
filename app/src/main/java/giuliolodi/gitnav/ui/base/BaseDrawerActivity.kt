@@ -93,11 +93,11 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
 
     override fun initDrawer(username: String, fullName: String?, email: String?, profilePic: Bitmap?) {
         val hView = nav_view.getHeaderView(0)
-        val nav_user = hView.findViewById(R.id.nav_user) as TextView
-        val nav_email = hView.findViewById(R.id.nav_email) as TextView
-        val nav_full_name = hView.findViewById(R.id.nav_full_name) as TextView
-        val image_view = hView.findViewById(R.id.imageView) as CircleImageView
-        val nav_click = hView.findViewById(R.id.nav_click) as RelativeLayout
+        val nav_user = hView.findViewById<TextView>(R.id.nav_user) as TextView
+        val nav_email = hView.findViewById<TextView>(R.id.nav_email) as TextView
+        val nav_full_name = hView.findViewById<TextView>(R.id.nav_full_name) as TextView
+        val image_view = hView.findViewById<CircleImageView>(R.id.imageView) as CircleImageView
+        val nav_click = hView.findViewById<RelativeLayout>(R.id.nav_click) as RelativeLayout
         nav_user.text = username
         nav_email.text = email
         nav_full_name.text = fullName

@@ -16,13 +16,16 @@
 
 package giuliolodi.gitnav.ui.webviewer
 
+import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import javax.inject.Inject
+import android.support.v4.content.ContextCompat
 
 /**
  * Created by giulio on 13/10/2017.
@@ -43,6 +46,12 @@ class WebViewerFragment : BaseFragment(), WebViewerContract.View {
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
+
+        val intent = CustomTabsIntent.Builder()
+                .setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .setShowTitle(true)
+                .build()
+        intent.launchUrl(context, Uri.parse("https://www.github.com/"))
     }
 
 }
