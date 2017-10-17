@@ -45,6 +45,7 @@ import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
+import giuliolodi.gitnav.ui.webviewer.WebViewerActivity
 import giuliolodi.gitnav.utils.Constants
 import kotlinx.android.synthetic.main.base_activity.*
 import kotlinx.android.synthetic.main.base_activity_drawer.*
@@ -169,6 +170,12 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
             R.id.nav_logout -> {
+                Handler().postDelayed({
+                    startActivity(WebViewerActivity.getIntent(applicationContext))
+                    finish()
+                    overridePendingTransition(0,0)
+                }, DRAWER_DELAY)
+                /*
                 val dialog: AlertDialog = AlertDialog.Builder(this)
                         .setTitle(getString(R.string.sign_out))
                         .setMessage(getString(R.string.confirm_logout))
@@ -196,6 +203,7 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
                     }
                 }
                 dialog.show()
+                */
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
