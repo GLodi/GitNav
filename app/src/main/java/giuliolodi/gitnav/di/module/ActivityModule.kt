@@ -54,8 +54,6 @@ import giuliolodi.gitnav.ui.user.UserContract
 import giuliolodi.gitnav.ui.user.UserPresenter
 import giuliolodi.gitnav.ui.stargazerlist.StargazerListContract
 import giuliolodi.gitnav.ui.stargazerlist.StargazerListPresenter
-import giuliolodi.gitnav.ui.webviewer.WebViewerContract
-import giuliolodi.gitnav.ui.webviewer.WebViewerPresenter
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -215,12 +213,6 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideOptionPresenter(presenter: OptionPresenter<OptionContract.View>): OptionContract.Presenter<OptionContract.View> {
-        return presenter
-    }
-
-    @Provides
-    @PerActivity
-    fun provideWebViewerPresenter(presenter: WebViewerPresenter<WebViewerContract.View>): WebViewerContract.Presenter<WebViewerContract.View> {
         return presenter
     }
 

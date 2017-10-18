@@ -20,7 +20,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -45,13 +44,9 @@ import giuliolodi.gitnav.ui.search.SearchActivity
 import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
-import giuliolodi.gitnav.ui.webviewer.WebViewerActivity
 import giuliolodi.gitnav.utils.Constants
 import kotlinx.android.synthetic.main.base_activity.*
 import kotlinx.android.synthetic.main.base_activity_drawer.*
-import kotlin.reflect.jvm.internal.impl.util.Check.DefaultImpls.invoke
-import java.lang.reflect.AccessibleObject.setAccessible
-
 
 
 /**
@@ -170,12 +165,6 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
                     overridePendingTransition(0,0)
                 }, DRAWER_DELAY)
             R.id.nav_logout -> {
-                Handler().postDelayed({
-                    startActivity(WebViewerActivity.getIntent(applicationContext))
-                    finish()
-                    overridePendingTransition(0,0)
-                }, DRAWER_DELAY)
-                /*
                 val dialog: AlertDialog = AlertDialog.Builder(this)
                         .setTitle(getString(R.string.sign_out))
                         .setMessage(getString(R.string.confirm_logout))
@@ -203,7 +192,6 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
                     }
                 }
                 dialog.show()
-                */
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

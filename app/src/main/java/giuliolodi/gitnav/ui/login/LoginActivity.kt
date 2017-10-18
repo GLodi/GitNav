@@ -21,14 +21,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.ContextCompat
 import android.view.KeyEvent
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
 import giuliolodi.gitnav.ui.events.EventActivity
-import giuliolodi.gitnav.ui.webviewer.WebViewerActivity
-import giuliolodi.gitnav.utils.NetworkUtils
 import kotlinx.android.synthetic.main.login_activity.*
 import javax.inject.Inject
 
@@ -84,8 +84,11 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             startActivity(browserIntent)
         }
         login_activity_web.setOnClickListener {
-            startActivity(WebViewerActivity.getIntent(this))
-            overridePendingTransition(0,0)
+            val intent = CustomTabsIntent.Builder()
+                    .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                    .setShowTitle(true)
+                    .build()
+            intent.launchUrl(this, Uri.parse("https://www.github.com/"))
         }
     }
 

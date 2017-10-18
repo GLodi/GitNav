@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.login
 
+import android.net.Uri
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
 
@@ -44,6 +45,8 @@ interface LoginContract {
         fun subscribe()
 
         fun onLoginClick(user: String, pass: String)
+
+        fun getAuthorizationUrl(): Uri
 
     }
 

@@ -16,6 +16,8 @@
 
 package giuliolodi.gitnav.ui.login
 
+import android.net.Uri
+import giuliolodi.gitnav.BuildConfig
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -58,6 +60,19 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                                 Timber.e(throwable)
                         }
                 ))
+    }
+
+    override fun getAuthorizationUrl(): Uri {
+        return Uri.Builder().scheme("https")
+                .authority("github.com")
+                .appendPath("login")
+                .appendPath("oauth")
+                .appendPath("authorize")
+                .appendQueryParameter("client_id", "")
+                .appendQueryParameter("redirect_uri", "")
+                .appendQueryParameter("scope", "user,repo,gist")
+                .appendQueryParameter("state", BuildConfig.APPLICATION_ID)
+                .build()
     }
 
 }
