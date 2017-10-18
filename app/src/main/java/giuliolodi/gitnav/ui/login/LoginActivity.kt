@@ -17,6 +17,7 @@
 package giuliolodi.gitnav.ui.login
 
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -88,7 +89,11 @@ class LoginActivity : BaseActivity(), LoginContract.View {
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setShowTitle(true)
                     .build()
-            intent.launchUrl(this, Uri.parse("https://www.github.com/"))
+            try {
+                intent.launchUrl(this, Uri.parse("https://www.github.com/"))
+            } catch (ignored: ActivityNotFoundException) {
+
+            }
         }
     }
 
