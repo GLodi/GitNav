@@ -90,7 +90,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
                     .setShowTitle(true)
                     .build()
             try {
-                intent.launchUrl(this, Uri.parse("https://www.github.com/"))
+                intent.launchUrl(this, mPresenter.getAuthorizationUrl())
             } catch (ignored: ActivityNotFoundException) {
 
             }
