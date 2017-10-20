@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.ui.login
 
+import android.content.Intent
 import android.net.Uri
 import giuliolodi.gitnav.BuildConfig
 import giuliolodi.gitnav.data.DataManager
@@ -26,6 +27,9 @@ import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.client.RequestException
 import timber.log.Timber
 import javax.inject.Inject
+import android.icu.lang.UCharacter.GraphemeClusterBreak.V
+
+
 
 /**
  * Created by giulio on 12/05/2017.
@@ -73,6 +77,16 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 .appendQueryParameter("scope", "user,repo,gist")
                 .appendQueryParameter("state", BuildConfig.APPLICATION_ID)
                 .build()
+    }
+
+    fun onHandleAuthIntent(intent: Intent?) {
+        if (intent != null && intent!!.getData() != null) {
+            val uri = intent!!.getData()
+            if (uri.toString().startsWith("")) {
+                val tokenCode = uri.getQueryParameter("code")
+
+            }
+        }
     }
 
 }
