@@ -79,12 +79,10 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 .build()
     }
 
-    fun onHandleAuthIntent(intent: Intent?) {
-        if (intent != null && intent!!.getData() != null) {
-            val uri = intent!!.getData()
-            if (uri.toString().startsWith("")) {
-                val tokenCode = uri.getQueryParameter("code")
-
+    override fun onHandleAuthIntent(intent: Intent?) {
+        intent?.data?.let {
+            if (it.toString().startsWith("")) {
+                val tokenCode = it.getQueryParameter("code")
             }
         }
     }
