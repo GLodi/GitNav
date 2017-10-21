@@ -27,9 +27,6 @@ import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.client.RequestException
 import timber.log.Timber
 import javax.inject.Inject
-import android.icu.lang.UCharacter.GraphemeClusterBreak.V
-
-
 
 /**
  * Created by giulio on 12/05/2017.
