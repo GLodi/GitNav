@@ -26,6 +26,7 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.ContextCompat
 import android.view.KeyEvent
 import android.widget.Toast
+import com.hardikgoswami.oauthLibGithub.GithubOauth
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity
@@ -85,6 +86,17 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             startActivity(browserIntent)
         }
         login_activity_web.setOnClickListener {
+            val githubOauth: GithubOauth = GithubOauth.Builder()
+            githubOauth.scopeList = arrayListOf("repo", "gist", "user")
+            githubOauth
+                    .withClientId("")
+                    .withClientSecret("")
+                    .withContext(this)
+                    .packageName("giuliolodi.gitnav")
+                    .nextActivity("giuliolodi.gitnav.EventActivity")
+                    .debug(true)
+                    .execute()
+            /*
             val intent = CustomTabsIntent.Builder()
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setShowTitle(true)
@@ -94,6 +106,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             } catch (ignored: ActivityNotFoundException) {
 
             }
+            */
         }
     }
 
