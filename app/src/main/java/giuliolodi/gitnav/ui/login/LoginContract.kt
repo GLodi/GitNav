@@ -51,6 +51,8 @@ interface LoginContract {
 
         fun onHandleAuthIntent(intent: Intent?)
 
+        fun authorize()
+
     }
 
 }

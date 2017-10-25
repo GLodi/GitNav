@@ -70,7 +70,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 .appendPath("oauth")
                 .appendPath("authorize")
                 .appendQueryParameter("client_id", "")
-                .appendQueryParameter("redirect_uri", "")
+                .appendQueryParameter("redirect_uri", "gitnav://login")
                 .appendQueryParameter("scope", "user,repo,gist")
                 .appendQueryParameter("state", BuildConfig.APPLICATION_ID)
                 .build()
@@ -82,6 +82,10 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 val tokenCode = it.getQueryParameter("code")
             }
         }
+    }
+
+    override fun authorize() {
+
     }
 
 }

@@ -86,6 +86,8 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             startActivity(browserIntent)
         }
         login_activity_web.setOnClickListener {
+            //mPresenter.authorize()
+            /*
             val githubOauth: GithubOauth = GithubOauth.Builder()
             githubOauth.scopeList = arrayListOf("repo", "gist", "user")
             githubOauth
@@ -96,7 +98,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
                     .nextActivity("giuliolodi.gitnav.EventActivity")
                     .debug(true)
                     .execute()
-            /*
+            */
             val intent = CustomTabsIntent.Builder()
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setShowTitle(true)
@@ -106,7 +108,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             } catch (ignored: ActivityNotFoundException) {
 
             }
-            */
         }
     }
 
