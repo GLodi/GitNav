@@ -89,7 +89,7 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime, mFilter)
-            holder.itemView.row_starred_author_icon.setOnClickListener { onImageClick.onNext(repo.owner?.login) }
+            holder.itemView.row_starred_author_icon.setOnClickListener { repo.owner?.login?.let { onImageClick.onNext(it) } }
             holder.itemView.row_starred_ll.setOnClickListener { onRepoClick.onNext(repo) }
         }
     }

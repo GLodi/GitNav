@@ -37,7 +37,7 @@ class RxUtils {
                 }
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    subject.onNext(query)
+                    query?.let { subject.onNext(it) }
                     return true
                 }
             })

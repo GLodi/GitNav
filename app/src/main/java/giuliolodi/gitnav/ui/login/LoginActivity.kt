@@ -26,7 +26,6 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.ContextCompat
 import android.view.KeyEvent
 import android.widget.Toast
-import com.hardikgoswami.oauthLibGithub.GithubOauth
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseActivity

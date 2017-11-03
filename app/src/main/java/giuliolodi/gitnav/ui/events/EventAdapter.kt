@@ -324,8 +324,8 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is EventHolder) {
             val event = mEventList[position]!!
             holder.bind(event, mPrettyTime)
-            holder.itemView.row_event_image.setOnClickListener { onImageClick.onNext(event.actor?.login) }
-            holder.itemView.row_event_name.setOnClickListener { onImageClick.onNext(event.actor?.login) }
+            holder.itemView.row_event_image.setOnClickListener { event.actor?.login?.let { onImageClick.onNext(it) } }
+            holder.itemView.row_event_name.setOnClickListener { event.actor?.login?.let { onImageClick.onNext(it) } }
         }
     }
 
