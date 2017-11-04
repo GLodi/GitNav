@@ -53,6 +53,11 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         mPresenter.onAttach(this)
 
         mPresenter.subscribe()
+
+        // Get the intent that started this activity
+        val intent = intent
+        val data = intent.data
+        val a = 0
     }
 
     private fun initLayout() {
