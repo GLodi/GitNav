@@ -32,12 +32,6 @@ import giuliolodi.gitnav.ui.base.BaseActivity
 import giuliolodi.gitnav.ui.events.EventActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import javax.inject.Inject
-import android.support.v4.widget.SearchViewCompat.getQuery
-import java.net.URLDecoder
-import java.util.*
-import android.support.v4.widget.SearchViewCompat.getQuery
-import giuliolodi.gitnav.BuildConfig
-
 
 /**
  * Created by giulio on 12/05/2017.
@@ -59,29 +53,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         mPresenter.onAttach(this)
 
         mPresenter.subscribe()
-
-        // Intercept URI from Web Authentication
-        intent?.data?.let {
-            val state = BuildConfig.APPLICATION_ID
-
-            /*
-                Ideally, after the first call in query_pairs we should have:
-                "code" -> "abc..."          code to send back to GitHub in order to retrieve token
-                "state" -> APPLICATION_ID   verify that the authorization has been requested by app
-             */
-            val query_pairs = LinkedHashMap<String, String>()
-            val query = it.query
-            val pairs = query.split("&".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-            for (pair in pairs) {
-                val idx = pair.indexOf("=")
-                query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"))
-            }
-
-            if (state == query_pairs["state"]) {
-                // The authentication is real, make second call to retrieve token
-
-            }
-        }
     }
 
     private fun initLayout() {
@@ -114,19 +85,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
             startActivity(browserIntent)
         }
         login_activity_web.setOnClickListener {
-            //mPresenter.authorize()
-            /*
-            val githubOauth: GithubOauth = GithubOauth.Builder()
-            githubOauth.scopeList = arrayListOf("repo", "gist", "user")
-            githubOauth
-                    .withClientId("")
-                    .withClientSecret("")
-                    .withContext(this)
-                    .packageName("giuliolodi.gitnav")
-                    .nextActivity("giuliolodi.gitnav.EventActivity")
-                    .debug(true)
-                    .execute()
-            */
             val intent = CustomTabsIntent.Builder()
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setShowTitle(true)
@@ -164,6 +122,16 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         startActivity(EventActivity.getIntent(applicationContext))
         finish()
         overridePendingTransition(0,0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.onHandleAuthIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        mPresenter.onHandleAuthIntent(intent)
     }
 
     override fun onDestroy() {

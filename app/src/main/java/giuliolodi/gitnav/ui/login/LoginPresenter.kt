@@ -26,6 +26,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.eclipse.egit.github.core.client.RequestException
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -34,6 +35,8 @@ import javax.inject.Inject
 class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Presenter<V> {
 
     val TAG = "LoginPresenter"
+
+    private lateinit var stateSent: String
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
@@ -64,6 +67,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
     }
 
     override fun getAuthorizationUrl(): Uri {
+        stateSent = UUID.randomUUID().toString()
         return Uri.Builder().scheme("https")
                 .authority("github.com")
                 .appendPath("login")
@@ -72,14 +76,19 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 .appendQueryParameter("client_id", "")
                 .appendQueryParameter("redirect_uri", "gitnav://login")
                 .appendQueryParameter("scope", "user,repo,gist")
-                .appendQueryParameter("state", BuildConfig.APPLICATION_ID)
+                .appendQueryParameter("state", stateSent)
                 .build()
     }
 
     override fun onHandleAuthIntent(intent: Intent?) {
+        val a = intent?.data
         intent?.data?.let {
-            if (it.toString().startsWith("")) {
-                val tokenCode = it.getQueryParameter("code")
+            if (it.toString().startsWith("gitnav://login")) {
+                val code = it.getQueryParameter("code")
+                val stateReceived = it.getQueryParameter("state")
+                if (stateSent == stateReceived) {
+                    // make request to receive token
+                }
             }
         }
     }
