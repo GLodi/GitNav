@@ -17,10 +17,8 @@
 package giuliolodi.gitnav.data.api
 
 import giuliolodi.gitnav.data.model.RequestAccessTokenResponse
-import io.reactivex.Observable
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import io.reactivex.Flowable
+import retrofit2.http.*
 
 /**
  * Created by giulio on 06/11/2017.
@@ -28,11 +26,12 @@ import retrofit2.http.POST
 interface ApiInterface {
 
     @FormUrlEncoded
+    @Headers("Accept: application/json")
     @POST("login/oauth/access_token")
     fun requestAccessToken(@Field("client_id") clientId: String,
                            @Field("client_secret") clientSecret: String,
                            @Field("code") code: String,
                            @Field("redirect_uri") redirectUri: String,
-                           @Field("state") state: String): Observable<RequestAccessTokenResponse>
+                           @Field("state") state: String): Flowable<RequestAccessTokenResponse>
 
 }

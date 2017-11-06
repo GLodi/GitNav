@@ -23,6 +23,7 @@ import giuliolodi.gitnav.di.component.AppComponent
 import giuliolodi.gitnav.di.component.DaggerAppComponent
 import giuliolodi.gitnav.di.module.AppModule
 import com.google.firebase.crash.FirebaseCrash
+import giuliolodi.gitnav.di.module.NetModule
 import timber.log.Timber
 
 /**
@@ -37,6 +38,7 @@ class App : Application() {
 
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
+                .netModule(NetModule("https://github.com/"))
                 .build()
 
         mAppComponent.inject(this)

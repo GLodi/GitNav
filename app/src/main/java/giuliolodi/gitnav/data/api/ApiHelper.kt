@@ -16,6 +16,7 @@
 
 package giuliolodi.gitnav.data.api
 
+import giuliolodi.gitnav.data.model.RequestAccessTokenResponse
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import org.eclipse.egit.github.core.*
@@ -340,7 +341,15 @@ interface ApiHelper {
     fun apiForkRepo(token: String, owner: String, name: String): Completable
 
     /**
-     *
+     * Sends a request for an access_token, given that the previous
+     * authentication step has been completed
+     * @param clientId      String
+     * @param clientSecret  String
+     * @param code          String
+     * @param redirectUri   String
+     * @param state         String
+     * @return Flowable<RequestAccessTokenResponse>
      */
+    fun apiRequestAccessToken(clientId: String, clientSecret: String, code: String, redirectUri: String, state: String): Flowable<RequestAccessTokenResponse>
 
 }

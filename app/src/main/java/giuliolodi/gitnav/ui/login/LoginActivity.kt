@@ -97,18 +97,6 @@ class LoginActivity : BaseActivity(), LoginContract.View {
         }
     }
 
-    override fun makeSecondRequest(uri: Uri) {
-        val intent = CustomTabsIntent.Builder()
-                .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                .setShowTitle(true)
-                .build()
-        try {
-            intent.launchUrl(this, uri)
-        } catch (ignored: ActivityNotFoundException) {
-
-        }
-    }
-
     override fun showLoading() {
         progDialog = ProgressDialog(this)
         progDialog.setMessage("Signing in")

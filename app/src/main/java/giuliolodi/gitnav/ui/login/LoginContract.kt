@@ -38,8 +38,6 @@ interface LoginContract {
 
         fun intentToEventActivity()
 
-        fun makeSecondRequest(uri: Uri)
-
     }
 
     @PerActivity

@@ -20,6 +20,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.data.api.ApiHelper
+import giuliolodi.gitnav.data.model.RequestAccessTokenResponse
 import giuliolodi.gitnav.data.prefs.PrefsHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -405,5 +406,9 @@ class DataManagerImpl : DataManager {
 
     override fun getTheme(): String {
         return mPrefsHelper.getTheme()
+    }
+
+    override fun apiRequestAccessToken(clientId: String, clientSecret: String, code: String, redirectUri: String, state: String): Flowable<RequestAccessTokenResponse> {
+        return mApiHelper.apiRequestAccessToken(clientId, clientSecret, code, redirectUri, state)
     }
 }

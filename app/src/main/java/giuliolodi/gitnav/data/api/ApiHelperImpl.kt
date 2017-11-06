@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Build
 import android.os.StrictMode
 import android.util.Base64
+import giuliolodi.gitnav.data.model.RequestAccessTokenResponse
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.di.scope.UrlInfo
 import io.reactivex.BackpressureStrategy
@@ -442,6 +443,10 @@ class ApiHelperImpl : ApiHelper {
                 subscriber.onError(e)
             }
         }
+    }
+
+    override fun apiRequestAccessToken(clientId: String, clientSecret: String, code: String, redirectUri: String, state: String): Flowable<RequestAccessTokenResponse> {
+        return mRetrofit.create(ApiInterface::class.java).requestAccessToken(clientId, clientSecret, code, redirectUri, state)
     }
 
 }

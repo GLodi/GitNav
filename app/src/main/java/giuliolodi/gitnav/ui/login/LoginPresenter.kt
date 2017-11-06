@@ -79,33 +79,39 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
     }
 
     override fun onHandleAuthIntent(intent: Intent?) {
-        val a = intent?.data
         intent?.data?.let {
             if (it.toString().startsWith("gitnav://login")) {
-                if (it.getQueryParameter("access_token") == null || it.getQueryParameter("access_token").toString().isEmpty()) {
-                    val code = it.getQueryParameter("code")
-                    val stateReceived = it.getQueryParameter("state")
-                    if (stateSent == stateReceived) {
-                        getView().makeSecondRequest(Uri.Builder().scheme("https")
-                                .authority("github.com")
-                                .appendPath("login")
-                                .appendPath("oauth")
-                                .appendPath("access_token")
-                                .appendQueryParameter("client_id", "")
-                                .appendQueryParameter("client_secret", "")
-                                .appendQueryParameter("code", code)
-                                .appendQueryParameter("redirect_uri", "gitnav://login")
-                                .appendQueryParameter("state", stateReceived)
-                                .build())
-                    }
+                getView().showLoading()
+                val code = it.getQueryParameter("code")
+                val stateReceived = it.getQueryParameter("state")
+                if (stateSent == stateReceived) {
+                    requestAccessToken(code, stateReceived)
                 }
                 else {
-                    val access_token = it.getQueryParameter("access_token")
-                    getDataManager().storeAccessToken(access_token)
-                    getView().intentToEventActivity()
+                    getView().hideLoading()
+                    getView().showError("State code received is not correct. Try again.")
                 }
             }
         }
+    }
+
+    private fun requestAccessToken(code: String, stateReceived: String) {
+        getDataManager().apiRequestAccessToken("", "", code, "gitnav://login", stateReceived)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { requestAccessToken ->
+                            getDataManager().storeAccessToken(requestAccessToken.token)
+                            getView().hideLoading()
+                            getView().showSuccess()
+                            getView().intentToEventActivity()
+                        },
+                        { throwable ->
+                            getView().showError(throwable.localizedMessage)
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                        }
+                )
     }
 
 }
