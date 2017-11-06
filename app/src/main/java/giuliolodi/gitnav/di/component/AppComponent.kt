@@ -23,13 +23,14 @@ import giuliolodi.gitnav.di.module.AppModule
 import giuliolodi.gitnav.di.scope.AppContext
 import giuliolodi.gitnav.App
 import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.di.module.NetModule
 import javax.inject.Singleton
 
 /**
  * Created by giulio on 12/05/2017.
  */
 @Singleton
-@Component(modules = arrayOf(AppModule::class))
+@Component(modules = arrayOf(AppModule::class, NetModule::class))
 interface AppComponent {
 
     fun inject(app: App)

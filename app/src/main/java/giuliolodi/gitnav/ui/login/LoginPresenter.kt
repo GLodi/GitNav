@@ -18,7 +18,6 @@ package giuliolodi.gitnav.ui.login
 
 import android.content.Intent
 import android.net.Uri
-import giuliolodi.gitnav.BuildConfig
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,8 +41,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe() {
-        if (!getDataManager().getToken().isEmpty())
-            getView().intentToEventActivity()
+        if (!getDataManager().getToken().isEmpty()) getView().intentToEventActivity()
     }
 
     override fun onLoginClick(user: String, pass: String) {
@@ -66,7 +64,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 ))
     }
 
-    override fun getAuthorizationUrl(): Uri {
+    override fun getFirstStepUri(): Uri {
         stateSent = UUID.randomUUID().toString()
         return Uri.Builder().scheme("https")
                 .authority("github.com")
@@ -84,17 +82,30 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
         val a = intent?.data
         intent?.data?.let {
             if (it.toString().startsWith("gitnav://login")) {
-                val code = it.getQueryParameter("code")
-                val stateReceived = it.getQueryParameter("state")
-                if (stateSent == stateReceived) {
-                    // make request to receive token
+                if (it.getQueryParameter("access_token") == null || it.getQueryParameter("access_token").toString().isEmpty()) {
+                    val code = it.getQueryParameter("code")
+                    val stateReceived = it.getQueryParameter("state")
+                    if (stateSent == stateReceived) {
+                        getView().makeSecondRequest(Uri.Builder().scheme("https")
+                                .authority("github.com")
+                                .appendPath("login")
+                                .appendPath("oauth")
+                                .appendPath("access_token")
+                                .appendQueryParameter("client_id", "")
+                                .appendQueryParameter("client_secret", "")
+                                .appendQueryParameter("code", code)
+                                .appendQueryParameter("redirect_uri", "gitnav://login")
+                                .appendQueryParameter("state", stateReceived)
+                                .build())
+                    }
+                }
+                else {
+                    val access_token = it.getQueryParameter("access_token")
+                    getDataManager().storeAccessToken(access_token)
+                    getView().intentToEventActivity()
                 }
             }
         }
-    }
-
-    override fun authorize() {
-
     }
 
 }

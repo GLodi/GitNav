@@ -38,6 +38,8 @@ interface LoginContract {
 
         fun intentToEventActivity()
 
+        fun makeSecondRequest(uri: Uri)
+
     }
 
     @PerActivity
@@ -47,11 +49,9 @@ interface LoginContract {
 
         fun onLoginClick(user: String, pass: String)
 
-        fun getAuthorizationUrl(): Uri
+        fun getFirstStepUri(): Uri
 
         fun onHandleAuthIntent(intent: Intent?)
-
-        fun authorize()
 
     }
 

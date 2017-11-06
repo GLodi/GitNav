@@ -32,6 +32,7 @@ import javax.inject.Inject
 import java.io.IOException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import retrofit2.Retrofit
 import java.io.UnsupportedEncodingException
 
 /**
@@ -41,11 +42,13 @@ class ApiHelperImpl : ApiHelper {
 
     private val mContext: Context
     private val mUrlMap: Map<String,String>
+    private val mRetrofit: Retrofit
 
     @Inject
-    constructor(@AppContext context: Context, @UrlInfo urlMap: Map<String,String>) {
+    constructor(@AppContext context: Context, @UrlInfo urlMap: Map<String,String>, retrofit: Retrofit) {
         mContext = context
         mUrlMap = urlMap
+        mRetrofit = retrofit
     }
 
     override fun apiAuthToGitHub(username: String, password: String): String {

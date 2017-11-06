@@ -90,10 +90,22 @@ class LoginActivity : BaseActivity(), LoginContract.View {
                     .setShowTitle(true)
                     .build()
             try {
-                intent.launchUrl(this, mPresenter.getAuthorizationUrl())
+                intent.launchUrl(this, mPresenter.getFirstStepUri())
             } catch (ignored: ActivityNotFoundException) {
 
             }
+        }
+    }
+
+    override fun makeSecondRequest(uri: Uri) {
+        val intent = CustomTabsIntent.Builder()
+                .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setShowTitle(true)
+                .build()
+        try {
+            intent.launchUrl(this, uri)
+        } catch (ignored: ActivityNotFoundException) {
+
         }
     }
 
@@ -106,8 +118,7 @@ class LoginActivity : BaseActivity(), LoginContract.View {
     }
 
     override fun hideLoading() {
-        if (progDialog.isShowing)
-            progDialog.dismiss()
+        if (progDialog.isShowing) progDialog.dismiss()
     }
 
     override fun showSuccess() {
