@@ -77,7 +77,7 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                             }
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             if ((throwable as? RequestException)?.status == 404)
                                 getView().onRepoNotFound()
                             else
@@ -112,7 +112,7 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                                     IS_REPO_STARRED = true
                                 },
                                 { throwable ->
-                                    getView().showError(throwable.localizedMessage)
+                                    throwable?.localizedMessage?.let { getView().showError(it) }
                                     Timber.e(throwable)
                                 }
                         ))
@@ -135,7 +135,7 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                                     IS_REPO_STARRED = false
                                 },
                                 { throwable ->
-                                    getView().showError(throwable.localizedMessage)
+                                    throwable?.localizedMessage?.let { getView().showError(it) }
                                     Timber.e(throwable)
                                 }
                         ))
@@ -162,7 +162,7 @@ class RepoPresenter<V: RepoContract.View> : BasePresenter<V>, RepoContract.Prese
                                     getView().intentToForkedRepo(getDataManager().getUsername(), mName!!)
                                 },
                                 { throwable ->
-                                    getView().showError(throwable.localizedMessage)
+                                    throwable?.localizedMessage?.let { getView().showError(it) }
                                     Timber.e(throwable)
                                 }
                         ))

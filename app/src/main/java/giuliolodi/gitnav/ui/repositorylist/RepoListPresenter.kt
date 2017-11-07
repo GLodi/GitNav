@@ -85,7 +85,7 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)

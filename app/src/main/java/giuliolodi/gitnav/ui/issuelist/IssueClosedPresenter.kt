@@ -85,7 +85,7 @@ class IssueClosedPresenter<V: IssueClosedContract.View> : BasePresenter<V>, Issu
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)

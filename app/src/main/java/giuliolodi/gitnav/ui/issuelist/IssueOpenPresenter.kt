@@ -85,7 +85,7 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)

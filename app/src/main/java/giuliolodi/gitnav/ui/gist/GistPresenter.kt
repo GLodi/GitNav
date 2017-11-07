@@ -71,7 +71,7 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                             tryToCreateMenu()
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))
@@ -100,7 +100,7 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                             IS_GIST_STARRED = true
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))
@@ -116,7 +116,7 @@ class GistPresenter<V: GistContract.View> : BasePresenter<V>, GistContract.Prese
                             IS_GIST_STARRED = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))

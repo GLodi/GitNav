@@ -27,7 +27,6 @@ import io.reactivex.Flowable
 import org.eclipse.egit.github.core.*
 import org.eclipse.egit.github.core.event.Event
 import org.eclipse.egit.github.core.service.UserService
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -60,12 +59,29 @@ class DataManagerImpl : DataManager {
                 throw e
             }
             if (!token.isEmpty()) {
-                mPrefsHelper.storeAccessToken(token)
                 try {
                     val userService: UserService = UserService()
                     userService.client.setOAuth2Token(getToken())
                     user = userService.getUser(username)
                     storeUser(user)
+                    mPrefsHelper.storeAccessToken(token)
+                } catch (e: Exception) {
+                    throw e
+                }
+            }
+        }
+    }
+
+    override fun downloadUserInfoFromToken(token: String): Completable {
+        return Completable.fromAction {
+            val user: User
+            if (!token.isEmpty()) {
+                try {
+                    val userService: UserService = UserService()
+                    userService.client.setOAuth2Token(token)
+                    user = userService.user
+                    storeUser(user)
+                    mPrefsHelper.storeAccessToken(token)
                 } catch (e: Exception) {
                     throw e
                 }

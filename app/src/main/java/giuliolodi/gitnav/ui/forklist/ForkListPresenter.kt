@@ -82,7 +82,7 @@ class ForkListPresenter<V: ForkListContract.View> : BasePresenter<V>, ForkListCo
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)

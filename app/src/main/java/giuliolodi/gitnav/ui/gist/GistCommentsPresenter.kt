@@ -74,7 +74,7 @@ class GistCommentsPresenter<V: GistCommentsContract.View> : BasePresenter<V>, Gi
                             LOADING = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             LOADING = false

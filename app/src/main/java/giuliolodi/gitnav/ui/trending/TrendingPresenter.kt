@@ -71,7 +71,7 @@ class TrendingPresenter<V: TrendingContract.View> : BasePresenter<V>, TrendingCo
                             if (throwable is IndexOutOfBoundsException)
                                 getView().showNoRepo()
                             else
-                                getView().showError(throwable.localizedMessage)
+                                throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                             getView().hideLoading()
                         },

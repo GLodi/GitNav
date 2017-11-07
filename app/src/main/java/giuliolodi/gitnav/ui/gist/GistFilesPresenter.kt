@@ -69,7 +69,7 @@ class GistFilesPresenter<V: GistFilesContract.View> : BasePresenter<V>, GistFile
                             LOADING = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             LOADING = false

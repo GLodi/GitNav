@@ -71,7 +71,7 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
                                         LOADING = false
                                     },
                                     { throwable ->
-                                        getView().showError(throwable.localizedMessage)
+                                        throwable?.localizedMessage?.let { getView().showError(it) }
                                         getView().hideLoading()
                                         Timber.e(throwable)
                                         LOADING = false

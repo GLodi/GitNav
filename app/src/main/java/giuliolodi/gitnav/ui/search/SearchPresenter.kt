@@ -46,7 +46,7 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                         },
                         { throwable ->
                             getView().hideLoading()
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))
@@ -64,7 +64,7 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                         },
                         { throwable ->
                             getView().hideLoading()
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))
@@ -82,7 +82,7 @@ class SearchPresenter<V: SearchContract.View> : BasePresenter<V>, SearchContract
                         },
                         { throwable ->
                             getView().hideLoading()
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))

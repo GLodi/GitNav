@@ -255,7 +255,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             LOADING_FOLLOWING = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             getView().hideLoading()
@@ -286,7 +286,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             LOADING_FOLLOWERS = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             getView().hideLoading()
@@ -319,7 +319,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             mUser?.let { getView().showUser(it, IS_FOLLOWED, IS_LOGGED_USER, IS_DARK_THEME_ON) }
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                         }
@@ -345,7 +345,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             LOADING_REPOS = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             getView().hideLoading()
@@ -375,7 +375,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             LOADING_EVENTS = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             getView().hideLoading()
@@ -452,7 +452,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             getView().onFollowCompleted()
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))
@@ -468,7 +468,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                             getView().onUnfollowCompleted()
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))
@@ -481,7 +481,7 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .subscribe(
                         {},
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             Timber.e(throwable)
                         }
                 ))

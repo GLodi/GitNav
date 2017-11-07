@@ -56,7 +56,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                             getView().intentToEventActivity()
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             if ((throwable as? RequestException)?.status != 401)
                                 Timber.e(throwable)
@@ -96,22 +96,26 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
     }
 
     private fun requestAccessToken(code: String, stateReceived: String) {
-        getDataManager().apiRequestAccessToken("", "", code, "gitnav://login", stateReceived)
+        getCompositeDisposable().add(getDataManager().apiRequestAccessToken("", "", code, "gitnav://login", stateReceived)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMapCompletable { tokenRequested ->
+                    getDataManager().downloadUserInfoFromToken(tokenRequested.token)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                }
                 .subscribe(
-                        { requestAccessToken ->
-                            getDataManager().storeAccessToken(requestAccessToken.token)
+                        {
                             getView().hideLoading()
                             getView().showSuccess()
                             getView().intentToEventActivity()
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                         }
-                )
+                ))
     }
 
 }

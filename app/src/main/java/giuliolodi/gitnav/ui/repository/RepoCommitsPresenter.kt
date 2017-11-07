@@ -78,7 +78,7 @@ class RepoCommitsPresenter<V: RepoCommitsContract.View> : BasePresenter<V>, Repo
                             LOADING = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                             LOADING = false

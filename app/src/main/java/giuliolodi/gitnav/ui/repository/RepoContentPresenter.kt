@@ -100,7 +100,7 @@ class RepoContentPresenter<V: RepoContentContract.View> : BasePresenter<V>, Repo
                             if (!GOING_BACK) TREE_DEPTH += 1 else TREE_DEPTH -= 1
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             Timber.e(throwable)
                         }

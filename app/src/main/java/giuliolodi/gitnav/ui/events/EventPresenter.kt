@@ -79,7 +79,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)

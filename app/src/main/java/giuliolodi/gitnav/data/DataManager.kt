@@ -317,4 +317,12 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun forkRepo(owner: String, name: String): Completable
 
+    /**
+     * After obtaining OAuth access_token, try to download and store
+     * user's data
+     * @param token
+     * @return Completable
+     */
+    fun downloadUserInfoFromToken(token: String): Completable
+
 }

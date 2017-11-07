@@ -83,7 +83,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)
@@ -112,7 +112,7 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                             LOADING_LIST = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             getView().hideListLoading()
                             Timber.e(throwable)

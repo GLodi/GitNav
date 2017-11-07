@@ -76,7 +76,7 @@ class ContributorListPresenter<V: ContributorListContract.View> : BasePresenter<
                             LOADING = false
                         },
                         { throwable ->
-                            getView().showError(throwable.localizedMessage)
+                            throwable?.localizedMessage?.let { getView().showError(it) }
                             getView().hideLoading()
                             LOADING = false
                         }
