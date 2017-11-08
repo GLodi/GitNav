@@ -97,6 +97,10 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addRepos(repoList: List<Repository>) {
+        val lastItemIndex = if (mRepoList.size - 1 > - 1) mRepoList.size - 1 else 0
+        mRepoList.addAll(repoList)
+        notifyItemRangeInserted(lastItemIndex, mRepoList.size - 1)
+        /*
         if (mRepoList.isEmpty()) {
             mRepoList.clear()
             mRepoList.addAll(repoList)
@@ -114,11 +118,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mRepoList.addAll(repoList)
             notifyItemRangeInserted(lastItemIndex, mRepoList.size - 1)
         }
-    }
-
-    fun addRepo(repo: Repository) {
-        mRepoList.add(repo)
-        notifyItemInserted(mRepoList.size - 1)
+        */
     }
 
     fun showLoading() {

@@ -341,7 +341,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mEventList.addAll(eventList)
             notifyDataSetChanged()
         }
-        else if (mEventList.lastIndexOf(null) != -1){
+        else if (mEventList.lastIndexOf(null) != -1) {
             val lastNull = mEventList.lastIndexOf(null)
             mEventList.removeAt(lastNull)
             notifyItemRemoved(lastNull)

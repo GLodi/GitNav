@@ -106,8 +106,7 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
     }
 
     override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING_LIST)
-            return
+        if (LOADING_LIST) return
         else if (isNetworkAvailable) {
             LOADING_LIST = true
             getView().showListLoading()

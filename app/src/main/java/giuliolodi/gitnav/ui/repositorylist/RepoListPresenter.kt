@@ -112,11 +112,10 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
     }
 
     override fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int) {
-        if (LOADING_LIST || mFilter["sort"] == "stars")
-            return
+        if (LOADING_LIST || mFilter["sort"] == "stars") return
         if (isNetworkAvailable) {
             LOADING_LIST = true
-            getView().showLoading()
+            getView().showListLoading()
             loadRepos()
         }
         else if (dy > 0) {
