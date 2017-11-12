@@ -69,7 +69,6 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
                             mEventList.addAll(eventList)
                             getView().showEvents(eventList)
                             getView().hideLoading()
-                            getView().hideListLoading()
                             if (PAGE_N == 1 && eventList.isEmpty()) {
                                 getView().showNoEvents()
                                 NO_SHOWING = true

@@ -336,6 +336,13 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addEvents(eventList: List<Event>) {
+        if (!eventList.isEmpty()) {
+            val lastItemIndex = if (mEventList.size - 1 > - 1) mEventList.size - 1 else 0
+            mEventList.addAll(eventList)
+            hideLoading()
+            notifyItemRangeInserted(lastItemIndex, mEventList.size - 1)
+        }
+        /*
         if (mEventList.isEmpty()) {
             mEventList.clear()
             mEventList.addAll(eventList)
@@ -353,6 +360,7 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             mEventList.addAll(eventList)
             notifyItemRangeInserted(lastItemIndex, mEventList.size - 1)
         }
+        */
     }
 
     fun showLoading() {
