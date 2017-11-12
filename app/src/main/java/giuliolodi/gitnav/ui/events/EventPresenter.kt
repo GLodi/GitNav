@@ -66,9 +66,10 @@ class EventPresenter<V: EventContract.View> : BasePresenter<V>, EventContract.Pr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { eventList ->
+                            getView().hideLoading()
+                            getView().hideListLoading()
                             mEventList.addAll(eventList)
                             getView().showEvents(eventList)
-                            getView().hideLoading()
                             if (PAGE_N == 1 && eventList.isEmpty()) {
                                 getView().showNoEvents()
                                 NO_SHOWING = true

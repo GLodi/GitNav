@@ -337,9 +337,8 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun addEvents(eventList: List<Event>) {
         if (!eventList.isEmpty()) {
-            val lastItemIndex = if (mEventList.size - 1 > - 1) mEventList.size - 1 else 0
+            val lastItemIndex = if (mEventList.size > 0) mEventList.size else 0
             mEventList.addAll(eventList)
-            hideLoading()
             notifyItemRangeInserted(lastItemIndex, mEventList.size - 1)
         }
         /*
@@ -369,8 +368,8 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun hideLoading() {
-        if (mEventList.lastIndexOf(null) != -1) {
-            val lastNull = mEventList.lastIndexOf(null)
+        val lastNull = mEventList.lastIndexOf(null)
+        if (lastNull != -1) {
             mEventList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
         }

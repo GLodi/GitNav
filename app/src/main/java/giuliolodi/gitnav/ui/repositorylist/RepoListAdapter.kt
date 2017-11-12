@@ -98,29 +98,10 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun addRepos(repoList: List<Repository>) {
         if (!repoList.isEmpty()) {
-            val lastItemIndex = if (mRepoList.size - 1 > - 1) mRepoList.size - 1 else 0
+            val lastItemIndex = if (mRepoList.size > 0) mRepoList.size else 0
             mRepoList.addAll(repoList)
             notifyItemRangeInserted(lastItemIndex, mRepoList.size - 1)
         }
-        /*
-        if (mRepoList.isEmpty()) {
-            mRepoList.clear()
-            mRepoList.addAll(repoList)
-            notifyDataSetChanged()
-        }
-        else if (mRepoList.lastIndexOf(null) != -1) {
-            val lastNull = mRepoList.lastIndexOf(null)
-            mRepoList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
-            mRepoList.addAll(repoList)
-            notifyItemRangeInserted(lastNull, mRepoList.size - 1)
-        }
-        else {
-            val lastItemIndex = mRepoList.size - 1
-            mRepoList.addAll(repoList)
-            notifyItemRangeInserted(lastItemIndex, mRepoList.size - 1)
-        }
-        */
     }
 
     fun showLoading() {
@@ -129,8 +110,8 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun hideLoading() {
-        if (mRepoList.lastIndexOf(null) != -1) {
-            val lastNull = mRepoList.lastIndexOf(null)
+        val lastNull = mRepoList.lastIndexOf(null)
+        if (lastNull != -1) {
             mRepoList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
         }

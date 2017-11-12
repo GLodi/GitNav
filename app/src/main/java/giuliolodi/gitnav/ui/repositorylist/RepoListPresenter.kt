@@ -71,11 +71,11 @@ class RepoListPresenter<V: RepoListContract.View> : BasePresenter<V>, RepoListCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
-                            mRepoList.addAll(repoList)
-                            getView().showRepos(repoList)
-                            getView().setFilter(mFilter)
                             getView().hideLoading()
                             getView().hideListLoading()
+                            mRepoList.addAll(repoList)
+                            getView().setFilter(mFilter)
+                            getView().showRepos(repoList)
                             if (PAGE_N == 1 && repoList.isEmpty()) {
                                 getView().showNoRepo()
                                 NO_SHOWING = true
