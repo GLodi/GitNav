@@ -69,10 +69,10 @@ class ForkListPresenter<V: ForkListContract.View> : BasePresenter<V>, ForkListCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { forkList ->
-                            mForkList.addAll(forkList)
-                            getView().showForkList(forkList)
                             getView().hideLoading()
                             getView().hideListLoading()
+                            mForkList.addAll(forkList)
+                            getView().showForkList(forkList)
                             if (PAGE_N == 1 && forkList.isEmpty()) {
                                 getView().showNoForks()
                                 NO_SHOWING = true

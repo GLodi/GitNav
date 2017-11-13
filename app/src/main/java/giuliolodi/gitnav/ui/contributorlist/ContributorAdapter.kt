@@ -81,17 +81,10 @@ class ContributorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addContributorList(contributorList: List<Contributor>) {
-        if (mContributorList.isEmpty()) {
-            mContributorList.clear()
+        if (!contributorList.isEmpty()) {
+            val lastItemIndex = if (mContributorList.size > 0) mContributorList.size else 0
             mContributorList.addAll(contributorList)
-            notifyDataSetChanged()
-        }
-        else {
-            val lastNull = mContributorList.lastIndexOf(null)
-            mContributorList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
-            mContributorList.addAll(contributorList)
-            notifyItemRangeInserted(lastNull, mContributorList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mContributorList.size)
         }
     }
 

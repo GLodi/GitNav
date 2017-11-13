@@ -100,7 +100,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (!repoList.isEmpty()) {
             val lastItemIndex = if (mRepoList.size > 0) mRepoList.size else 0
             mRepoList.addAll(repoList)
-            notifyItemRangeInserted(lastItemIndex, mRepoList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mRepoList.size)
         }
     }
 

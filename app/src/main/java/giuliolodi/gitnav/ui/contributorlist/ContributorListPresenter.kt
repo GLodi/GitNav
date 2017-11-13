@@ -66,9 +66,9 @@ class ContributorListPresenter<V: ContributorListContract.View> : BasePresenter<
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { contributorList ->
+                            getView().hideLoading()
                             mContributorList.addAll(contributorList)
                             getView().showContributorList(contributorList)
-                            getView().hideLoading()
                             if (contributorList.isEmpty()) {
                                 getView().showNoContributor()
                                 NO_SHOWING = true
