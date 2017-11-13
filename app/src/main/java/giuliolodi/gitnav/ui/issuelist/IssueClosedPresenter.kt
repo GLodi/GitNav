@@ -72,10 +72,10 @@ class IssueClosedPresenter<V: IssueClosedContract.View> : BasePresenter<V>, Issu
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { openIssueList ->
-                            mIssueList.addAll(openIssueList)
-                            getView().showClosedIssues(openIssueList)
                             getView().hideLoading()
                             getView().hideListLoading()
+                            mIssueList.addAll(openIssueList)
+                            getView().showClosedIssues(openIssueList)
                             if (PAGE_N == 1 && openIssueList.isEmpty()) {
                                 getView().showNoClosedIssues()
                                 NO_SHOWING = true

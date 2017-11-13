@@ -70,10 +70,10 @@ class StargazerListPresenter<V: StargazerListContract.View> : BasePresenter<V>, 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { stargazerList ->
-                            mStargazerList.addAll(stargazerList)
-                            getView().showStargazerList(stargazerList)
                             getView().hideLoading()
                             getView().hideListLoading()
+                            mStargazerList.addAll(stargazerList)
+                            getView().showStargazerList(stargazerList)
                             if (PAGE_N == 1 && stargazerList.isEmpty()) {
                                 getView().showNoStargazers()
                                 NO_SHOWING = true

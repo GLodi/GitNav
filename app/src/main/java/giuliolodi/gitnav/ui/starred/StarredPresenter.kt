@@ -71,11 +71,11 @@ class StarredPresenter<V: StarredContract.View> : BasePresenter<V>, StarredContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
+                            getView().hideLoading()
+                            getView().hideListLoading()
                             mRepoList.addAll(repoList)
                             getView().showRepos(repoList)
                             getView().setFilter(mFilter)
-                            getView().hideLoading()
-                            getView().hideListLoading()
                             if (PAGE_N == 1 && repoList.isEmpty()) {
                                 getView().showNoRepo()
                                 NO_SHOWING = true

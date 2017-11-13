@@ -75,17 +75,10 @@ class GistFileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addGistFileList(gistFileList: List<GistFile>) {
-        if (mGistFileList.isEmpty()) {
-            mGistFileList.clear()
-            mGistFileList.addAll(gistFileList.toMutableList())
-            notifyDataSetChanged()
-        }
-        else {
-            val lastNull = mGistFileList.lastIndexOf(null)
-            mGistFileList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
+        if (!gistFileList.isEmpty()) {
+            val lastItemIndex = if (mGistFileList.size > 0) mGistFileList.size else 0
             mGistFileList.addAll(gistFileList)
-            notifyItemRangeInserted(lastNull, mGistFileList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mGistFileList.size)
         }
     }
 

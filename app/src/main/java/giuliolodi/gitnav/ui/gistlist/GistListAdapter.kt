@@ -80,22 +80,10 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addGists(gistList: List<Gist>) {
-        if (mGistList.isEmpty()) {
-            mGistList.clear()
+        if (!gistList.isEmpty()) {
+            val lastItemIndex = if (mGistList.size > 0) mGistList.size else 0
             mGistList.addAll(gistList)
-            notifyDataSetChanged()
-        }
-        else if (mGistList.lastIndexOf(null) != -1) {
-            val lastNull = mGistList.lastIndexOf(null)
-            mGistList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
-            mGistList.addAll(gistList)
-            notifyItemRangeInserted(lastNull, mGistList.size - 1)
-        }
-        else {
-            val lastItemIndex = mGistList.size - 1
-            mGistList.addAll(gistList)
-            notifyItemRangeInserted(lastItemIndex, mGistList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mGistList.size)
         }
     }
 

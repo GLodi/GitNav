@@ -82,17 +82,10 @@ class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addUserList(userList: List<User>) {
-        if (mUserList.isEmpty()) {
-            mUserList.clear()
+        if (!userList.isEmpty()) {
+            val lastItemIndex = if (mUserList.size > 0) mUserList.size else 0
             mUserList.addAll(userList)
-            notifyDataSetChanged()
-        }
-        else {
-            val lastNull = mUserList.lastIndexOf(null)
-            mUserList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
-            mUserList.addAll(userList)
-            notifyItemRangeInserted(lastNull, mUserList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mUserList.size)
         }
     }
 

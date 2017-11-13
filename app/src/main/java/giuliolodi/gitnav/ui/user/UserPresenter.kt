@@ -242,10 +242,10 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { userList ->
-                            mFollowingList.addAll(userList)
-                            getView().showFollowing(userList)
                             getView().hideLoading()
                             getView().hideUserLoading()
+                            mFollowingList.addAll(userList)
+                            getView().showFollowing(userList)
                             if (PAGE_N_FOLLOWING == 1 && userList.isEmpty())  {
                                 getView().showNoUsers()
                                 NO_FOLLOWING = true
@@ -273,10 +273,10 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { userList ->
-                            mFollowersList.addAll(userList)
-                            getView().showFollowers(userList)
                             getView().hideLoading()
                             getView().hideUserLoading()
+                            mFollowersList.addAll(userList)
+                            getView().showFollowers(userList)
                             if (PAGE_N_FOLLOWERS == 1 && userList.isEmpty()) {
                                 getView().showNoUsers()
                                 NO_FOLLOWERS = true
@@ -332,11 +332,11 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repoList ->
-                            mRepoList.addAll(repoList)
-                            getView().showRepos(repoList)
                             getView().hideLoading()
                             getView().hideRepoLoading()
-                            if (PAGE_N_REPOS== 1 && repoList.isEmpty()) {
+                            mRepoList.addAll(repoList)
+                            getView().showRepos(repoList)
+                            if (PAGE_N_REPOS == 1 && repoList.isEmpty()) {
                                 getView().showNoRepos()
                                 NO_REPOS = true
                             }
@@ -362,10 +362,10 @@ class UserPresenter<V: UserContract.View> : BasePresenter<V>, UserContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { eventList ->
-                            mEventList.addAll(eventList)
-                            getView().showEvents(eventList)
                             getView().hideLoading()
                             getView().hideEventLoading()
+                            mEventList.addAll(eventList)
+                            getView().showEvents(eventList)
                             if (PAGE_N_EVENTS == 1 && eventList.isEmpty()) {
                                 getView().showNoEvents()
                                 NO_EVENTS= true

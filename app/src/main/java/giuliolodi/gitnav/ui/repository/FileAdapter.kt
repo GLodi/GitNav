@@ -83,16 +83,10 @@ class FileAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun addRepositoryContentList(repoContentList: List<RepositoryContents>) {
-        if (mRepoContentList.isEmpty()) {
-            mRepoContentList.clear()
+        if (!repoContentList.isEmpty()) {
+            val lastItemIndex = if (mRepoContentList.size > 0) mRepoContentList.size else 0
             mRepoContentList.addAll(repoContentList)
-            notifyDataSetChanged()
-        } else {
-            val lastNull = mRepoContentList.lastIndexOf(null)
-            mRepoContentList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
-            mRepoContentList.addAll(repoContentList)
-            notifyItemRangeInserted(lastNull, mRepoContentList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mRepoContentList.size)
         }
     }
 

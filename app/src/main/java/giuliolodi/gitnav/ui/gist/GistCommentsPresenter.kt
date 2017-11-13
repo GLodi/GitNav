@@ -64,9 +64,9 @@ class GistCommentsPresenter<V: GistCommentsContract.View> : BasePresenter<V>, Gi
                 .doOnSubscribe { getView().showLoading() }
                 .subscribe(
                         { gistCommentList ->
+                            getView().hideLoading()
                             mGistCommentList.addAll(gistCommentList)
                             getView().showComments(gistCommentList)
-                            getView().hideLoading()
                             if (mGistCommentList.isEmpty()) {
                                 getView().showNoComments()
                                 NO_COMMENTS = true

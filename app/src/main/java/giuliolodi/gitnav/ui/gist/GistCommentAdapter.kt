@@ -80,17 +80,10 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addGistCommentList(gistCommentList: List<Comment>) {
-        if (mGistCommentList.isEmpty()) {
-            mGistCommentList.clear()
-            mGistCommentList.addAll(gistCommentList.toMutableList())
-            notifyDataSetChanged()
-        }
-        else {
-            val lastNull = mGistCommentList.lastIndexOf(null)
-            mGistCommentList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
+        if (!gistCommentList.isEmpty()) {
+            val lastItemIndex = if (mGistCommentList.size > 0) mGistCommentList.size else 0
             mGistCommentList.addAll(gistCommentList)
-            notifyItemRangeInserted(lastNull, mGistCommentList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mGistCommentList.size)
         }
     }
 

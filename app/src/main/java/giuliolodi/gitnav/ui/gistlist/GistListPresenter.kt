@@ -70,10 +70,10 @@ class GistListPresenter<V: GistListContract.View> : BasePresenter<V>, GistListCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { gistList ->
-                            mGistList.addAll(gistList)
-                            getView().showGists(gistList)
                             getView().hideLoading()
                             getView().hideListLoading()
+                            mGistList.addAll(gistList)
+                            getView().showGists(gistList)
                             if (PAGE_N == 1 && gistList.isEmpty()) {
                                 getView().showNoGists(MINE_STARRED)
                                 NO_SHOWING = true

@@ -63,9 +63,9 @@ class TrendingPresenter<V: TrendingContract.View> : BasePresenter<V>, TrendingCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { repo ->
+                            getView().hideLoading()
                             mRepoList.add(repo)
                             getView().addRepo(repo)
-                            getView().hideLoading()
                         },
                         { throwable ->
                             if (throwable is IndexOutOfBoundsException)
