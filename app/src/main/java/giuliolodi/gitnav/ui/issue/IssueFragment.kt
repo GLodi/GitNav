@@ -16,8 +16,43 @@
 
 package giuliolodi.gitnav.ui.issue
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.base.BaseFragment
+import org.eclipse.egit.github.core.Issue
+import javax.inject.Inject
+
 /**
  * Created by giulio on 14/11/2017.
  */
-class IssueFragment {
+class IssueFragment : BaseFragment(), IssueContract.View {
+
+    @Inject lateinit var mPresenter: IssueContract.Presenter<IssueContract.View>
+
+    private var mOwner: String? = null
+    private var mName: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        getActivityComponent()?.inject(this)
+        mOwner = activity.intent.getStringExtra("owner")
+        mName = activity.intent.getStringExtra("name")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.fork_list_fragment, container, false)
+    }
+
+    override fun initLayout(view: View?, savedInstanceState: Bundle?) {
+        mPresenter.onAttach(this)
+        setHasOptionsMenu(true)
+    }
+
+    override fun showIssue(issue: Issue) {
+    }
+
 }

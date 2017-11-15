@@ -33,6 +33,8 @@ import giuliolodi.gitnav.ui.forklist.ForkListPresenter
 import giuliolodi.gitnav.ui.gist.*
 import giuliolodi.gitnav.ui.gistlist.GistListContract
 import giuliolodi.gitnav.ui.gistlist.GistListPresenter
+import giuliolodi.gitnav.ui.issue.IssueContract
+import giuliolodi.gitnav.ui.issue.IssuePresenter
 import giuliolodi.gitnav.ui.issuelist.IssueClosedContract
 import giuliolodi.gitnav.ui.issuelist.IssueClosedPresenter
 import giuliolodi.gitnav.ui.issuelist.IssueOpenContract
@@ -213,6 +215,12 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideOptionPresenter(presenter: OptionPresenter<OptionContract.View>): OptionContract.Presenter<OptionContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideIssuePresenter(presenter: IssuePresenter<IssueContract.View>): IssueContract.Presenter<IssueContract.View> {
         return presenter
     }
 

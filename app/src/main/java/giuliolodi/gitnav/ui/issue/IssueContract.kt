@@ -16,8 +16,26 @@
 
 package giuliolodi.gitnav.ui.issue
 
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Issue
+
 /**
  * Created by giulio on 14/11/2017.
  */
 interface IssueContract {
+
+    interface View: BaseContract.View {
+
+        fun showIssue(issue: Issue)
+
+    }
+
+    @PerActivity
+    interface Presenter<V: IssueContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(isNetworkAvailable: Boolean)
+
+    }
+
 }
