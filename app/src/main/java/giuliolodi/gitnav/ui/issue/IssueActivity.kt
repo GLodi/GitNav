@@ -16,8 +16,42 @@
 
 package giuliolodi.gitnav.ui.issue
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.base.BaseActivity
+
 /**
  * Created by giulio on 14/11/2017.
  */
-class IssueActivity {
+class IssueActivity : BaseActivity() {
+
+    private val ISSUE_FRAGMENT_TAG = "ISSUE_FRAGMENT_TAG"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.issue_activity)
+
+        var issueFragment: IssueFragment? = supportFragmentManager.findFragmentByTag(ISSUE_FRAGMENT_TAG) as IssueFragment?
+        if (issueFragment == null) {
+            issueFragment = IssueFragment()
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.issue_activity_frame, issueFragment, ISSUE_FRAGMENT_TAG)
+                    .commit()
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
+    }
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, IssueActivity::class.java)
+        }
+    }
+
 }
