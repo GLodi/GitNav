@@ -73,7 +73,8 @@
                         android:id="@+id/issue_fragment_cv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        app:cardBackgroundColor="?android:itemBackground"
+                        android:layout_marginBottom="2dp"
                         android:elevation="2dp">
 
                         <LinearLayout
@@ -105,7 +106,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:textSize="14sp"
-                                        android:textColor="#000000"
+                                        android:textColor="?android:attr/textColorPrimary"
                                         android:alpha="0.54"
                                         android:maxLines="1"
                                         android:ellipsize="end"
@@ -118,7 +119,7 @@
                                         android:layout_below="@id/issue_fragment_username"
                                         android:paddingLeft="8dp"
                                         android:textSize="16sp"
-                                        android:textColor="#000000"
+                                        android:textColor="?android:attr/textColorPrimary"
                                         android:alpha="0.87"
                                         android:paddingTop="2dp"
                                         android:paddingBottom="2dp"/>
@@ -132,7 +133,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="16sp"
-                                android:textColor="#000000"
+                                android:textColor="?android:attr/textColorPrimary"
                                 android:alpha="0.87"
                                 android:paddingLeft="@dimen/activity_horizontal_margin"
                                 android:paddingRight="@dimen/activity_horizontal_margin"

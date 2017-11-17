@@ -21,12 +21,16 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.issue_fragment.*
 import org.eclipse.egit.github.core.Comment
 import org.eclipse.egit.github.core.Issue
 import javax.inject.Inject
+import giuliolodi.gitnav.ui.user.UserActivity
+import com.squareup.picasso.Picasso
 
 /**
  * Created by giulio on 14/11/2017.
@@ -67,21 +71,42 @@ class IssueFragment : BaseFragment(), IssueContract.View {
     }
 
     override fun showIssue(issue: Issue) {
+        issue_fragment_nested.visibility = View.VISIBLE
+
+        issue_fragment_username.text = issue.user.login
+        issue_fragment_title.text = issue.title
+
+        if (!issue.body.isEmpty()) {
+            issue_fragment_description.text = issue.body
+        }
+        else {
+            issue_fragment_description.visibility = View.GONE
+        }
+
+        Picasso.with(context).load(issue.user.avatarUrl).resize(75, 75).centerCrop().into(issue_fragment_image)
+        issue_fragment_image.setOnClickListener {
+            startActivity(UserActivity.getIntent(context).putExtra("username", issue.user.login))
+            activity.overridePendingTransition(0,0)
+        }
     }
 
     override fun showComments(issueComments: List<Comment>) {
     }
 
     override fun showLoading() {
+        issue_fragment_progressbar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
+        issue_fragment_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
 
     override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
