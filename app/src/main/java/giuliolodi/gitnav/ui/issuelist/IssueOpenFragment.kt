@@ -28,6 +28,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.issue.IssueActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -77,10 +78,16 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
         issue_list_open_rv.addItemDecoration(HorizontalDividerItemDecoration.Builder(context).showLastDivider().build())
         issue_list_open_rv.itemAnimator = DefaultItemAnimator()
         issue_list_open_rv.adapter = IssueAdapter()
+
         (issue_list_open_rv.adapter as IssueAdapter).getUserClick()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username -> mPresenter.onUserClick(username) }
+
+        (issue_list_open_rv.adapter as IssueAdapter).getIssueClick()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { issueId -> mPresenter.onIssueClick(issueId) }
 
         val mScrollListenerStarred = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -136,6 +143,11 @@ class IssueOpenFragment : BaseFragment(), IssueOpenContract.View {
 
     override fun intentToUserActivity(username: String) {
         startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
+    }
+
+    override fun intentToIssueActivity(issueId: Long) {
+        startActivity(IssueActivity.getIntent(context).putExtra("issueId", issueId))
         activity.overridePendingTransition(0,0)
     }
 

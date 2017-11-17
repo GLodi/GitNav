@@ -47,6 +47,8 @@ interface IssueOpenContract {
 
         fun intentToUserActivity(username: String)
 
+        fun intentToIssueActivity(issueId: Long)
+
     }
 
     @PerActivity
@@ -57,6 +59,8 @@ interface IssueOpenContract {
         fun onLastItemVisible(isNetworkAvailable: Boolean, dy: Int)
 
         fun onUserClick(username: String)
+
+        fun onIssueClick(issueId: Long)
 
     }
 

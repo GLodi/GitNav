@@ -32,15 +32,13 @@ class IssueFragment : BaseFragment(), IssueContract.View {
 
     @Inject lateinit var mPresenter: IssueContract.Presenter<IssueContract.View>
 
-    private var mOwner: String? = null
-    private var mName: String? = null
+    private var mIssueId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         getActivityComponent()?.inject(this)
-        mOwner = activity.intent.getStringExtra("owner")
-        mName = activity.intent.getStringExtra("name")
+        mIssueId = activity.intent.getLongExtra("issueId", 0)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -113,4 +113,8 @@ class IssueOpenPresenter<V: IssueOpenContract.View> : BasePresenter<V>, IssueOpe
         getView().intentToUserActivity(username)
     }
 
+    override fun onIssueClick(issueId: Long) {
+        getView().intentToIssueActivity(issueId)
+    }
+
 }
