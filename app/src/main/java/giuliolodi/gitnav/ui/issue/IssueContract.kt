@@ -40,12 +40,16 @@ interface IssueContract {
 
         fun showError(error: String)
 
+        fun intentToUserActivity(username: String)
+
     }
 
     @PerActivity
     interface Presenter<V: IssueContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?, issueNumber: Int?)
+
+        fun onImageClick(username: String)
 
     }
 

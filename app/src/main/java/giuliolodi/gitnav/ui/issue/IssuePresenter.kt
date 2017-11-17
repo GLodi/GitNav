@@ -54,7 +54,7 @@ class IssuePresenter<V: IssueContract.View> : BasePresenter<V>, IssueContract.Pr
             getView().showIssue(mIssue!!)
             getView().showComments(mIssueComments!!)
         }
-        if (LOADING) getView().showLoading()
+        else if (LOADING) getView().showLoading()
         else if (mOwner != null && mName != null && mIssueNumber != null){
             if (isNetworkAvailable) {
                 LOADING = true
@@ -95,6 +95,10 @@ class IssuePresenter<V: IssueContract.View> : BasePresenter<V>, IssueContract.Pr
                             LOADING = false
                         }
                 ))
+    }
+
+    override fun onImageClick(username: String) {
+        getView().intentToUserActivity(username)
     }
 
 }

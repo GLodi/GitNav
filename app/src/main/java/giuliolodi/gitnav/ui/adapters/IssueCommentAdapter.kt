@@ -6,7 +6,7 @@
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ *      
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.gist
+package giuliolodi.gitnav.ui.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.R
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_comment.view.*
 import org.eclipse.egit.github.core.Comment
 import org.ocpsoft.prettytime.PrettyTime
-import com.squareup.picasso.Picasso
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 
 /**
- * Created by giulio on 28/05/2017.
+ * Created by giulio on 17/11/2017.
  */
-class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class IssueCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mGistCommentList: MutableList<Comment?> = arrayListOf()
+    private var mIssueCommentList: MutableList<Comment?> = mutableListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
     private val onImageClick: PublishSubject<String> = PublishSubject.create()
 
@@ -41,7 +41,7 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return onImageClick
     }
 
-    class GistCommentHolder(root: View) : RecyclerView.ViewHolder(root) {
+    class IssueCommentHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (comment: Comment, p: PrettyTime) = with(itemView) {
             row_comment_username.text = comment.user.login
             row_comment_comment.text = comment.body
@@ -56,7 +56,7 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val root: RecyclerView.ViewHolder
         if (viewType == 1) {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_comment, parent, false))
-            root = GistCommentHolder(view)
+            root = IssueCommentHolder(view)
         } else  {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_loading, parent, false))
             root = LoadingHolder(view)
@@ -65,39 +65,39 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is GistCommentHolder) {
-            val comment = mGistCommentList[position]!!
+        if (holder is IssueCommentHolder) {
+            val comment = mIssueCommentList[position]!!
             holder.bind(comment, mPrettyTime)
             holder.itemView.row_comment_ll.setOnClickListener { comment.user?.login?.let { onImageClick.onNext(it) } }
         }
     }
 
-    override fun getItemViewType(position: Int): Int { return if (mGistCommentList[position] != null) 1 else 0 }
+    override fun getItemViewType(position: Int): Int { return if (mIssueCommentList[position] != null) 1 else 0 }
 
-    override fun getItemCount(): Int { return mGistCommentList.size }
+    override fun getItemCount(): Int { return mIssueCommentList.size }
 
     override fun getItemId(position: Int): Long { return position.toLong() }
 
-    fun addGistCommentList(gistCommentList: List<Comment>) {
-        if (!gistCommentList.isEmpty()) {
-            val lastItemIndex = if (mGistCommentList.size > 0) mGistCommentList.size else 0
-            mGistCommentList.addAll(gistCommentList)
-            notifyItemRangeInserted(lastItemIndex, mGistCommentList.size)
+    fun addIssueCommentList(issueCommentList: List<Comment>) {
+        if (!issueCommentList.isEmpty()) {
+            val lastItemIndex = if (mIssueCommentList.size > 0) mIssueCommentList.size else 0
+            mIssueCommentList.addAll(issueCommentList)
+            notifyItemRangeInserted(lastItemIndex, mIssueCommentList.size)
         }
     }
 
-    fun addGistComment(gistComment: Comment) {
-        mGistCommentList.add(gistComment)
-        notifyItemInserted(mGistCommentList.size - 1)
+    fun addIssueComment(issueComment: Comment) {
+        mIssueCommentList.add(issueComment)
+        notifyItemInserted(mIssueCommentList.size - 1)
     }
 
     fun addLoading() {
-        mGistCommentList.add(null)
-        notifyItemInserted(mGistCommentList.size - 1)
+        mIssueCommentList.add(null)
+        notifyItemInserted(mIssueCommentList.size - 1)
     }
 
     fun clear() {
-        mGistCommentList.clear()
+        mIssueCommentList.clear()
         notifyDataSetChanged()
     }
 

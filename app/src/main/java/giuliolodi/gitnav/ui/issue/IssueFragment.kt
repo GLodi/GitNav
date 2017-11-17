@@ -18,6 +18,8 @@ package giuliolodi.gitnav.ui.issue
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +33,10 @@ import org.eclipse.egit.github.core.Issue
 import javax.inject.Inject
 import giuliolodi.gitnav.ui.user.UserActivity
 import com.squareup.picasso.Picasso
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import giuliolodi.gitnav.ui.adapters.IssueCommentAdapter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by giulio on 14/11/2017.
@@ -83,6 +89,16 @@ class IssueFragment : BaseFragment(), IssueContract.View {
             issue_fragment_description.visibility = View.GONE
         }
 
+        val llm = LinearLayoutManager(context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        issue_fragment_rv.layoutManager = llm
+        issue_fragment_rv.itemAnimator = DefaultItemAnimator()
+        issue_fragment_rv.adapter = IssueCommentAdapter()
+        (issue_fragment_rv.adapter as IssueCommentAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username -> mPresenter.onImageClick(username) }
+
         Picasso.with(context).load(issue.user.avatarUrl).resize(75, 75).centerCrop().into(issue_fragment_image)
         issue_fragment_image.setOnClickListener {
             startActivity(UserActivity.getIntent(context).putExtra("username", issue.user.login))
@@ -91,6 +107,12 @@ class IssueFragment : BaseFragment(), IssueContract.View {
     }
 
     override fun showComments(issueComments: List<Comment>) {
+        (issue_fragment_rv.adapter as IssueCommentAdapter).addIssueCommentList(issueComments)
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun showLoading() {
