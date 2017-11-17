@@ -87,7 +87,7 @@ class IssueClosedFragment : BaseFragment(), IssueClosedContract.View {
         (issue_list_closed_rv.adapter as IssueAdapter).getIssueClick()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { issueId -> mPresenter.onIssueClick(issueId) }
+                .subscribe { issueNumber -> mPresenter.onIssueClick(issueNumber) }
 
         val mScrollListenerStarred = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -146,8 +146,11 @@ class IssueClosedFragment : BaseFragment(), IssueClosedContract.View {
         activity.overridePendingTransition(0,0)
     }
 
-    override fun intentToIssueActivity(issueId: Long) {
-        startActivity(IssueActivity.getIntent(context).putExtra("issueId", issueId))
+    override fun intentToIssueActivity(issueNumber: Int) {
+        startActivity(IssueActivity.getIntent(context)
+                .putExtra("owner", mOwner)
+                .putExtra("name", mName)
+                .putExtra("issueNumber", issueNumber))
         activity.overridePendingTransition(0,0)
     }
 

@@ -449,4 +449,20 @@ class ApiHelperImpl : ApiHelper {
         return mRetrofit.create(ApiInterface::class.java).requestAccessToken(clientId, clientSecret, code, redirectUri, state)
     }
 
+    override fun apiGetIssue(token: String, owner: String, name: String, issueNumber: Int): Flowable<Issue> {
+        return Flowable.defer {
+            val issueService: IssueService = IssueService()
+            issueService.client.setOAuth2Token(token)
+            Flowable.just(issueService.getIssue(owner, name, issueNumber))
+        }
+    }
+
+    override fun apiGetIssueComments(token: String, owner: String, name: String, issueNumber: Int): Flowable<List<Comment>> {
+        return Flowable.defer {
+            val issueService: IssueService = IssueService()
+            issueService.client.setOAuth2Token(token)
+            Flowable.just(issueService.getComments(owner, name, issueNumber))
+        }
+    }
+
 }

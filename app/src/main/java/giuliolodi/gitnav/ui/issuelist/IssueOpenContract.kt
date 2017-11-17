@@ -47,7 +47,7 @@ interface IssueOpenContract {
 
         fun intentToUserActivity(username: String)
 
-        fun intentToIssueActivity(issueId: Long)
+        fun intentToIssueActivity(issueNumber: Int)
 
     }
 
@@ -60,7 +60,7 @@ interface IssueOpenContract {
 
         fun onUserClick(username: String)
 
-        fun onIssueClick(issueId: Long)
+        fun onIssueClick(issueNumber: Int)
 
     }
 

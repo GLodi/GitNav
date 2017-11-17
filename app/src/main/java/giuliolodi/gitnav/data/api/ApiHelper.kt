@@ -352,4 +352,24 @@ interface ApiHelper {
      */
     fun apiRequestAccessToken(clientId: String, clientSecret: String, code: String, redirectUri: String, state: String): Flowable<RequestAccessTokenResponse>
 
+    /**
+     * Download issue from issue number and owner info
+     * @param token
+     * @param owner
+     * @param name
+     * @param issueNumber
+     * @return Flowable<Issue>
+     */
+    fun apiGetIssue(token: String, owner: String, name: String, issueNumber: Int): Flowable<Issue>
+
+    /**
+     * Get comments on specific issue
+     * @param token
+     * @param owner
+     * @param name
+     * @param issueNumber
+     * @return Flowable<List<Comment>>
+     */
+    fun apiGetIssueComments(token: String, owner: String, name: String, issueNumber: Int): Flowable<List<Comment>>
+
 }

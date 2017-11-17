@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/issue_fragment_rl"
-            android:background="@color/backTint">
+            android:background="?android:attr/colorBackground">
 
             <ProgressBar
                 android:id="@+id/issue_fragment_progressbar"
@@ -73,6 +73,7 @@
                         android:id="@+id/issue_fragment_cv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
                         android:elevation="2dp">
 
                         <LinearLayout

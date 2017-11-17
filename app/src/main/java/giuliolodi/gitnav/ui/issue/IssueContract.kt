@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.issue
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.Comment
 import org.eclipse.egit.github.core.Issue
 
 /**
@@ -29,12 +30,22 @@ interface IssueContract {
 
         fun showIssue(issue: Issue)
 
+        fun showComments(issueComments: List<Comment>)
+
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showNoConnectionError()
+
+        fun showError(error: String)
+
     }
 
     @PerActivity
     interface Presenter<V: IssueContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?, issueNumber: Int?)
 
     }
 

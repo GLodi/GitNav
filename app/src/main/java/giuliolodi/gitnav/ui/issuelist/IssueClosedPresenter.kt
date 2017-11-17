@@ -114,8 +114,8 @@ class IssueClosedPresenter<V: IssueClosedContract.View> : BasePresenter<V>, Issu
         getView().intentToUserActivity(username)
     }
 
-    override fun onIssueClick(issueId: Long) {
-        getView().intentToIssueActivity(issueId)
+    override fun onIssueClick(issueNumber: Int) {
+        getView().intentToIssueActivity(issueNumber)
     }
 
 }

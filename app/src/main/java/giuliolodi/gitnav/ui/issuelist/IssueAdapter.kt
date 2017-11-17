@@ -35,10 +35,10 @@ class IssueAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     
     private var mIssueList: MutableList<Issue?> = mutableListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
-    private val onIssueClick: PublishSubject<Long> = PublishSubject.create()
+    private val onIssueClick: PublishSubject<Int> = PublishSubject.create()
     private val onUserClick: PublishSubject<String> = PublishSubject.create()
 
-    fun getIssueClick(): Observable<Long> {
+    fun getIssueClick(): Observable<Int> {
         return onIssueClick
     }
 
@@ -81,7 +81,7 @@ class IssueAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val issue = mIssueList[position]!!
             holder.bind(issue, mPrettyTime)
             holder.itemView.row_issue_image.setOnClickListener { onUserClick.onNext(issue.user.login) }
-            holder.itemView.row_issue_ll.setOnClickListener { onIssueClick.onNext(issue.id) }
+            holder.itemView.row_issue_ll.setOnClickListener { onIssueClick.onNext(issue.number) }
         }
     }
 

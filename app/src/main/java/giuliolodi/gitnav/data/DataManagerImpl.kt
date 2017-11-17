@@ -280,6 +280,14 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiForkRepo(mPrefsHelper.getToken(), owner, name)
     }
 
+    override fun getIssue(owner: String, name: String, issueNumber: Int): Flowable<Issue> {
+        return mApiHelper.apiGetIssue(mPrefsHelper.getToken(), owner, name, issueNumber)
+    }
+
+    override fun getIssueComments(owner: String, name: String, issueNumber: Int): Flowable<List<Comment>> {
+        return mApiHelper.apiGetIssueComments(mPrefsHelper.getToken(), owner, name, issueNumber)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -427,4 +435,13 @@ class DataManagerImpl : DataManager {
     override fun apiRequestAccessToken(clientId: String, clientSecret: String, code: String, redirectUri: String, state: String): Flowable<RequestAccessTokenResponse> {
         return mApiHelper.apiRequestAccessToken(clientId, clientSecret, code, redirectUri, state)
     }
+
+    override fun apiGetIssue(token: String, owner: String, name: String, issueNumber: Int): Flowable<Issue> {
+        return mApiHelper.apiGetIssue(token, owner, name, issueNumber)
+    }
+
+    override fun apiGetIssueComments(token: String, owner: String, name: String, issueNumber: Int): Flowable<List<Comment>> {
+        return mApiHelper.apiGetIssueComments(token, owner, name, issueNumber)
+    }
+
 }

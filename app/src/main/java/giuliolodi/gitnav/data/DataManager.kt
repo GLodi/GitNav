@@ -325,4 +325,22 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun downloadUserInfoFromToken(token: String): Completable
 
+    /**
+     * Download issue from issue number and owner info
+     * @param owner
+     * @param name
+     * @param issueNumber
+     * @return Flowable<Issue>
+     */
+    fun getIssue(owner: String, name: String, issueNumber: Int): Flowable<Issue>
+
+    /**
+     * Get comments on specific issue
+     * @param owner
+     * @param name
+     * @param issueNumber
+     * @return Flowable<List<Comment>>
+     */
+    fun getIssueComments(owner: String, name: String, issueNumber: Int): Flowable<List<Comment>>
+
 }
