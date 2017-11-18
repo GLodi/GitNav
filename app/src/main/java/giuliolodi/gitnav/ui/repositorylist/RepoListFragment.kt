@@ -18,8 +18,6 @@ package giuliolodi.gitnav.ui.repositorylist
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -28,6 +26,7 @@ import android.widget.Toast
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.adapters.RepoListAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.repository.RepoActivity
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.events
+package giuliolodi.gitnav.ui.adapters
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView

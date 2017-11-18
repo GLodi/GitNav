@@ -14,42 +14,42 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.search
+package giuliolodi.gitnav.ui.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.R
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.row_search_user.view.*
-import org.eclipse.egit.github.core.SearchUser
+import kotlinx.android.synthetic.main.row_user.view.*
+import org.eclipse.egit.github.core.User
 
 /**
- * Created by giulio on 31/05/2017.
+ * Created by giulio on 20/05/2017.
  */
-class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class UserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mUserList: MutableList<SearchUser?> = arrayListOf()
-    private val onImageClick: PublishSubject<String> = PublishSubject.create()
+    private var mUserList: MutableList<User?> = arrayListOf()
+    private val onClickSubject: PublishSubject<String> = PublishSubject.create()
 
-    fun getUserClicks(): Observable<String> {
-        return onImageClick
+    fun getPositionClicks(): Observable<String> {
+        return onClickSubject
     }
 
     class UserHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind (user: SearchUser) = with(itemView) {
+        fun bind (user: User) = with(itemView) {
             if (user.name == null) {
-                row_search_user_fullname.text = user.login
-                row_search_user_username.visibility = View.GONE
+                row_user_fullname.text = user.login
+                row_user_username.visibility = View.GONE
             }
             else {
-                row_search_user_fullname.text = user.name
-                row_search_user_username.text = user.login
+                row_user_fullname.text = user.name
+                row_user_username.text = user.login
             }
-            row_search_user_followers.text = user.followers.toString()
-            row_search_user_repos.text = user.publicRepos.toString()
+            Picasso.with(context).load(user.avatarUrl).resize(100,100).centerCrop().into(row_user_image)
         }
     }
 
@@ -58,7 +58,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val root: RecyclerView.ViewHolder
         if (viewType == 1) {
-            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_search_user, parent, false))
+            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_user, parent, false))
             root = UserHolder(view)
         } else  {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_loading, parent, false))
@@ -71,7 +71,7 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is UserHolder) {
             val user = mUserList[position]!!
             holder.bind(user)
-            holder.itemView.row_search_user_ll.setOnClickListener { onImageClick.onNext(user.login) }
+            holder.itemView.setOnClickListener { onClickSubject.onNext(user.login) }
         }
     }
 
@@ -81,22 +81,15 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemId(position: Int): Long { return position.toLong() }
 
-    fun addUsers(userList: List<SearchUser>) {
-        if (mUserList.isEmpty()) {
-            mUserList.clear()
-            mUserList.addAll(userList.toMutableList())
-            notifyDataSetChanged()
-        }
-        else {
-            val lastNull = mUserList.lastIndexOf(null)
-            mUserList.removeAt(lastNull)
-            notifyItemRemoved(lastNull)
+    fun addUserList(userList: List<User>) {
+        if (!userList.isEmpty()) {
+            val lastItemIndex = if (mUserList.size > 0) mUserList.size else 0
             mUserList.addAll(userList)
-            notifyItemRangeInserted(lastNull, mUserList.size - 1)
+            notifyItemRangeInserted(lastItemIndex, mUserList.size)
         }
     }
 
-    fun addUser(user: SearchUser) {
+    fun addUser(user: User) {
         mUserList.add(user)
         notifyItemInserted(mUserList.size - 1)
     }
@@ -106,9 +99,17 @@ class SearchUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemInserted(mUserList.size - 1)
     }
 
+    fun hideLoading() {
+        if (mUserList.lastIndexOf(null) != -1) {
+            val lastNull = mUserList.lastIndexOf(null)
+            mUserList.removeAt(lastNull)
+            notifyItemRemoved(lastNull)
+        }
+    }
+
     fun clear() {
         mUserList.clear()
         notifyDataSetChanged()
     }
-
+    
 }

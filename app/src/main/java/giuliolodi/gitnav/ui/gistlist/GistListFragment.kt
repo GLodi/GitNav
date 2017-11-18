@@ -26,6 +26,7 @@ import android.widget.Toast
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.adapters.GistListAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.gist.GistActivity
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -28,6 +28,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.data.model.FileViewerIntent
+import giuliolodi.gitnav.ui.adapters.FileAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.fileviewer.FileViewerActivity
 import io.reactivex.android.schedulers.AndroidSchedulers

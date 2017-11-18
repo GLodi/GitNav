@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.gistlist
+package giuliolodi.gitnav.ui.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

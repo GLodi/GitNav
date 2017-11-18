@@ -25,6 +25,7 @@ import android.widget.Toast
 import com.squareup.picasso.Picasso
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.adapters.RepoAboutAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.contributorlist.ContributorListActivity
 import giuliolodi.gitnav.ui.forklist.ForkListActivity

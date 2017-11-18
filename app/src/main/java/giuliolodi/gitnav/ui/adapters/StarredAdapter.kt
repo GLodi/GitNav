@@ -14,56 +14,59 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.repositorylist
+package giuliolodi.gitnav.ui.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.row_repo.view.*
+import kotlinx.android.synthetic.main.row_starred.view.*
 import org.eclipse.egit.github.core.Repository
 import org.ocpsoft.prettytime.PrettyTime
+import com.squareup.picasso.Picasso
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 /**
- * Created by giulio on 18/05/2017.
+ * Created by giulio on 19/05/2017.
  */
-class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mRepoList: MutableList<Repository?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
     private var mFilter: HashMap<String,String> = HashMap()
+    private val onImageClick: PublishSubject<String> = PublishSubject.create()
     private val onRepoClick: PublishSubject<Repository> = PublishSubject.create()
 
-    fun getPositionClicks(): Observable<Repository> {
+    fun getImageClicks(): Observable<String> {
+        return onImageClick
+    }
+
+    fun getRepoClicks(): Observable<Repository> {
         return onRepoClick
     }
 
     class RepoHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (repo: Repository, p: PrettyTime, filter: HashMap<String, String>) = with(itemView) {
-            row_repo_name.text = repo.owner.login + "/" + repo.name
+            row_starred_repo_name.text = repo.owner.login + "/" + repo.name
+            row_starred_star_number.text = repo.watchers.toString()
+            Picasso.with(context).load(repo.owner.avatarUrl).resize(100, 100).centerCrop().into(row_starred_author_icon)
             if (repo.description != null && repo.description != "")
-                row_repo_description.text = repo.description
+                row_starred_repo_description.text = repo.description
             else
-                row_repo_description.text = context.getString(R.string.no_description)
+                row_starred_repo_description.text = context.getString(R.string.no_description)
             if (repo.language == null) {
-                row_repo_language.visibility = View.GONE
-                row_repo_language_icon.visibility = View.GONE
+                row_starred_language.visibility = View.GONE
+                row_starred_code.visibility = View.GONE
             }
             else
-                row_repo_language.text = repo.language
-            row_repo_star_number.text = repo.watchers.toString()
-            if (repo.isFork && repo.parent != null)
-                row_repo_forked.text = repo.parent.name
-            else
-                row_repo_forked.visibility = View.GONE
+                row_starred_language.text = repo.language
             when (filter["sort"]) {
-                "pushed" -> row_repo_date.text = p.format(repo.pushedAt)
-                "updated" -> row_repo_date.text = p.format(repo.updatedAt)
-                null -> row_repo_date.text = p.format(repo.createdAt)
-                else -> row_repo_date.text = p.format(repo.createdAt)
+                "updated" -> row_starred_repo_date.text = p.format(repo.updatedAt)
+                "pushed" -> row_starred_repo_date.text = p.format(repo.pushedAt)
+                null -> row_starred_repo_date.text = p.format(repo.createdAt)
+                else -> row_starred_repo_date.text = p.format(repo.createdAt)
             }
         }
     }
@@ -73,7 +76,7 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val root: RecyclerView.ViewHolder
         if (viewType == 1) {
-            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_repo, parent, false))
+            val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_starred, parent, false))
             root = RepoHolder(view)
         } else  {
             val view = (LayoutInflater.from(parent?.context).inflate(R.layout.row_loading, parent, false))
@@ -86,7 +89,8 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoHolder) {
             val repo = mRepoList[position]!!
             holder.bind(repo, mPrettyTime, mFilter)
-            holder.itemView.setOnClickListener { onRepoClick.onNext(repo) }
+            holder.itemView.row_starred_author_icon.setOnClickListener { repo.owner?.login?.let { onImageClick.onNext(it) } }
+            holder.itemView.row_starred_ll.setOnClickListener { onRepoClick.onNext(repo) }
         }
     }
 
@@ -104,14 +108,19 @@ class RepoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    fun addRepo(repo: Repository) {
+        mRepoList.add(repo)
+        notifyItemInserted(mRepoList.size - 1)
+    }
+
     fun showLoading() {
         mRepoList.add(null)
         notifyItemInserted(mRepoList.size - 1)
     }
 
     fun hideLoading() {
-        val lastNull = mRepoList.lastIndexOf(null)
-        if (lastNull != -1) {
+        if (mRepoList.lastIndexOf(null) != -1) {
+            val lastNull = mRepoList.lastIndexOf(null)
             mRepoList.removeAt(lastNull)
             notifyItemRemoved(lastNull)
         }

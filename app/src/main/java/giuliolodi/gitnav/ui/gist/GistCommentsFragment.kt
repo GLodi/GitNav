@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.adapters.GistCommentAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers

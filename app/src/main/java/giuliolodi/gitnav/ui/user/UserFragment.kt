@@ -35,9 +35,10 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
-import giuliolodi.gitnav.ui.events.EventAdapter
+import giuliolodi.gitnav.ui.adapters.EventAdapter
 import giuliolodi.gitnav.ui.repository.RepoActivity
-import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
+import giuliolodi.gitnav.ui.adapters.RepoListAdapter
+import giuliolodi.gitnav.ui.adapters.UserAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_fragment.*

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package giuliolodi.gitnav.ui.gist
+package giuliolodi.gitnav.ui.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -25,7 +25,6 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.row_gist_file.view.*
 import org.eclipse.egit.github.core.GistFile
-import org.eclipse.egit.github.core.Repository
 
 /**
  * Created by giulio on 28/05/2017.

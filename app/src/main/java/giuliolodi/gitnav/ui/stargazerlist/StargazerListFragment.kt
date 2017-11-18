@@ -28,7 +28,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.user.UserActivity
-import giuliolodi.gitnav.ui.user.UserAdapter
+import giuliolodi.gitnav.ui.adapters.UserAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.stargazer_list_fragment.*

@@ -28,7 +28,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.repository.RepoActivity
-import giuliolodi.gitnav.ui.repositorylist.RepoListAdapter
+import giuliolodi.gitnav.ui.adapters.RepoListAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fork_list_fragment.*
