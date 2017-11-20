@@ -255,11 +255,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        mPresenter.onLastFollowingVisible(isNetworkAvailable(), dy)
-                    } else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                    }
+                    mPresenter.onLastFollowingVisible(isNetworkAvailable(), dy)
                 }
             }
         }
@@ -299,11 +295,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        mPresenter.onLastFollowerVisible(isNetworkAvailable(), dy)
-                    } else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                    }
+                    mPresenter.onLastFollowerVisible(isNetworkAvailable(), dy)
                 }
             }
         }
@@ -348,11 +340,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        mPresenter.onLastRepoVisible(isNetworkAvailable(), dy)
-                    } else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                    }
+                    mPresenter.onLastRepoVisible(isNetworkAvailable(), dy)
                 }
             }
         }
@@ -393,11 +381,7 @@ class UserFragment : BaseFragment(), UserContract.View {
                 val totalItemCount = (user_fragment_rv.layoutManager as LinearLayoutManager).itemCount
                 val pastVisibleItems = (user_fragment_rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    if (isNetworkAvailable()) {
-                        mPresenter.onLastEventVisible(isNetworkAvailable(), dy)
-                    } else if (dy > 0) {
-                        Handler(Looper.getMainLooper()).post({ Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show() })
-                    }
+                    mPresenter.onLastEventVisible(isNetworkAvailable(), dy)
                 }
             }
         }
