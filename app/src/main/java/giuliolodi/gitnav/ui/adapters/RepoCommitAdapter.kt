@@ -97,7 +97,11 @@ class RepoCommitAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addRepoCommits(repoCommitList: List<RepositoryCommit>) {
-        if (!repoCommitList.isEmpty()) {
+        if (mRepoCommitList.isEmpty()) {
+            mRepoCommitList.addAll(repoCommitList)
+            notifyDataSetChanged()
+        }
+        else if (!repoCommitList.isEmpty()) {
             val lastItemIndex = if (mRepoCommitList.size > 0) mRepoCommitList.size else 0
             mRepoCommitList.addAll(repoCommitList)
             notifyItemRangeInserted(lastItemIndex, mRepoCommitList.size)

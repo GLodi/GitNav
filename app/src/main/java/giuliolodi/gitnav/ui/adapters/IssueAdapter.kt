@@ -92,7 +92,11 @@ class IssueAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addIssueList(issueList: List<Issue>) {
-        if (!issueList.isEmpty()) {
+        if (mIssueList.isEmpty()) {
+            mIssueList.addAll(issueList)
+            notifyDataSetChanged()
+        }
+        else if (!issueList.isEmpty()) {
             val lastItemIndex = if (mIssueList.size > 0) mIssueList.size else 0
             mIssueList.addAll(issueList)
             notifyItemRangeInserted(lastItemIndex, mIssueList.size)

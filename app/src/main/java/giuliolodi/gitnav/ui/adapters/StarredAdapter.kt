@@ -101,7 +101,11 @@ class StarredAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addRepos(repoList: List<Repository>) {
-        if (!repoList.isEmpty()) {
+        if (mRepoList.isEmpty()) {
+            mRepoList.addAll(repoList)
+            notifyDataSetChanged()
+        }
+        else if (!repoList.isEmpty()) {
             val lastItemIndex = if (mRepoList.size > 0) mRepoList.size else 0
             mRepoList.addAll(repoList)
             notifyItemRangeInserted(lastItemIndex, mRepoList.size)

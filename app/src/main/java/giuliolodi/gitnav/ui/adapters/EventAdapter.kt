@@ -336,7 +336,11 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addEvents(eventList: List<Event>) {
-        if (!eventList.isEmpty()) {
+        if (mEventList.isEmpty()) {
+            mEventList.addAll(eventList)
+            notifyDataSetChanged()
+        }
+        else if (!eventList.isEmpty()) {
             val lastItemIndex = if (mEventList.size > 0) mEventList.size else 0
             mEventList.addAll(eventList)
             notifyItemRangeInserted(lastItemIndex, mEventList.size)

@@ -79,7 +79,11 @@ class IssueCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addIssueCommentList(issueCommentList: List<Comment>) {
-        if (!issueCommentList.isEmpty()) {
+        if (mIssueCommentList.isEmpty()) {
+            mIssueCommentList.addAll(issueCommentList)
+            notifyDataSetChanged()
+        }
+        else if (!issueCommentList.isEmpty()) {
             val lastItemIndex = if (mIssueCommentList.size > 0) mIssueCommentList.size else 0
             mIssueCommentList.addAll(issueCommentList)
             notifyItemRangeInserted(lastItemIndex, mIssueCommentList.size)

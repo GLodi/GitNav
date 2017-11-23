@@ -80,7 +80,11 @@ class GistListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int): Long { return position.toLong() }
 
     fun addGists(gistList: List<Gist>) {
-        if (!gistList.isEmpty()) {
+        if (mGistList.isEmpty()) {
+            mGistList.addAll(gistList)
+            notifyDataSetChanged()
+        }
+        else if (!gistList.isEmpty()) {
             val lastItemIndex = if (mGistList.size > 0) mGistList.size else 0
             mGistList.addAll(gistList)
             notifyItemRangeInserted(lastItemIndex, mGistList.size)
