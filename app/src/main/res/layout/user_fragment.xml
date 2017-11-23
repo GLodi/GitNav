@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:fitsSystemWindows="true"
+            android:stateListAnimator="@null"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.design.widget.CollapsingToolbarLayout
