@@ -78,12 +78,12 @@
 
             </RelativeLayout>
 
-            <TextView
+            <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/row_comment_comment"
-                android:text="Comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/row_comment_ll"
+                android:textAppearance="@android:style/TextAppearance.Small"
                 android:layout_marginTop="4dp"
                 android:paddingLeft="4dp"
                 android:textSize="16sp"

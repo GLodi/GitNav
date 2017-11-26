@@ -17,7 +17,6 @@
 package giuliolodi.gitnav.ui.adapters
 
 import android.support.v7.widget.RecyclerView
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +27,7 @@ import org.ocpsoft.prettytime.PrettyTime
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 
 /**
  * Created by giulio on 28/05/2017.
@@ -45,7 +45,7 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class GistCommentHolder(root: View) : RecyclerView.ViewHolder(root) {
         fun bind (comment: Comment, p: PrettyTime) = with(itemView) {
             row_comment_username.text = comment.user.login
-            row_comment_comment.text = Html.fromHtml(comment.bodyHtml)
+            row_comment_comment.setHtml(comment.bodyHtml, HtmlHttpImageGetter(row_comment_comment))
             row_comment_date.text = p.format(comment.createdAt)
             Picasso.with(context).load(comment.user.avatarUrl).resize(75, 75).centerCrop().into(row_comment_image)
         }
