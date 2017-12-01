@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.issue.IssueActivity
 import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.Observable
@@ -145,15 +146,22 @@ class EventAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         val issueCommentPayload: IssueCommentPayload = event.payload as IssueCommentPayload
                         row_event_description.text = Html.fromHtml(issueCommentPayload.action.substring(0,1).toUpperCase() + issueCommentPayload.action.substring(1) + " comment on issue <b>#" + issueCommentPayload.issue.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>: <b>" + issueCommentPayload.comment.body + "</b>")
                         row_event_ll.setOnClickListener {
-                            // issue
+                            context.startActivity(IssueActivity.getIntent(context)
+                                    .putExtra("owner", s[0][0])
+                                    .putExtra("name", s[0][1])
+                                    .putExtra("issueNumber", issueCommentPayload.issue.number))
+                            (context as Activity).overridePendingTransition(0,0)
                         }
                     }
                     "IssuesEvent" -> { // #13
                         val issuesPayload: IssuesPayload = event.payload as IssuesPayload
                         row_event_description.text = Html.fromHtml(issuesPayload.action.substring(0,1).toUpperCase() + issuesPayload.action.substring(1) + " issue <b>#" + issuesPayload.issue.number.toString() + "</b> in <font color='#326fba'>" + event.repo.name + "</font>")
                         row_event_ll.setOnClickListener {
-                            // issue
-                        }
+                            context.startActivity(IssueActivity.getIntent(context)
+                                    .putExtra("owner", s[0][0])
+                                    .putExtra("name", s[0][1])
+                                    .putExtra("issueNumber", issuesPayload.issue.number))
+                            (context as Activity).overridePendingTransition(0,0)                        }
                     }
                     "LabelEvent" -> { // #14 DEFAULT
                         row_event_description.text = Html.fromHtml("Labeled <font color='#326fba'>" + event.repo.name + "</font>")
