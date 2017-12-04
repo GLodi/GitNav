@@ -44,6 +44,8 @@ interface IssueContract {
 
         fun intentToBrowser(url: String)
 
+        fun intentToRepoActivity(owner: String, name: String)
+
     }
 
     @PerActivity
@@ -54,6 +56,8 @@ interface IssueContract {
         fun onImageClick(username: String)
 
         fun onOpenInBrowser()
+
+        fun onOpenRepo()
 
     }
 

@@ -45,6 +45,7 @@
     <string name="unfollow">Unfollow</string>
     <string name="send_email">Send email</string>
     <string name="open_in_browser">Open in browser</string>
+    <string name="open_repo">Open repository</string>
 
     <string name="starred">Starred</string>
     <string name="profile">Profile</string>

@@ -105,4 +105,8 @@ class IssuePresenter<V: IssueContract.View> : BasePresenter<V>, IssueContract.Pr
         mIssue?.htmlUrl?.let { getView().intentToBrowser(it) }
     }
 
+    override fun onOpenRepo() {
+        if (mOwner != null && mName != null) getView().intentToRepoActivity(mOwner!!, mName!!)
+    }
+
 }

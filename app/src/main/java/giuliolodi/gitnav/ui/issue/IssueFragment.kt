@@ -34,6 +34,7 @@ import javax.inject.Inject
 import giuliolodi.gitnav.ui.user.UserActivity
 import com.squareup.picasso.Picasso
 import giuliolodi.gitnav.ui.adapters.IssueCommentAdapter
+import giuliolodi.gitnav.ui.repository.RepoActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -120,6 +121,11 @@ class IssueFragment : BaseFragment(), IssueContract.View {
         startActivity(browserIntent)
     }
 
+    override fun intentToRepoActivity(owner: String, name: String) {
+        startActivity(RepoActivity.getIntent(context).putExtra("owner", owner).putExtra("name", name))
+        activity.overridePendingTransition(0,0)
+    }
+
     override fun showLoading() {
         issue_fragment_progressbar.visibility = View.VISIBLE
     }
@@ -143,6 +149,7 @@ class IssueFragment : BaseFragment(), IssueContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
+            R.id.open_repo -> mPresenter.onOpenRepo()
             R.id.open_in_browser -> mPresenter.onOpenInBrowser()
             R.id.action_options -> {}
         }
