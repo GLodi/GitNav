@@ -42,6 +42,8 @@ interface IssueContract {
 
         fun intentToUserActivity(username: String)
 
+        fun intentToBrowser(url: String)
+
     }
 
     @PerActivity
@@ -50,6 +52,8 @@ interface IssueContract {
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?, issueNumber: Int?)
 
         fun onImageClick(username: String)
+
+        fun onOpenInBrowser()
 
     }
 

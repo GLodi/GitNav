@@ -101,4 +101,8 @@ class IssuePresenter<V: IssueContract.View> : BasePresenter<V>, IssueContract.Pr
         getView().intentToUserActivity(username)
     }
 
+    override fun onOpenInBrowser() {
+        mIssue?.htmlUrl?.let { getView().intentToBrowser(it) }
+    }
+
 }

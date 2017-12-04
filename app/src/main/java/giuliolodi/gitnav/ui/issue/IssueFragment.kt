@@ -16,13 +16,13 @@
 
 package giuliolodi.gitnav.ui.issue
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
@@ -33,7 +33,6 @@ import org.eclipse.egit.github.core.Issue
 import javax.inject.Inject
 import giuliolodi.gitnav.ui.user.UserActivity
 import com.squareup.picasso.Picasso
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import giuliolodi.gitnav.ui.adapters.IssueCommentAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -48,6 +47,7 @@ class IssueFragment : BaseFragment(), IssueContract.View {
     private var mOwner: String? = null
     private var mName: String? = null
     private var mIssueNumber: Int? = null
+    private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +115,11 @@ class IssueFragment : BaseFragment(), IssueContract.View {
         activity.overridePendingTransition(0,0)
     }
 
+    override fun intentToBrowser(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
     override fun showLoading() {
         issue_fragment_progressbar.visibility = View.VISIBLE
     }
@@ -129,6 +134,19 @@ class IssueFragment : BaseFragment(), IssueContract.View {
 
     override fun showNoConnectionError() {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
+        menuInflater?.inflate(R.menu.issue_menu, menu)
+        menu?.let { mMenu = it }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.open_in_browser -> mPresenter.onOpenInBrowser()
+            R.id.action_options -> {}
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {
