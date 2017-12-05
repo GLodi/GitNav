@@ -27,10 +27,6 @@ import org.ocpsoft.prettytime.PrettyTime
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 
 /**
@@ -51,15 +47,7 @@ class GistCommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             row_comment_username.text = comment.user.login
             row_comment_date.text = p.format(comment.createdAt)
             Picasso.with(context).load(comment.user.avatarUrl).resize(75, 75).centerCrop().into(row_comment_image)
-
-            // Change link color
-            val doc: Document = Jsoup.parse(comment.bodyHtml)
-            val links: Elements = doc.select("a")
-            for (link in links) {
-                val e: Element = Jsoup.parse("<font color='#326fba'>$link</font>")
-                link.replaceWith(e)
-            }
-            row_comment_comment.setHtml(doc.html(), HtmlHttpImageGetter(row_comment_comment))
+            row_comment_comment.setHtml(comment.bodyHtml, HtmlHttpImageGetter(row_comment_comment))
         }
     }
 
