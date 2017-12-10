@@ -30,7 +30,6 @@ android {
         versionName "1.5"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-
     }
     buildTypes {
         release {
