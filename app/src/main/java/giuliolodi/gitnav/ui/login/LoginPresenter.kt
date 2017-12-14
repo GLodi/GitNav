@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.login
 
 import android.content.Intent
 import android.net.Uri
+import giuliolodi.gitnav.BuildConfig
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -71,7 +72,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
                 .appendPath("login")
                 .appendPath("oauth")
                 .appendPath("authorize")
-                .appendQueryParameter("client_id", "")
+                .appendQueryParameter("client_id", BuildConfig.GITHUB_CLIENT_ID)
                 .appendQueryParameter("redirect_uri", "gitnav://login")
                 .appendQueryParameter("scope", "user,repo,gist")
                 .appendQueryParameter("state", stateSent)
@@ -96,7 +97,7 @@ class LoginPresenter<V: LoginContract.View> : BasePresenter<V>, LoginContract.Pr
     }
 
     private fun requestAccessToken(code: String, stateReceived: String) {
-        getCompositeDisposable().add(getDataManager().apiRequestAccessToken("", "", code, "gitnav://login", stateReceived)
+        getCompositeDisposable().add(getDataManager().apiRequestAccessToken(BuildConfig.GITHUB_CLIENT_ID, BuildConfig.GITHUB_CLIENT_SECRET, code, "gitnav://login", stateReceived)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapCompletable { tokenRequested ->

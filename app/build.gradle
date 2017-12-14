@@ -20,6 +20,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.novoda.build-properties'
 
+buildProperties {
+    secrets {
+        file rootProject.file('gradle.properties')
+    }
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
@@ -31,6 +37,8 @@ android {
         versionName "1.5"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+        buildConfigString "GITHUB_CLIENT_ID", buildProperties.secrets['github_client_id'].string
+        buildConfigString "GITHUB_CLIENT_SECRET", buildProperties.secrets['github_client_secret'].string
     }
     buildTypes {
         release {
