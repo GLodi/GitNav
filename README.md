@@ -1,19 +1,14 @@
 # GitNav
 
-Right now I'm in the middle of a renovation. I'm basically remaking 
-the whole app from scratch because of poor decisions made at 
-the beginning of development.
-If you want to see the old version (1.0) check the releases.
-Interesting stuff I'm gonna use and implement:
+Basic GitHub Android Client. [Google play link!][play]
 
- - OAuth
+Features:
+ - Basic and Web authentication
  - Dark mode/theme
  - MVP architecture ([basic structure here][mvp])
  - RxKotlin/RxAndroid
  - Kotlin
  - Dagger2
-
-Basic GitHub Android Client. [Google play link!][play]
 
 <div align="center">
 	<img src="https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/web_hi_res_512.png" width="128">
@@ -22,13 +17,6 @@ Basic GitHub Android Client. [Google play link!][play]
 ## Screenshots
 
 ![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/gitnavgif2.gif)
-
-
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot1.png)
-
-
-![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/Screenshot2.png)
-
 
 Currently implemented:
 
@@ -75,6 +63,7 @@ Trending:
  - [highlightjs-android][highlight]
  - [Toasty][toasty]
  - [GitHubContributionsView][gcv]
+ - [html-textview][html-textview]
 
 [picasso]: http://square.github.io/picasso/
 [circle]: https://github.com/hdodenhof/CircleImageView
@@ -93,4 +82,5 @@ Trending:
 [play]: https://play.google.com/store/apps/details?id=giuliolodi.gitnav
 [mvp]: https://github.com/MindorksOpenSource/android-mvp-architecture
 [gcv]: https://github.com/javierugarte/GithubContributionsView
+[html-textview]: https://github.com/PrivacyApps/html-textview
 
