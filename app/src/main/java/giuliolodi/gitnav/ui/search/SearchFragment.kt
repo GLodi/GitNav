@@ -34,6 +34,7 @@ import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.adapters.RepoListAdapter
 import giuliolodi.gitnav.ui.adapters.SearchCodeAdapter
 import giuliolodi.gitnav.ui.adapters.SearchUserAdapter
+import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.RxUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -103,6 +104,13 @@ class SearchFragment : BaseFragment(), SearchContract.View {
                         search_fragment_no.visibility = View.GONE
                         search_fragment_rv.adapter = RepoListAdapter()
                         onRepoSearch()
+                        (search_fragment_rv.adapter as RepoListAdapter).getPositionClicks()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe { repo ->
+                                    startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
+                                    activity.overridePendingTransition(0,0)
+                                }
                     }
                     1 -> {
                         TAB_SELECTION = 1
@@ -169,6 +177,13 @@ class SearchFragment : BaseFragment(), SearchContract.View {
         }
         else {
             search_fragment_rv.adapter = RepoListAdapter()
+            (search_fragment_rv.adapter as RepoListAdapter).getPositionClicks()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { repo ->
+                        startActivity(RepoActivity.getIntent(context).putExtra("owner", repo.owner.login).putExtra("name", repo.name))
+                        activity.overridePendingTransition(0,0)
+                    }
         }
         if (LOADING)
             search_fragment_progress_bar.visibility = View.VISIBLE
