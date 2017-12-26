@@ -120,6 +120,10 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity android:name=".ui.commit.CommitActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>
