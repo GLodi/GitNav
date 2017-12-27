@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.commit_fragment.*
 import org.eclipse.egit.github.core.Commit
 import javax.inject.Inject
 
