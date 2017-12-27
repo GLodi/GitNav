@@ -19,6 +19,7 @@ package giuliolodi.gitnav.ui.commit
 import giuliolodi.gitnav.data.DataManager
 import giuliolodi.gitnav.ui.base.BasePresenter
 import io.reactivex.disposables.CompositeDisposable
+import org.eclipse.egit.github.core.Commit
 import javax.inject.Inject
 
 /**
@@ -28,10 +29,16 @@ class CommitPresenter<V: CommitContract.View> : BasePresenter<V>, CommitContract
 
     private val TAG = "CommitPresenter"
 
+    private val mCommit: Commit? = null
+
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String) {
+    }
+
+    override fun onOpenInBrowser() {
+        mCommit?.url?.let { getView().intentToBrowser(it) }
     }
 
 }

@@ -29,12 +29,20 @@ interface CommitContract {
 
         fun showCommit(commit: Commit)
 
+        fun showError(error: String)
+
+        fun showNoConnectionError()
+
+        fun intentToBrowser(url: String)
+
     }
 
     @PerActivity
     interface Presenter<V: CommitContract.View> : BaseContract.Presenter<V> {
 
         fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String)
+
+        fun onOpenInBrowser()
 
     }
 

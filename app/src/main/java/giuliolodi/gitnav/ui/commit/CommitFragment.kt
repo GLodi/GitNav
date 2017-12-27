@@ -16,11 +16,14 @@
 
 package giuliolodi.gitnav.ui.commit
 
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.commit_fragment.*
@@ -64,9 +67,56 @@ class CommitFragment : BaseFragment(), CommitContract.View {
         (activity as AppCompatActivity).supportActionBar?.subtitle = mSha
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        commit_fragment_toolbar.setNavigationOnClickListener { activity.onBackPressed() }
+
+        commit_fragment_tab_layout.visibility = View.VISIBLE
+        commit_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
+        commit_fragment_tab_layout.setupWithViewPager(commit_fragment_viewpager)
+        commit_fragment_viewpager.offscreenPageLimit = 2
     }
 
     override fun showCommit(commit: Commit) {
+    }
+
+    override fun showError(error: String) {
+        Toasty.error(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showNoConnectionError() {
+        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToBrowser(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
+        menuInflater?.inflate(R.menu.commit_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+
+        }
+        if (isNetworkAvailable()) {
+            when (item?.itemId) {
+                R.id.open_in_browser -> mPresenter.onOpenInBrowser()
+            }
+        } else {
+            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDetachView()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        mPresenter.onDetach()
+        super.onDestroy()
     }
 
 }
