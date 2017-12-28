@@ -16,10 +16,14 @@
 
 package giuliolodi.gitnav.ui.commit
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
@@ -55,7 +59,7 @@ class CommitFragment : BaseFragment(), CommitContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.event_fragment, container, false)
+        return inflater?.inflate(R.layout.commit_fragment, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
@@ -117,6 +121,31 @@ class CommitFragment : BaseFragment(), CommitContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
+    }
+
+    private class MyAdapter(context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+
+        private val mContext: Context = context
+
+        override fun getItem(position: Int): Fragment {
+            return when(position) {
+                //0 -> GistFilesFragment.newInstance(mGistId)
+                //else -> GistCommentsFragment.newInstance(mGistId)
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+            when (position) {
+                0 -> return mContext.getString(R.string.files)
+                1 -> return mContext.getString(R.string.comments)
+            }
+            return super.getPageTitle(position)
+        }
+
+        override fun getCount(): Int {
+            return 2
+        }
+
     }
 
 }
