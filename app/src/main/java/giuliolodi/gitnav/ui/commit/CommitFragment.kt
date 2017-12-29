@@ -129,8 +129,8 @@ class CommitFragment : BaseFragment(), CommitContract.View {
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-                //0 -> GistFilesFragment.newInstance(mGistId)
-                //else -> GistCommentsFragment.newInstance(mGistId)
+                0 -> CommitFilesFragment.newInstance(mGistId)
+                else -> CommitCommentsFragment.newInstance(mGistId)
             }
         }
 

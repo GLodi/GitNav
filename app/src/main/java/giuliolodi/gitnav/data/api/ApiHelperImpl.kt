@@ -465,4 +465,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiGetCommit(token: String, owner: String, name: String, sha: String): Flowable<RepositoryCommit> {
+        return Flowable.defer {
+            val commitService: CommitService = CommitService()
+            commitService.client.setOAuth2Token(token)
+            Flowable.just(commitService.getCommit(RepositoryId(owner, name), sha))
+        }
+    }
+
 }

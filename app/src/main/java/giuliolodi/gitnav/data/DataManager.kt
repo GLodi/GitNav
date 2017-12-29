@@ -343,4 +343,13 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getIssueComments(owner: String, name: String, issueNumber: Int): Flowable<List<Comment>>
 
+    /**
+     * Get commit
+     * @param owner
+     * @param name
+     * @param sha
+     * @return Flowable<RepositoryCommit>
+     */
+    fun getCommit(owner: String, name: String, sha: String): Flowable<RepositoryCommit>
+
 }

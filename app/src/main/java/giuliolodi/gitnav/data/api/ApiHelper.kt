@@ -372,4 +372,14 @@ interface ApiHelper {
      */
     fun apiGetIssueComments(token: String, owner: String, name: String, issueNumber: Int): Flowable<List<Comment>>
 
+    /**
+     * Get commit
+     * @param token
+     * @param owner
+     * @param name
+     * @param sha
+     * @return Flowable<RepositoryCommit>
+     */
+    fun apiGetCommit(token: String, owner: String, name: String, sha: String): Flowable<RepositoryCommit>
+
 }
