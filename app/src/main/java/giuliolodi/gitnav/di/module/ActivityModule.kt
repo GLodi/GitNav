@@ -22,8 +22,7 @@ import dagger.Module
 import dagger.Provides
 import giuliolodi.gitnav.di.scope.ActivityContext
 import giuliolodi.gitnav.di.scope.PerActivity
-import giuliolodi.gitnav.ui.commit.CommitContract
-import giuliolodi.gitnav.ui.commit.CommitPresenter
+import giuliolodi.gitnav.ui.commit.*
 import giuliolodi.gitnav.ui.contributorlist.ContributorListContract
 import giuliolodi.gitnav.ui.contributorlist.ContributorListPresenter
 import giuliolodi.gitnav.ui.events.EventContract
@@ -229,6 +228,18 @@ class ActivityModule(val activity: Activity) {
     @Provides
     @PerActivity
     fun provideCommitPresenter(presenter: CommitPresenter<CommitContract.View>): CommitContract.Presenter<CommitContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideCommentsCommitPresenter(presenter: CommitCommentsPresenter<CommitCommentsContract.View>): CommitCommentsContract.Presenter<CommitCommentsContract.View> {
+        return presenter
+    }
+
+    @Provides
+    @PerActivity
+    fun provideFilesCommitPresenter(presenter: CommitFilesPresenter<CommitFilesContract.View>): CommitFilesContract.Presenter<CommitFilesContract.View> {
         return presenter
     }
 

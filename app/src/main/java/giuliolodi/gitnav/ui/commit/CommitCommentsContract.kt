@@ -18,7 +18,7 @@ package giuliolodi.gitnav.ui.commit
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
-import giuliolodi.gitnav.ui.base.BasePresenter
+import org.eclipse.egit.github.core.CommitComment
 
 /**
  * Created by giulio on 29/12/2017.
@@ -27,10 +27,18 @@ interface CommitCommentsContract {
 
     interface View : BaseContract.View {
 
+        fun showComments(comments: List<CommitComment>)
+
+        fun showError(error: String)
+
+        fun showNoConnectionError()
+
     }
 
     @PerActivity
     interface Presenter<V: CommitCommentsContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String)
 
     }
 

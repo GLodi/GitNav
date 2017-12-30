@@ -16,8 +16,25 @@
 
 package giuliolodi.gitnav.ui.commit
 
+import giuliolodi.gitnav.data.DataManager
+import giuliolodi.gitnav.ui.base.BasePresenter
+import io.reactivex.disposables.CompositeDisposable
+import org.eclipse.egit.github.core.RepositoryCommit
+import javax.inject.Inject
+
 /**
  * Created by giulio on 29/12/2017.
  */
-class CommitFilesPresenter {
+class CommitFilesPresenter<V: CommitFilesContract.View> : BasePresenter<V>, CommitFilesContract.Presenter<V> {
+
+    private val TAG = "CommitFilesPresenter"
+
+    private var mCommit: RepositoryCommit? = null
+
+    @Inject
+    constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
+
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String) {
+    }
+
 }

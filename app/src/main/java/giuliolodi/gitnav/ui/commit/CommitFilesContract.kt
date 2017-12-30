@@ -26,10 +26,18 @@ interface CommitFilesContract {
 
     interface View : BaseContract.View {
 
+        fun showFiles()
+
+        fun showError(error: String)
+
+        fun showNoConnectionError()
+
     }
 
     @PerActivity
     interface Presenter<V: CommitFilesContract.View> : BaseContract.Presenter<V> {
+
+        fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String)
 
     }
 

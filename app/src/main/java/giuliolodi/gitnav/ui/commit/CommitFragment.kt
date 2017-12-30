@@ -79,9 +79,6 @@ class CommitFragment : BaseFragment(), CommitContract.View {
         commit_fragment_viewpager.offscreenPageLimit = 2
     }
 
-    override fun showCommit(commit: Commit) {
-    }
-
     override fun showError(error: String) {
         Toasty.error(context, error, Toast.LENGTH_LONG).show()
     }
