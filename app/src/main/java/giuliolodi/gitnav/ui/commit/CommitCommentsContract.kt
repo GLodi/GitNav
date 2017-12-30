@@ -16,8 +16,22 @@
 
 package giuliolodi.gitnav.ui.commit
 
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+import giuliolodi.gitnav.ui.base.BasePresenter
+
 /**
  * Created by giulio on 29/12/2017.
  */
 interface CommitCommentsContract {
+
+    interface View : BaseContract.View {
+
+    }
+
+    @PerActivity
+    interface Presenter<V: CommitCommentsContract.View> : BaseContract.Presenter<V> {
+
+    }
+
 }

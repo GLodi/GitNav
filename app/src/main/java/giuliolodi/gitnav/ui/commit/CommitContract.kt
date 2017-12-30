@@ -27,8 +27,6 @@ interface CommitContract {
 
     interface View : BaseContract.View {
 
-        fun showCommit(commit: Commit)
-
         fun showError(error: String)
 
         fun showNoConnectionError()
@@ -40,7 +38,7 @@ interface CommitContract {
     @PerActivity
     interface Presenter<V: CommitContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String)
 
         fun onOpenInBrowser()
 

@@ -16,8 +16,21 @@
 
 package giuliolodi.gitnav.ui.commit
 
+import giuliolodi.gitnav.di.scope.PerActivity
+import giuliolodi.gitnav.ui.base.BaseContract
+
 /**
  * Created by giulio on 29/12/2017.
  */
 interface CommitFilesContract {
+
+    interface View : BaseContract.View {
+
+    }
+
+    @PerActivity
+    interface Presenter<V: CommitFilesContract.View> : BaseContract.Presenter<V> {
+
+    }
+
 }
