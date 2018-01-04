@@ -24,7 +24,6 @@ import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
-import org.eclipse.egit.github.core.CommitComment
 import javax.inject.Inject
 
 /**
@@ -60,7 +59,7 @@ class CommitFilesFragment : BaseFragment(), CommitFilesContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.commit_fragment_comments, container, false)
+        return inflater?.inflate(R.layout.commit_fragment_filelist, container, false)
     }
 
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {

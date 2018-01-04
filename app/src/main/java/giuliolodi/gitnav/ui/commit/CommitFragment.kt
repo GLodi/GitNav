@@ -31,7 +31,6 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.commit_fragment.*
-import org.eclipse.egit.github.core.Commit
 import javax.inject.Inject
 
 /**
@@ -120,14 +119,17 @@ class CommitFragment : BaseFragment(), CommitContract.View {
         super.onDestroy()
     }
 
-    private class MyAdapter(context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+    private class MyAdapter(owner: String, name: String, sha: String, context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
+        private val mOwner: String = owner
+        private val mName: String = name
+        private val mSha: String = sha
         private val mContext: Context = context
 
         override fun getItem(position: Int): Fragment {
             return when(position) {
-                0 -> CommitFilesFragment.newInstance(mGistId)
-                else -> CommitCommentsFragment.newInstance(mGistId)
+                0 -> CommitFilesFragment.newInstance(mOwner, mName, mSha)
+                else -> CommitCommentsFragment.newInstance(mOwner, mName, mSha)
             }
         }
 
