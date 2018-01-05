@@ -28,6 +28,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.adapters.RepoCommitAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.commit.CommitActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -83,6 +84,11 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { username -> mPresenter.onUserClick(username) }
 
+        (repo_commits_fragment_rv.adapter as RepoCommitAdapter).getCommitClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { repoCommit -> mPresenter.onRepoCommitClick(repoCommit) }
+
         mPresenter.subscribe(isNetworkAvailable(), mOwner, mName)
     }
 
@@ -112,6 +118,16 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
 
     override fun intentToUserActivity(username: String) {
         startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
+    }
+
+    override fun intentToCommitActivity(repoCommit: RepositoryCommit) {
+        startActivity(CommitActivity.getIntent(context)
+                .putExtra("owner", mOwner)
+                .putExtra("name", mName)
+                .putExtra("sha", repoCommit.sha)
+                .putExtra("commit_url", repoCommit.commit.url)
+                .putExtra("commit_title", repoCommit.commit.message))
         activity.overridePendingTransition(0,0)
     }
 

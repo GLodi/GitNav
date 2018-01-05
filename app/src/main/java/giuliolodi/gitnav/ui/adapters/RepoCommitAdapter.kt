@@ -36,9 +36,14 @@ class RepoCommitAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mRepoCommitList: MutableList<RepositoryCommit?> = arrayListOf()
     private val mPrettyTime: PrettyTime = PrettyTime()
     private val onImageClick: PublishSubject<String> = PublishSubject.create()
+    private val onCommitClick: PublishSubject<RepositoryCommit> = PublishSubject.create()
 
     fun getImageClicks(): Observable<String> {
         return onImageClick
+    }
+
+    fun getCommitClicks(): Observable<RepositoryCommit> {
+        return onCommitClick
     }
     
     class RepoCommitHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -86,7 +91,10 @@ class RepoCommitAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (holder is RepoCommitHolder) {
             val repoCommit = mRepoCommitList[position]!!
             holder.bind(repoCommit, mPrettyTime)
-            if (repoCommit.author != null) holder.itemView.row_commit_image.setOnClickListener { onImageClick.onNext(repoCommit.author.login) }
+            if (repoCommit.author != null){
+                holder.itemView.row_commit_image.setOnClickListener { onImageClick.onNext(repoCommit.author.login) }
+                holder.itemView.row_commit_ll.setOnClickListener { onCommitClick.onNext(repoCommit) }
+            }
         }
     }
 

@@ -87,6 +87,10 @@ class RepoCommitsPresenter<V: RepoCommitsContract.View> : BasePresenter<V>, Repo
 
     }
 
+    override fun onRepoCommitClick(repoCommit: RepositoryCommit) {
+        getView().intentToCommitActivity(repoCommit)
+    }
+
     override fun onUserClick(username: String) {
         getView().intentToUserActivity(username)
     }

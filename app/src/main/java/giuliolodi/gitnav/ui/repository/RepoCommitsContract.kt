@@ -41,6 +41,8 @@ interface RepoCommitsContract {
 
         fun intentToUserActivity(username: String)
 
+        fun intentToCommitActivity(repoCommit: RepositoryCommit)
+
     }
 
     @PerActivity
@@ -49,6 +51,8 @@ interface RepoCommitsContract {
         fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?)
 
         fun onUserClick(username: String)
+
+        fun onRepoCommitClick(repoCommit: RepositoryCommit)
 
     }
 
