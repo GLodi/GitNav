@@ -43,7 +43,6 @@ class CommitFragment : BaseFragment(), CommitContract.View {
     private var mOwner: String? = null
     private var mName: String? = null
     private var mSha: String? = null
-    private var mCommitUrl: String? = null
     private var mCommitTitle: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +52,6 @@ class CommitFragment : BaseFragment(), CommitContract.View {
         mOwner = activity.intent.getStringExtra("owner")
         mName = activity.intent.getStringExtra("name")
         mSha = activity.intent.getStringExtra("sha")
-        mCommitUrl = activity.intent.getStringExtra("commit_url")
         mCommitTitle = activity.intent.getStringExtra("commit_title")
     }
 
@@ -76,19 +74,9 @@ class CommitFragment : BaseFragment(), CommitContract.View {
         commit_fragment_tab_layout.setSelectedTabIndicatorColor(Color.WHITE)
         commit_fragment_tab_layout.setupWithViewPager(commit_fragment_viewpager)
         commit_fragment_viewpager.offscreenPageLimit = 2
-    }
 
-    override fun showError(error: String) {
-        Toasty.error(context, error, Toast.LENGTH_LONG).show()
-    }
-
-    override fun showNoConnectionError() {
-        Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
-    }
-
-    override fun intentToBrowser(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(browserIntent)
+        if (mOwner != null && mName != null && mSha != null)
+            commit_fragment_viewpager.adapter = MyAdapter(mOwner!!, mName!!, mSha!!, context, fragmentManager)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, menuInflater: MenuInflater?) {
@@ -98,13 +86,6 @@ class CommitFragment : BaseFragment(), CommitContract.View {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
 
-        }
-        if (isNetworkAvailable()) {
-            when (item?.itemId) {
-                R.id.open_in_browser -> mPresenter.onOpenInBrowser()
-            }
-        } else {
-            Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
         }
         return super.onOptionsItemSelected(item)
     }

@@ -33,6 +33,7 @@ import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.repo_commits_fragment.*
+import org.eclipse.egit.github.core.Commit
 import org.eclipse.egit.github.core.RepositoryCommit
 import javax.inject.Inject
 
@@ -126,7 +127,6 @@ class RepoCommitsFragment : BaseFragment(), RepoCommitsContract.View {
                 .putExtra("owner", mOwner)
                 .putExtra("name", mName)
                 .putExtra("sha", repoCommit.sha)
-                .putExtra("commit_url", repoCommit.commit.url)
                 .putExtra("commit_title", repoCommit.commit.message))
         activity.overridePendingTransition(0,0)
     }

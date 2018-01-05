@@ -32,28 +32,7 @@ class CommitPresenter<V: CommitContract.View> : BasePresenter<V>, CommitContract
 
     private val TAG = "CommitPresenter"
 
-    private var mCommit: RepositoryCommit? = null
-
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
-
-    override fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String) {
-        getCompositeDisposable().add(getDataManager().getCommit(owner, name, sha)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { commit ->
-                            mCommit = commit
-                        },
-                        { throwable ->
-                            throwable?.localizedMessage?.let { getView().showError(it) }
-                            Timber.e(throwable)
-                        }
-                ))
-    }
-
-    override fun onOpenInBrowser() {
-        mCommit?.url?.let { getView().intentToBrowser(it) }
-    }
 
 }
