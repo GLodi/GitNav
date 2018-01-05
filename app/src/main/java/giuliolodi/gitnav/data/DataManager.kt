@@ -352,4 +352,13 @@ interface DataManager : ApiHelper, PrefsHelper {
      */
     fun getCommit(owner: String, name: String, sha: String): Flowable<RepositoryCommit>
 
+    /**
+     * Get commit comments
+     * @param owner
+     * @param name
+     * @param sha
+     * @return Flowable<List<CommitComment>>
+     */
+    fun getCommitComments(owner: String, name: String, sha: String): Flowable<List<CommitComment>>
+
 }

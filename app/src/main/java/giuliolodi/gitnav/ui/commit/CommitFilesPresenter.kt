@@ -34,7 +34,8 @@ class CommitFilesPresenter<V: CommitFilesContract.View> : BasePresenter<V>, Comm
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
-    override fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String) {
+    override fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?, sha: String?) {
+
     }
 
 }

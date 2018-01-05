@@ -300,6 +300,10 @@ class DataManagerImpl : DataManager {
         return mApiHelper.apiGetCommit(mPrefsHelper.getToken(), owner, name, sha)
     }
 
+    override fun getCommitComments(owner: String, name: String, sha: String): Flowable<List<CommitComment>> {
+        return mApiHelper.apiGetCommitComments(mPrefsHelper.getToken(), owner, name, sha)
+    }
+
     override fun apiAuthToGitHub(username: String, password: String): String {
         return mApiHelper.apiAuthToGitHub(username, password)
     }
@@ -450,6 +454,10 @@ class DataManagerImpl : DataManager {
 
     override fun apiGetCommit(token: String, owner: String, name: String, sha: String): Flowable<RepositoryCommit> {
         return mApiHelper.apiGetCommit(token, owner, name, sha)
+    }
+
+    override fun apiGetCommitComments(token: String, owner: String, name: String, sha: String): Flowable<List<CommitComment>> {
+        return mApiHelper.apiGetCommitComments(token, owner, name, sha)
     }
 
 }

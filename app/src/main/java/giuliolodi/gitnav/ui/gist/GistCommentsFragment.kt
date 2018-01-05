@@ -89,12 +89,12 @@ class GistCommentsFragment : BaseFragment(), GistCommentsContract.View {
         gist_fragment_comments_progressbar.visibility = View.VISIBLE
     }
 
-    override fun showNoComments() {
-        gist_fragment_comments_nocomments.visibility = View.VISIBLE
-    }
-
     override fun hideLoading() {
         gist_fragment_comments_progressbar.visibility = View.GONE
+    }
+
+    override fun showNoComments() {
+        gist_fragment_comments_nocomments.visibility = View.VISIBLE
     }
 
     override fun showNoConnectionError() {

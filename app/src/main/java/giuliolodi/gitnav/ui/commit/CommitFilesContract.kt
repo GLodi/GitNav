@@ -37,7 +37,7 @@ interface CommitFilesContract {
     @PerActivity
     interface Presenter<V: CommitFilesContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?, sha: String?)
 
     }
 

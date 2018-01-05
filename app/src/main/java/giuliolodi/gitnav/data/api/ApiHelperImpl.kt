@@ -473,4 +473,12 @@ class ApiHelperImpl : ApiHelper {
         }
     }
 
+    override fun apiGetCommitComments(token: String, owner: String, name: String, sha: String): Flowable<List<CommitComment>> {
+        return Flowable.defer {
+            val commitService: CommitService = CommitService()
+            commitService.client.setOAuth2Token(token)
+            Flowable.just(commitService.getComments(RepositoryId(owner, name), sha))
+        }
+    }
+
 }

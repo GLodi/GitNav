@@ -29,6 +29,12 @@ interface CommitCommentsContract {
 
         fun showComments(comments: List<CommitComment>)
 
+        fun showLoading()
+
+        fun hideLoading()
+
+        fun showNoComments()
+
         fun showError(error: String)
 
         fun showNoConnectionError()
@@ -38,7 +44,9 @@ interface CommitCommentsContract {
     @PerActivity
     interface Presenter<V: CommitCommentsContract.View> : BaseContract.Presenter<V> {
 
-        fun subscribe(isNetworkAvailable: Boolean, owner: String, name: String, sha: String)
+        fun subscribe(isNetworkAvailable: Boolean, owner: String?, name: String?, sha: String?)
+
+        fun onUserClick(username: String)
 
     }
 

@@ -382,4 +382,14 @@ interface ApiHelper {
      */
     fun apiGetCommit(token: String, owner: String, name: String, sha: String): Flowable<RepositoryCommit>
 
+    /**
+     * Get commit comments
+     * @param token
+     * @param owner
+     * @param name
+     * @param sha
+     * @return Flowable<List<CommitComment>>
+     */
+    fun apiGetCommitComments(token: String, owner: String, name: String, sha: String): Flowable<List<CommitComment>>
+
 }

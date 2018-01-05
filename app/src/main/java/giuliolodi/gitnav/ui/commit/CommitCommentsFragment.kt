@@ -17,13 +17,19 @@
 package giuliolodi.gitnav.ui.commit
 
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.adapters.CommitCommentAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.commit_fragment_comments.*
 import org.eclipse.egit.github.core.CommitComment
 import javax.inject.Inject
 
@@ -66,9 +72,34 @@ class CommitCommentsFragment : BaseFragment(), CommitCommentsContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
 
+        val llmComments = LinearLayoutManager(context)
+        llmComments.orientation = LinearLayoutManager.VERTICAL
+        commit_fragment_comments_rv.layoutManager = llmComments
+        commit_fragment_comments_rv.itemAnimator = DefaultItemAnimator()
+        commit_fragment_comments_rv.adapter = CommitCommentAdapter()
+
+        (commit_fragment_comments_rv.adapter as CommitCommentAdapter).getImageClicks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { username -> mPresenter.onUserClick(username)}
+
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName, mSha)
     }
 
-    override fun showComments(comments: List<CommitComment>) {
+    override fun showComments(commitCommentList: List<CommitComment>) {
+        (commit_fragment_comments_rv.adapter as CommitCommentAdapter).addCommitCommentList(commitCommentList)
+    }
+
+    override fun showLoading() {
+        commit_fragment_comments_progressbar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        commit_fragment_comments_progressbar.visibility = View.GONE
+    }
+
+    override fun showNoComments() {
+        commit_fragment_comments_nocomments.visibility = View.VISIBLE
     }
 
     override fun showError(error: String) {

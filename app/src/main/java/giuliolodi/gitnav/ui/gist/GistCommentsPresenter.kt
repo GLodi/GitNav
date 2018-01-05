@@ -53,6 +53,7 @@ class GistCommentsPresenter<V: GistCommentsContract.View> : BasePresenter<V>, Gi
             else {
                 getView().showNoConnectionError()
                 getView().hideLoading()
+                LOADING = false
             }
         }
     }
