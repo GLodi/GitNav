@@ -52,6 +52,7 @@ class GistFilesPresenter<V: GistFilesContract.View> : BasePresenter<V>, GistFile
             else {
                 getView().showNoConnectionError()
                 getView().hideLoading()
+                LOADING = false
             }
         }
     }

@@ -25,6 +25,7 @@
     android:id="@+id/row_commit_file_ll">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/row_commit_file_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
@@ -49,24 +50,32 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"/>
 
-            <TextView
-                android:id="@+id/row_commit_file_content"
+            <HorizontalScrollView
+                android:id="@+id/row_commit_file_content_hsv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="?android:attr/textColorPrimary"
-                android:alpha="0.54"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:text="..."
-                android:layout_below="@id/row_commit_file_filename"/>
+                android:layout_below="@id/row_commit_file_filename">
+
+                <TextView
+                    android:id="@+id/row_commit_file_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:alpha="0.54"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:scrollHorizontally="true"
+                    android:text="..." />
+
+            </HorizontalScrollView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#eaedea"
-                android:layout_below="@id/row_commit_file_content">
+                android:layout_below="@id/row_commit_file_content_hsv">
 
                 <TextView
                     android:id="@+id/row_commit_file_changes"

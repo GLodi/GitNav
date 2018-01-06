@@ -17,13 +17,19 @@
 package giuliolodi.gitnav.ui.commit
 
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
+import giuliolodi.gitnav.ui.adapters.CommitFileAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.commit_fragment_filelist.*
+import org.eclipse.egit.github.core.CommitFile
 import javax.inject.Inject
 
 /**
@@ -65,9 +71,25 @@ class CommitFilesFragment : BaseFragment(), CommitFilesContract.View {
     override fun initLayout(view: View?, savedInstanceState: Bundle?) {
         mPresenter.onAttach(this)
 
+        val llmFiles = LinearLayoutManager(context)
+        llmFiles.orientation = LinearLayoutManager.VERTICAL
+        commit_fragment_filelist_rv.layoutManager = llmFiles
+        commit_fragment_filelist_rv.itemAnimator = DefaultItemAnimator()
+        commit_fragment_filelist_rv.adapter = CommitFileAdapter()
+
+        mPresenter.subscribe(isNetworkAvailable(), mOwner, mName, mSha)
     }
 
-    override fun showFiles() {
+    override fun showFiles(commitFileList: List<CommitFile>) {
+        (commit_fragment_filelist_rv.adapter as CommitFileAdapter).addCommitFileList(commitFileList)
+    }
+
+    override fun showLoading() {
+        commit_fragment_filelist_progressbar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        commit_fragment_filelist_progressbar.visibility = View.GONE
     }
 
     override fun showError(error: String) {

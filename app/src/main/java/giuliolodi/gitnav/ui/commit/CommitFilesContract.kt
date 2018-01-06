@@ -18,6 +18,7 @@ package giuliolodi.gitnav.ui.commit
 
 import giuliolodi.gitnav.di.scope.PerActivity
 import giuliolodi.gitnav.ui.base.BaseContract
+import org.eclipse.egit.github.core.CommitFile
 
 /**
  * Created by giulio on 29/12/2017.
@@ -26,7 +27,11 @@ interface CommitFilesContract {
 
     interface View : BaseContract.View {
 
-        fun showFiles()
+        fun showFiles(commitFileList: List<CommitFile>)
+
+        fun showLoading()
+
+        fun hideLoading()
 
         fun showError(error: String)
 
