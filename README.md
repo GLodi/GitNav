@@ -5,7 +5,7 @@ Basic GitHub Android Client. [Google play link!][play]
 Features:
  - Basic and Web authentication
  - Dark mode/theme
- - MVP architecture ([basic structure here][mvp])
+ - MVP architecture ([basic architecture here][mvp])
  - RxKotlin/RxAndroid
  - Kotlin
  - Dagger2
