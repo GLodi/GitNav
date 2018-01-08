@@ -30,6 +30,8 @@ interface FileViewerContract {
 
         fun showRepoFile(fileContent: String)
 
+        fun showMDFile(mdFile: String)
+
         fun initRepoFileTitle(title: String, subtitle: String)
 
         fun initGistFileTitleContent(title: String, gistContent: String)

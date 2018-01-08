@@ -35,54 +35,63 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
     private val TAG: String = "FileViewerPresenter"
 
     private var mFileContent: String? = null
+    private var mFilename: String? = null
     private var LOADING: Boolean = false
 
     @Inject
     constructor(mCompositeDisposable: CompositeDisposable, mDataManager: DataManager) : super(mCompositeDisposable, mDataManager)
 
     override fun subscribe(fileViewerIntent: FileViewerIntent, isNetworkAvailable: Boolean) {
-        if (fileViewerIntent.repoOwner != null && fileViewerIntent.repoName != null && fileViewerIntent.fileName != null)
+        if (fileViewerIntent.repoOwner != null && fileViewerIntent.repoName != null && fileViewerIntent.fileName != null) {
             getView().initRepoFileTitle(fileViewerIntent.fileName!!, fileViewerIntent.repoOwner + "/" + fileViewerIntent.repoName)
+            mFilename = fileViewerIntent.fileName
+        }
 
-        else if (fileViewerIntent.gistFileName != null && fileViewerIntent.gistContent != null)
+        else if (fileViewerIntent.gistFileName != null && fileViewerIntent.gistContent != null) {
             getView().initGistFileTitleContent(fileViewerIntent.gistFileName!!, fileViewerIntent.gistContent!!)
+            mFilename = fileViewerIntent.fileName
+        }
 
         if (LOADING) getView().showLoading()
         else if (mFileContent != null) getView().showRepoFile(mFileContent!!)
         else {
             if (isNetworkAvailable) {
+                getView().showLoading()
+                LOADING = true
                 if (fileViewerIntent.repoOwner != null && fileViewerIntent.repoName != null && fileViewerIntent.filePath != null) {
-                    getCompositeDisposable().add(getDataManager().getContent(fileViewerIntent.repoOwner!!, fileViewerIntent.repoName!!, fileViewerIntent.filePath!!)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe {
-                                getView().showLoading()
-                                LOADING = true
-                            }
-                            .subscribe(
-                                    { repoContent ->
-                                        var fileDecoded: String = ""
-                                        try {
-                                            fileDecoded = Base64.decode(repoContent[0].content, Base64.DEFAULT).toString(charset("UTF-8"))
-                                            mFileContent = fileDecoded
-                                        } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
-                                        getView().showRepoFile(fileDecoded)
-                                        getView().hideLoading()
-                                        LOADING = false
-                                    },
-                                    { throwable ->
-                                        throwable?.localizedMessage?.let { getView().showError(it) }
-                                        getView().hideLoading()
-                                        Timber.e(throwable)
-                                        LOADING = false
-                                    }
-                            ))
+                    loadFile(fileViewerIntent)
                 }
             }
             else {
                 getView().showNoConnectionError()
+                getView().hideLoading()
+                LOADING = false
             }
         }
+    }
+
+    private fun loadFile(fileViewerIntent: FileViewerIntent) {
+        getCompositeDisposable().add(getDataManager().getContent(fileViewerIntent.repoOwner!!, fileViewerIntent.repoName!!, fileViewerIntent.filePath!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { repoContent ->
+                            var fileDecoded: String = ""
+                            try {
+                                fileDecoded = Base64.decode(repoContent[0].content, Base64.DEFAULT).toString(charset("UTF-8"))
+                                mFileContent = fileDecoded
+                            } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
+                            getView().showRepoFile(fileDecoded)
+                            getView().hideLoading()
+                            LOADING = false
+                        },
+                        { throwable ->
+                            throwable?.localizedMessage?.let { getView().showError(it) }
+                            getView().hideLoading()
+                            Timber.e(throwable)
+                            LOADING = false
+                        }
+                ))
     }
 
 }

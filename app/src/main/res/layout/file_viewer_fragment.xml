@@ -63,6 +63,12 @@
                 android:scrollbars="none"
                 android:visibility="gone"/>
 
+            <com.mukesh.MarkdownView
+                android:id="@+id/file_viewer_fragment_markedview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/file_viewer_fragment_error"
                 android:layout_width="wrap_content"
