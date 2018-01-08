@@ -53,7 +53,7 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
         }
 
         if (LOADING) getView().showLoading()
-        else if (mFileContent != null) getView().showRepoFile(mFileContent!!)
+        else if (mFileContent != null) showFile()
         else {
             if (isNetworkAvailable) {
                 getView().showLoading()
@@ -81,7 +81,7 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
                                 fileDecoded = Base64.decode(repoContent[0].content, Base64.DEFAULT).toString(charset("UTF-8"))
                                 mFileContent = fileDecoded
                             } catch (e: UnsupportedEncodingException) { e.printStackTrace() }
-                            getView().showRepoFile(fileDecoded)
+                            showFile()
                             getView().hideLoading()
                             LOADING = false
                         },
@@ -92,6 +92,15 @@ class FileViewerPresenter<V: FileViewerContract.View> : BasePresenter<V>, FileVi
                             LOADING = false
                         }
                 ))
+    }
+
+    private fun showFile() {
+        if (mFilename?.substring(mFilename?.indexOf('.')!!, mFilename?.length!!)?.equals(".md")!!) {
+            mFileContent?.let { getView().showMDFile(it) }
+        }
+        else {
+            mFileContent?.let { getView().showRepoFile(it) }
+        }
     }
 
 }

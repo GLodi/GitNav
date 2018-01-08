@@ -89,6 +89,13 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
     override fun showRepoFile(fileContent: String) {
         file_viewer_fragment_highlightview.setSource(fileContent)
         file_viewer_fragment_highlightview.visibility = View.VISIBLE
+        file_viewer_fragment_markedview.visibility = View.GONE
+    }
+
+    override fun showMDFile(mdFile: String) {
+        file_viewer_fragment_markedview.setMarkDownText(mdFile)
+        file_viewer_fragment_markedview.visibility = View.VISIBLE
+        file_viewer_fragment_highlightview.visibility = View.GONE
     }
 
     override fun showLoading() {
