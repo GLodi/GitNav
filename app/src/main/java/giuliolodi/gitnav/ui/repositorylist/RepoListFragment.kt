@@ -28,6 +28,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.adapters.RepoListAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.option.OptionActivity
 import giuliolodi.gitnav.ui.repository.RepoActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -146,7 +147,8 @@ class RepoListFragment : BaseFragment(), RepoListContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         else if (isNetworkAvailable()) {
             item?.let { mMenuItem = it.itemId }

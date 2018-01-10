@@ -34,6 +34,7 @@ import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.adapters.RepoListAdapter
 import giuliolodi.gitnav.ui.adapters.SearchCodeAdapter
 import giuliolodi.gitnav.ui.adapters.SearchUserAdapter
+import giuliolodi.gitnav.ui.option.OptionActivity
 import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.RxUtils
@@ -312,7 +313,8 @@ class SearchFragment : BaseFragment(), SearchContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         if (isNetworkAvailable()) {
             when (item?.itemId) {

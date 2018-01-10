@@ -29,6 +29,7 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.adapters.GistListAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.gist.GistActivity
+import giuliolodi.gitnav.ui.option.OptionActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.gist_list_fragment.*
@@ -159,7 +160,8 @@ class GistListFragment : BaseFragment(), GistListContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         return super.onOptionsItemSelected(item)
     }

@@ -28,6 +28,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.adapters.StarredAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.option.OptionActivity
 import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -156,7 +157,8 @@ class StarredFragment : BaseFragment(), StarredContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         if (isNetworkAvailable()) {
             mMenuItem = item?.itemId

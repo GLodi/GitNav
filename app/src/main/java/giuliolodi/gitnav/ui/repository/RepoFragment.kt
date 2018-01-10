@@ -33,6 +33,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import giuliolodi.gitnav.ui.option.OptionActivity
 import kotlinx.android.synthetic.main.repo_fragment.*
 
 /**
@@ -173,7 +174,8 @@ class RepoFragment : BaseFragment(), RepoContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         if (isNetworkAvailable()) {
             when (item?.itemId) {

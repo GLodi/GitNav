@@ -17,19 +17,16 @@
 package giuliolodi.gitnav.ui.commit
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.Toast
-import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.option.OptionActivity
 import kotlinx.android.synthetic.main.commit_fragment.*
 import javax.inject.Inject
 
@@ -85,7 +82,8 @@ class CommitFragment : BaseFragment(), CommitContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         return super.onOptionsItemSelected(item)
     }

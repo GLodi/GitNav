@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.option.OptionActivity
 import kotlinx.android.synthetic.main.issue_list_fragment.*
 
 /**
@@ -71,7 +72,8 @@ class IssueListFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         return super.onOptionsItemSelected(item)
     }

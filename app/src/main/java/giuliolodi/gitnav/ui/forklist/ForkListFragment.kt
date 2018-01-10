@@ -29,6 +29,7 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.repository.RepoActivity
 import giuliolodi.gitnav.ui.adapters.RepoListAdapter
+import giuliolodi.gitnav.ui.option.OptionActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fork_list_fragment.*
@@ -152,7 +153,8 @@ class ForkListFragment : BaseFragment(), ForkListContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         return super.onOptionsItemSelected(item)
     }

@@ -28,6 +28,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.data.model.FileViewerIntent
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.option.OptionActivity
 import kotlinx.android.synthetic.main.file_viewer_fragment.*
 import javax.inject.Inject
 
@@ -131,7 +132,8 @@ class FileViewerFragment : BaseFragment(), FileViewerContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_options) {
-
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
         }
         if (isNetworkAvailable()) {
             when (item?.itemId) {

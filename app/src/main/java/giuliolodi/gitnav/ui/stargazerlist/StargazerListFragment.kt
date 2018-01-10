@@ -29,6 +29,7 @@ import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.base.BaseFragment
 import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.ui.adapters.UserAdapter
+import giuliolodi.gitnav.ui.option.OptionActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.stargazer_list_fragment.*
@@ -141,6 +142,19 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
         activity.overridePendingTransition(0,0)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_options) {
+            startActivity(OptionActivity.getIntent(context))
+            activity.overridePendingTransition(0,0)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onDestroyView() {
         mPresenter.onDetachView()
         super.onDestroyView()
@@ -149,18 +163,6 @@ class StargazerListFragment : BaseFragment(), StargazerListContract.View {
     override fun onDestroy() {
         mPresenter.onDetach()
         super.onDestroy()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_options) {
-
-        }
-        return super.onOptionsItemSelected(item)
     }
 
 }
