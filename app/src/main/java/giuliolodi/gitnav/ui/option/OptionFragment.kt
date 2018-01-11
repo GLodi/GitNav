@@ -50,11 +50,11 @@ class OptionFragment : BaseFragment(), OptionContract.View {
         activity?.title = getString(R.string.options)
 
         if (mPresenter.getTheme() == "light"){
-            option_fragment_theme.text = "Theme: Light"
+            option_fragment_theme.text = getString(R.string.themelight)
             option_fragment_theme_switch.isChecked = false
         }
         else {
-            option_fragment_theme.text = "Theme: Dark"
+            option_fragment_theme.text = getString(R.string.themedark)
             option_fragment_theme_switch.isChecked = true
         }
         option_fragment_theme_switch.setOnClickListener {
@@ -78,7 +78,7 @@ class OptionFragment : BaseFragment(), OptionContract.View {
     }
 
     override fun onThemeChanged() {
-        Toasty.success(context, "Color changed", Toast.LENGTH_LONG).show()
+        Toasty.success(context, getString(R.string.theme_switched), Toast.LENGTH_LONG).show()
     }
 
 }

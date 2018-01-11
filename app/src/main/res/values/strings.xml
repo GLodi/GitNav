@@ -67,6 +67,8 @@
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
+    <string name="themelight">Theme: Light</string>
+    <string name="themedark">Theme: Dark</string>
 
     <string name="no_repositories">No repositories</string>
     <string name="no_users">No users</string>
@@ -123,7 +125,6 @@
     <string name="stars">Stars</string>
     <string name="name">Name</string>
 
-
     <string name="sign_out">Sign out</string>
     <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="currently_logged_in_as">You are currently logged in as</string>
@@ -132,5 +133,6 @@
     <string name="insert_credentials">Please insert credentials</string>
     <string name="confirm_fork">Do you want to fork</string>
     <string name="web_authentication">Web Authentication</string>
+    <string name="theme_switched">Theme switched</string>
 
 </resources>
