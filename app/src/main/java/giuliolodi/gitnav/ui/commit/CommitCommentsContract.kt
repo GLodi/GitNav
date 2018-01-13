@@ -39,6 +39,8 @@ interface CommitCommentsContract {
 
         fun showNoConnectionError()
 
+        fun intentToUserActivity(username: String)
+
     }
 
     @PerActivity

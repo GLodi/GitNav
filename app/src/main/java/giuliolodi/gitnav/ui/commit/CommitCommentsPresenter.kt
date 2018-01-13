@@ -88,7 +88,7 @@ class CommitCommentsPresenter<V: CommitCommentsContract.View> : BasePresenter<V>
     }
 
     override fun onUserClick(username: String) {
-
+        getView().intentToUserActivity(username)
     }
 
 }

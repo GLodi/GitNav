@@ -27,6 +27,7 @@ import es.dmoral.toasty.Toasty
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.ui.adapters.CommitCommentAdapter
 import giuliolodi.gitnav.ui.base.BaseFragment
+import giuliolodi.gitnav.ui.user.UserActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.commit_fragment_comments.*
@@ -108,6 +109,11 @@ class CommitCommentsFragment : BaseFragment(), CommitCommentsContract.View {
 
     override fun showNoConnectionError() {
         Toasty.warning(context, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun intentToUserActivity(username: String) {
+        startActivity(UserActivity.getIntent(context).putExtra("username", username))
+        activity.overridePendingTransition(0,0)
     }
 
     override fun onDestroyView() {
