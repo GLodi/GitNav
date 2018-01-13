@@ -18,6 +18,24 @@ Features:
 
 ![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/gitnavgif2.gif)
 
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/screen1.png)
+
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/screen2.png)
+
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/screen3.png)
+
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/screen4.png)
+
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/screen5.png)
+
+
+![](https://raw.githubusercontent.com/GLodi/GitNav/master/gfx/screen6.png)
+
 Currently implemented:
 
 User:
