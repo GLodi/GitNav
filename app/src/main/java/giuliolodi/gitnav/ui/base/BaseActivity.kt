@@ -19,8 +19,8 @@ package giuliolodi.gitnav.ui.base
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import com.crashlytics.android.Crashlytics
 import giuliolodi.gitnav.App
 import giuliolodi.gitnav.R
 import giuliolodi.gitnav.di.component.ActivityComponent
@@ -28,6 +28,7 @@ import giuliolodi.gitnav.di.component.DaggerActivityComponent
 import giuliolodi.gitnav.di.module.ActivityModule
 import giuliolodi.gitnav.utils.Constants
 import giuliolodi.gitnav.utils.NetworkUtils
+import io.fabric.sdk.android.Fabric
 
 /**
  * Created by giulio on 12/05/2017.
@@ -43,6 +44,8 @@ open class BaseActivity : AppCompatActivity(), BaseContract.View, BaseFragment.C
             null -> applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_THEME", "light").apply()
         }
         super.onCreate(savedInstanceState)
+
+        Fabric.with(this, Crashlytics())
 
         val app: App = application as App
 

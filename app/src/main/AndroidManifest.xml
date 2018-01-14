@@ -27,6 +27,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="1b19f4e1d8992fa7710e7b097d2581214ad81a1a" />
+
         <activity
             android:name=".ui.login.LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"

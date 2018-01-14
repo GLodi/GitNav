@@ -33,6 +33,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.crashlytics.android.Crashlytics
 import giuliolodi.gitnav.R
 import de.hdodenhof.circleimageview.CircleImageView
 import giuliolodi.gitnav.ui.events.EventActivity
@@ -45,9 +46,9 @@ import giuliolodi.gitnav.ui.starred.StarredActivity
 import giuliolodi.gitnav.ui.trending.TrendingActivity
 import giuliolodi.gitnav.ui.user.UserActivity
 import giuliolodi.gitnav.utils.Constants
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.base_activity.*
 import kotlinx.android.synthetic.main.base_activity_drawer.*
-
 
 /**
  * Created by giulio on 15/05/2017.
@@ -65,6 +66,9 @@ open class BaseDrawerActivity : AppCompatActivity(), BaseContract.View, Navigati
             null -> applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).edit().putString("PREF_KEY_THEME", "light").apply()
         }
         super.onCreate(savedInstanceState)
+
+        Fabric.with(this, Crashlytics())
+
         setContentView(R.layout.base_activity_drawer)
 
         val app: App = application as App
